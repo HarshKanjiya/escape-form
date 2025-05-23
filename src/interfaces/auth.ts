@@ -5,7 +5,7 @@ export interface ISignIn {
 
 export interface ISignUp {
     email: string,
-    name: string,
+    username: string,
     phone: string,
     password: string,
     confirmPassword: string
