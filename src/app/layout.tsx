@@ -1,8 +1,13 @@
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/core/theme/theme.provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/core/theme/theme.provider";
-import { Toaster } from "@/components/ui/sonner";
+
+import {
+  ClerkProvider
+} from '@clerk/nextjs';
+import { AuthGuard } from "@/core/guards/authGuards";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,20 +30,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+    <ClerkProvider>
+      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
         >
-          {children}
-          <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthGuard>
+              {children}
+            </AuthGuard>
+            <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

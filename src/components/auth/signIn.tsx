@@ -37,15 +37,35 @@ export function SignInForm({ className, ...props }: React.ComponentProps<"div">)
             };
         }
 
-        const { error } = await supabase.auth.signInWithPassword(dto);
-        if (error) {
-            setError("root", { message: error.message });
-            toast(error.message, {
-                description: "Please check your credentials and try again.",
+        console.log('Attempting sign in with:', { type: formType, email: data.email ? 'provided' : 'not provided', phone: data.phone ? 'provided' : 'not provided' });
+        
+        try {
+            const { data: authData, error } = await supabase.auth.signInWithPassword(dto);
+            
+            if (error) {
+                console.error('Sign in error:', error);
+                setError("root", { message: error.message });
+                toast.error(error.message, {
+                    description: "Please check your credentials and try again.",
+                });
+                return;
+            }
+            
+            console.log('Sign in successful, user:', authData.user?.id);
+            toast.success('Sign in successful!', {
+                description: "Redirecting to dashboard...",
             });
-            return;
+            
+            // Add a small delay before redirect to ensure the toast is displayed
+            setTimeout(() => {
+                redirect("/dashboard");
+            }, 1000);
+        } catch (err) {
+            console.error('Unexpected error during sign in:', err);
+            toast.error('An unexpected error occurred', {
+                description: "Please try again later.",
+            });
         }
-        redirect("/dashboard");
     };
 
     const handleGoogleLogin = async () => {

@@ -1,18 +1,21 @@
 import Header from "@/components/common/header";
-import { Sidebar, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Sidebar from "@/components/common/sideBar";
 
 export default function DashboardLayout({ children }: {
     children: React.ReactNode;
 }) {
 
     return (
-        <SidebarProvider>
+        // <SidebarProvider>
+        <div className="flex h-screen w-full flex-col">
             <Header />
-            <Sidebar />
-            <main>
-                <SidebarTrigger />
-                {children}
-            </main>
-        </SidebarProvider>
+            <div className="flex flex-1 h-full w-full">
+                <Sidebar />
+                <main>
+                    {children}
+                </main>
+            </div>
+        </div>
+        // </SidebarProvider>
     )
 }

@@ -39,16 +39,25 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<"div">)
         }
 
         if (data.user) {
+            // Make sure field name matches what's expected in the database
             const { error: profileError } = await supabase.from('profiles').insert([
                 { id: data.user.id, userName: dataSource.username }
             ]);
+
             if (profileError) {
-
+                console.error('Error creating profile:', profileError);
+                toast.error("Failed to create user profile", {
+                    description: profileError.message,
+                });
+                // Consider how to handle this error - either continue or stop
+                return; // Stop the flow if profile creation fails
             }
-        } else if (error) {
 
+            toast.success("Account created successfully!", {
+                description: "You can now sign in with your credentials.",
+            });
+            redirect("/dashboard");
         }
-        redirect("/dashboard");
     };
 
     const handleGoogleLogin = async () => {

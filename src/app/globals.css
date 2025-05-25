@@ -113,8 +113,8 @@
   --sidebar-ring: oklch(0.556 0 0);
 
   --color-base-50: #0f0f0f;
-  --color-base-100: #3d3d3d;
-  --color-base-200: #454545;
+  --color-base-100: rgb(23, 23, 23);
+  --color-base-200: rgb(36, 36, 36);
   --color-base-300: #4f4f4f;
   --color-base-400: #888888;
   --color-base-500: #5d5d5d;
