@@ -30,11 +30,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
-        >
+    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
+      >
+        <ClerkProvider appearance={{ variables: { colorPrimary: '#903ebb' } }}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -46,8 +46,8 @@ export default function RootLayout({
             </AuthGuard>
             <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
           </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

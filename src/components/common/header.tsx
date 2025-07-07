@@ -1,74 +1,112 @@
 "use client";
-import { useUser } from "@clerk/nextjs";
-import { InboxIcon } from "lucide-react";
+import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
+import { MessageSquare, User } from "lucide-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { useTheme } from "next-themes";
-import { SignOutButton } from '@clerk/nextjs'
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { DynamicBreadcrumb } from './breadcrumb';
+import { NotificationInbox } from './notification-inbox';
+import TeamsDropdown from "./teamsDropdown";
 
 
 export default function Header({ }) {
     const { user } = useUser();
+    const { openUserProfile } = useClerk();
     const { setTheme, theme } = useTheme()
+
     const themes = ['light', 'dark', 'system'];
 
+
     return (
-        <div className="flex items-center justify-between h-min pr-3 py-3 overflow-x-auto gap-x-8 pl-4 border-b border-base-200 bg-base-50 overflow-hidden">
-            <div className="flex items-center text-sm">
-                <Link href="dashboard" className="items-center justify-center flex-shrink-0 hidden md:flex">
-                    <Image src="/logo-light.png" alt="Logo" width={32} height={32} />
+        <div className="flex items-center justify-between h-16 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center gap-6">
+                <Link href="/dashboard" className="flex items-center gap-2">
+                    <Image
+                        src="/logo-light.png"
+                        alt="Logo"
+                        width={32}
+                        height={32}
+                        className=""
+                    />
                 </Link>
+
+                <TeamsDropdown />
+
+                <DynamicBreadcrumb />
             </div>
-            <div className="flex items-center text-sm gap-2">
-                <Button variant={'outline'} size={'sm'}>Feedback</Button>
-                <Button variant={'ghost'} size={'icon'}>
-                    <InboxIcon className="w-5 h-5" />
+            <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="h-8">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Feedback
                 </Button>
+                <NotificationInbox />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer overflow-hidden">
-                            {user?.imageUrl &&
-                                <Image src={user?.imageUrl} alt="Logo" width={32} height={32} />
-                            }
-                        </div>
+                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full">
+                            {user?.imageUrl ? (
+                                <Image
+                                    src={user.imageUrl}
+                                    alt="Profile"
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                />
+                            ) : (
+                                <User className="w-4 h-4" />
+                            )}
+                        </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>
-                            <div className="flex flex-col items-start">
-                                <p>{user?.username}</p>
+                    <DropdownMenuContent className="w-64" align="end">
+                        <DropdownMenuLabel className="p-0">
+                            <div className="flex flex-col px-2 py-1.5">
+                                <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
                                 <p className="text-xs text-muted-foreground">{user?.emailAddresses[0]?.emailAddress}</p>
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                Account
+                            <DropdownMenuItem onClick={() => openUserProfile()}>
+                                <div className="flex items-center cursor-pointer">
+                                    <User className="w-4 h-4 mr-2" />
+                                    Account Settings
+                                </div>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                Settings
-                            </DropdownMenuItem>
+                            {/* <DropdownMenuItem asChild>
+                                <Link href="/account/preferences" className="flex items-center">
+                                    <Settings className="w-4 h-4 mr-2" />
+                                    Preferences
+                                </Link>
+                            </DropdownMenuItem> */}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuLabel>
-                                Themes
+                            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                                Theme
                             </DropdownMenuLabel>
-                            <RadioGroup defaultValue={theme}>
-                                {themes.map((theme) => (
-                                    <DropdownMenuItem key={theme} onClick={() => setTheme(theme)}>
-                                        <RadioGroupItem value={theme} id={`r-${theme}`} />
-                                        <Label htmlFor={`r-${theme}`}>{theme.charAt(0).toUpperCase() + theme.slice(1)}</Label>
-                                    </DropdownMenuItem>
-                                ))}
-                            </RadioGroup>
+                            <div className="px-2 py-1">
+                                <RadioGroup value={theme} onValueChange={setTheme} className="space-y-1">
+                                    {themes.map((themeOption) => (
+                                        <div key={themeOption} className="flex items-center space-x-2">
+                                            <RadioGroupItem value={themeOption} id={`theme-${themeOption}`} />
+                                            <Label htmlFor={`theme-${themeOption}`} className="text-sm">
+                                                {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <SignOutButton />
+                            <SignOutButton>
+                                <button className="flex items-center w-full text-left">
+                                    Sign out
+                                </button>
+                            </SignOutButton>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
