@@ -1,4 +1,4 @@
-import { supabase } from '@/core/theme/supabase/supabaseClient';
+
 import { Database } from '@/lib/supabase/database.types';
 import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
@@ -12,42 +12,14 @@ export function useTeam() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTeams() {
-      if (!user?.id) return;
 
-      try {
-        const { data, error } = await supabase
-          .from('teams')
-          .select('*')
-          .eq('owner_id', user.id);
-
-        if (error) throw error;
-
-        setTeams(data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchTeams();
   }, [user?.id]);
 
   async function createTeam(name: string) {
     if (!user?.id) return null;
 
     try {
-      const { data, error } = await supabase
-        .from('teams')
-        .insert([{ name, owner_id: user.id }])
-        .select()
-        .single();
 
-      if (error) throw error;
-
-      setTeams([...teams, data]);
-      return data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       return null;

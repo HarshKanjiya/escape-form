@@ -1,4 +1,3 @@
-import { supabase } from '@/core/theme/supabase/supabaseClient';
 import { Database } from '@/lib/supabase/database.types';
 import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
@@ -13,44 +12,44 @@ export function useNotifications() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchNotifications() {
-      if (!user?.id) return;
+    // async function fetchNotifications() {
+    //   if (!user?.id) return;
 
-      try {
-        const { data, error } = await supabase
-          .from('notifications')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(50);
+    //   try {
+    //     const { data, error } = await supabase
+    //       .from('notifications')
+    //       .select('*')
+    //       .eq('user_id', user.id)
+    //       .order('created_at', { ascending: false })
+    //       .limit(50);
 
-        if (error) throw error;
+    //     if (error) throw error;
 
-        setNotifications(data || []);
-        setUnreadCount(data?.filter(n => !n.read).length || 0);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    }
+    //     setNotifications(data || []);
+    //     setUnreadCount(data?.filter(n => !n.read).length || 0);
+    //   } catch (err) {
+    //     setError(err instanceof Error ? err.message : 'An error occurred');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
 
-    fetchNotifications();
+    // fetchNotifications();
   }, [user?.id]);
 
   async function markAsRead(notificationId: string) {
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('id', notificationId);
+      // const { error } = await supabase
+      //   .from('notifications')
+      //   .update({ read: true })
+      //   .eq('id', notificationId);
 
-      if (error) throw error;
+      // if (error) throw error;
 
-      setNotifications(notifications.map(n => 
-        n.id === notificationId ? { ...n, read: true } : n
-      ));
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      // setNotifications(notifications.map(n => 
+      //   n.id === notificationId ? { ...n, read: true } : n
+      // ));
+      // setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
@@ -60,16 +59,16 @@ export function useNotifications() {
     if (!user?.id) return;
 
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('user_id', user.id)
-        .eq('read', false);
+      // const { error } = await supabase
+      //   .from('notifications')
+      //   .update({ read: true })
+      //   .eq('user_id', user.id)
+      //   .eq('read', false);
 
-      if (error) throw error;
+      // if (error) throw error;
 
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
-      setUnreadCount(0);
+      // setNotifications(notifications.map(n => ({ ...n, read: true })));
+      // setUnreadCount(0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }

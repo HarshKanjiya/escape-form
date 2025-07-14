@@ -1,4 +1,5 @@
 "use client";
+
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
 import { MessageSquare, User } from "lucide-react";
 import { useTheme } from "next-themes";

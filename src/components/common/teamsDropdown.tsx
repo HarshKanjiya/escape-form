@@ -1,5 +1,6 @@
 "use client";
 
+import { getCurrentUserTeams } from "@/actions/team";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -12,6 +13,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { redirect } from "next/navigation";
 // import { createTeam } from "@/actions/team";
 
 const formSchema = z.object({
@@ -27,8 +29,11 @@ export default function TeamsDropdown() {
     }, []);
 
     const getTeams = async () => {
-        // const { teams } = await getCurrentUserTeams();
-        // setTeams(teams);
+        const { teams } = await getCurrentUserTeams();
+        if (!teams.length) {
+            redirect('/dashboard/team');
+        }
+        setTeams(teams);
     }
 
     const teamForm = useForm<z.infer<typeof formSchema>>({

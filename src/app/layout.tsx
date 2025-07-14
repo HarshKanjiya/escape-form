@@ -36,19 +36,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
       >
-        <ClerkProvider appearance={{ variables: { colorPrimary: '#903ebb' } }}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider appearance={{ variables: { colorPrimary: '#903ebb' } }}>
             <AuthGuard>
               {children}
             </AuthGuard>
             <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
-          </ThemeProvider>
-        </ClerkProvider>
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

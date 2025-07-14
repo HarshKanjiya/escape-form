@@ -1,38 +1,60 @@
-// 'use server';
+'use server';
 
-// import { ICreateTeam } from '@/interfaces/common';
-// import { supabase } from '@/lib/supabase/client';
-// import { Team } from '@/lib/supabase/database.types';
-// // import { currentUser } from '@clerk/nextjs/server';
+import { ICreateTeam } from '@/interfaces/common';
+import { supabase } from '@/lib/supabase/client';
+import { Team } from '@/lib/supabase/database.types';
+import { currentUser } from '@clerk/nextjs/server';
 
-// // Create team function
-// export async function createTeam(data: ICreateTeam): Promise<Team> {
-//     try {
+export async function getCurrentUserTeams() {
+    try {
+        const user = await currentUser();
 
+        if (!user) {
+            throw new Error('User not authenticated');
+        }
 
-//         const user = await currentUser();
+        const { data: teams, error } = await supabase
+            .from('teams')
+            .select('*')
+            .eq('owner_id', user.id);
 
-//         if (!user) {
-//             throw new Error('User not authenticated');
-//         }
+        if (error) {
+            throw new Error(error?.message || "Failed to fetch teams");
+        }
 
-//         const { data: team, error } = await supabase
-//             .from('teams')
-//             .insert({
-//                 name: data.name,
-//                 owner_id: user.id,
-//             })
-//             .select()
-//             .single();
+        return { teams };
+    } catch (error) {
+        console.error('Error in getCurrentUserTeams:', error);
+        throw error;
+    }
+}
 
-//         if (error) {
-//             throw new Error(error?.message || "Failed to create team");
-//         }
+// Create team function
+export async function createTeam(data: ICreateTeam): Promise<Team> {
+    try {
+        const user = await currentUser();
 
-//         return team;
+        if (!user) {
+            throw new Error('User not authenticated');
+        }
 
-//     } catch (error) {
-//         console.error('Error in createTeam:', error);
-//         throw error;
-//     }
-// }
+        const { data: team, error } = await supabase
+            .from('teams')
+            .insert({
+                name: data.name,
+                owner_id: user.id,
+            })
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(error?.message || "Failed to create team");
+        }
+
+        return team;
+
+    } catch (error) {
+        console.error('Error in createTeam:', error);
+        throw error;
+    }
+}

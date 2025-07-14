@@ -1,5 +1,4 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Card } from "@/components/ui/card";
 
 export default function TeamLayout({
   children,
@@ -19,9 +18,7 @@ export default function TeamLayout({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Card>
         {children}
-      </Card>
     </div>
   );
 }
