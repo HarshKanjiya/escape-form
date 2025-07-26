@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+* {
+  box-sizing: border-box;
+  font-size: 14px;
+}
 
 @custom-variant dark (&:is(.dark *));
 

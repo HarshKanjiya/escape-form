@@ -12,13 +12,13 @@ import { AuthGuard } from "@/core/guards/authGuards";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  adjustFontFallback: false // Add this to prevent font loading issues
+  adjustFontFallback: false
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  adjustFontFallback: false // Add this to prevent font loading issues
+  adjustFontFallback: false
 });
 
 export const metadata: Metadata = {
@@ -35,6 +35,7 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
+        suppressHydrationWarning={true}
       >
         <ThemeProvider
           attribute="class"

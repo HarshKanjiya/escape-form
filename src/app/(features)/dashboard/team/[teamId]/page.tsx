@@ -50,13 +50,13 @@ export default function TeamOverviewPage() {
         if (!newProjectName.trim()) return;
 
         setIsCreating(true);
-        const project = await createProject(newProjectName, newProjectDescription);
-        if (project) {
-            setIsCreateDialogOpen(false);
-            setNewProjectName('');
-            setNewProjectDescription('');
-            router.push(`/dashboard/team/${teamId}/project/${project.id}`);
-        }
+        // const project = await createProject(newProjectName, newProjectDescription);
+        // if (project) {
+        //     setIsCreateDialogOpen(false);
+        //     setNewProjectName('');
+        //     setNewProjectDescription('');
+        //     router.push(`/dashboard/team/${teamId}/project/${project.id}`);
+        // }
         setIsCreating(false);
     };
 
