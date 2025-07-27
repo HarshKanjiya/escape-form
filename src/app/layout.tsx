@@ -1,15 +1,15 @@
+import { getUserTeams } from "@/actions/team";
+import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthGuard } from "@/core/guards/authGuard";
 import { ThemeProvider } from "@/core/theme/theme.provider";
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { getUserTeams } from "@/actions/team";
-import HydrateTeams from "@/components/teams/HydrateTeams";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { AuthGuard } from "@/core/guards/authGuard";
 
+// Add this to force dynamic rendering
+export const dynamic = 'force-dynamic'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

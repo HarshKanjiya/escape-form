@@ -1,8 +1,8 @@
 
 import Header from "@/core/components/Header";
 import Sidebar from "@/core/components/SideBar";
-import HydrateTeams from "@/components/teams/HydrateTeams";
-import { getUserTeams } from "@/actions/team";
+
+export const dynamic = 'force-dynamic'
 
 export default async function Layout({ children }: { children: React.ReactNode; }) {
 

@@ -15,6 +15,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
+export const dynamic = 'force-dynamic'
+
 const formSchema = z.object({
     name: z.string().min(3, 'Project name must be at least 3 characters').max(30, 'Project name must be less than 30 characters'),
     description: z.string().max(200, 'Project description must be less than 200 characters').optional(),

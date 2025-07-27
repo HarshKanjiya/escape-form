@@ -1,23 +1,15 @@
 "use client";
 
-import { createTeam } from "@/actions/team";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Team } from "@/types/db";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { redirect } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { redirect, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Team } from "@/types/db";
 import AddTeam from "./addTeam";
 
 const formSchema = z.object({

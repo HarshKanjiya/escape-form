@@ -16,6 +16,8 @@ import { getTeamProjects } from "@/actions/project";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 
+export const dynamic = 'force-dynamic'
+
 interface ProjectListProps {
     projects: Project[];
 }

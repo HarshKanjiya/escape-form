@@ -13,6 +13,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "../ui/input";
 import { Plus } from "lucide-react";
 
+export const dynamic = 'force-dynamic'
+
 interface Props {
     buttonWidth?: 'w-full' | 'w-auto';
     triggerVariant?: 'default' | 'outline';

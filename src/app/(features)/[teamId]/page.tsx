@@ -3,6 +3,8 @@ import { ProjectList } from "@/components/projects/projectList";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
+export const dynamic = 'force-dynamic'
+
 type ProjectsPageProps = {
     params: Promise<{
         teamId: string;
