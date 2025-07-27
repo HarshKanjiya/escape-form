@@ -1,7 +1,7 @@
 // Example usage of SwitchButton component
 
 import { SwitchButton, SwitchButtonOption } from "@/components/ui/switchButton"
-import { LayoutGrid, List, Calendar } from "lucide-react"
+import { Calendar } from "lucide-react"
 
 // Example 1: Basic usage with icons (single selection by default)
 export function BasicSwitchButtonExample() {

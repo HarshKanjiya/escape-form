@@ -3,10 +3,10 @@ import { ProjectList } from "@/components/projects/projectList";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-interface ProjectsPageProps {
-    params: {
+type ProjectsPageProps = {
+    params: Promise<{
         teamId: string;
-    };
+    }>;
 }
 
 export default async function ProjectsPage({ params }: ProjectsPageProps) {

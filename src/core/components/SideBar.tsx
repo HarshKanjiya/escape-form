@@ -7,17 +7,17 @@ import { cn } from '@/lib/utils';
 import { Menu, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface NavigationItem {
-    label: string;
-    href: string;
-    icon: any;
-    isActive?: boolean;
-}
+// interface NavigationItem {
+//     label: string;
+//     href: string;
+//     // icon: any;
+//     isActive?: boolean;
+// }
 
-interface NavigationSection {
-    title?: string;
-    items: NavigationItem[];
-}
+// interface NavigationSection {
+//     title?: string;
+//     items: NavigationItem[];
+// }
 
 export default function Sidebar() {
     const isMobile = useIsMobile();

@@ -23,9 +23,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         }
         if (isSignedIn && currentPath === '/') {
             if (teams?.length) redirect(`/${teams[0].id}`);
-            else redirect('/teams/create');
+            else redirect('/teams');
         }
-    }, [isSignedIn, isLoaded, router]);
+    }, [isSignedIn, isLoaded, router, teams]);
 
     if (!isLoaded) {
         return <div>Loading...</div>;
