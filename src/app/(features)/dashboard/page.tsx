@@ -1,17 +1,10 @@
-"use client";
-
-import { useUser } from "@clerk/nextjs";
-
 export default function DashboardPage() {
-    // const { user, loading } = useUser();
-    const { user, isLoaded, isSignedIn } = useUser()
-
-
-    return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-            {user?.imageUrl || user?.username}
-
-        </div>
-    );
+  return (
+    <div className="flex items-center justify-center h-full">
+      <div className="text-center">
+        <h1 className="text-2xl font-semibold mb-2">Loading...</h1>
+        <p className="text-muted-foreground">Redirecting to your team dashboard</p>
+      </div>
+    </div>
+  );
 }

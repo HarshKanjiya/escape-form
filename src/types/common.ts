@@ -1,0 +1,43 @@
+// Common response types for server actions
+
+export interface ActionResponse<T = unknown> {
+  success: boolean
+  data?: T
+  error?: string
+  message?: string
+}
+
+export interface ActionError {
+  success: false
+  error: string
+  message?: string
+}
+
+export interface ActionSuccess<T = unknown> {
+  success: true
+  data: T
+  message?: string
+}
+
+// Helper functions to create consistent responses
+export function createSuccessResponse<T>(
+  data: T, 
+  message?: string
+): ActionSuccess<T> {
+  return {
+    success: true,
+    data,
+    message
+  }
+}
+
+export function createErrorResponse(
+  error: string, 
+  message?: string
+): ActionError {
+  return {
+    success: false,
+    error,
+    message
+  }
+}
