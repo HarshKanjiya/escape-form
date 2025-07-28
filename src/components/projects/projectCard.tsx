@@ -1,16 +1,10 @@
 "use client";
 
-import { Project } from "@/types/db";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Calendar, Folder, BarChart3, FileText, ChevronRight, TrendingUp } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Project } from "@/types/db";
+import { Calendar, Folder, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { SpotlightCard } from "../ui/spotLightCard";
@@ -33,16 +27,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <SpotlightCard>
-      <Card className="group relative hover:shadow-md transition-all duration-200 cursor-pointer">
+      <Card className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none">
         <Link href={`/${teamId}/${project.id}`} className="block">
-          <CardContent className="p-6">
+          <CardContent className="px-4 sm:p-6">
             <div className="flex items-center space-x-4">
-              {/* Project Icon */}
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Folder className="w-5 h-5 text-primary" />
+
+              <div className="p-3 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Folder className="w-8 h-8 text-primary" />
+              </div>
+              <div className="absolute -left-8 -bottom-5 -z-10 opacity-70">
+                <Folder className="w-28 h-28 sm:w-36 sm:h-36 text-secondary" />
               </div>
 
-              {/* Project Info */}
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-foreground line-clamp-1 mb-1">
                   {project.name}

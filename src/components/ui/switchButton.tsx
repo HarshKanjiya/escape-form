@@ -79,7 +79,7 @@ const SwitchButton = React.forwardRef<HTMLDivElement, SwitchButtonProps>(
       <div
         ref={ref}
         className={cn(
-          "inline-flex items-center rounded-lg bg-muted p-1",
+          "inline-flex items-center rounded-md bg-muted p-1",
           className
         )}
         {...props}

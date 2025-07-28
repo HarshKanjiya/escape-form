@@ -18,13 +18,14 @@ export const dynamic = 'force-dynamic'
 interface Props {
     buttonWidth?: 'w-full' | 'w-auto';
     triggerVariant?: 'default' | 'outline';
+    onSuccess?: () => void;
 }
 
 const formSchema = z.object({
     name: z.string().min(3, 'Team name must be at least 3 characters').max(30, 'Team name must be less than 30 characters'),
 });
 
-export default function AddTeam({ buttonWidth, triggerVariant }: Props = { buttonWidth: 'w-full', triggerVariant: 'outline' }) {
+export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Props = { buttonWidth: 'w-full', triggerVariant: 'outline' }) {
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const teamForm = useForm<z.infer<typeof formSchema>>({
@@ -45,7 +46,8 @@ export default function AddTeam({ buttonWidth, triggerVariant }: Props = { butto
             }
             teamForm.reset();
             setDialogOpen(false);
-            redirect(`/${res.data?.id}`);
+            // redirect(`/${res.data?.id}`);
+            onSuccess?.();
         } catch (error) {
             console.error('Error creating team:', error);
         }

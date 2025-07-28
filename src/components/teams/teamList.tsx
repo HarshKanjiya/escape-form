@@ -1,25 +1,26 @@
 "use client";
 
+import { getUserTeams } from "@/actions/team";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Project } from "@/types/db";
+import { useStore } from "@/store/useStore";
+import { Team } from "@/types/db";
 import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SwitchButton } from "../ui/switchButton";
-import { ProjectCard } from "./projectCard";
-import AddProject from "./addProject";
-import { getTeamProjects } from "@/actions/project";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
+import { SwitchButton } from "../ui/switchButton";
+import AddTeam from "./addTeam";
+import { TeamCard } from "./teamCard";
 
 export const dynamic = 'force-dynamic'
 
-interface ProjectListProps {
-    projects: Project[];
+interface TeamListProps {
+    teams: Team[];
 }
 
 type ViewMode = "grid" | "list";
@@ -38,7 +39,7 @@ const switchActions = [
 ]
 
 // Move these components outside to prevent recreation on every render
-function ProjectGridView({ projects, loading }: { projects: Project[]; loading: boolean }) {
+function TeamGridView({ teams, loading }: { teams: Team[]; loading: boolean }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {
@@ -47,13 +48,13 @@ function ProjectGridView({ projects, loading }: { projects: Project[]; loading: 
                         <Skeleton key={index} className="h-32 w-full" />
                     ))
                     :
-                    projects.map((project) => <ProjectCard key={project.id} project={project} />)
+                    teams.map((team) => <TeamCard key={team.id} team={team} />)
             }
         </div>
     );
 }
 
-function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; teamId: string; loading: boolean }) {
+function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: string; loading: boolean }) {
     const formatDate = useCallback((dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             month: "short",
@@ -68,7 +69,6 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                 <TableHeader>
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
                         <TableHead>Created</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="w-[100px]">Actions</TableHead>
@@ -91,34 +91,26 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                                     <TableCell>
                                         <Skeleton className="h-6" />
                                     </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
                                 </TableRow>
                             ))
                             :
-                            projects.map((project) => (
-                                <TableRow key={project.id}>
+                            teams.map((team) => (
+                                <TableRow key={team.id}>
                                     <TableCell>
                                         <div>
-                                            <div className="font-medium">{project.name}</div>
-                                            <div className="text-sm text-muted-foreground">
-                                                ID: {project?.id.slice(0, 8)}...
-                                            </div>
+                                            <div className="font-medium">{team.name}</div>
+                                            {/* <div className="text-sm text-muted-foreground">
+                                                ID: {team?.id.slice(0, 8)}...
+                                            </div> */}
                                         </div>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="max-w-[300px] truncate">
-                                            {project.description || "No description"}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{formatDate(project.created_at)}</TableCell>
+                                    <TableCell>{formatDate(team.created_at)}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">Active</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <Button size="sm" variant="outline">
-                                            <Link href={`/${teamId}/${project.id}`}>
+                                            <Link href={`/${teamId}/${team.id}`}>
                                                 Open
                                             </Link>
                                         </Button>
@@ -147,15 +139,15 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
                 }
             </p>
             {!searchQuery && (
-                <AddProject />
+                <AddTeam triggerVariant="default" />
             )}
         </div>
     );
 }
 
-export function ProjectList({ projects: initialProjects }: ProjectListProps) {
+export function TeamList() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [projects, setProjects] = useState<Project[]>(initialProjects);
+    const { teams, setTeams } = useStore((state) => state);
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [loading, setLoading] = useState(false);
 
@@ -181,15 +173,15 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    const getProjects = useCallback(async () => {
+    const getTeams = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await getTeamProjects(teamId);
+            const res = await getUserTeams();
             if (res.error) {
-                toast.error("Failed to load projects");
+                toast.error("Failed to load teams");
                 return;
             }
-            setProjects(res.data || []);
+            setTeams(res.data || []);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
@@ -200,16 +192,15 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
     }, [])
 
     // Memoize filtered projects to prevent unnecessary recalculations
-    const filteredProjects = useMemo(() => {
+    const filteredTeams = useMemo(() => {
         const searchLower = searchQuery.toLowerCase().trim();
-        if (!searchLower) return projects;
+        if (!searchLower) return teams;
 
-        return projects.filter((project) =>
-            project.name.toLowerCase().includes(searchLower) ||
-            (project.description?.toLowerCase().includes(searchLower) ?? false) ||
-            project.id.toLowerCase().includes(searchLower)
+        return teams.filter((team) =>
+            team.name.toLowerCase().includes(searchLower) ||
+            team.id.toLowerCase().includes(searchLower)
         );
-    }, [projects, searchQuery]);
+    }, [teams, searchQuery]);
 
     // Memoize callbacks to prevent unnecessary re-renders
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -232,12 +223,12 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">Projects</h1>
+                    <h1 className="text-2xl font-bold">Teams</h1>
                     <p className="text-muted-foreground">
-                        Manage and organize your team projects
+                        Manage and organize your teams
                     </p>
                 </div>
-                <AddProject onSuccess={() => getProjects()} />
+                <AddTeam onSuccess={() => getTeams()} />
             </div>
 
             <div className="flex flex-row gap-4 items-center justify-between">
@@ -266,6 +257,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                         </Button>
                     )}
                 </div>
+
                 <div className="flex items-center gap-2">
                     <SwitchButton options={switchActions} defaultSelected="grid" />
                 </div>
@@ -273,15 +265,15 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
 
             <div className="text-sm text-muted-foreground">
                 {searchQuery ? (
-                    <>Showing {filteredProjects.length} of {projects.length} projects</>
+                    <>Showing {filteredTeams.length} of {teams.length} teams</>
                 ) : (
-                    <>{projects.length} project{projects.length !== 1 ? 's' : ''} total</>
+                    <>{teams.length} team{teams.length !== 1 ? 's' : ''} total</>
                 )}
             </div>
 
-            {!filteredProjects?.length ? <EmptyState searchQuery={searchQuery} /> :
+            {!filteredTeams?.length ? <EmptyState searchQuery={searchQuery} /> :
                 viewMode === "grid" ?
-                    <ProjectGridView projects={filteredProjects} loading={loading} /> : <ProjectTableView projects={filteredProjects} teamId={teamId} loading={loading} />
+                    <TeamGridView teams={filteredTeams} loading={loading} /> : <TeamTableView teams={filteredTeams} teamId={teamId} loading={loading} />
             }
         </div>
     );

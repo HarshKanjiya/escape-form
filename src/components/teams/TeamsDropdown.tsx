@@ -53,7 +53,7 @@ export default function TeamsDropdown() {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="w-auto md:w-[200px] justify-between"
                     disabled={isLoading}
                 >
                     {isLoading ? "Loading..." : (activeTeam?.name || "Select Team")}

@@ -20,9 +20,9 @@ export default function Header({ }) {
 
 
     return (
-        <div className="flex items-center justify-between h-16 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b">
             <div className="flex items-center gap-6">
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/teams" className="flex items-center gap-2">
                     <Image
                         src="/logo-light.png"
                         alt="Logo"
@@ -36,9 +36,9 @@ export default function Header({ }) {
                 {/* <DynamicBreadcrumb /> */}
             </div>
             <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="h-8">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Feedback
+                <Button variant="outline" size="sm" className="h-8 w-8 sm:w-auto">
+                    <MessageSquare className="w-4 h-4 mx-2 sm:ml-0" />
+                    <p className="hidden sm:block">Feedback</p>
                 </Button>
                 {/* <NotificationInbox /> */}
                 <DropdownMenu>
@@ -109,5 +109,6 @@ export default function Header({ }) {
                 </DropdownMenu>
             </div>
         </div>
+
     )
 }
