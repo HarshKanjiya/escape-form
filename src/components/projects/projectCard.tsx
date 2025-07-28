@@ -36,7 +36,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 <Folder className="w-8 h-8 text-primary" />
               </div>
               <div className="absolute -left-8 -bottom-5 -z-10 opacity-70">
-                <Folder className="w-28 h-28 sm:w-36 sm:h-36 text-secondary" />
+                <Folder className="w-28 h-28 sm:w-36 sm:h-36 text-secondary" />0
               </div>
 
               <div className="flex-1 min-w-0">

@@ -19,4 +19,5 @@ export const ACTION_MESSAGES = {
 export const TABLES = {
     TEAMS: 'teams',
     PROJECTS: 'projects',
+    FORMS: 'forms'
 } as const;
