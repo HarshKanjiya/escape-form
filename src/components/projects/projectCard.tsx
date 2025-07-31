@@ -8,6 +8,7 @@ import { Calendar, Folder, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { SpotlightCard } from "../ui/spotLightCard";
+import { useStore } from "@/store/useStore";
 
 interface ProjectCardProps {
   project: Project;
@@ -16,6 +17,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   const params = useParams();
   const teamId = params.teamId as string;
+  const { setActiveProject } = useStore((state) => state);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -26,9 +28,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   };
 
   return (
-    <SpotlightCard>
-      <Card className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none">
-        <Link href={`/${teamId}/${project.id}`} className="block">
+    <Link href={`/${teamId}/${project.id}`} className="block" onClick={() => setActiveProject(project)}>
+      <SpotlightCard>
+        <Card className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none">
           <CardContent className="px-4 sm:p-6">
             <div className="flex items-center space-x-4">
 
@@ -78,8 +80,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               </DropdownMenu>
             </div>
           </CardContent>
-        </Link>
-      </Card>
-    </SpotlightCard>
+        </Card>
+      </SpotlightCard>
+    </Link>
   );
 }

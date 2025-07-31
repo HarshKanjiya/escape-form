@@ -1,9 +1,7 @@
+import { FormCreationStepper } from "@/components/forms/FormCreationStepper";
+
 export default function FormCreatePage() {
-
-
     return (
-        <>
-            <h1>Create New Form</h1>
-        </>
+        <FormCreationStepper />
     )
 }

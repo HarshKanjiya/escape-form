@@ -166,6 +166,7 @@ export function FormList({ forms: initialForms }: FormListProps) {
 
     const params = useParams();
     const teamId = params.teamId as string;
+    const projectId = params.projectId as string;
 
     // Memoize keyboard shortcuts setup
     useEffect(() => {
@@ -243,10 +244,12 @@ export function FormList({ forms: initialForms }: FormListProps) {
                     </p>
                 </div>
 
-                <Button onClick={() => redirect('forms/new')}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Form
-                </Button>
+                <Link href={`${projectId}/forms/new`}>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Form
+                    </Button>
+                </Link>
             </div>
 
             <div className="flex flex-row gap-4 items-center justify-between">
@@ -288,10 +291,11 @@ export function FormList({ forms: initialForms }: FormListProps) {
                 )}
             </div>
 
-            {!filteredforms?.length ? <EmptyState searchQuery={searchQuery} /> :
-                viewMode === "grid" ?
-                    <FormGridView forms={filteredforms} loading={loading} /> : <FormTableView forms={filteredforms} teamId={teamId} loading={loading} />
+            {
+                !filteredforms?.length ? <EmptyState searchQuery={searchQuery} /> :
+                    viewMode === "grid" ?
+                        <FormGridView forms={filteredforms} loading={loading} /> : <FormTableView forms={filteredforms} teamId={teamId} loading={loading} />
             }
-        </div>
+        </div >
     );
 }

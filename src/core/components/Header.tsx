@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useStore } from "@/store/useStore";
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
 import { MessageSquare, User } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -13,6 +14,7 @@ import Link from "next/link";
 
 export default function Header({ }) {
     const { user } = useUser();
+    const { teams, activeProject } = useStore((state) => state);
     const { openUserProfile } = useClerk();
     const { setTheme, theme } = useTheme()
 
@@ -22,7 +24,7 @@ export default function Header({ }) {
     return (
         <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b">
             <div className="flex items-center gap-6">
-                <Link href="/teams" className="flex items-center gap-2">
+                <Link href={teams.length ? `/${teams[0].id}` : "/teams"} className="flex items-center gap-2">
                     <Image
                         src="/logo-light.png"
                         alt="Logo"
@@ -33,7 +35,12 @@ export default function Header({ }) {
                 </Link>
 
                 <TeamsDropdown />
-                {/* <DynamicBreadcrumb /> */}
+                {activeProject ? (
+                    <span className="flex items-center gap-1">
+                        <span className="mr-2">/</span>
+                        <span className="text-sm font-medium text-ellipsis max-w-32 overflow-hidden line-clamp-1">{activeProject.name}</span>
+                    </span>
+                ) : null}
             </div>
             <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" className="h-8 w-8 sm:w-auto">

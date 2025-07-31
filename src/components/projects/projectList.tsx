@@ -15,11 +15,12 @@ import AddProject from "./addProject";
 import { getTeamProjects } from "@/actions/project";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
+import { useStore } from "@/store/useStore";
 
 export const dynamic = 'force-dynamic'
 
 interface ProjectListProps {
-    projects: Project[];
+    projects?: Project[];
 }
 
 type ViewMode = "grid" | "list";
@@ -43,7 +44,7 @@ function ProjectGridView({ projects, loading }: { projects: Project[]; loading: 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {
                 loading ?
-                    Array.from({ length: 5 }).map((_, index) => (
+                    Array.from({ length: 6 }).map((_, index) => (
                         <Skeleton key={index} className="h-32 w-full" />
                     ))
                     :
@@ -54,6 +55,8 @@ function ProjectGridView({ projects, loading }: { projects: Project[]; loading: 
 }
 
 function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; teamId: string; loading: boolean }) {
+    const { setActiveProject } = useStore((state) => state);
+
     const formatDate = useCallback((dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             month: "short",
@@ -117,7 +120,7 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                                         <Badge variant="secondary">Active</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Button size="sm" variant="outline">
+                                        <Button size="sm" variant="outline" onClick={() => setActiveProject(project)}>
                                             <Link href={`/${teamId}/${project.id}`}>
                                                 Open
                                             </Link>
@@ -155,7 +158,7 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
 
 export function ProjectList({ projects: initialProjects }: ProjectListProps) {
     const [searchQuery, setSearchQuery] = useState("");
-    const [projects, setProjects] = useState<Project[]>(initialProjects);
+    const [projects, setProjects] = useState<Project[]>(initialProjects || []);
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [loading, setLoading] = useState(false);
 
@@ -164,6 +167,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
 
     // Memoize keyboard shortcuts setup
     useEffect(() => {
+        getProjects();
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.ctrlKey || e.metaKey) {
                 if (e.key === 'k') {
@@ -279,7 +283,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                 )}
             </div>
 
-            {!filteredProjects?.length ? <EmptyState searchQuery={searchQuery} /> :
+            {(!filteredProjects?.length && !loading) ? <EmptyState searchQuery={searchQuery} /> :
                 viewMode === "grid" ?
                     <ProjectGridView projects={filteredProjects} loading={loading} /> : <ProjectTableView projects={filteredProjects} teamId={teamId} loading={loading} />
             }
