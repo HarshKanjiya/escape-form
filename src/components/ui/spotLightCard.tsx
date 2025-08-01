@@ -8,7 +8,7 @@ import { CanvasRevealEffect } from "./canvasRevealEffect";
 export const SpotlightCard = ({
     children,
     radius = 350,
-    color = "#262626",
+    color,
     className,
     ...props
 }: {

@@ -1,28 +1,32 @@
 "use client";
 
-import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AnimatePresence, motion } from 'framer-motion';
 import {
+    BarChart3,
     CheckCircle,
-    Circle,
     ChevronLeft,
     ChevronRight,
-    Link2,
     Code,
+    ExternalLink,
     FileText,
+    Link2,
     Palette,
-    Users,
-    BarChart3,
-    Image as ImageIcon
+    Users
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { SpotlightCard } from '../ui/spotLightCard';
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface FormTemplate {
     id: string;
@@ -135,9 +139,21 @@ const templates: FormTemplate[] = [
 ];
 
 interface FormData {
+    name: string;
+    description: string;
     type: 'reach-out' | 'embedded' | null;
     template: string | null;
 }
+
+// Form schema for validation
+const formSchema = z.object({
+    name: z.string().min(1, "Form name is required").min(3, "Form name must be at least 3 characters"),
+    description: z.string().optional(),
+    type: z.enum(['reach-out', 'embedded']).nullable(),
+    template: z.string().nullable(),
+})
+
+type FormValues = z.infer<typeof formSchema>
 
 interface StepperProps {
     currentStep: number;
@@ -145,7 +161,7 @@ interface StepperProps {
 }
 
 function Stepper({ currentStep, totalSteps }: StepperProps) {
-    const stepLabels = ["Form Type", "Template"];
+    const stepLabels = ["Details", "Form Type", "Template"];
 
     return (
         <div className="w-full max-w-xl mx-auto mb-8">
@@ -188,6 +204,7 @@ function Stepper({ currentStep, totalSteps }: StepperProps) {
                                         "text-sm font-medium",
                                         isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
                                     )}>
+                                        {stepLabels[index]}
                                     </p>
                                 </div>
                             </div>
@@ -195,6 +212,76 @@ function Stepper({ currentStep, totalSteps }: StepperProps) {
                     })}
                 </div>
             </div>
+        </div>
+    );
+}
+
+interface DetailsStepProps {
+    form: any; // We'll use the form instance from react-hook-form
+}
+
+function DetailsStep({ form }: DetailsStepProps) {
+    return (
+        <div className="space-y-8 mb-6 max-w-2xl mx-auto">
+            <Card>
+                <CardHeader>
+                    <div className="text-center space-y-3">
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                            Let's start with the basics
+                        </h2>
+                        <p className="text-muted-foreground text-lg max-w-md mx-auto">
+                            Give your form a name and description. Don't worry, you can always change these later.
+                        </p>
+                    </div>
+                </CardHeader>
+                <CardContent className='flex flex-col gap-4'>
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-base font-medium flex items-center gap-2">
+                                    Form Name
+                                    <span className="text-red-500 text-sm">*</span>
+                                    <span className="text-xs text-muted-foreground font-normal">(Required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        placeholder="e.g. Customer Feedback Survey"
+                                        className="text-lg h-12 transition-all duration-200 focus:border-primary focus:ring-primary/20 hover:border-gray-400"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-base font-medium flex items-center gap-2">
+                                    Description
+                                    <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                                </FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        placeholder="Tell us what this form is for. This helps you organize your forms and provides context for respondents."
+                                        rows={4}
+                                        className="text-base resize-none transition-all duration-200 focus:border-primary focus:ring-primary/20 hover:border-gray-400"
+                                    />
+                                </FormControl>
+                                <FormDescription>
+                                    A good description helps respondents understand the purpose of your form.
+                                </FormDescription>
+                            </FormItem>
+                        )}
+                    />
+                </CardContent>
+            </Card>
         </div>
     );
 }
@@ -325,85 +412,261 @@ interface TemplateStepProps {
 }
 
 function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: TemplateStepProps) {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+    // Get unique categories
+    const categories = ["All", ...Array.from(new Set(templates.map(t => t.category)))];
+
+    // Filter templates based on search and category
+    const filteredTemplates = templates.filter(template => {
+        const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            template.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === "All" || template.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+
     return (
-        <div className="flex flex-col md:flex-row gap-10 items-stretch w-full max-w-6xl mx-auto">
-            {/* Left side: header and large button */}
-            <div className="flex-[1.2] flex flex-col justify-center items-center bg-[#18181b] rounded-2xl p-12 border-2 border-zinc-800 shadow-xl min-h-[500px]">
-                <h2 className="text-4xl font-bold mb-6 text-white text-center">Start from Scratch</h2>
-                <p className="text-muted-foreground text-lg mb-10 text-center max-w-md">
-                    Create a custom form from the ground up, tailored to your needs.
+        <div className="w-full max-w-7xl mx-auto space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-4">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                    Choose Your Starting Point
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                    Start with a professionally designed template or build from scratch. All templates are fully customizable.
                 </p>
-                <Button
-                    variant={selectedTemplate === 'scratch' ? "default" : "secondary"}
-                    onClick={onFromScratch}
-                >
-                    <FileText className="w-7 h-7 mr-4" />
-                    Start from Scratch
-                </Button>
             </div>
-            {/* Right side: templates */}
-            <div className="flex-[1.5] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 content-start overflow-y-auto max-h-[520px] pr-2">
-                {templates.map((template) => (
-                    <div
-                        key={template.id}
-                        className={cn(
-                            "relative bg-[#19191d] rounded-2xl border-2 flex flex-col items-center p-0 transition-all duration-200 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/80",
-                            selectedTemplate === template.id
-                                ? "border-primary ring-2 ring-primary"
-                                : "border-zinc-800 hover:border-primary/60"
-                        )}
-                        style={{ minHeight: 180 }}
-                        onClick={() => onTemplateSelect(template.id)}
-                    >
-                        {/* Selected overlay */}
-                        {selectedTemplate === template.id && (
-                            <div className="absolute inset-0 bg-primary/10 pointer-events-none z-10" />
-                        )}
-                        {/* Preview image placeholder */}
-                        <div className="w-full h-32 flex items-center justify-center bg-zinc-900 border-b border-zinc-800 group-hover:border-primary/40 transition-all duration-200">
-                            <img
-                                src={template.preview || "/logo-light.png"}
-                                alt={template.name}
-                                className="object-contain w-full h-full transition-transform duration-200 group-hover:scale-105"
-                            />
-                        </div>
-                        <div className="w-full px-3 py-2 flex items-center justify-center">
-                            <h3 className="font-semibold text-xs text-white mb-0 text-center tracking-tight group-hover:text-primary transition-colors duration-200">
-                                {template.name}
-                            </h3>
-                        </div>
-                        {/* Border highlight for selected */}
-                        {selectedTemplate === template.id && (
-                            <span className="absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded shadow z-20">Selected</span>
-                        )}
+
+            {/* Search and Filter Controls */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div className="relative flex-1 max-w-md">
+                    <Input
+                        placeholder="Search templates..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                    />
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                     </div>
-                ))}
+                </div>
+
+                <div className="flex gap-2 flex-wrap">
+                    {categories.map((category) => (
+                        <Button
+                            key={category}
+                            variant={selectedCategory === category ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedCategory(category)}
+                            className="text-xs"
+                        >
+                            {category}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="grid lg:grid-cols-4 gap-8">
+                {/* Start from Scratch Card - Enhanced */}
+                <div className="lg:col-span-1">
+                    <Card className={cn(
+                        "h-full transition-all duration-300 cursor-pointer group border-2 hover:shadow-xl",
+                        selectedTemplate === 'scratch'
+                            ? "border-primary shadow-lg scale-[1.02]"
+                            : "border-border hover:border-primary/50"
+                    )} onClick={onFromScratch}>
+                        <CardContent className="p-6 h-full flex flex-col justify-center items-center text-center space-y-4">
+                            <div className={cn(
+                                "p-4 rounded-full transition-all duration-300",
+                                selectedTemplate === 'scratch'
+                                    ? "text-primary-foreground"
+                                    : ""
+                            )}>
+                                <FileText className="w-8 h-8" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-bold">Start from Scratch</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Create a custom form from the ground up with complete creative control
+                                </p>
+                            </div>
+                            <div className="pt-2">
+                                <Badge variant={selectedTemplate === 'scratch' ? "default" : "secondary"}>
+                                    Blank Canvas
+                                </Badge>
+                            </div>
+                            {selectedTemplate === 'scratch' && (
+                                <div className="absolute top-3 right-3">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Templates Grid */}
+                <div className="lg:col-span-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                        {filteredTemplates.map((template) => (
+                            <Card
+                                key={template.id}
+                                className={cn(
+                                    "group cursor-pointer transition-all duration-300 hover:shadow-lg border-2 relative overflow-hidden py-0",
+                                    selectedTemplate === template.id
+                                        ? "border-primary shadow-md"
+                                        : "border-border hover:border-primary/50"
+                                )}
+                                onClick={() => onTemplateSelect(template.id)}
+                            >
+                                <div className="absolute top-0 left-0 z-20 bg-accent p-1 rounded-br-lg flex gap-2">
+                                    {template.isPro && (
+                                        <Badge variant="default" className="text-xs bg-gradient-to-r from-orange-500 to-pink-500">
+                                            Pro
+                                        </Badge>
+                                    )}
+                                    <Badge variant="outline" className="text-xs">
+                                        {template.category}
+                                    </Badge>
+                                </div>
+
+                                {/* Selected Indicator */}
+                                {selectedTemplate === template.id && (
+                                    <div className="absolute top-2 right-2 z-20">
+                                        <div className="bg-primary text-primary-foreground rounded-full p-1">
+                                            <CheckCircle className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Template Preview */}
+                                <div className="relative h-32 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
+                                    {/* Template-specific background patterns */}
+                                    <div className="absolute inset-0 opacity-10">
+                                        {template.category === 'Business' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
+                                        )}
+                                        {template.category === 'Research' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600"></div>
+                                        )}
+                                        {template.category === 'Events' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600"></div>
+                                        )}
+                                        {template.category === 'Marketing' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600"></div>
+                                        )}
+                                        {template.category === 'HR' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-600"></div>
+                                        )}
+                                        {template.category === 'Support' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-600"></div>
+                                        )}
+                                        {template.category === 'Sales' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-rose-500 to-pink-600"></div>
+                                        )}
+                                        {template.category === 'Education' && (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"></div>
+                                        )}
+                                    </div>
+
+                                    {/* Decorative form elements */}
+                                    <div className="absolute top-3 left-3 w-16 h-1 bg-white/40 dark:bg-gray-400/40 rounded transition-all duration-300 group-hover:w-20"></div>
+                                    <div className="absolute top-6 left-3 w-12 h-1 bg-white/30 dark:bg-gray-400/30 rounded transition-all duration-300 group-hover:w-16"></div>
+                                    <div className="absolute bottom-3 left-3 right-3 h-6 bg-white/20 dark:bg-gray-400/20 rounded transition-all duration-300 group-hover:bg-white/30 dark:group-hover:bg-gray-400/30"></div>
+                                    <div className="absolute bottom-11 left-3 right-8 h-3 bg-white/15 dark:bg-gray-400/15 rounded transition-all duration-300"></div>
+                                </div>
+
+                                <CardContent className="p-4 flex items-center justify-between gap-3 pt-0">
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors">
+                                                {template.name}
+                                            </h3>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground line-clamp-1">
+                                            {template.description}
+                                        </p>
+                                    </div>
+                                    <a
+                                        onClick={(event) => event.stopPropagation()}
+                                        href="https://www.youtube.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Tooltip >
+                                            <TooltipTrigger>
+                                                <div className="p-2 rounded-md bg-primary text-sm">
+                                                    <ExternalLink size={20} />
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                Preview
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </a>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {filteredTemplates.length === 0 && (
+                        <div className="text-center py-12">
+                            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-muted-foreground mb-2">No templates found</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Try adjusting your search terms or category filter
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Template count */}
+            <div className="text-center text-sm text-muted-foreground w-full">
+                {filteredTemplates.length > 0 && (
+                    <p>
+                        Showing {filteredTemplates.length} of {templates.length} templates
+                        {selectedCategory !== "All" && ` in ${selectedCategory}`}
+                    </p>
+                )}
             </div>
         </div>
     );
 }
 
-interface DetailsStepProps {
-    formData: FormData;
-    onFormDataChange: (field: keyof FormData, value: string) => void;
-}
+// Remove the duplicate DetailsStepProps interface since we already defined it above
 
 export function FormCreationStepper() {
     const [currentStep, setCurrentStep] = useState(1);
     const [prevStep, setPrevStep] = useState(1);
-    const [formData, setFormData] = useState<FormData>({
-        type: null,
-        template: null
+    const [selectedType, setSelectedType] = useState<'reach-out' | 'embedded' | null>(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+    const totalSteps = 3;
+
+    // Initialize react-hook-form
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: "",
+            description: "",
+            type: null,
+            template: null,
+        },
     });
 
-    const totalSteps = 2;
-
-    const handleFormDataChange = (field: keyof FormData, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
-
     const handleNext = () => {
-        if (currentStep < totalSteps) {
+        if (currentStep === 1) {
+            // Trigger validation for step 1
+            form.trigger(["name", "description"]).then((isValid) => {
+                if (isValid) {
+                    setPrevStep(currentStep);
+                    setCurrentStep(currentStep + 1);
+                }
+            });
+        } else if (currentStep < totalSteps) {
             setPrevStep(currentStep);
             setCurrentStep(currentStep + 1);
         }
@@ -417,130 +680,208 @@ export function FormCreationStepper() {
     };
 
     const handleTypeSelect = (type: 'reach-out' | 'embedded') => {
-        setFormData(prev => ({ ...prev, type }));
+        setSelectedType(type);
+        form.setValue('type', type);
     };
 
     const handleTemplateSelect = (template: string) => {
-        setFormData(prev => ({ ...prev, template }));
+        setSelectedTemplate(template);
+        form.setValue('template', template);
     };
 
     const handleFromScratch = () => {
-        setFormData(prev => ({ ...prev, template: 'scratch' }));
+        setSelectedTemplate('scratch');
+        form.setValue('template', 'scratch');
     };
 
     const canProceed = () => {
         switch (currentStep) {
             case 1:
-                return formData.type !== null;
+                return form.watch("name")?.trim() !== "";
             case 2:
-                return formData.template !== null;
+                return selectedType !== null;
+            case 3:
+                return selectedTemplate !== null;
             default:
                 return false;
         }
     };
 
-    const handleSubmit = () => {
-        console.log('Form data:', formData);
-        // Here you would typically call an API to create the form
+    const handleSubmit = (data: FormValues) => {
+        // Combine form data with additional selections
+        const finalData = {
+            ...data,
+            type: selectedType,
+            template: selectedTemplate,
+        };
+
+        console.log('Complete Form Data:', finalData);
+        console.log('Form Details:', {
+            name: data.name,
+            description: data.description,
+            formType: selectedType,
+            selectedTemplate: selectedTemplate,
+            timestamp: new Date().toISOString(),
+        });
+    };
+
+    const onFormSubmit = () => {
+        const formData = form.getValues();
+        handleSubmit({
+            ...formData,
+            type: selectedType,
+            template: selectedTemplate,
+        });
     };
 
     return (
-        <div className="bg-background p-2 h-full relative pt-8">
-            {/* SVG background behind all content */}
-            <div className='absolute inset-0 pointer-events-none z-0 border rounded-2xl opacity-50'>
-                <svg
-                    width="100%"
-                    height="100%"
-                    viewBox="0 0 1440 900"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-full"
-                    preserveAspectRatio="none"
-                >
-                    <defs>
-                        <pattern id="lines135" patternUnits="userSpaceOnUse" width="34" height="34" patternTransform="rotate(135)">
-                            <rect x="0" y="30" width="64" height="1" fill="#e5e7eb" opacity="0.05" />
-                        </pattern>
-                    </defs>
-                    <rect x="0" y="0" width="1440" height="900" fill="url(#lines135)" />
-                </svg>
-            </div>
-            <div className="relative z-10 max-w-3xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-2">
-                    <h1 className="text-2xl font-bold mb-1">Create a Form in 2 Steps</h1>
-                    <p className="text-muted-foreground text-sm">
-                        Build beautiful, responsive forms in minutes
-                    </p>
+        // <div className="overfalow-hidden h-full">
+        <Form {...form}>
+            <div className=" p-2 h-full relative pt-8 ">
+                {/* SVG background behind all content */}
+                <div className='fixed inset-0 pointer-events-none z-0 border rounded-2xl custom-bg opacity-20 h-full custom-bg-animation'>
+                    <svg
+                        width="100%"
+                        height="100%"
+                        viewBox="0 0 1440 900"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-full"
+                        preserveAspectRatio="none"
+                    >
+                        <defs>
+                            <pattern id="lines135" patternUnits="userSpaceOnUse" width="34" height="34" patternTransform="rotate(135)">
+                                <rect x="0" y="30" width="64" height="1" fill="#e5e7eb" opacity="0.05" />
+                            </pattern>
+                        </defs>
+                        <rect x="0" y="0" width="1440" height="900" fill="url(#lines135)" />
+                    </svg>
                 </div>
-
-                <Stepper currentStep={currentStep} totalSteps={totalSteps} />
-
-                {/* Animate height of step content container */}
-                <motion.div layout className="flex flex-col gap-1">
-                    <AnimatePresence initial={false} mode="wait">
-                        {currentStep === 1 && (
-                            <motion.div
-                                key="step-1"
-                                initial={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 40 }}
-                            >
-                                <FormTypeStep
-                                    selectedType={formData.type}
-                                    onTypeSelect={handleTypeSelect}
-                                />
-                            </motion.div>
-                        )}
-                        {currentStep === 2 && (
-                            <motion.div
-                                key="step-2"
-                                initial={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 40 }}
-                            >
-                                <TemplateStep
-                                    selectedTemplate={formData.template}
-                                    onTemplateSelect={handleTemplateSelect}
-                                    onFromScratch={handleFromScratch}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Navigation */}
-                    <div className="flex justify-between items-center pt-4 mt-2 border-t transition-all duration-300 ease-in-out">
-                        <Button
-                            variant="outline"
-                            onClick={handlePrevious}
-                            disabled={currentStep === 1}
-                        >
-                            <ChevronLeft className="w-4 h-4 mr-2" />
-                            Previous
-                        </Button>
-
-                        {currentStep < totalSteps ? (
-                            <Button
-                                onClick={handleNext}
-                                disabled={!canProceed()}
-                            >
-                                Next
-                                <ChevronRight className="w-4 h-4 ml-2" />
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={handleSubmit}
-                                disabled={!canProceed()}
-                            >
-                                Create Form
-                                <CheckCircle className="w-4 h-4 ml-2" />
-                            </Button>
-                        )}
+                <div className="relative z-10 w-full mx-auto">
+                    {/* Header */}
+                    <div className="text-center mb-2 max-w-3xl mx-auto">
+                        <h1 className="text-2xl font-bold mb-1">Create a Form in 3 Steps</h1>
+                        <p className="text-muted-foreground text-sm">
+                            Build beautiful, responsive forms in minutes
+                        </p>
                     </div>
-                </motion.div>
+
+                    <div className="max-w-3xl mx-auto">
+                        <Stepper currentStep={currentStep} totalSteps={totalSteps} />
+                    </div>
+
+                    {/* Animate height of step content container */}
+                    <motion.div layout className="flex flex-col gap-1">
+                        <AnimatePresence initial={true} mode="wait">
+                            {currentStep === 1 && (
+                                <motion.div
+                                    key="step-1"
+                                    initial={{ x: (prevStep == currentStep && currentStep == 1) ? 0 : prevStep < currentStep ? 100 : -100, opacity: 0, y: (prevStep == currentStep && currentStep == 1) ? 20 : 0 }}
+                                    animate={{ x: 0, opacity: 1, y: 0 }}
+                                    exit={{ x: prevStep < currentStep ? 100 : -100, opacity: 0, y: 0 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                                    className="max-w-3xl mx-auto w-full"
+                                >
+                                    <DetailsStep form={form} />
+                                    <motion.div
+                                        className="w-full max-w-2xl pb-4 flex justify-end gap-4 items-center pt-4 mt-2 border-t transition-all duration-300 ease-in-out mx-auto"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3, duration: 0.4 }}
+                                    >
+                                        <Button
+                                            className="w-1/2 px-7 py-8 text-right justify-end"
+                                            onClick={handleNext}
+                                            disabled={!canProceed()}
+                                        >
+                                            Next
+                                            <ChevronRight className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    </motion.div>
+                                </motion.div>
+                            )}
+                            {currentStep === 2 && (
+                                <motion.div
+                                    key="step-2"
+                                    initial={{ x: prevStep < currentStep ? 100 : prevStep > currentStep ? -100 : 0, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    exit={{ x: prevStep < currentStep ? -100 : prevStep > currentStep ? 100 : 0, opacity: 0 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                                    className="max-w-4xl mx-auto w-full"
+                                >
+                                    <FormTypeStep
+                                        selectedType={selectedType}
+                                        onTypeSelect={handleTypeSelect}
+                                    />
+                                    <motion.div
+                                        className="w-full pb-4 flex justify-between gap-4 items-center pt-4 mt-2 border-t transition-all duration-300 ease-in-out max-w-3xl mx-auto"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3, duration: 0.4 }}
+                                    >
+                                        <Button
+                                            variant={'outline'}
+                                            className="flex-1 px-7 py-8 text-left justify-start"
+                                            onClick={handlePrevious}
+                                        >
+                                            <ChevronLeft className="w-4 h-4 mr-2" />
+                                            Previous
+                                        </Button>
+                                        <Button
+                                            className="flex-1 px-7 py-8 text-right justify-end"
+                                            onClick={handleNext}
+                                            disabled={!canProceed()}
+                                        >
+                                            Next
+                                            <ChevronRight className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    </motion.div>
+                                </motion.div>
+                            )}
+                            {currentStep === 3 && (
+                                <motion.div
+                                    key="step-3"
+                                    initial={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    exit={{ x: prevStep < currentStep ? 100 : -100, opacity: 0 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                                    className="w-full max-w-5xl mx-auto"
+                                >
+                                    <TemplateStep
+                                        selectedTemplate={selectedTemplate}
+                                        onTemplateSelect={handleTemplateSelect}
+                                        onFromScratch={handleFromScratch}
+                                    />
+                                    <motion.div
+                                        className="w-full pb-4 flex justify-between gap-4 items-center pt-4 mt-2 border-t transition-all duration-300 ease-in-out mx-auto"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3, duration: 0.4 }}
+                                    >
+                                        <Button
+                                            variant={'outline'}
+                                            className="flex-1 px-7 py-8 text-left justify-start"
+                                            onClick={handlePrevious}
+                                        >
+                                            <ChevronLeft className="w-4 h-4 mr-2" />
+                                            Previous
+                                        </Button>
+                                        <Button
+                                            className="flex-1 px-7 py-8"
+                                            onClick={onFormSubmit}
+                                            disabled={!canProceed()}
+                                        >
+                                            Create Form
+                                            <CheckCircle className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    </motion.div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+                </div>
             </div>
-        </div>
+        </Form>
+        // </div>
     );
 }

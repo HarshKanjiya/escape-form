@@ -22,7 +22,7 @@ export default function Header({ }) {
 
 
     return (
-        <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b">
+        <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b bg-background z-[9999999]">
             <div className="flex items-center gap-6">
                 <Link href={teams.length ? `/${teams[0].id}` : "/teams"} className="flex items-center gap-2">
                     <Image

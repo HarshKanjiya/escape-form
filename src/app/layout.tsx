@@ -36,14 +36,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: '#6336f7' } }}>
-      <html lang="en" className="dark" style={{ colorScheme: "dark" }} >
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-50`}
-          suppressHydrationWarning={true}
+          suppressHydrationWarning
         >
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
