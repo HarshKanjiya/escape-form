@@ -16,6 +16,7 @@ interface FormCardProps {
 export function FormCard({ form }: FormCardProps) {
     const params = useParams();
     const teamId = params.teamId as string;
+    const projectId = params.projectId as string;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
@@ -28,7 +29,7 @@ export function FormCard({ form }: FormCardProps) {
     return (
         <SpotlightCard>
             <Card className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none">
-                <Link href={`${form.id}`} className="block">
+                <Link href={`${projectId}/forms/${form.id}/edit`} className="block">
                     <CardContent className="px-4 sm:p-6">
                         <div className="flex items-center space-x-4">
 

@@ -1,48 +1,45 @@
-import { Question, FormSettings, WorkflowConnection, ViewMode, WorkflowDirection } from '@/types/form';
+import { updateFormData } from '@/actions/form';
+import { Form, FormUpdate } from '@/types/db';
+import { Question, WorkflowConnection, ViewMode, WorkflowDirection } from '@/types/form';
 import { useState, useCallback } from 'react';
 
-
-const defaultFormSettings: FormSettings = {
+const defaultFormSettings: FormUpdate = {
   name: 'Untitled Form',
-  icon: 'FileText',
-  description: 'A new form created with FormBuilder',
-  customDomain: '',
-  theme: 'light',
-  colorPalette: {
-    primary: '#3B82F6',
-    secondary: '#8B5CF6',
-    background: '#FFFFFF',
-    text: '#1F2937',
-  },
-  isPublic: true,
-  welcomeScreen: {
-    enabled: true,
-    title: 'Welcome to our form',
-    description: 'Thank you for taking the time to fill out this form.',
-    buttonText: 'Start',
-  },
-  thankYouScreen: {
+  description: null,
+  project_id: '',
+  logo_url: null,
+  thank_you_screen: {
     enabled: true,
     title: 'Thank you!',
     description: 'Your response has been recorded.',
   },
-  timing: {
-    enabled: false,
-    openTime: '',
-    closeTime: '',
+  welcome_screen: {
+    enabled: true,
+    title: 'Welcome to our form',
+    description: 'Thank you for taking the time to fill out this form.',
+    button_text: 'Start',
   },
-  anonymous: false,
-  consentRequired: false,
-  multipleSubmissions: true,
-};
+  unique_subdomain: null,
+  custom_domain: null,
+  analytics_enabled: true,
+  type: 'reach-out',
+  close_at: null,
+  open_at: null,
+  allow_anonymous: true,
+  config: {},
+  status: 'draft',
+  multiple_submissions: true,
+  max_responses: null,
+  password_protected: false,
+}
 
-export const useFormBuilder = () => {
+export const useFormBuilder = (initialFormData: FormUpdate = defaultFormSettings) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
-  const [formSettings, setFormSettings] = useState<FormSettings>(defaultFormSettings);
   const [viewMode, setViewMode] = useState<ViewMode>('builder');
   const [workflowDirection, setWorkflowDirection] = useState<WorkflowDirection>('horizontal');
   const [connections, setConnections] = useState<WorkflowConnection[]>([]);
+  const [dataSource, setDataSource] = useState<FormUpdate | Form>(initialFormData);
 
   const addQuestion = useCallback((type: Question['type']) => {
     const newQuestion: Question = {
@@ -72,9 +69,11 @@ export const useFormBuilder = () => {
     updateQuestion(id, { position });
   }, [updateQuestion]);
 
-  const updateFormSettings = useCallback((updates: Partial<FormSettings>) => {
-    setFormSettings(prev => ({ ...prev, ...updates }));
-  }, []);
+
+  const updateForm = useCallback((updates: Partial<FormUpdate>) => {
+    setDataSource(prev => ({ ...prev, ...updates }));
+    updateFormData(updates);
+  }, [])
 
   const addConnection = useCallback((connection: Omit<WorkflowConnection, 'id'>) => {
     setConnections(prev => [...prev, { ...connection, id: `connection-${Date.now()}` }]);
@@ -90,18 +89,19 @@ export const useFormBuilder = () => {
     questions,
     selectedQuestion,
     selectedQuestionId,
-    formSettings,
+    dataSource,
     viewMode,
     workflowDirection,
     connections,
     setSelectedQuestionId,
     setViewMode,
     setWorkflowDirection,
+    setDataSource,
     addQuestion,
     updateQuestion,
     deleteQuestion,
     moveQuestion,
-    updateFormSettings,
+    updateForm,
     addConnection,
     removeConnection,
   };

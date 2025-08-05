@@ -66,7 +66,7 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Prop
         <div className={buttonWidth}>
             <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
                 <DialogTrigger asChild>
-                    <Button className={`w-full ${triggerVariant === 'outline' ? 'border' : ''}`} variant={triggerVariant}>
+                    <Button className={`${triggerVariant === 'outline' ? 'border' : ''}`} variant={triggerVariant}>
                         <Plus className="mr-2" />
                         Create New Team
                     </Button>

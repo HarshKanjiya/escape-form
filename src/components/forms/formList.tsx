@@ -17,9 +17,6 @@ import { getProjectForms } from "@/actions/form";
 
 export const dynamic = 'force-dynamic'
 
-interface FormListProps {
-    forms: Form[];
-}
 
 type ViewMode = "grid" | "list";
 
@@ -132,7 +129,7 @@ function FormTableView({ forms, teamId, loading }: { forms: Form[]; teamId: stri
     );
 }
 
-function EmptyState({ searchQuery }: { searchQuery: string }) {
+function EmptyState({ searchQuery, projectId }: { searchQuery: string, projectId: string }) {
     return (
         <div className="text-center py-12">
             <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
@@ -147,7 +144,7 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
             </p>
             {!searchQuery && (
                 <div>
-                    <Link href="/create-form">
+                    <Link href={`${projectId}/forms/new`}>
                         <Button >
                             Create Form
                         </Button>
@@ -158,9 +155,9 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
     );
 }
 
-export function FormList({ forms: initialForms }: FormListProps) {
+export function FormList() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [forms, setForms] = useState<Form[]>(initialForms);
+    const [forms, setForms] = useState<Form[]>([]);
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [loading, setLoading] = useState(false);
 
@@ -183,14 +180,16 @@ export function FormList({ forms: initialForms }: FormListProps) {
             }
         };
 
+        getForms();
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
+
     }, []);
 
     const getForms = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await getProjectForms(teamId);
+            const res = await getProjectForms(projectId);
             if (res.error) {
                 toast.error("Failed to load forms");
                 return;
@@ -292,7 +291,7 @@ export function FormList({ forms: initialForms }: FormListProps) {
             </div>
 
             {
-                !filteredforms?.length ? <EmptyState searchQuery={searchQuery} /> :
+                !filteredforms?.length ? <EmptyState searchQuery={searchQuery} projectId={projectId} /> :
                     viewMode === "grid" ?
                         <FormGridView forms={filteredforms} loading={loading} /> : <FormTableView forms={filteredforms} teamId={teamId} loading={loading} />
             }

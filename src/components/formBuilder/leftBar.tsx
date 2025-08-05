@@ -4,16 +4,18 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
-import { FormSettings } from '@/types/form';
-import { Menu, SidebarIcon, X } from 'lucide-react';
+import { FormUpdate } from '@/types/db';
+import { Menu, Settings2, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Skeleton } from '../ui/skeleton';
 
 interface SidebarProps {
-    formSettings: FormSettings;
-    onUpdateSettings: (updates: Partial<FormSettings>) => void;
+    dataSource?: FormUpdate;
+    onUpdateDataSource: (updates: Partial<FormUpdate>) => void;
+    pageLoading?: boolean;
 }
 
-export default function LeftBar({ formSettings, onUpdateSettings }: SidebarProps) {
+export default function LeftBar({ dataSource: formSettings, pageLoading, onUpdateDataSource }: SidebarProps) {
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -129,23 +131,27 @@ export default function LeftBar({ formSettings, onUpdateSettings }: SidebarProps
                 onMouseLeave={handleMouseLeave}
             >
                 <div className="flex flex-col h-full">
-                    {/* Navigation */}
-                    <div className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
-                        {/* {navigationSections.map((section, index) => (
-                        <div key={index} className="px-3 mb-6">
-                            {section.title && isExpanded && (
-                                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
-                                    {section.title}
-                                </h4>
-                            )}
-                            <div className="space-y-1">
-                                {section.items.map(renderNavItem)}
-                            </div>
-                            {index < navigationSections.length - 1 && (
-                                <div className="h-px bg-border my-4 mx-3" />
-                            )}
-                        </div>
-                    ))} */}
+                    <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
+
+                        {
+                            pageLoading ? (
+                                <div className='pl-3 pr-4 flex flex-col gap-3'>
+                                    <Skeleton className="h-8 w-full " />
+                                    <Skeleton className="h-8 w-full" />
+                                    <Skeleton className="h-8 w-full" />
+                                    <Skeleton className="h-8 w-full" />
+                                    <Skeleton className="h-8 w-3/4" />
+                                </div>
+                            ) : (
+                                <>
+                                    <div className='px-3 flex items-center justify-between py-2'>
+                                        <span className='text-lg overflow-ellipsis line-clamp-1'>{formSettings?.name}</span>
+                                        <Button variant="ghost" size="icon"><Settings2 /></Button>
+                                    </div>
+                                    <hr />
+                                </>
+                            )
+                        }
                     </div>
 
                     {/* Sidebar control */}
@@ -191,7 +197,7 @@ export default function LeftBar({ formSettings, onUpdateSettings }: SidebarProps
                         </DropdownMenu>
                     </div>
                 </div>
-            </aside>
-        </div>
+            </aside >
+        </div >
     );
 }

@@ -27,41 +27,41 @@ export interface Question {
     customCss?: string;
 }
 
-export interface FormSettings {
-    name: string;
-    icon: string;
-    description: string;
-    customDomain: string;
-    theme: 'light' | 'dark' | 'custom';
-    colorPalette: {
-        primary: string;
-        secondary: string;
-        background: string;
-        text: string;
-    };
-    isPublic: boolean;
-    welcomeScreen: {
-        enabled: boolean;
-        title: string;
-        description: string;
-        buttonText: string;
-    };
-    thankYouScreen: {
-        enabled: boolean;
-        title: string;
-        description: string;
-    };
-    timing: {
-        enabled: boolean;
-        openTime: string;
-        closeTime: string;
-    };
-    password?: string;
-    anonymous: boolean;
-    consentRequired: boolean;
-    timePerQuestion?: number;
-    multipleSubmissions: boolean;
-}
+// export interface FormSettings {
+//     name: string;
+//     icon: string;
+//     description: string;
+//     customDomain: string;
+//     theme: 'light' | 'dark' | 'custom';
+//     colorPalette: {
+//         primary: string;
+//         secondary: string;
+//         background: string;
+//         text: string;
+//     };
+//     isPublic: boolean;
+//     welcomeScreen: {
+//         enabled: boolean;
+//         title: string;
+//         description: string;
+//         buttonText: string;
+//     };
+//     thankYouScreen: {
+//         enabled: boolean;
+//         title: string;
+//         description: string;
+//     };
+//     timing: {
+//         enabled: boolean;
+//         openTime: string;
+//         closeTime: string;
+//     };
+//     password?: string;
+//     anonymous: boolean;
+//     consentRequired: boolean;
+//     timePerQuestion?: number;
+//     multipleSubmissions: boolean;
+// }
 
 export interface WorkflowConnection {
     id: string;

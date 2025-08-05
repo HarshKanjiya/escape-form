@@ -7,6 +7,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 // Add this to force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -30,6 +32,13 @@ export const metadata: Metadata = {
 
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+
+  const { isAuthenticated } = await auth();
+
+  if (!isAuthenticated) {
+    redirect('/sign-in');
+    return null;
+  }
 
   const res = await getUserTeams();
   const teams = res.success ? res.data || [] : [];

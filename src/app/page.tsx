@@ -1,10 +1,18 @@
 "use client";
 
 import { useStore } from "@/store/useStore";
+import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Home() {
+export default async function Home() {
+
+  const { isLoaded } = useUser();
+
+  if (!isLoaded) {
+    redirect('/sign-in');
+    return null;
+  }
 
   const teams = useStore((state) => state.teams);
 

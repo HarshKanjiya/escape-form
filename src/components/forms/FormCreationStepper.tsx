@@ -1,5 +1,6 @@
 "use client";
 
+import { createNewForm } from "@/actions/form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { FormInsert } from "@/types/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -21,11 +23,12 @@ import {
     Palette,
     Users
 } from "lucide-react";
+import { redirect, useParams, useRouter } from "next/navigation";
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { SpotlightCard } from '../ui/spotLightCard';
-import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface FormTemplate {
@@ -643,7 +646,8 @@ export function FormCreationStepper() {
     const [prevStep, setPrevStep] = useState(1);
     const [selectedType, setSelectedType] = useState<'reach-out' | 'embedded' | null>(null);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-
+    const { projectId } = useParams<{ projectId: string }>();
+    const router = useRouter();
     const totalSteps = 3;
 
     // Initialize react-hook-form
@@ -707,22 +711,24 @@ export function FormCreationStepper() {
         }
     };
 
-    const handleSubmit = (data: FormValues) => {
+    const handleSubmit = async (data: FormValues) => {
         // Combine form data with additional selections
-        const finalData = {
-            ...data,
-            type: selectedType,
-            template: selectedTemplate,
-        };
 
-        console.log('Complete Form Data:', finalData);
-        console.log('Form Details:', {
-            name: data.name,
-            description: data.description,
-            formType: selectedType,
-            selectedTemplate: selectedTemplate,
-            timestamp: new Date().toISOString(),
-        });
+        const finalData: FormInsert = {
+            project_id: projectId,
+            name: data.name || "",
+            description: data.description || "",
+            type: selectedType || 'reach-out',
+        };
+        try {
+            const response = await createNewForm(finalData);
+            if (!response.success) {
+                toast.error(response.error || "Failed to create form");
+                return;
+            }
+            router.push(`/${response.data?.id}/edit`)
+        }
+        catch (err) { }
     };
 
     const onFormSubmit = () => {

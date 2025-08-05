@@ -35,6 +35,7 @@ export interface Database {
                     created_at: string
                     updated_at: string
                     allow_anonymous: boolean
+                    type?: string | 'reach-out' | 'embedded'
                 }
                 Insert: {
                     id?: string
@@ -51,7 +52,7 @@ export interface Database {
                     password_hash?: string | null
                     unique_subdomain?: string | null
                     custom_domain?: string | null
-                    created_by: string
+                    created_by?: string
                     status?: string
                     config?: Json | null
                     multiple_submissions?: boolean
@@ -61,6 +62,7 @@ export interface Database {
                     created_at?: string
                     updated_at?: string
                     allow_anonymous?: boolean
+                    type?: string | 'reach-out' | 'embedded'
                 }
                 Update: {
                     id?: string
@@ -87,6 +89,7 @@ export interface Database {
                     created_at?: string
                     updated_at?: string
                     allow_anonymous?: boolean
+                    type?: string | 'reach-out' | 'embedded'
                 }
                 Relationships: [
                     {
