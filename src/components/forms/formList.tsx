@@ -1,5 +1,6 @@
 "use client";
 
+import { getProjectForms } from "@/actions/form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,13 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Form } from "@/types/db";
 import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import { FormCard } from "./formCard";
-import { getProjectForms } from "@/actions/form";
 
 export const dynamic = 'force-dynamic'
 

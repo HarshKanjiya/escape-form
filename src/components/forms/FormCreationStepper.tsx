@@ -23,9 +23,9 @@ import {
     Palette,
     Users
 } from "lucide-react";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { SpotlightCard } from '../ui/spotLightCard';
@@ -220,7 +220,7 @@ function Stepper({ currentStep, totalSteps }: StepperProps) {
 }
 
 interface DetailsStepProps {
-    form: any; // We'll use the form instance from react-hook-form
+    form: UseFormReturn<FormValues>;
 }
 
 function DetailsStep({ form }: DetailsStepProps) {
@@ -230,10 +230,10 @@ function DetailsStep({ form }: DetailsStepProps) {
                 <CardHeader>
                     <div className="text-center space-y-3">
                         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-                            Let's start with the basics
+                            Let`&apos;s start with the basics
                         </h2>
                         <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                            Give your form a name and description. Don't worry, you can always change these later.
+                            Give your form a name and description. Don`&apos;t worry, you can always change these later.
                         </p>
                     </div>
                 </CardHeader>
@@ -728,7 +728,9 @@ export function FormCreationStepper() {
             }
             router.push(`/${response.data?.id}/edit`)
         }
-        catch (err) { }
+        catch (err) {
+            console.error("Error creating form:", err);
+        }
     };
 
     const onFormSubmit = () => {

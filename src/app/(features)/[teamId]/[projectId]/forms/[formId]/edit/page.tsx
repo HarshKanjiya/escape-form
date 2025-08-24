@@ -6,9 +6,8 @@ import MainContent from "@/components/formBuilder/mainContent";
 import RightBar from "@/components/formBuilder/rightBar";
 import { useFormBuilder } from "@/hooks/useFormBuilder";
 import { Form } from "@/types/db";
-import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
 

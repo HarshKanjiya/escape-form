@@ -33,6 +33,18 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  /* Primary scale (enables bg-primary-100, text-primary-700, etc.) */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -77,6 +89,19 @@
   --popover: oklch(0.9911 0 0);
   --popover-foreground: oklch(0.4386 0 0);
   --primary: oklch(0.5231 0.2619 283.2890);
+  /* Primary scale (light) */
+  --primary-50: oklch(0.97 0.03 283.289);
+  --primary-100: oklch(0.94 0.05 283.289);
+  --primary-200: oklch(0.88 0.08 283.289);
+  --primary-300: oklch(0.80 0.12 283.289);
+  --primary-400: oklch(0.70 0.18 283.289);
+  --primary-500: oklch(0.5231 0.2619 283.2890);
+  /* base */
+  --primary-600: oklch(0.46 0.22 283.289);
+  --primary-700: oklch(0.40 0.18 283.289);
+  --primary-800: oklch(0.33 0.14 283.289);
+  --primary-900: oklch(0.26 0.10 283.289);
+  --primary-950: oklch(0.21 0.07 283.289);
   --primary-foreground: oklch(1.0000 0 0);
   --secondary: oklch(0.9940 0 0);
   --secondary-foreground: oklch(0.2046 0 0);
@@ -132,6 +157,19 @@
   --popover: oklch(0.2603 0 0);
   --popover-foreground: oklch(0.7348 0 0);
   --primary: oklch(0.5231 0.2619 283.2890);
+  /* Primary scale overrides (dark) - reversed ordering so 50 is darkest and 950 lightest */
+  --primary-50: oklch(0.24 0.07 283.289);
+  --primary-100: oklch(28.796% 0.06625 285.132);
+  --primary-200: oklch(0.36 0.14 283.289);
+  --primary-300: oklch(0.42 0.18 283.289);
+  --primary-400: oklch(0.48 0.22 283.289);
+  --primary-500: oklch(0.5231 0.2619 283.2890);
+  /* base */
+  --primary-600: oklch(0.56 0.18 283.289);
+  --primary-700: oklch(0.64 0.12 283.289);
+  --primary-800: oklch(0.74 0.08 283.289);
+  --primary-900: oklch(0.85 0.05 283.289);
+  --primary-950: oklch(0.92 0.03 283.289);
   --primary-foreground: oklch(0.9213 0.0135 167.1556);
   --secondary: oklch(0.2603 0 0);
   --secondary-foreground: oklch(0.9851 0 0);

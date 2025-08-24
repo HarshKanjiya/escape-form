@@ -201,7 +201,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         } finally {
             setLoading(false);
         }
-    }, [])
+    }, [teamId])
 
     // Memoize filtered projects to prevent unnecessary recalculations
     const filteredProjects = useMemo(() => {

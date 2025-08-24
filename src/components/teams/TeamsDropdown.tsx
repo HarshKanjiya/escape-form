@@ -6,20 +6,15 @@ import { Team } from "@/types/db";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import AddTeam from "./addTeam";
 
-const formSchema = z.object({
-    name: z.string().min(3, 'Team name must be at least 3 characters').max(30, 'Team name must be less than 30 characters'),
-});
 
 export default function TeamsDropdown() {
 
     const [open, setOpen] = useState(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
     const { teams, activeTeam, setActiveTeam } = useStore((state) => state);
     const pathname = usePathname();
 

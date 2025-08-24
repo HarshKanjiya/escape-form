@@ -19,10 +19,6 @@ import { TeamCard } from "./teamCard";
 
 export const dynamic = 'force-dynamic'
 
-interface TeamListProps {
-    teams: Team[];
-}
-
 type ViewMode = "grid" | "list";
 
 const switchActions = [
@@ -189,7 +185,7 @@ export function TeamList() {
         } finally {
             setLoading(false);
         }
-    }, [])
+    }, [setTeams])
 
     // Memoize filtered projects to prevent unnecessary recalculations
     const filteredTeams = useMemo(() => {

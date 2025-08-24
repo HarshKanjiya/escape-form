@@ -22,7 +22,7 @@ export default function Header({ }) {
 
 
     return (
-        <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b bg-background z-[9999999]">
+        <div className="fixed w-full flex items-center justify-between h-16 px-4 border-b bg-background z-10">
             <div className="flex items-center gap-6">
                 <Link href={teams.length ? `/${teams[0].id}` : "/teams"} className="flex items-center gap-2">
                     <Image
@@ -88,7 +88,7 @@ export default function Header({ }) {
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                            <DropdownMenuLabel className="text-xs text-muted-foreground tracking-wider font-medium">
                                 Theme
                             </DropdownMenuLabel>
                             <div className="px-2 py-1">
