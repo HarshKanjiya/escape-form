@@ -3,12 +3,13 @@ import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthGuard } from "@/core/guards/authGuard";
 import { ThemeProvider } from "@/core/theme/theme.provider";
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkProvider, SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import LoginPage from "./(auth)/sign-in/[[...sign-in]]/page";
 
 // Add this to force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -33,13 +34,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
-  const { isAuthenticated } = await auth();
-
-  if (!isAuthenticated) {
-    redirect('/sign-in');
-    return null;
-  }
-
   const res = await getUserTeams();
   const teams = res.success ? res.data || [] : [];
 
@@ -56,10 +50,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             enableSystem
             disableTransitionOnChange
           >
-            <HydrateTeams teams={teams} />
-            <AuthGuard>
+            <SignedOut>
+              <LoginPage />
+            </SignedOut>
+            <SignedIn>
+              <HydrateTeams teams={teams} />
               {children}
-            </AuthGuard>
+            </SignedIn>
             <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
           </ThemeProvider>
         </body>

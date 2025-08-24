@@ -2,6 +2,7 @@
 
 import { useStore } from '@/store/useStore';
 import { Team } from '@/types/db';
+import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface Props {
@@ -13,6 +14,11 @@ export default function HydrateTeams({ teams }: Props) {
 
     useEffect(() => {
         setTeams(teams);
+        // if (teams?.length) {
+        //     redirect(teams[0].id)
+        // } else {
+        //     redirect("/teams");
+        // }
     }, [teams, setTeams]);
 
     return null; // No visible UI, just sync state
