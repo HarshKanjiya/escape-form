@@ -10,14 +10,12 @@ export async function getUserTeams(): Promise<ActionResponse<Team[]>> {
     try {
         const { userId } = await auth()
         if (!userId) return createErrorResponse(ACTION_ERRORS.UNAUTHORIZED)
-
         // Get teams where user is either owner or member
         const { data: teams, error } = await supabase
             .from(TABLES.TEAMS)
             .select('*')
             .eq('owner_id', userId)
             .order('created_at', { ascending: false })
-
         if (error) {
             console.error('Error fetching user teams:', error)
             return createErrorResponse(ACTION_ERRORS.DATABASE_ERROR)

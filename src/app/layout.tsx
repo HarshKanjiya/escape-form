@@ -2,10 +2,9 @@ import { getUserTeams } from "@/actions/team";
 import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/core/theme/theme.provider";
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
+import { ClerkProvider, SignedIn } from '@clerk/nextjs';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import LoginPage from "./(auth)/sign-in/[[...sign-in]]/page";
 import "./globals.css";
 
 // Add this to force dynamic rendering
@@ -47,13 +46,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             enableSystem
             disableTransitionOnChange
           >
-            <SignedOut>
-              <LoginPage />
-            </SignedOut>
             <SignedIn>
               <HydrateTeams teams={teams} />
-              {children}
             </SignedIn>
+            {children}
             <Toaster position="top-right" duration={3000} closeButton dir="rtl" />
           </ThemeProvider>
         </body>

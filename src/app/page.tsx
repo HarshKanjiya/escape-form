@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useStore } from "@/store/useStore";
 import { redirect } from "next/navigation";
@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 export default function Home() {
   const teams = useStore((state) => state.teams);
-
   useEffect(() => {
     if (teams?.length) {
       redirect(teams[0].id)
