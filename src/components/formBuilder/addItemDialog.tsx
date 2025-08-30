@@ -1,31 +1,34 @@
 "use client";
 
+import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
-import { Calendar, ChartBarBig, ChevronsUpDown, CircleDot, FileText, Hash, Image, Images, Link, Link2, LucideIcon, Mail, MapPin, Phone, Plus, SquareCheckBig, Star, StickyNote } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../ui/dialog";
+import QuestionIcon from "./ui/questionIcon";
 
 interface IAddItemDialogProps {
-    onAddItem: (id: string) => void;
+    onAddItem: (id: eQuestionType) => void;
+    children?: React.ReactNode;
 }
 
 interface IItemProps {
     field: IField;
-    selectedField: string | null;
-    setSelectedField: (code: string) => void;
+    selectedField: eQuestionType | null;
+    setSelectedField: (id: eQuestionType) => void;
 }
 
-function FieldItem({ field: { code, icon, label, accent }, selectedField, setSelectedField }: IItemProps) {
-    const Icon = icon;
+function FieldItem({ field: { id, label, accent }, selectedField, setSelectedField }: IItemProps) {
+
     return (
         <div
-            onClick={() => setSelectedField(code)}
+            onClick={() => setSelectedField(id)}
             className={cn("flex gap-3 items-center bg-accent p-2 rounded-lg border hover:border-primary transition-all duration-200",
-                selectedField === code ? "bg-primary/30" : "border-transparent",
+                selectedField === id ? "bg-primary/30" : "border-transparent",
             )}>
             <div className={cn('rounded-sm p-1', accent)}>
-                <Icon size={18} />
+                <QuestionIcon questionType={id} size={16} />
             </div>
             <span className="!font-light text-sm">{label}</span>
         </div>
@@ -41,8 +44,7 @@ interface IFieldSet {
 interface IField {
     accent: string;
     label: string;
-    code: string;
-    icon: LucideIcon;
+    id: eQuestionType;
 }
 
 const fields: IFieldSet[] = [
@@ -51,60 +53,67 @@ const fields: IFieldSet[] = [
         description: 'Common set of input fields',
 
         items: [
-            { label: 'Short Text', code: 'short_text', icon: StickyNote, accent: 'bg-fuchsia-400/60' },
-            { label: 'Long Text', code: 'long_text', icon: StickyNote, accent: 'bg-fuchsia-400/60' },
-            { label: 'Number', code: 'number', icon: Hash, accent: 'bg-fuchsia-400/60' },
-            { label: 'Date', code: 'date', icon: Calendar, accent: 'bg-fuchsia-400/60' },
-            { label: 'File', code: 'file', icon: FileText, accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.shortText, label: 'Short Text', accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.longText, label: 'Long Text', accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.number, label: 'Number', accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.date, label: 'Date', accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.file, label: 'File', accent: 'bg-fuchsia-400/60' },
         ]
     },
     {
         title: 'Choice Based',
         description: 'Choice based set of input fields',
         items: [
-            { label: 'Radio', code: 'radio', icon: CircleDot, accent: 'bg-emerald-400/30' },
-            { label: 'Checkbox', code: 'checkbox', icon: SquareCheckBig, accent: 'bg-emerald-400/30' },
-            { label: 'Dropdown', code: 'dropdown', icon: ChevronsUpDown, accent: 'bg-emerald-400/30' },
-            { label: 'Dropdown', code: 'dropdown', icon: ChevronsUpDown, accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.radio, label: 'Radio', accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.checkbox, label: 'Checkbox', accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/30' },
         ]
     },
     {
         title: 'Contact info',
         description: 'Contact information fields',
         items: [
-            { label: 'Email', code: 'email', icon: Mail, accent: 'bg-amber-400/60' },
-            { label: 'Phone', code: 'phone', icon: Phone, accent: 'bg-amber-400/60' },
-            { label: 'Address', code: 'address', icon: MapPin, accent: 'bg-amber-400/60' },
-            { label: 'Website', code: 'website', icon: Link2, accent: 'bg-amber-400/60' },
+            { id: eQuestionType.email, label: 'Email', accent: 'bg-amber-400/60' },
+            { id: eQuestionType.phone, label: 'Phone', accent: 'bg-amber-400/60' },
+            { id: eQuestionType.address, label: 'Address', accent: 'bg-amber-400/60' },
+            { id: eQuestionType.website, label: 'Website', accent: 'bg-amber-400/60' },
         ]
     },
     {
         title: 'Rating',
         description: 'Rating fields',
         items: [
-            { label: 'Star', code: 'star_rating', icon: Star, accent: 'bg-indigo-400/60' },
-            { label: 'Choice', code: 'bar_choice_rating', icon: ChartBarBig, accent: 'bg-indigo-400/60' },
-            { label: 'Picture Choice', code: 'image_choice_rating', icon: Images, accent: 'bg-indigo-400/60' },
+            { id: eQuestionType.starRating, label: 'Star', accent: 'bg-indigo-400/60' },
+            { id: eQuestionType.barChoiceRating, label: 'Choice', accent: 'bg-indigo-400/60' },
+            { id: eQuestionType.imageChoiceRating, label: 'Picture Choice', accent: 'bg-indigo-400/60' },
         ]
     },
 ]
 
 
-export default function AddItemDialog({ onAddItem }: IAddItemDialogProps) {
-    const [selectedField, setSelectedField] = useState<string | null>(null);
+export default function AddItemDialog({ onAddItem, children }: IAddItemDialogProps) {
+    const [selectedField, setSelectedField] = useState<eQuestionType | null>(null);
+    const [open, setOpen] = useState(false);
 
     const save = () => {
-        if (selectedField) onAddItem(selectedField);
+        if (selectedField) {
+            onAddItem(selectedField);
+            setSelectedField(null);
+            setOpen(false);
+        }
     }
 
     return (
         <>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button variant={'secondary'} size={'sm'}>
-                        <Plus className="mr-2" />
-                        Add Item
-                    </Button>
+                    {
+                        children ? children :
+                            <Button variant={'secondary'} size={'sm'}>
+                                <Plus className="mr-2" />
+                                Add Item
+                            </Button>
+                    }
                 </DialogTrigger>
                 <DialogContent className="w-full sm:min-w-[70vw] md:min-w-[60vw] lg:min-w-[50vw] p-0">
                     <DialogTitle className="p-4 border-b">Add New Item</DialogTitle>
@@ -118,7 +127,7 @@ export default function AddItemDialog({ onAddItem }: IAddItemDialogProps) {
                                             {
                                                 set.items.map((field, index) => {
                                                     return (
-                                                        <FieldItem key={index} field={field} selectedField={selectedField} setSelectedField={(code: string) => setSelectedField(code)} />
+                                                        <FieldItem key={index} field={field} selectedField={selectedField} setSelectedField={(code: eQuestionType) => setSelectedField(code)} />
                                                     )
                                                 })
                                             }
@@ -129,7 +138,7 @@ export default function AddItemDialog({ onAddItem }: IAddItemDialogProps) {
                         }
                     </div>
                     <DialogFooter className='border-t bg-background p-3 pt-4 px-4'>
-                        <Button type='button' variant='ghost'>Cancel</Button>
+                        <Button type='button' variant='ghost' onClick={() => setOpen(false)}>Cancel</Button>
                         <Button type='submit' form='form-settings' onClick={save}>Add</Button>
                     </DialogFooter>
                 </DialogContent>

@@ -19,6 +19,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Skeleton } from '../ui/skeleton';
 import { Switch } from '../ui/switch';
 import { Textarea } from '../ui/textarea';
+import { IQuestion } from '@/types/form';
+import QuestionIcon from './ui/questionIcon';
 
 const formSettingsSchema = z.object({
     name: z.string().min(1, 'Name is required').max(80, 'Max 80 characters'),
@@ -42,12 +44,15 @@ const formSettingsSchema = z.object({
 type FormSettingsFormValues = z.infer<typeof formSettingsSchema>;
 
 interface SidebarProps {
+    questions: IQuestion[];
     dataSource?: FormUpdate;
-    onUpdateDataSource: (updates: Partial<FormUpdate>) => void;
     pageLoading?: boolean;
+    selectedQuestionId?: string | null;
+    onUpdateDataSource: (updates: Partial<FormUpdate>) => void;
+    onSetSelectedQuestionId: (id: string | null) => void;
 }
 
-export default function LeftBar({ dataSource: formSettings, pageLoading, onUpdateDataSource }: SidebarProps) {
+export default function LeftBar({ dataSource: formSettings, pageLoading, onUpdateDataSource, questions, selectedQuestionId, onSetSelectedQuestionId }: SidebarProps) {
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -643,8 +648,24 @@ export default function LeftBar({ dataSource: formSettings, pageLoading, onUpdat
                                             </DialogContent>
                                         </Dialog>
                                     </div>
-                                    <div className='flex items-center gap-2 flex-col'>
-                                    </div>
+                                    <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-2'>
+                                        {
+                                            questions.map((question, index) => (
+                                                <li key={question.id + index}
+                                                    className={cn('flex gap-2 items-center py-2 px-2 select-none cursor-grab bg-white shadow-md dark:bg-accent transition-all duration-200 rounded-sm',
+                                                        selectedQuestionId == question.id ? 'bg-primary/10 dark:bg-primary/30' : '')}
+                                                    onClick={() => onSetSelectedQuestionId(question.id)}
+                                                >
+                                                    <div className={cn('p-2 rounded-sm', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
+                                                        <QuestionIcon questionType={question.type} />
+                                                    </div>
+                                                    <div className='text-ellipsis line-clamp-1 overflow-hidden'>
+                                                        {question.title}
+                                                    </div>
+                                                </li>
+                                            ))
+                                        }
+                                    </ul>
                                 </div>
                             )
                         }

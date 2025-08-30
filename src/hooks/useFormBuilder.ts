@@ -1,7 +1,8 @@
 import { updateFormData } from '@/actions/form';
+import { eQuestionType, eViewMode, eWorkflowDirection } from '@/enums/form';
 import { Form, FormUpdate } from '@/types/db';
-import { Question, WorkflowConnection, ViewMode, WorkflowDirection } from '@/types/form';
-import { useState, useCallback } from 'react';
+import { IQuestion, IWorkflowConnection } from '@/types/form';
+import { useState, useCallback, useEffect } from 'react';
 
 const defaultFormSettings: FormUpdate = {
   name: 'Untitled Form',
@@ -34,27 +35,43 @@ const defaultFormSettings: FormUpdate = {
 }
 
 export const useFormBuilder = (initialFormData: FormUpdate = defaultFormSettings) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+
+  // form fields
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
+
+  // selected question
+  const [selectedQuestion, setSelectedQuestion] = useState<IQuestion | null>(null);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('builder');
-  const [workflowDirection, setWorkflowDirection] = useState<WorkflowDirection>('horizontal');
-  const [connections, setConnections] = useState<WorkflowConnection[]>([]);
+
+  // current form view mode
+  const [viewMode, setViewMode] = useState<eViewMode>(eViewMode.Builder);
+
   const [dataSource, setDataSource] = useState<FormUpdate | Form>(initialFormData);
 
-  const addQuestion = useCallback((type: Question['type']) => {
-    const newQuestion: Question = {
+  // TODO
+  const [workflowDirection, setWorkflowDirection] = useState<eWorkflowDirection>(eWorkflowDirection.Horizontal);
+  const [connections, setConnections] = useState<IWorkflowConnection[]>([]);
+
+  useEffect(() => {
+    if (!selectedQuestionId) return;
+    const question = questions.find(q => q.id === selectedQuestionId);
+    setSelectedQuestion(question || null);
+  }, [selectedQuestionId]);
+
+  const addQuestion = useCallback((type: eQuestionType) => {
+    const newQuestion: IQuestion = {
       id: `question-${Date.now()}`,
       type,
-      title: `New ${type.replace('-', ' ')} question`,
+      title: `New ${type.replace('_', ' ')} question`,
       required: false,
       position: { x: 100, y: 100 },
-      options: type === 'multiple-choice' || type === 'checkbox' || type === 'dropdown' ? ['Option 1', 'Option 2'] : undefined,
+      options: type === eQuestionType.checkbox || type === eQuestionType.dropdown ? ['Option 1', 'Option 2'] : undefined,
     };
     setQuestions(prev => [...prev, newQuestion]);
     setSelectedQuestionId(newQuestion.id);
   }, []);
 
-  const updateQuestion = useCallback((id: string, updates: Partial<Question>) => {
+  const updateQuestion = useCallback((id: string, updates: Partial<IQuestion>) => {
     setQuestions(prev => prev.map(q => q.id === id ? { ...q, ...updates } : q));
   }, []);
 
@@ -75,15 +92,13 @@ export const useFormBuilder = (initialFormData: FormUpdate = defaultFormSettings
     updateFormData(updates);
   }, [])
 
-  const addConnection = useCallback((connection: Omit<WorkflowConnection, 'id'>) => {
+  const addConnection = useCallback((connection: Omit<IWorkflowConnection, 'id'>) => {
     setConnections(prev => [...prev, { ...connection, id: `connection-${Date.now()}` }]);
   }, []);
 
   const removeConnection = useCallback((id: string) => {
     setConnections(prev => prev.filter(c => c.id !== id));
   }, []);
-
-  const selectedQuestion = selectedQuestionId ? questions.find(q => q.id === selectedQuestionId) : null;
 
   return {
     questions,

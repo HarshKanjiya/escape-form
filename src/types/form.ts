@@ -1,6 +1,8 @@
-export interface Question {
+import { eQuestionType } from "@/enums/form";
+
+export interface IQuestion {
     id: string;
-    type: 'short-text' | 'long-text' | 'multiple-choice' | 'checkbox' | 'dropdown' | 'rating' | 'date' | 'email' | 'number' | 'yes-no';
+    type: eQuestionType;
     title: string;
     description?: string;
     required: boolean;
@@ -26,44 +28,7 @@ export interface Question {
     };
     customCss?: string;
 }
-
-// export interface FormSettings {
-//     name: string;
-//     icon: string;
-//     description: string;
-//     customDomain: string;
-//     theme: 'light' | 'dark' | 'custom';
-//     colorPalette: {
-//         primary: string;
-//         secondary: string;
-//         background: string;
-//         text: string;
-//     };
-//     isPublic: boolean;
-//     welcomeScreen: {
-//         enabled: boolean;
-//         title: string;
-//         description: string;
-//         buttonText: string;
-//     };
-//     thankYouScreen: {
-//         enabled: boolean;
-//         title: string;
-//         description: string;
-//     };
-//     timing: {
-//         enabled: boolean;
-//         openTime: string;
-//         closeTime: string;
-//     };
-//     password?: string;
-//     anonymous: boolean;
-//     consentRequired: boolean;
-//     timePerQuestion?: number;
-//     multipleSubmissions: boolean;
-// }
-
-export interface WorkflowConnection {
+export interface IWorkflowConnection {
     id: string;
     from: string;
     to: string;
@@ -74,5 +39,15 @@ export interface WorkflowConnection {
     };
 }
 
-export type ViewMode = 'builder' | 'workflow' | 'preview';
-export type WorkflowDirection = 'horizontal' | 'vertical';
+export interface IWelcomeScreen {
+    enabled: boolean;
+    title: string;
+    description?: string;
+    button_text: string;
+}
+
+export interface IThankYouScreen {
+    enabled: boolean;
+    title: string;
+    description?: string;
+}

@@ -1,29 +1,27 @@
 "use client";
 
-import { eMode, eViewType } from "@/enums/form";
-import { Question, ViewMode, WorkflowConnection, WorkflowDirection } from "@/types/form";
+import { eViewMode, eViewScreenType, eWorkflowDirection } from "@/enums/form";
+import { IQuestion, IWorkflowConnection } from "@/types/form";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import MainContentHeader from "./mainContentHeader";
-import { Separator } from "../ui/separator";
-import FormEditor from "./modes/formEditor";
 import FlowEditor from "./modes/flowEditor";
-import { AnimatePresence, motion } from "framer-motion";
+import FormEditor from "./modes/formEditor";
 
 
 interface MainContentProps {
-    viewMode: ViewMode;
-    questions: Question[];
+    viewMode: eViewMode;
+    questions: IQuestion[];
     selectedQuestionId: string | null;
-    workflowDirection: WorkflowDirection;
-    connections: WorkflowConnection[];
-    onViewModeChange: (mode: ViewMode) => void;
+    selectedQuestion: IQuestion | null;
+    connections: IWorkflowConnection[];
+    onViewModeChange: (mode: eViewMode) => void;
     onSelectQuestion: (id: string | null) => void;
-    onAddQuestion: (type: Question['type']) => void;
-    onUpdateQuestion: (id: string, updates: Partial<Question>) => void;
+    onAddQuestion: (type: IQuestion['type']) => void;
+    onUpdateQuestion: (id: string, updates: Partial<IQuestion>) => void;
     onDeleteQuestion: (id: string) => void;
     onMoveQuestion: (id: string, position: { x: number; y: number }) => void;
-    onWorkflowDirectionChange: (direction: WorkflowDirection) => void;
-    onAddConnection: (connection: Omit<WorkflowConnection, 'id'>) => void;
+    onAddConnection: (connection: Omit<IWorkflowConnection, 'id'>) => void;
     onRemoveConnection: (id: string) => void;
 }
 
@@ -31,7 +29,7 @@ export default function MainContent({
     viewMode,
     questions,
     selectedQuestionId,
-    workflowDirection,
+    selectedQuestion,
     connections,
     onViewModeChange,
     onSelectQuestion,
@@ -39,46 +37,45 @@ export default function MainContent({
     onUpdateQuestion,
     onDeleteQuestion,
     onMoveQuestion,
-    onWorkflowDirectionChange,
     onAddConnection,
     onRemoveConnection,
 }: MainContentProps) {
 
-    const [viewType, setViewType] = useState<eViewType>(eViewType.Desktop)
-    const [mode, setMode] = useState<eMode>(eMode.Form)
+    const [viewType, setViewType] = useState<eViewScreenType>(eViewScreenType.Desktop)
 
     return (
         <>
             <div className="flex-1 h-full w-full flex flex-col items-center">
-                <MainContentHeader mode={mode} setMode={setMode} viewType={viewType} setViewType={setViewType} />
-
-                <AnimatePresence initial={false} mode="wait">
-                    {mode === eMode.Form ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ type: 'tween' }}
-                            key="form-editor"
-                            layout
-                            className="w-full h-full"
-                        >
-                            <FormEditor />
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ type: 'tween' }}
-                            key="flow-editor"
-                            layout
-                            className="w-full h-full"
-                        >
-                            <FlowEditor />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                <MainContentHeader onAddQuestion={onAddQuestion} mode={viewMode} setMode={onViewModeChange} viewType={viewType} setViewType={setViewType} />
+                <div className="h-full w-full flex-1 overflow-auto">
+                    <AnimatePresence initial={false} mode="wait">
+                        {viewMode === eViewMode.Builder ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ type: 'tween' }}
+                                key="form-editor"
+                                layout
+                                className="w-full h-full"
+                            >
+                                <FormEditor onAddQuestion={onAddQuestion} selectedQuestion={selectedQuestion} onActiveSlideChange={onSelectQuestion} questions={questions} />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ type: 'tween' }}
+                                key="flow-editor"
+                                layout
+                                className="w-full h-full"
+                            >
+                                <FlowEditor />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div >
             </div >
         </>
     );

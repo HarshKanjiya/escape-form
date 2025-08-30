@@ -1,11 +1,11 @@
 "use client";
 
-import { Question } from "@/types/form";
+import { IQuestion } from "@/types/form";
 
 
 interface RightPanelProps {
-    selectedQuestion: Question | null | undefined;
-    onUpdateQuestion: (id: string, updates: Partial<Question>) => void;
+    selectedQuestion: IQuestion | null | undefined;
+    onUpdateQuestion: (id: string, updates: Partial<IQuestion>) => void;
     onPublish: () => void;
     onPreview: () => void;
 }

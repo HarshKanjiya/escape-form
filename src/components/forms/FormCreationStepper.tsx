@@ -28,8 +28,8 @@ import React, { useState } from 'react';
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { SpotlightCard } from '../ui/spotLightCard';
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { eFormType } from "@/enums/form";
 
 interface FormTemplate {
     id: string;
@@ -141,18 +141,11 @@ const templates: FormTemplate[] = [
     }
 ];
 
-interface FormData {
-    name: string;
-    description: string;
-    type: 'reach-out' | 'embedded' | null;
-    template: string | null;
-}
-
 // Form schema for validation
 const formSchema = z.object({
     name: z.string().min(1, "Form name is required").min(3, "Form name must be at least 3 characters"),
     description: z.string().optional(),
-    type: z.enum(['reach-out', 'embedded']).nullable(),
+    type: z.enum(eFormType).nullable(),
     template: z.string().nullable(),
 })
 
@@ -290,8 +283,8 @@ function DetailsStep({ form }: DetailsStepProps) {
 }
 
 interface FormTypeStepProps {
-    selectedType: string | null;
-    onTypeSelect: (type: 'reach-out' | 'embedded') => void;
+    selectedType: eFormType | null;
+    onTypeSelect: (type: eFormType) => void;
 }
 
 function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
@@ -305,104 +298,100 @@ function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
             </div>
 
             <div className="grid md:grid-cols-2 gap-10 max-w-3xl mx-auto">
-                <SpotlightCard className={cn(
-                    "trainsition-transform duration-200 ease-out",
-                    selectedType === 'reach-out'
-                        ? "ring-2 ring-primary scale-105"
-                        : "scale-100"
-                )}>
-                    <Card
-                        className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none h-full py-3"
-                        onClick={() => onTypeSelect('reach-out')}
-                    >
-                        <CardContent className="p-4">
-                            <div className="flex items-center space-x-3 mb-3">
-                                <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                                    <Link2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold">Reach Out Form</h3>
-                                    <Badge variant="outline" className="text-xs">Standalone</Badge>
-                                </div>
+                <Card
+                    className={cn(
+                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border-2 shadow-none",
+                        selectedType === eFormType.reachOut
+                            ? "ring-2 ring-primary scale-105"
+                            : "scale-100"
+                    )}
+                    onClick={() => onTypeSelect(eFormType.reachOut)}
+                >
+                    <CardContent className="p-4">
+                        <div className="flex items-center space-x-3 mb-3">
+                            <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                                <Link2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <p className="text-sm text-muted-foreground mb-3">
-                                Create a standalone form with its own URL that you can share via link,
-                                email, or social media.
-                            </p>
-                            <ul className="space-y-1 text-xs text-muted-foreground">
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>One-click sharing via email & social</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Custom thank you pages</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Form scheduling (open/close dates)</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Response limits per form</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Brandable form URL (custom domain)</span>
-                                </li>
-                            </ul>
-                        </CardContent>
-                    </Card>
-                </SpotlightCard>
-                <SpotlightCard className={cn(
-                    "trainsition-transform duration-200 ease-out",
-                    selectedType === 'embedded'
-                        ? "ring-2 ring-primary scale-105"
-                        : "scale-100"
-                )}>
-                    <Card
-                        className="group relative hover:shadow-md transition-all duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl rounded-none h-full py-3"
-                        onClick={() => onTypeSelect('embedded')}
-                    >
-                        <CardContent className="p-4">
-                            <div className="flex items-center space-x-3 mb-3">
-                                <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                                    <Code className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold">Embedded Form</h3>
-                                    <Badge variant="outline" className="text-xs">Integrated</Badge>
-                                </div>
+                            <div>
+                                <h3 className="font-semibold">Reach Out Form</h3>
+                                <Badge variant="outline" className="text-xs">Standalone</Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-3">
-                                Embed the form directly into your website or application.
-                                Seamlessly integrates with your existing design.
-                            </p>
-                            <ul className="space-y-1 text-xs text-muted-foreground">
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Seamless website integration</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Auto-resize to container</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Pre-fill fields from URL params</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Custom event hooks (onSubmit, onError)</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                    <span>Theme sync with your site</span>
-                                </li>
-                            </ul>
-                        </CardContent>
-                    </Card>
-                </SpotlightCard>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                            Create a standalone form with its own URL that you can share via link,
+                            email, or social media.
+                        </p>
+                        <ul className="space-y-1 text-xs text-muted-foreground">
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>One-click sharing via email & social</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Custom thank you pages</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Form scheduling (open/close dates)</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Response limits per form</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Brandable form URL (custom domain)</span>
+                            </li>
+                        </ul>
+                    </CardContent>
+                </Card>
+                <Card
+                    className={cn(
+                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border-2 shadow-none",
+                        selectedType === eFormType.embedded
+                            ? "ring-2 ring-primary scale-105"
+                            : "scale-100"
+                    )}
+                    onClick={() => onTypeSelect(eFormType.embedded)}
+                >
+                    <CardContent className="p-4">
+                        <div className="flex items-center space-x-3 mb-3">
+                            <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                                <Code className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Embedded Form</h3>
+                                <Badge variant="outline" className="text-xs">Integrated</Badge>
+                            </div>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                            Embed the form directly into your website or application.
+                            Seamlessly integrates with your existing design.
+                        </p>
+                        <ul className="space-y-1 text-xs text-muted-foreground">
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Seamless website integration</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Auto-resize to container</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Pre-fill fields from URL params</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Custom event hooks (onSubmit, onError)</span>
+                            </li>
+                            <li className="flex items-center space-x-2">
+                                <CheckCircle className="w-3 h-3 text-green-500" />
+                                <span>Theme sync with your site</span>
+                            </li>
+                        </ul>
+                    </CardContent>
+                </Card>
             </div>
         </div >
     );
@@ -644,7 +633,7 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
 export function FormCreationStepper() {
     const [currentStep, setCurrentStep] = useState(1);
     const [prevStep, setPrevStep] = useState(1);
-    const [selectedType, setSelectedType] = useState<'reach-out' | 'embedded' | null>(null);
+    const [selectedType, setSelectedType] = useState<eFormType | null>(null);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const { projectId } = useParams<{ projectId: string }>();
     const router = useRouter();
@@ -683,7 +672,7 @@ export function FormCreationStepper() {
         }
     };
 
-    const handleTypeSelect = (type: 'reach-out' | 'embedded') => {
+    const handleTypeSelect = (type: eFormType) => {
         setSelectedType(type);
         form.setValue('type', type);
     };
@@ -718,7 +707,7 @@ export function FormCreationStepper() {
             project_id: projectId,
             name: data.name || "",
             description: data.description || "",
-            type: selectedType || 'reach-out',
+            type: selectedType || eFormType.reachOut,
         };
         try {
             const response = await createNewForm(finalData);

@@ -1,34 +1,32 @@
 "use client";
 
-import { eMode, eViewType } from "@/enums/form";
-import { Laptop, PencilRuler, Play, Plus, Smartphone, Workflow } from "lucide-react";
+import { eQuestionType, eViewMode, eViewScreenType } from "@/enums/form";
+import { AnimatePresence, motion } from "framer-motion";
+import { Laptop, PencilRuler, Play, Smartphone, TrendingUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddItemDialog from "./addItemDialog";
-import { AnimatePresence, motion } from "framer-motion";
 
 interface Props {
-    mode: eMode;
-    setMode: (mode: eMode) => void;
-    viewType: eViewType;
-    setViewType: (viewType: eViewType) => void;
+    mode: eViewMode;
+    setMode: (mode: eViewMode) => void;
+    viewType: eViewScreenType;
+    setViewType: (viewType: eViewScreenType) => void;
+
+    onAddQuestion: (type: eQuestionType) => void;
 }
 
-export default function MainContentHeader({ mode, setMode, viewType, setViewType }: Props) {
-
-    const addItem = (id: string) => {
-        console.log('id :>> ', id);
-    }
+export default function MainContentHeader({ mode, setMode, viewType, setViewType, onAddQuestion }: Props) {
 
     return (
         <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-background">
             <div className="flex items-center gap-2">
-                <AddItemDialog onAddItem={addItem} />
+                <AddItemDialog onAddItem={onAddQuestion} />
                 <Separator orientation="vertical" className="!h-8" />
                 <div className="flex items-center gap-1">
                     <AnimatePresence mode="sync" initial={false}>
-                        {mode === eMode.Form && (
+                        {mode === eViewMode.Builder && (
                             <motion.div
                                 initial={{ opacity: 0, width: 0 }}
                                 animate={{ opacity: 1, width: 'auto' }}
@@ -40,8 +38,8 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
                                 <div>
                                     <Tooltip delayDuration={500}>
                                         <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon" onClick={() => setViewType(viewType === eViewType.Desktop ? eViewType.Mobile : eViewType.Desktop)}>
-                                                {viewType === eViewType.Desktop ? <Laptop /> : <Smartphone />}
+                                            <Button variant="ghost" size="icon" onClick={() => setViewType(viewType === eViewScreenType.Desktop ? eViewScreenType.Mobile : eViewScreenType.Desktop)}>
+                                                {viewType === eViewScreenType.Desktop ? <Laptop /> : <Smartphone />}
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>View Mode</TooltipContent>
@@ -74,7 +72,7 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
             <div className="flex items-center gap-1">
                 <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
-                        <Button variant={mode == eMode.Form ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eMode.Form)}>
+                        <Button variant={mode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eViewMode.Builder)}>
                             <PencilRuler />
                         </Button>
                     </TooltipTrigger>
@@ -84,8 +82,8 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
                 </Tooltip>
                 <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
-                        <Button variant={mode == eMode.Flow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eMode.Flow)}>
-                            <Workflow />
+                        <Button variant={mode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eViewMode.Workflow)}>
+                            <TrendingUpDown />
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>
