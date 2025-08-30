@@ -7,9 +7,9 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../ui/dialog";
 import QuestionIcon from "./ui/questionIcon";
+import { useFormBuilder } from "@/store/useFormBuilder";
 
 interface IAddItemDialogProps {
-    onAddItem: (id: eQuestionType) => void;
     children?: React.ReactNode;
 }
 
@@ -91,13 +91,14 @@ const fields: IFieldSet[] = [
 ]
 
 
-export default function AddItemDialog({ onAddItem, children }: IAddItemDialogProps) {
+export default function AddItemDialog({ children }: IAddItemDialogProps) {
+    const { addQuestions } = useFormBuilder();
+
     const [selectedField, setSelectedField] = useState<eQuestionType | null>(null);
     const [open, setOpen] = useState(false);
-
     const save = () => {
         if (selectedField) {
-            onAddItem(selectedField);
+            addQuestions([selectedField]);
             setSelectedField(null);
             setOpen(false);
         }

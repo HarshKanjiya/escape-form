@@ -12,17 +12,14 @@ import { Braces, SeparatorHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import AddItemDialog from "../addItemDialog";
 import QuestionCard from "../ui/questionCard";
+import { useFormBuilder } from "@/store/useFormBuilder";
 
-interface IProps {
-    selectedQuestion: IQuestion | null;
-    questions: IQuestion[];
-    onActiveSlideChange: (id: string) => void;
-    onAddQuestion: (type: eQuestionType) => void;
-}
+export default function FormEditor() {
 
-export default function FormEditor({ selectedQuestion, questions, onActiveSlideChange, onAddQuestion }: IProps) {
-    const [direction, setDirection] = useState<eWorkflowDirection>(eWorkflowDirection.Horizontal)
-    
+    const { selectedQuestion, questions, setSelectedQuestionId } = useFormBuilder();
+    const [direction, setDirection] = useState<eWorkflowDirection>(eWorkflowDirection.Horizontal);
+
+
     // Create embla configuration based on direction
     const emblaOptions = {
         axis: direction === eWorkflowDirection.Vertical ? 'y' : 'x',
@@ -30,14 +27,14 @@ export default function FormEditor({ selectedQuestion, questions, onActiveSlideC
         dragFree: false,
         loop: false
     } as const;
-    
+
     const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions);
     const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
     const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } = usePrevNextButtons(emblaApi);
 
     useEffect(() => {
         if (questions && questions[selectedIndex]) {
-            onActiveSlideChange(questions[selectedIndex].id);
+            setSelectedQuestionId(questions[selectedIndex].id);
         }
     }, [selectedIndex]);
 
@@ -75,7 +72,7 @@ export default function FormEditor({ selectedQuestion, questions, onActiveSlideC
                             Create engaging forms with various question types.
                         </p>
                     </div>
-                    <AddItemDialog onAddItem={onAddQuestion}>
+                    <AddItemDialog>
                         <Button
                             variant="outline"
                             className="mt-2 bg-background/50 hover:bg-background/80 transition-colors"

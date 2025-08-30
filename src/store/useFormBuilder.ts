@@ -1,6 +1,6 @@
 'use client'
 
-import { eFormStatus, eFormType, eQuestionType, eViewMode } from '@/enums/form';
+import { eFormStatus, eFormType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
 import { Form, FormUpdate } from '@/types/db';
 import { IThankYouScreen, IWelcomeScreen, IQuestion, IWorkflowConnection } from '@/types/form';
 import { create } from 'zustand';
@@ -71,13 +71,15 @@ interface IFormBuilderStore {
     config: any;
 
     // STATE
-    selectedQuestionId?: string;
-    selectedQuestion?: IQuestion;
+    selectedQuestionId: string | null;
+    selectedQuestion: IQuestion | null;
     questions: IQuestion[];
     viewMode: eViewMode,
     dataSource: FormUpdate,
     connections: IWorkflowConnection[];
     isSaving: boolean;
+    isLoading: boolean;
+    viewScreenMode: eViewScreenMode;
 
     initForm: (form: Form) => void;
     addQuestions: (questions: eQuestionType[]) => void;
@@ -88,7 +90,10 @@ interface IFormBuilderStore {
     updateForm: (form: FormUpdate) => void;
     addConnection: (connection: IWorkflowConnection) => void;
     removeConnection: (connectionId: string) => void;
-
+    setViewScreenMode: (mode: eViewScreenMode) => void;
+    setViewMode: (mode: eViewMode) => void;
+    setSelectedQuestionId: (id: string | null) => void;
+    setIsLoading: (loading: boolean) => void;
 }
 
 export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
@@ -117,13 +122,15 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     thank_you_screen: undefined,
     config: {},
     isSaving: false,
+    isLoading: false,
 
-    selectedQuestionId: undefined,
-    selectedQuestion: undefined,
+    selectedQuestionId: null,
+    selectedQuestion: null,
     questions: [],
     viewMode: eViewMode.Builder,
     dataSource: defaultFormSettings,
     connections: [],
+    viewScreenMode: eViewScreenMode.Desktop,
 
     initForm: (form: Form) => {
         set({
@@ -193,7 +200,12 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             };
             newQues.push(newQuestion);
         })
-        set({ questions: [...questions, ...newQues] });
+        const newQuestionsList = [...questions, ...newQues];
+        set({
+            questions: newQuestionsList,
+            selectedQuestionId: newQues[newQues.length - 1].id,
+            selectedQuestion: newQues[newQues.length - 1],
+        });
     },
 
     updateQuestion: (id: string, question: IQuestion) => {
@@ -237,4 +249,25 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         const updatedConnections = connections.filter(c => c.id !== connectionId);
         set({ connections: updatedConnections });
     },
+
+    setViewMode: (mode: eViewMode) => {
+        set({ viewMode: mode });
+    },
+
+    setViewScreenMode: (mode: eViewScreenMode) => {
+        set({ viewScreenMode: mode });
+    },
+
+    setSelectedQuestionId: (id: string | null) => {
+        const { questions } = get();
+        set({
+            selectedQuestion: questions.find(q => q.id === id) || null,
+            selectedQuestionId: id
+        });
+    },
+
+    setIsLoading: (loading: boolean) => {
+        set({ isLoading: loading });
+    },
+
 }))

@@ -1,32 +1,25 @@
 "use client";
 
-import { eQuestionType, eViewMode, eViewScreenType } from "@/enums/form";
+import { eQuestionType, eViewMode, eViewScreenMode } from "@/enums/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { Laptop, PencilRuler, Play, Smartphone, TrendingUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddItemDialog from "./addItemDialog";
+import { useFormBuilder } from "@/store/useFormBuilder";
 
-interface Props {
-    mode: eViewMode;
-    setMode: (mode: eViewMode) => void;
-    viewType: eViewScreenType;
-    setViewType: (viewType: eViewScreenType) => void;
+export default function MainContentHeader() {
 
-    onAddQuestion: (type: eQuestionType) => void;
-}
-
-export default function MainContentHeader({ mode, setMode, viewType, setViewType, onAddQuestion }: Props) {
-
+    const { viewMode, viewScreenMode, setViewMode, setViewScreenMode } = useFormBuilder()
     return (
         <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-background">
             <div className="flex items-center gap-2">
-                <AddItemDialog onAddItem={onAddQuestion} />
+                <AddItemDialog />
                 <Separator orientation="vertical" className="!h-8" />
                 <div className="flex items-center gap-1">
                     <AnimatePresence mode="sync" initial={false}>
-                        {mode === eViewMode.Builder && (
+                        {viewMode === eViewMode.Builder && (
                             <motion.div
                                 initial={{ opacity: 0, width: 0 }}
                                 animate={{ opacity: 1, width: 'auto' }}
@@ -38,8 +31,8 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
                                 <div>
                                     <Tooltip delayDuration={500}>
                                         <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon" onClick={() => setViewType(viewType === eViewScreenType.Desktop ? eViewScreenType.Mobile : eViewScreenType.Desktop)}>
-                                                {viewType === eViewScreenType.Desktop ? <Laptop /> : <Smartphone />}
+                                            <Button variant="ghost" size="icon" onClick={() => setViewScreenMode(viewScreenMode === eViewScreenMode.Desktop ? eViewScreenMode.Mobile : eViewScreenMode.Desktop)}>
+                                                {viewScreenMode === eViewScreenMode.Desktop ? <Laptop /> : <Smartphone />}
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>View Mode</TooltipContent>
@@ -72,7 +65,7 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
             <div className="flex items-center gap-1">
                 <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
-                        <Button variant={mode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eViewMode.Builder)}>
+                        <Button variant={viewMode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Builder)}>
                             <PencilRuler />
                         </Button>
                     </TooltipTrigger>
@@ -82,7 +75,7 @@ export default function MainContentHeader({ mode, setMode, viewType, setViewType
                 </Tooltip>
                 <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
-                        <Button variant={mode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setMode(eViewMode.Workflow)}>
+                        <Button variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
                             <TrendingUpDown />
                         </Button>
                     </TooltipTrigger>

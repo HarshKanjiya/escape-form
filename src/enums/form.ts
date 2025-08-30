@@ -1,5 +1,5 @@
 
-export enum eViewScreenType {
+export enum eViewScreenMode {
     Desktop = 'desktop',
     Mobile = 'mobile',
 }

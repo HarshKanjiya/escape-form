@@ -1,16 +1,6 @@
 "use client";
 
-import { IQuestion } from "@/types/form";
-
-
-interface RightPanelProps {
-    selectedQuestion: IQuestion | null | undefined;
-    onUpdateQuestion: (id: string, updates: Partial<IQuestion>) => void;
-    onPublish: () => void;
-    onPreview: () => void;
-}
-
-export default function RightBar({ selectedQuestion, onUpdateQuestion, onPublish, onPreview }: RightPanelProps) {
+export default function RightBar() {
     return (
         <div className="bg-background border-l z-30 overflow-visible h-full w-[360px]">
             <div className="flex flex-col h-full">
