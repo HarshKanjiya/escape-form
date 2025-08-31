@@ -83,10 +83,10 @@ interface IFormBuilderStore {
 
     initForm: (form: Form) => void;
     addQuestions: (questions: eQuestionType[]) => void;
-    updateQuestion: (id: string, question: IQuestion) => void;
+    updateQuestion: (id: string, question: Partial<IQuestion>) => void;
     changeQuestionSequence: (oldIndex: number, newIndex: number) => void;
     moveQuestion: (id: string, position: { x: number; y: number }) => void;
-    removeQuestion: (questionId: string) => void;
+    deleteQuestion: (questionId: string) => void;
     updateForm: (form: FormUpdate) => void;
     addConnection: (connection: IWorkflowConnection) => void;
     removeConnection: (connectionId: string) => void;
@@ -193,7 +193,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             const newQuestion: IQuestion = {
                 id: `question-${Date.now()}`,
                 type,
-                title: `New ${type.replace('_', ' ')} question`,
+                question: `New ${type.replace('_', ' ')} question`,
                 required: false,
                 position: { x: (exeLen + index) * 200, y: 200 },
                 options: type === eQuestionType.checkbox || type === eQuestionType.dropdown ? ['Option 1', 'Option 2'] : undefined,
@@ -208,10 +208,12 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         });
     },
 
-    updateQuestion: (id: string, question: IQuestion) => {
-        const { questions } = get();
-        const updatedQuestions = questions.map(q => q.id === id ? question : q);
-        set({ questions: updatedQuestions });
+    updateQuestion: (id: string, question: Partial<IQuestion>) => {
+        const { questions, selectedQuestionId, selectedQuestion } = get();
+        const updatedQuestions = questions.map(q => q.id === id ? { ...q, ...question } : q);
+        const changes: Record<string, any> = { questions: updatedQuestions };
+        if (id === selectedQuestionId) changes['selectedQuestion'] = { ...selectedQuestion, ...question } as IQuestion;
+        set(changes);
     },
 
     changeQuestionSequence: (oldIndex: number, newIndex: number) => {
@@ -228,10 +230,18 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ questions: updatedQuestions });
     },
 
-    removeQuestion: (questionId: string) => {
-        const { questions } = get();
+    deleteQuestion: (questionId: string) => {
+        const { questions, selectedQuestionId } = get();
         const updatedQuestions = questions.filter(q => q.id !== questionId);
-        set({ questions: updatedQuestions });
+        const changes: Record<string, any> = { questions: updatedQuestions };
+        if (questionId === selectedQuestionId) {
+            if (questions?.length) {
+                changes['selectedQuestion'] = questions[0];
+                changes['selectedQuestionId'] = questions[0].id;
+            }
+            else changes['selectedQuestion'] = changes['selectedQuestionId'] = null;
+        }
+        set(changes);
     },
 
     updateForm: (form: FormUpdate) => {

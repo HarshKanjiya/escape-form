@@ -1,18 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
 import { NextButton, PrevButton, usePrevNextButtons } from "@/components/ui/carouselAerrowButtons";
 import { DotButtonNav, useDotButton } from "@/components/ui/carouselDotButtons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { eQuestionType, eWorkflowDirection } from "@/enums/form";
-import { IQuestion } from "@/types/form";
+import { eWorkflowDirection } from "@/enums/form";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { Braces, SeparatorHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
-import AddItemDialog from "../addItemDialog";
+import AddQuestionDialog from "../ui/addIQuestionDialog";
 import QuestionCard from "../ui/questionCard";
-import { useFormBuilder } from "@/store/useFormBuilder";
 
 export default function FormEditor() {
 
@@ -72,14 +72,14 @@ export default function FormEditor() {
                             Create engaging forms with various question types.
                         </p>
                     </div>
-                    <AddItemDialog>
+                    <AddQuestionDialog>
                         <Button
                             variant="outline"
                             className="mt-2 bg-background/50 hover:bg-background/80 transition-colors"
                         >
                             Add First Question
                         </Button>
-                    </AddItemDialog>
+                    </AddQuestionDialog>
                 </div>
             </div>
         )
@@ -120,7 +120,7 @@ export default function FormEditor() {
                                 <div className={`embla__container ${direction === eWorkflowDirection.Vertical ? 'embla__container--vertical' : ''}`}>
                                     {questions.map((question, index) => (
                                         <div className={`embla__slide ${direction === eWorkflowDirection.Vertical ? 'embla__slide--vertical' : ''}`} key={index}>
-                                            <QuestionCard question={question} />
+                                            <QuestionCard question={question} index={index} />
                                         </div>
                                     ))}
                                 </div>
@@ -144,7 +144,7 @@ export default function FormEditor() {
                             <div className="embla__container">
                                 {questions.map((question, index) => (
                                     <div className="embla__slide" key={index}>
-                                        <QuestionCard question={question} />
+                                        <QuestionCard question={question} index={index} />
                                     </div>
                                 ))}
                             </div>

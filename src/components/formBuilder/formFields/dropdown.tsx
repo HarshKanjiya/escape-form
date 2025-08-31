@@ -13,7 +13,7 @@ export function Dropdown({ question, value = "", onChange, disabled = false }: D
     return (
         <div className="space-y-2">
             <Label className="text-sm font-medium">
-                {question.title}
+                {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             {question.description && (

@@ -50,7 +50,7 @@ export function ImageChoiceRating({ question, value = "", onChange, disabled = f
         <div className="space-y-4">
             <div>
                 <Label className="text-sm font-medium">
-                    {question.title}
+                    {question.question}
                     {question.required && <span className="text-red-500 ml-1">*</span>}
                 </Label>
                 {question.description && (

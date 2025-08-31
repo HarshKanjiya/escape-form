@@ -1,214 +1,122 @@
-import { IQuestion } from "@/types/form";
 import { eQuestionType } from "@/enums/form";
-import { ShortText } from "../formFields/shortText";
-import { LongText } from "../formFields/longText";
-import { Number } from "../formFields/number";
-import { Date } from "../formFields/date";
-import { FileUpload } from "../formFields/file";
-import { Radio } from "../formFields/radio";
+import { IQuestion } from "@/types/form";
+import { Address } from "../formFields/address";
+import { BarChoiceRating } from "../formFields/barChoiceRating";
 import { CheckboxField } from "../formFields/checkbox";
+import { Date } from "../formFields/date";
 import { Dropdown } from "../formFields/dropdown";
 import { Email } from "../formFields/email";
-import { PhoneField } from "../formFields/phone";
-import { Address } from "../formFields/address";
-import { Website } from "../formFields/website";
-import { StarRating } from "../formFields/starRating";
-import { BarChoiceRating } from "../formFields/barChoiceRating";
+import { FileUpload } from "../formFields/file";
 import { ImageChoiceRating } from "../formFields/imageChoiceRating";
+import { LongText } from "../formFields/longText";
+import { Number } from "../formFields/number";
+import { PhoneField } from "../formFields/phone";
+import { Radio } from "../formFields/radio";
+import { ShortText } from "../formFields/shortText";
+import { StarRating } from "../formFields/starRating";
+import { Website } from "../formFields/website";
 
 interface IProps {
     question: IQuestion | null;
-    value?: any;
-    onChange?: (value: any) => void;
-    disabled?: boolean;
-    className?: string;
+    index: number;
 }
 
-export default function QuestionCard({
-    question,
-    value,
-    onChange,
-    disabled = false,
-    className = ""
-}: IProps) {
-    console.log('question :>> ', question);
-
+export default function QuestionCard({ question, index }: IProps) {
     if (!question) {
         return (
-            <div className={`question-card  w-full p-6 border border-dashed border-muted-foreground/25 rounded-lg text-center ${className}`}>
-                <p className="text-sm text-muted-foreground">No question selected</p>
-            </div>
+            <p className="text-sm text-muted-foreground">No question selected</p>
         );
     }
+    switch (question.type) {
+        case eQuestionType.shortText:
+            return (
+                <ShortText question={question} index={index} />
+            );
 
-    const renderQuestionField = () => {
-        switch (question.type) {
-            case eQuestionType.shortText:
-                return (
-                    <ShortText
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.longText:
+            return (
+                <LongText question={question} />
+            );
 
-            case eQuestionType.longText:
-                return (
-                    <LongText
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.number:
+            return (
+                <Number question={question} />
+            );
 
-            case eQuestionType.number:
-                return (
-                    <Number
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.date:
+            return (
+                <Date question={question} />
+            );
 
-            case eQuestionType.date:
-                return (
-                    <Date
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.file:
+            return (
+                <FileUpload question={question} />
+            );
 
-            case eQuestionType.file:
-                return (
-                    <FileUpload
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.radio:
+            return (
+                <Radio question={question} />
+            );
 
-            case eQuestionType.radio:
-                return (
-                    <Radio
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.checkbox:
+            return (
+                <CheckboxField question={question} />
+            );
 
-            case eQuestionType.checkbox:
-                return (
-                    <CheckboxField
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.dropdown:
+            return (
+                <Dropdown question={question} />
+            );
 
-            case eQuestionType.dropdown:
-                return (
-                    <Dropdown
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.email:
+            return (
+                <Email question={question} />
+            );
 
-            case eQuestionType.email:
-                return (
-                    <Email
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.phone:
+            return (
+                <PhoneField question={question} />
+            );
 
-            case eQuestionType.phone:
-                return (
-                    <PhoneField
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.address:
+            return (
+                <Address question={question} />
+            );
 
-            case eQuestionType.address:
-                return (
-                    <Address
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.address:
+            return (
+                <Address question={question} />
+            );
 
-            case eQuestionType.website:
-                return (
-                    <Website
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.website:
+            return (
+                <Website question={question} />
+            );
 
-            case eQuestionType.starRating:
-                return (
-                    <StarRating
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.starRating:
+            return (
+                <StarRating question={question} />
+            );
 
-            case eQuestionType.barChoiceRating:
-                return (
-                    <BarChoiceRating
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.barChoiceRating:
+            return (
+                <BarChoiceRating question={question} />
+            );
 
-            case eQuestionType.imageChoiceRating:
-                return (
-                    <ImageChoiceRating
-                        question={question}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                    />
-                );
+        case eQuestionType.imageChoiceRating:
+            return (
+                <ImageChoiceRating question={question} />
+            );
 
-            default:
-                return (
-                    <div className="p-4 border border-dashed border-muted-foreground/25 rounded-lg text-center">
-                        <h2 className="question-card__title">{question?.title}</h2>
-                        <p className="question-card__description">{question?.description}</p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                            Question type "{question.type}" is not yet supported.
-                        </p>
-                    </div>
-                );
-        }
-    };
-
-    return (
-        <div className={`question-card w-full p-6 border rounded-lg bg-card shadow-sm space-y-4 ${className}`}>
-            {renderQuestionField()}
-        </div>
-    );
+        default:
+            return (
+                <div className="p-4 border border-dashed border-muted-foreground/25 rounded-lg text-center">
+                    <h2 className="question-card__title">{question?.question}</h2>
+                    <p className="question-card__description">{question?.description}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                        Question type "{question.type}" is not yet supported.
+                    </p>
+                </div>
+            );
+    }
 }

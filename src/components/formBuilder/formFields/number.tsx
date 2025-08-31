@@ -13,7 +13,7 @@ export function Number({ question, value, onChange, disabled = false }: NumberPr
     return (
         <div className="space-y-2">
             <Label htmlFor={question.id} className="text-sm font-medium">
-                {question.title}
+                {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             {question.description && (

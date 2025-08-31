@@ -17,8 +17,6 @@ const iconMapping: Record<eQuestionType, LucideIcon> = {
     [eQuestionType.starRating]: Star,
     [eQuestionType.barChoiceRating]: ChartBarBig,
     [eQuestionType.imageChoiceRating]: Images,
-
-
 };
 
 export default function QuestionIcon({ questionType, size = 16, ...props }: { questionType: eQuestionType; size?: number }) {

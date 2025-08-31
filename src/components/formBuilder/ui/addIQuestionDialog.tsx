@@ -4,9 +4,9 @@ import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../ui/dialog";
-import QuestionIcon from "./ui/questionIcon";
+import { Button } from "../../ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import QuestionIcon from "./questionIcon";
 import { useFormBuilder } from "@/store/useFormBuilder";
 
 interface IAddItemDialogProps {
@@ -17,14 +17,16 @@ interface IItemProps {
     field: IField;
     selectedField: eQuestionType | null;
     setSelectedField: (id: eQuestionType) => void;
+    onDblClick: () => void;
 }
 
-function FieldItem({ field: { id, label, accent }, selectedField, setSelectedField }: IItemProps) {
+function FieldItem({ field: { id, label, accent }, selectedField, setSelectedField, onDblClick }: IItemProps) {
 
     return (
         <div
             onClick={() => setSelectedField(id)}
-            className={cn("flex gap-3 items-center bg-accent p-2 rounded-lg border hover:border-primary transition-all duration-200",
+            onDoubleClick={onDblClick}
+            className={cn("flex gap-3 items-center bg-accent p-2 rounded-lg border hover:border-primary transition-all duration-200 select-none cursor-pointer",
                 selectedField === id ? "bg-primary/30" : "border-transparent",
             )}>
             <div className={cn('rounded-sm p-1', accent)}>
@@ -91,7 +93,7 @@ const fields: IFieldSet[] = [
 ]
 
 
-export default function AddItemDialog({ children }: IAddItemDialogProps) {
+export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
     const { addQuestions } = useFormBuilder();
 
     const [selectedField, setSelectedField] = useState<eQuestionType | null>(null);
@@ -128,7 +130,7 @@ export default function AddItemDialog({ children }: IAddItemDialogProps) {
                                             {
                                                 set.items.map((field, index) => {
                                                     return (
-                                                        <FieldItem key={index} field={field} selectedField={selectedField} setSelectedField={(code: eQuestionType) => setSelectedField(code)} />
+                                                        <FieldItem key={index} field={field} selectedField={selectedField} setSelectedField={(code: eQuestionType) => setSelectedField(code)} onDblClick={save} />
                                                     )
                                                 })
                                             }

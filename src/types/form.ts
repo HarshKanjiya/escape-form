@@ -3,14 +3,14 @@ import { eQuestionType } from "@/enums/form";
 export interface IQuestion {
     id: string;
     type: eQuestionType;
-    title: string;
+    question: string;
+    placeholder?: string;
     description?: string;
     required: boolean;
     options?: string[];
-    placeholder?: string;
     validation?: {
-        min?: number;
-        max?: number;
+        min?: number | Date;
+        max?: number | Date;
         pattern?: string;
     };
     logic?: {

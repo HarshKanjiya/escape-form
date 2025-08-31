@@ -7,13 +7,12 @@ import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
 import { Menu, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '../ui/skeleton';
 import FormConfigDialog from './ui/formConfigDialog';
-import QuestionIcon from './ui/questionIcon';
+import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
 export default function LeftBar() {
 
-    const { isLoading, questions, selectedQuestionId, name: formName, setSelectedQuestionId } = useFormBuilder();
+    const { questions, name: formName, status } = useFormBuilder();
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -133,49 +132,25 @@ export default function LeftBar() {
             >
                 <div className="flex flex-col h-full">
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
-
-                        {
-                            isLoading ? (
-                                <>
-                                    <div className='flex items-center justify-between py-3 px-3'>
-                                        <Skeleton className="h-8 w-full " />
-                                    </div>
-                                    <hr />
-                                    <div className='px-3 flex flex-col gap-3 pt-3'>
-                                        <Skeleton className="h-8 w-full " />
-                                        <Skeleton className="h-8 w-full" />
-                                        <Skeleton className="h-8 w-full" />
-                                        <Skeleton className="h-8 w-full" />
-                                        <Skeleton className="h-8 w-3/4" />
-                                    </div>
-                                </>
-                            ) : (
-                                <div className='w-full h-full flex flex-col gap-2'>
-                                    <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b'>
-                                        <span className='text-md overflow-ellipsis line-clamp-1'>{formName}</span>
-                                        <FormConfigDialog />
-                                    </div>
-                                    <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-2'>
-                                        {
-                                            questions.map((question, index) => (
-                                                <li key={question.id + index}
-                                                    className={cn('flex gap-2 items-center py-2 px-2 select-none cursor-grab bg-white shadow-md dark:bg-accent transition-all duration-200 rounded-sm',
-                                                        selectedQuestionId == question.id ? 'bg-primary/10 dark:bg-primary/30' : '')}
-                                                    onClick={() => setSelectedQuestionId(question.id)}
-                                                >
-                                                    <div className={cn('p-2 rounded-sm', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
-                                                        <QuestionIcon questionType={question.type} />
-                                                    </div>
-                                                    <div className='text-ellipsis line-clamp-1 overflow-hidden'>
-                                                        {question.title}
-                                                    </div>
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
+                        <div className='w-full h-full flex flex-col gap-2'>
+                            <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b'>
+                                <span className='text-md overflow-ellipsis line-clamp-1'>{formName}</span>
+                                <div className='flex items-center gap-2'>
+                                    <span className={cn(
+                                        'text-sm border rounded px-2 py-0.5',
+                                        status === 'draft' ? 'text-yellow-400/90 bg-yellow-600/20 border-yellow-400/40' : ''
+                                    )}>{status}</span>
+                                    <FormConfigDialog />
                                 </div>
-                            )
-                        }
+                            </div>
+                            <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-1'>
+                                {
+                                    questions.map((question, index) => (
+                                        <LeftBarQuestionItem key={question.id + index} question={question} />
+                                    ))
+                                }
+                            </ul>
+                        </div>
                     </div>
 
                     {/* Sidebar control */}

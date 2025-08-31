@@ -119,7 +119,6 @@ export default function FlowEditor() {
         };
     }, [isDragging, lastPointerPos]);
 
-    // Calculate grid pattern transform based on viewport
     const gridTransform = `translate(${viewport.x % (FLOW_CONFIG.gridSize * viewport.zoom)}, ${viewport.y % (FLOW_CONFIG.gridSize * viewport.zoom)}) scale(${viewport.zoom})`;
 
     return (
@@ -178,7 +177,7 @@ export default function FlowEditor() {
             </div>
 
             {/* Zoom Controls */}
-            <div className="absolute bottom-4 left-4 flex gap-2 z-10">
+            <div className="absolute bottom-4 left-4 flex gap-2 z-10" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
                 <div className="bg-secondary rounded px-2 py-1 text-xs text-center min-w-[60px] w-52 flex items-center justify-center gap-3">
                     <Slider
                         value={[((viewport.zoom - FLOW_CONFIG.minZoom) / (FLOW_CONFIG.maxZoom - FLOW_CONFIG.minZoom)) * 100]}
@@ -228,6 +227,6 @@ export default function FlowEditor() {
                     <RotateCcw />
                 </Button>
             </div>
-        </div>
+        </div >
     );
 }

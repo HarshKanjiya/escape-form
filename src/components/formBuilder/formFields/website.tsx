@@ -32,7 +32,7 @@ export function Website({ question, value = "", onChange, disabled = false }: We
     return (
         <div className="space-y-2">
             <Label htmlFor={question.id} className="text-sm font-medium">
-                {question.title}
+                {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             {question.description && (
