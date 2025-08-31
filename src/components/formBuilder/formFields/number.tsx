@@ -28,16 +28,14 @@ export function Number({ question, value, onChange, disabled = false }: NumberPr
                 disabled={disabled}
                 required={question.required}
                 className="w-full"
-                min={question.validation?.min}
-                max={question.validation?.max}
             />
             {(question.validation?.min !== undefined || question.validation?.max !== undefined) && (
                 <p className="text-xs text-muted-foreground">
                     {question.validation?.min !== undefined && question.validation?.max !== undefined
                         ? `Value must be between ${question.validation.min} and ${question.validation.max}`
                         : question.validation?.min !== undefined
-                        ? `Minimum value: ${question.validation.min}`
-                        : `Maximum value: ${question.validation.max}`
+                            ? `Minimum value: ${question.validation.min}`
+                            : `Maximum value: ${question.validation.max}`
                     }
                 </p>
             )}

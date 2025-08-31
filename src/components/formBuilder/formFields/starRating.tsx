@@ -12,7 +12,7 @@ interface StarRatingProps {
 
 export function StarRating({ question, value = 0, onChange, disabled = false }: StarRatingProps) {
     const [hoverValue, setHoverValue] = useState(0);
-    const maxStars = question.validation?.max || 5;
+    const maxStars = typeof question.validation?.max === "number" ? question.validation.max : 5;
 
     const handleStarClick = (rating: number) => {
         if (!disabled) {
@@ -47,7 +47,7 @@ export function StarRating({ question, value = 0, onChange, disabled = false }: 
                     className="flex items-center gap-1"
                     onMouseLeave={handleMouseLeave}
                 >
-                    {Array.from({ length: maxStars }, (_, index) => {
+                    {Array.from({ length: maxStars as number }, (_, index) => {
                         const starValue = index + 1;
                         const isFilled = starValue <= (hoverValue || value);
                         

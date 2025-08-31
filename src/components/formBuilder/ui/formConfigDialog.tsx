@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BarChart2, ChevronDown, Clock, Eye, EyeOff, ImagePlus, Lock, MonitorSmartphone, Replace, Settings, Shield, Trash2, Users2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
 
@@ -23,20 +23,23 @@ const formSettingsSchema = z.object({
     name: z.string().min(1, 'Name is required').max(80, 'Max 80 characters'),
     description: z.string().max(240, 'Max 240 characters').optional().or(z.literal('')),
     logo_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-    analytics_enabled: z.boolean().default(false),
-    welcome_screen_enabled: z.boolean().default(false),
+    analytics_enabled: z.boolean(),
+    welcome_screen_enabled: z.boolean(),
     welcome_screen: z.string().max(500, 'Too long').optional().or(z.literal('')),
-    thank_you_screen_enabled: z.boolean().default(false),
+    thank_you_screen_enabled: z.boolean(),
     thank_you_screen: z.string().max(500, 'Too long').optional().or(z.literal('')),
-    time_bound: z.boolean().default(false),
+    time_bound: z.boolean(),
     open_at: z.string().optional().or(z.literal('')),
     close_at: z.string().optional().or(z.literal('')),
-    multiple_submissions: z.boolean().default(false),
-    allow_anonymous: z.boolean().default(false),
-    password_protected: z.boolean().default(false),
+    multiple_submissions: z.boolean(),
+    allow_anonymous: z.boolean(),
+    password_protected: z.boolean(),
     password: z.string().min(6, 'Password too short').max(64, 'Password too long').optional(),
-    require_consent: z.boolean().default(false),
+    require_consent: z.boolean(),
 });
+
+type FormSettingsData = z.infer<typeof formSettingsSchema>;
+type FormSettingsForm = UseFormReturn<FormSettingsData>;
 
 
 export default function FormConfigDialog() {
@@ -114,7 +117,7 @@ export default function FormConfigDialog() {
                     })}>
                         {/* Row: Logo upload (drag/drop) on left, Name & Description stacked on right */}
                         <div className='flex flex-col md:flex-row gap-8'>
-                            <FormField control={form.control as any} name='logo_url' render={({ field }) => (
+                            <FormField control={form.control} name='logo_url' render={({ field }) => (
                                 <FormItem className='flex flex-col'>
                                     <FormLabel>Logo</FormLabel>
                                     <FormControl>
@@ -178,7 +181,7 @@ export default function FormConfigDialog() {
                                 </FormItem>
                             )} />
                             <div className='flex-1 flex flex-col md:pt-1'>
-                                <FormField control={form.control as any} name='name' render={({ field }) => (
+                                <FormField control={form.control} name='name' render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Name *</FormLabel>
                                         <FormControl>
@@ -190,7 +193,7 @@ export default function FormConfigDialog() {
                                         <FormMessage />
                                     </FormItem>
                                 )} />
-                                <FormField control={form.control as any} name='description' render={({ field }) => (
+                                <FormField control={form.control} name='description' render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
@@ -215,7 +218,7 @@ export default function FormConfigDialog() {
                                         <p className='text-sm text-muted-foreground'>Enable built-in metrics for this form.</p>
                                     </div>
                                 </div>
-                                <FormField control={form.control as any} name='analytics_enabled' render={({ field }) => (
+                                <FormField control={form.control} name='analytics_enabled' render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -235,7 +238,7 @@ export default function FormConfigDialog() {
                                 <div className='space-y-4'>
                                     <div className='flex items-center justify-between'>
                                         <FormLabel>Welcome Screen</FormLabel>
-                                        <FormField control={form.control as any} name='welcome_screen_enabled' render={({ field }) => (
+                                        <FormField control={form.control} name='welcome_screen_enabled' render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
                                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -247,7 +250,7 @@ export default function FormConfigDialog() {
                                 <div className='space-y-4'>
                                     <div className='flex items-center justify-between'>
                                         <FormLabel>Thank You Screen</FormLabel>
-                                        <FormField control={form.control as any} name='thank_you_screen_enabled' render={({ field }) => (
+                                        <FormField control={form.control} name='thank_you_screen_enabled' render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
                                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -271,7 +274,7 @@ export default function FormConfigDialog() {
                                         <p className='text-sm text-muted-foreground'>Restrict submissions to a window.</p>
                                     </div>
                                 </div>
-                                <FormField control={form.control as any} name='time_bound' render={({ field }) => (
+                                <FormField control={form.control} name='time_bound' render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -306,7 +309,7 @@ export default function FormConfigDialog() {
                                 <h3 className='font-medium'>Submission & Privacy</h3>
                             </div>
                             <div className='grid md:grid-cols-2 gap-6'>
-                                <FormField control={form.control as any} name='multiple_submissions' render={({ field }) => (
+                                <FormField control={form.control} name='multiple_submissions' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border-accent border p-3'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Multiple Submissions</FormLabel>
@@ -317,18 +320,18 @@ export default function FormConfigDialog() {
                                         </FormControl>
                                     </FormItem>
                                 )} />
-                                <FormField control={form.control as any} name='allow_anonymous' render={({ field }) => (
+                                <FormField control={form.control} name='allow_anonymous' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border-accent border p-3'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Allow Anonymous</FormLabel>
-                                            <FormDescription>Don't require authentication.</FormDescription>
+                                            <FormDescription>Don&apos;t require authentication.</FormDescription>
                                         </div>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
                                         </FormControl>
                                     </FormItem>
                                 )} />
-                                <FormField control={form.control as any} name='password_protected' render={({ field }) => (
+                                <FormField control={form.control} name='password_protected' render={({ field }) => (
                                     <div className='flex flex-col items-center rounded-md border border-accent col-span-2 bg-background w-full'>
                                         <FormItem className='flex flex-row w-full items-center justify-between p-3 '>
                                             <div className='space-y-0.5 flex items-center gap-2'>
@@ -354,7 +357,7 @@ export default function FormConfigDialog() {
                                                     className='col-span-2 w-full p-3 pt-4'
                                                 >
                                                     <div className='pt-1'>
-                                                        <FormField control={form.control as any} name='password' render={({ field }) => (
+                                                        <FormField control={form.control} name='password' render={({ field }) => (
                                                             <FormItem>
                                                                 <FormLabel>Password</FormLabel>
                                                                 <FormControl>
@@ -375,7 +378,7 @@ export default function FormConfigDialog() {
                                         </AnimatePresence>
                                     </div>
                                 )} />
-                                <FormField control={form.control as any} name='require_consent' render={({ field }) => (
+                                <FormField control={form.control} name='require_consent' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border border-accent p-3 md:col-span-2'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Require Consent</FormLabel>
@@ -401,10 +404,30 @@ export default function FormConfigDialog() {
 }
 
 
-function DateTimeField({ form, name, label }: { form: any; name: 'open_at' | 'close_at'; label: string }) {
+function DateTimeField({ form, name, label }: { form: FormSettingsForm; name: 'open_at' | 'close_at'; label: string }) {
     const [open, setOpen] = useState(false);
     const [dateState, setDateState] = useState<Date | undefined>(undefined);
     const [timeState, setTimeState] = useState<string>('');
+
+    // Watch the field value
+    const fieldValue = form.watch(name);
+
+    // Sync incoming value
+    useEffect(() => {
+        if (fieldValue) {
+            const d = new Date(fieldValue);
+            if (!isNaN(d.getTime())) {
+                setDateState(d);
+                const hh = String(d.getHours()).padStart(2, '0');
+                const mm = String(d.getMinutes()).padStart(2, '0');
+                const ss = String(d.getSeconds()).padStart(2, '0');
+                setTimeState(`${hh}:${mm}:${ss}`);
+            }
+        } else {
+            setDateState(undefined);
+            setTimeState('');
+        }
+    }, [fieldValue]);
 
     // helper combine
     const combine = (d?: Date, t?: string) => {
@@ -424,24 +447,7 @@ function DateTimeField({ form, name, label }: { form: any; name: 'open_at' | 'cl
     };
 
     return (
-        <FormField control={form.control as any} name={name} render={({ field }) => {
-            // sync incoming value
-            useEffect(() => {
-                if (field.value) {
-                    const d = new Date(field.value);
-                    if (!isNaN(d.getTime())) {
-                        setDateState(d);
-                        const hh = String(d.getHours()).padStart(2, '0');
-                        const mm = String(d.getMinutes()).padStart(2, '0');
-                        const ss = String(d.getSeconds()).padStart(2, '0');
-                        setTimeState(`${hh}:${mm}:${ss}`);
-                    }
-                } else {
-                    setDateState(undefined);
-                    setTimeState('');
-                }
-            }, [field.value]);
-
+        <FormField control={form.control} name={name} render={({ field }) => {
             const commitDate = (d?: Date) => {
                 setDateState(d);
                 if (d && timeState) field.onChange(combine(d, timeState));

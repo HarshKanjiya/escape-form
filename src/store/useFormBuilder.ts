@@ -57,7 +57,7 @@ interface IFormBuilderStore {
     open_at?: Date;
     type: eFormType;
     status: eFormStatus;
-    theme?: any;
+    theme?: unknown;
     created_at?: Date;
     updated_at?: Date;
     created_by?: string;
@@ -68,7 +68,7 @@ interface IFormBuilderStore {
     // FORM
     welcome_screen?: IWelcomeScreen;
     thank_you_screen?: IThankYouScreen;
-    config: any;
+    config: unknown;
 
     // STATE
     selectedQuestionId: string | null;
@@ -211,7 +211,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     updateQuestion: (id: string, question: Partial<IQuestion>) => {
         const { questions, selectedQuestionId, selectedQuestion } = get();
         const updatedQuestions = questions.map(q => q.id === id ? { ...q, ...question } : q);
-        const changes: Record<string, any> = { questions: updatedQuestions };
+        const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
         if (id === selectedQuestionId) changes['selectedQuestion'] = { ...selectedQuestion, ...question } as IQuestion;
         set(changes);
     },
@@ -233,7 +233,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     deleteQuestion: (questionId: string) => {
         const { questions, selectedQuestionId } = get();
         const updatedQuestions = questions.filter(q => q.id !== questionId);
-        const changes: Record<string, any> = { questions: updatedQuestions };
+        const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
         if (questionId === selectedQuestionId) {
             if (questions?.length) {
                 changes['selectedQuestion'] = questions[0];

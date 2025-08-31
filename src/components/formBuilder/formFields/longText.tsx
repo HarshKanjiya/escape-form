@@ -27,12 +27,10 @@ export function LongText({ question, value = "", onChange, disabled = false }: L
                 disabled={disabled}
                 required={question.required}
                 className="w-full min-h-[100px] resize-y"
-                maxLength={question.validation?.max}
-                minLength={question.validation?.min}
             />
             {question.validation?.max && (
                 <p className="text-xs text-muted-foreground text-right">
-                    {value.length}/{question.validation.max} characters
+                    {value.length}/{String(question.validation.max)} characters
                 </p>
             )}
         </div>

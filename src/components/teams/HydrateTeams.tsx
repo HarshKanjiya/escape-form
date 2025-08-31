@@ -19,7 +19,7 @@ export default function HydrateTeams({ teams }: Props) {
             return;
         }
         setTeams(teams);
-    }, [teams, setTeams]);
+    }, [teams, setTeams, router]);
 
     return null; // No visible UI, just sync state
 }

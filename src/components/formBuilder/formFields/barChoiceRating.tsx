@@ -11,8 +11,8 @@ interface BarChoiceRatingProps {
 
 export function BarChoiceRating({ question, value = 0, onChange, disabled = false }: BarChoiceRatingProps) {
     const [hoverValue, setHoverValue] = useState(0);
-    const maxValue = question.validation?.max || 10;
-    const minValue = question.validation?.min || 1;
+    const maxValue: number = Number(question.validation?.max) || 10;
+    const minValue: number = Number(question.validation?.min) || 1;
 
     const handleBarClick = (rating: number) => {
         if (!disabled) {

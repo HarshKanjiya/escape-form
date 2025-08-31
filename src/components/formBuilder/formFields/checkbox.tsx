@@ -57,12 +57,12 @@ export function CheckboxField({ question, value = [], onChange, disabled = false
             
             {question.validation?.min && (
                 <p className="text-xs text-muted-foreground">
-                    Select at least {question.validation.min} option{question.validation.min > 1 ? 's' : ''}
+                    Select at least {String(question.validation.min)} option{Number(question.validation.min) > 1 ? 's' : ''}
                 </p>
             )}
             {question.validation?.max && (
                 <p className="text-xs text-muted-foreground">
-                    Select at most {question.validation.max} option{question.validation.max > 1 ? 's' : ''}
+                    Select at most {String(question.validation.max)} option{Number(question.validation.max) > 1 ? 's' : ''}
                 </p>
             )}
         </div>

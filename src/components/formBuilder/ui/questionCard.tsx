@@ -114,7 +114,7 @@ export default function QuestionCard({ question, index }: IProps) {
                     <h2 className="question-card__title">{question?.question}</h2>
                     <p className="question-card__description">{question?.description}</p>
                     <p className="text-sm text-muted-foreground mt-2">
-                        Question type "{question.type}" is not yet supported.
+                        Question type &quot;{question.type}&quot; is not yet supported.
                     </p>
                 </div>
             );

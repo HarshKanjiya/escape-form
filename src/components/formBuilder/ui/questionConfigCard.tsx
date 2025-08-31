@@ -261,7 +261,7 @@ export default function QuestionConfigCard() {
                         <h2 className="question-card__title">{selectedQuestion?.question}</h2>
                         <p className="question-card__description">{selectedQuestion?.description}</p>
                         <p className="text-sm text-muted-foreground mt-2">
-                            Question type "{selectedQuestion?.type}" is not yet supported.
+                            Question type &quot;{selectedQuestion?.type}&quot; is not yet supported.
                         </p>
                     </motion.div>
                 );
