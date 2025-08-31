@@ -1,7 +1,7 @@
 'use client'
 
-import { create } from 'zustand'
 import { Project, Team } from '@/types/db'
+import { create } from 'zustand'
 
 interface TeamStore {
   teams: Team[]
