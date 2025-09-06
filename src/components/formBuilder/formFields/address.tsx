@@ -11,7 +11,7 @@ interface IProps {
     index: number
 }
 
-export function Address({ question, index }: IProps) {
+export function AddressField({ question, index }: IProps) {
 
 
     // const handleFieldChange = (field: string, fieldValue: string) => {

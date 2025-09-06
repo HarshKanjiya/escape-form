@@ -2,9 +2,22 @@
 
 import { eQuestionType } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { LongTextConfig } from "../formFields/config/longText";
-import { ShortTextConfig } from "../formFields/config/shortText";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { AddressFieldConfig } from "../formFields/config/address";
+import { BarChoiceRatingFieldConfig } from "../formFields/config/barChoiceRating";
+import { CheckboxFieldFieldConfig } from "../formFields/config/checkbox";
+import { DateFieldConfig } from "../formFields/config/date";
+import { DropdownFieldConfig } from "../formFields/config/dropdown";
+import { EmailFieldConfig } from "../formFields/config/email";
+import { FileUploadFieldConfig } from "../formFields/config/file";
+import { ImageChoiceRatingFieldConfig } from "../formFields/config/imageChoiceRating";
+import { LongTextFieldConfig } from "../formFields/config/longText";
+import { NumberFieldConfig } from "../formFields/config/number";
+import { PhoneFieldConfig } from "../formFields/config/phone";
+import { RadioFieldConfig } from "../formFields/config/radio";
+import { ShortTextFieldConfig } from "../formFields/config/shortText";
+import { StarRatingFieldConfig } from "../formFields/config/starRating";
+import { WebsiteFieldConfig } from "../formFields/config/website";
 
 export default function QuestionConfigCard() {
     const { selectedQuestion } = useFormBuilder();
@@ -34,7 +47,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        <ShortTextConfig />
+                        <ShortTextFieldConfig />
                     </motion.div>
                 );
 
@@ -48,7 +61,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        <LongTextConfig />
+                        <LongTextFieldConfig />
                     </motion.div>
                 );
 
@@ -62,7 +75,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        <div className="p-4">Number configuration</div>
+                        <NumberFieldConfig />
                     </motion.div>
                 );
 
@@ -76,8 +89,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Date config component will go here */}
-                        <div className="p-4">Date configuration</div>
+                        <DateFieldConfig />
                     </motion.div>
                 );
 
@@ -91,8 +103,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* File config component will go here */}
-                        <div className="p-4">File configuration</div>
+                        <FileUploadFieldConfig />
                     </motion.div>
                 );
 
@@ -106,8 +117,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Radio config component will go here */}
-                        <div className="p-4">Radio configuration</div>
+                        <RadioFieldConfig />
                     </motion.div>
                 );
 
@@ -121,8 +131,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Checkbox config component will go here */}
-                        <div className="p-4">Checkbox configuration</div>
+                        <CheckboxFieldFieldConfig />
                     </motion.div>
                 );
 
@@ -136,8 +145,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Dropdown config component will go here */}
-                        <div className="p-4">Dropdown configuration</div>
+                        <DropdownFieldConfig />
                     </motion.div>
                 );
 
@@ -151,8 +159,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Email config component will go here */}
-                        <div className="p-4">Email configuration</div>
+                        <EmailFieldConfig />
                     </motion.div>
                 );
 
@@ -166,8 +173,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Phone config component will go here */}
-                        <div className="p-4">Phone configuration</div>
+                        <PhoneFieldConfig />
                     </motion.div>
                 );
 
@@ -181,8 +187,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Address config component will go here */}
-                        <div className="p-4">Address configuration</div>
+                        <AddressFieldConfig />
                     </motion.div>
                 );
 
@@ -196,8 +201,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Website config component will go here */}
-                        <div className="p-4">Website configuration</div>
+                        <WebsiteFieldConfig />
                     </motion.div>
                 );
 
@@ -211,8 +215,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Star rating config component will go here */}
-                        <div className="p-4">Star rating configuration</div>
+                        <StarRatingFieldConfig />
                     </motion.div>
                 );
 
@@ -226,8 +229,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Bar choice rating config component will go here */}
-                        <div className="p-4">Bar choice rating configuration</div>
+                        <BarChoiceRatingFieldConfig />
                     </motion.div>
                 );
 
@@ -241,8 +243,7 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Image choice rating config component will go here */}
-                        <div className="p-4">Image choice rating configuration</div>
+                        <ImageChoiceRatingFieldConfig />
                     </motion.div>
                 );
 

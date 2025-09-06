@@ -11,7 +11,7 @@ interface IProps {
     index: number
 }
 
-export function FileUpload({ question, index }: IProps) {
+export function FileUploadField({ question, index }: IProps) {
     const [dragOver, setDragOver] = useState(false);
 
     // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

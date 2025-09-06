@@ -10,7 +10,7 @@ interface IProps {
     index: number
 }
 
-export function Website({ question, index }: IProps) {
+export function WebsiteField({ question, index }: IProps) {
     const formatUrl = (url: string) => {
         if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
             return `https://${url}`;

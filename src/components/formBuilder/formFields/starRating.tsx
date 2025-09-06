@@ -11,7 +11,7 @@ interface IProps {
     index: number
 }
 
-export function StarRating({ question, index }: IProps) {
+export function StarRatingField({ question, index }: IProps) {
     const [hoverValue, setHoverValue] = useState(0);
     const maxStars = typeof question.validation?.max === "number" ? question.validation.max : 5;
 

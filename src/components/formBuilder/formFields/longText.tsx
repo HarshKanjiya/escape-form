@@ -10,7 +10,7 @@ interface IProps {
     index: number
 }
 
-export function LongText({ question, index }: IProps) {
+export function LongTextField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);

@@ -1,18 +1,20 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Info } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface ShortTextProps {
     question: IQuestion,
     index: number
 }
 
-export function ShortText({ question, index }: ShortTextProps) {
+export function ShortTextField({ question, index }: ShortTextProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -185,15 +187,41 @@ export function ShortText({ question, index }: ShortTextProps) {
                         <>
                             <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
                                 {question.placeholder || "Your Answer goes here ..."}
-                                {
-                                    question.validation?.max && <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic">0 / {Number(question.validation?.max)}</span>
-                                }
+                                <AnimatePresence mode="wait">
+                                    {
+                                        question.validation?.max && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: 15 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 15 }}
+                                                transition={{ duration: 0.2 }}
+                                                key="min-char-warning"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic"
+                                            >
+                                                0 / {Number(question.validation?.max)}
+                                            </motion.span>
+                                        )
+                                    }
+                                </AnimatePresence>
+
                             </div>
-                            {
-                                question.validation?.min && <span className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 pt-2">
-                                    <Info size={14} />
-                                    Minimum {Number(question.validation?.min)} Characters Required</span>
-                            }
+                            <AnimatePresence mode="wait">
+                                {
+                                    question.validation?.min && (
+                                        <motion.small
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.15 }}
+                                            key="min-char-warning"
+                                            className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"
+                                        >
+                                            <Info size={14} />
+                                            Minimum {Number(question.validation?.min)} Characters Required
+                                        </motion.small>
+                                    )
+                                }
+                            </AnimatePresence>
                             <p
                                 onClick={() => setIsEditingPlaceholder(true)}
                                 className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"

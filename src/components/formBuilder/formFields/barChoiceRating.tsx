@@ -11,7 +11,7 @@ interface IProps {
     index: number
 }
 
-export function BarChoiceRating({ question, index }: IProps) {
+export function BarChoiceRatingField({ question, index }: IProps) {
     const [hoverValue, setHoverValue] = useState(0);
     const maxValue: number = Number(question.validation?.max) || 10;
     const minValue: number = Number(question.validation?.min) || 1;

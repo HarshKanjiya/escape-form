@@ -9,8 +9,8 @@ export interface IQuestion {
     required: boolean;
     options?: string[];
     validation?: {
-        min?: number | Date;
-        max?: number | Date;
+        min?: number | Date | undefined;
+        max?: number | Date | undefined;
         pattern?: string;
     };
     logic?: {

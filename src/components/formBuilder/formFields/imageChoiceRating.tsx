@@ -20,7 +20,7 @@ const defaultImages = [
     { value: "5", emoji: "😊", label: "Very Satisfied" }
 ];
 
-export function ImageChoiceRating({ question, index }: IProps) {
+export function ImageChoiceRatingField({ question, index }: IProps) {
     // const [hoverValue, setHoverValue] = useState("");
 
     // const handleImageClick = (imageValue: string) => {

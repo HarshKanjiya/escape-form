@@ -1,17 +1,20 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
+import { AnimatePresence, motion } from "framer-motion";
+import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
 
 interface IProps {
     question: IQuestion,
     index: number
 }
 
-export function Number({ question, index }: IProps) {
+export function NumberField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -115,7 +118,20 @@ export function Number({ question, index }: IProps) {
                         >
                             <span className="flex items-center gap-2">
                                 <span>{question.question || "Click to add question..."}</span>
-                                {question.required && <span className="text-destructive">*</span>}
+                                <AnimatePresence mode="wait">
+                                    {question.required && (
+                                        <motion.span
+                                            key="required-star"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.1 }}
+                                            className="text-destructive"
+                                        >
+                                            *
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
                             </span>
                         </div>
                     )}
@@ -142,7 +158,7 @@ export function Number({ question, index }: IProps) {
                         <div
                             onClick={() => setIsEditingDescription(true)}
                             className={cn(
-                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors",
+                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
                                 !question.description && "italic opacity-70"
                             )}
                         >
@@ -164,14 +180,48 @@ export function Number({ question, index }: IProps) {
                                     handlePlaceholderCancel();
                                 }
                             }}
-                            className="border-dashed px-4 py-3 !text-xl"
+                            className="border-dashed px-4 !py-5 !text-xl"
                             placeholder="Your Answer goes here ..."
                         />
                     ) : (
                         <>
-                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40">
+                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
                                 {question.placeholder || "Your Answer goes here ..."}
+                                <AnimatePresence mode="wait">
+                                    {
+                                        question.validation?.max && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: 15 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 15 }}
+                                                transition={{ duration: 0.2 }}
+                                                key="min-char-warning"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic"
+                                            >
+                                                {Number(question.validation?.min || 0)} - {Number(question.validation?.max)}
+                                            </motion.span>
+                                        )
+                                    }
+                                </AnimatePresence>
+
                             </div>
+                            <AnimatePresence mode="wait">
+                                {
+                                    question.validation?.min && (
+                                        <motion.small
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.15 }}
+                                            key="min-char-warning"
+                                            className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"
+                                        >
+                                            <Info size={14} />
+                                            Minimum Value {Number(question.validation?.min)} Required
+                                        </motion.small>
+                                    )
+                                }
+                            </AnimatePresence>
                             <p
                                 onClick={() => setIsEditingPlaceholder(true)}
                                 className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"

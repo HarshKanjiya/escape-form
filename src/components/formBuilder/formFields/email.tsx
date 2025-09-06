@@ -11,7 +11,7 @@ interface IProps {
     index: number
 }
 
-export function Email({ question, index }: IProps) {
+export function EmailField({ question, index }: IProps) {
     return (
         <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
             <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">

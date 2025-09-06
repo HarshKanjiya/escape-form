@@ -1,20 +1,20 @@
 import { eQuestionType } from "@/enums/form";
 import { IQuestion } from "@/types/form";
-import { Address } from "../formFields/address";
-import { BarChoiceRating } from "../formFields/barChoiceRating";
+import { AddressField } from "../formFields/address";
+import { BarChoiceRatingField } from "../formFields/barChoiceRating";
 import { CheckboxField } from "../formFields/checkbox";
-import { Date } from "../formFields/date";
-import { Dropdown } from "../formFields/dropdown";
-import { Email } from "../formFields/email";
-import { FileUpload } from "../formFields/file";
-import { ImageChoiceRating } from "../formFields/imageChoiceRating";
-import { LongText } from "../formFields/longText";
-import { Number } from "../formFields/number";
+import { DateField } from "../formFields/date";
+import { DropdownField } from "../formFields/dropdown";
+import { EmailField } from "../formFields/email";
+import { FileUploadField } from "../formFields/file";
+import { ImageChoiceRatingField } from "../formFields/imageChoiceRating";
+import { LongTextField } from "../formFields/longText";
+import { NumberField } from "../formFields/number";
 import { PhoneField } from "../formFields/phone";
-import { Radio } from "../formFields/radio";
-import { ShortText } from "../formFields/shortText";
-import { StarRating } from "../formFields/starRating";
-import { Website } from "../formFields/website";
+import { RadioField } from "../formFields/radio";
+import { ShortTextField } from "../formFields/shortText";
+import { StarRatingField } from "../formFields/starRating";
+import { WebsiteField } from "../formFields/website";
 
 interface IProps {
     question: IQuestion | null;
@@ -30,32 +30,32 @@ export default function QuestionCard({ question, index }: IProps) {
     switch (question.type) {
         case eQuestionType.shortText:
             return (
-                <ShortText question={question} index={index} />
+                <ShortTextField question={question} index={index} />
             );
 
         case eQuestionType.longText:
             return (
-                <LongText question={question} index={index} />
+                <LongTextField question={question} index={index} />
             );
 
         case eQuestionType.number:
             return (
-                <Number question={question} index={index} />
+                <NumberField question={question} index={index} />
             );
 
         case eQuestionType.date:
             return (
-                <Date question={question} index={index} />
+                <DateField question={question} index={index} />
             );
 
         case eQuestionType.file:
             return (
-                <FileUpload question={question} index={index} />
+                <FileUploadField question={question} index={index} />
             );
 
         case eQuestionType.radio:
             return (
-                <Radio question={question} index={index} />
+                <RadioField question={question} index={index} />
             );
 
         case eQuestionType.checkbox:
@@ -65,12 +65,12 @@ export default function QuestionCard({ question, index }: IProps) {
 
         case eQuestionType.dropdown:
             return (
-                <Dropdown question={question} index={index} />
+                <DropdownField question={question} index={index} />
             );
 
         case eQuestionType.email:
             return (
-                <Email question={question} index={index} />
+                <EmailField question={question} index={index} />
             );
 
         case eQuestionType.phone:
@@ -80,27 +80,27 @@ export default function QuestionCard({ question, index }: IProps) {
 
         case eQuestionType.address:
             return (
-                <Address question={question} index={index} />
+                <AddressField question={question} index={index} />
             );
 
         case eQuestionType.website:
             return (
-                <Website question={question} index={index} />
+                <WebsiteField question={question} index={index} />
             );
 
         case eQuestionType.starRating:
             return (
-                <StarRating question={question} index={index} />
+                <StarRatingField question={question} index={index} />
             );
 
         case eQuestionType.barChoiceRating:
             return (
-                <BarChoiceRating question={question} index={index} />
+                <BarChoiceRatingField question={question} index={index} />
             );
 
         case eQuestionType.imageChoiceRating:
             return (
-                <ImageChoiceRating question={question} index={index} />
+                <ImageChoiceRatingField question={question} index={index} />
             );
 
         default:

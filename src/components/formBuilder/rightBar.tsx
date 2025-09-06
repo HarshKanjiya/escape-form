@@ -1,20 +1,32 @@
 "use client";
 
 import { useFormBuilder } from "@/store/useFormBuilder";
+import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import QuestionConfigCard from "./ui/questionConfigCard";
 import QuestionTypeDropdown from "./ui/questionTypeDropdown";
+import { Button } from "../ui/button";
+import { Trash } from "lucide-react";
 
 export default function RightBar() {
-    const { selectedQuestionId } = useFormBuilder();
+    const { selectedQuestionId, deleteQuestion } = useFormBuilder();
+
     return (
         <div className="bg-background border-l z-30 overflow-visible h-full w-[360px]">
             <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                     <div className='w-full h-full flex flex-col'>
-                        <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b min-h-13'>
+                        <div className='flex items-center justify-between py-2 px-3 border-b min-h-13'>
                             <span className='text-md overflow-ellipsis line-clamp-1'>Field Config</span>
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.div>
+                                    <Button variant={'secondary'} onClick={() => deleteQuestion(selectedQuestionId!)} disabled={!selectedQuestionId}>
+                                        <Trash size={16} />
+                                        Remove
+                                    </Button>
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                         <div className="p-3 space-y-3">
                             {
