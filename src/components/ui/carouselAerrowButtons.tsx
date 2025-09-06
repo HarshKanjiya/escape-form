@@ -1,11 +1,12 @@
+import { EmblaCarouselType } from 'embla-carousel'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, MoveDown, MoveLeft, MoveRight, MoveUp } from 'lucide-react'
 import React, {
     ComponentPropsWithRef,
     useCallback,
     useEffect,
     useState
 } from 'react'
-import { EmblaCarouselType } from 'embla-carousel'
-import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react'
+import { Button } from './button'
 
 type UsePrevNextButtonsType = {
     prevBtnDisabled: boolean
@@ -55,31 +56,87 @@ type PropType = ComponentPropsWithRef<'button'> & {
 }
 
 export const PrevButton: React.FC<PropType> = (props) => {
-    const { children, isVertical = false, ...restProps } = props
+    const { children, isVertical = false, onClick, ...restProps } = props
+
+    useEffect(() => {
+        const handleKeydown = (event: KeyboardEvent) => {
+            if (event.ctrlKey && (event.key === 'ArrowLeft' || event.key === 'ArrowUp')) {
+                event.preventDefault()
+                onClick && onClick(event as any)
+            }
+        }
+
+        document.addEventListener('keydown', handleKeydown)
+        return () => {
+            document.removeEventListener('keydown', handleKeydown)
+        }
+    }, [onClick])
+
+    if (isVertical) {
+        return (
+            <div className='flex justify-between items-center gap-3 w-40'>
+                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-1">
+                    Ctrl <MoveUp size={14} />
+                </pre>
+                <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>
+                    <span>Prev</span>
+                    <ChevronUp />
+                </Button>
+            </div>)
+    }
 
     return (
-        <button
-            className="embla__button embla__button--prev"
-            type="button"
-            {...restProps}
-        >
-            {isVertical ? <ChevronUp /> : <ChevronLeft />}
-            {children}
-        </button>
+        <div className='flex flex-col items-end gap-3'>
+            <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-l-xl">
+                <ChevronLeft />
+                <span>Prev</span>
+            </Button>
+            <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
+                <MoveLeft size={14} /> Ctrl
+            </pre>
+        </div>
     )
 }
 
 export const NextButton: React.FC<PropType> = (props) => {
-    const { children, isVertical = false, ...restProps } = props
+    const { children, isVertical = false, onClick, ...restProps } = props
+
+    useEffect(() => {
+        const handleKeydown = (event: KeyboardEvent) => {
+            if (event.ctrlKey && (event.key === 'ArrowRight' || event.key === 'ArrowDown')) {
+                event.preventDefault()
+                onClick && onClick(event as any)
+            }
+        }
+
+        document.addEventListener('keydown', handleKeydown)
+        return () => {
+            document.removeEventListener('keydown', handleKeydown)
+        }
+    }, [onClick])
+
+    if (isVertical) {
+        return (
+            <div className='flex justify-between items-center gap-3 w-40'>
+                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
+                    Ctrl <MoveDown size={14} />
+                </pre>
+                <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-b-xl !w-24'>
+                    <span>Next</span>
+                    <ChevronDown />
+                </Button>
+            </div>)
+    }
 
     return (
-        <button
-            className="embla__button embla__button--next"
-            type="button"
-            {...restProps}
-        >
-            {isVertical ? <ChevronDown /> : <ChevronRight />}
-            {children}
-        </button>
+        <div className='flex flex-col items-start gap-3'>
+            <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-xl">
+                <span>Next</span>
+                <ChevronRight />
+            </Button>
+            <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-1">
+                Ctrl <MoveRight size={14} />
+            </pre>
+        </div>
     )
 }

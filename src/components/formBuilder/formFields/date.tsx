@@ -18,7 +18,7 @@ export function DateField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
-    const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
+    // const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.question);
     const [tempDescription, setTempDescription] = useState(question.description || '');
     const [tempPlaceholder, setTempPlaceholder] = useState(question.placeholder || '');
@@ -42,12 +42,12 @@ export function DateField({ question, index }: IProps) {
         }
     }, [isEditingDescription]);
 
-    useEffect(() => {
-        if (isEditingPlaceholder && placeholderInputRef.current) {
-            placeholderInputRef.current.focus();
-            placeholderInputRef.current.select();
-        }
-    }, [isEditingPlaceholder]);
+    // useEffect(() => {
+    //     if (isEditingPlaceholder && placeholderInputRef.current) {
+    //         placeholderInputRef.current.focus();
+    //         placeholderInputRef.current.select();
+    //     }
+    // }, [isEditingPlaceholder]);
 
     const handleQuestionSave = () => {
         if (tempQuestion.trim() !== question.question) {
@@ -63,12 +63,12 @@ export function DateField({ question, index }: IProps) {
         setIsEditingDescription(false);
     };
 
-    const handlePlaceholderSave = () => {
-        if (tempPlaceholder !== (question.placeholder || '')) {
-            updateQuestion(question.id, { placeholder: tempPlaceholder });
-        }
-        setIsEditingPlaceholder(false);
-    };
+    // const handlePlaceholderSave = () => {
+    //     if (tempPlaceholder !== (question.placeholder || '')) {
+    //         updateQuestion(question.id, { placeholder: tempPlaceholder });
+    //     }
+    //     setIsEditingPlaceholder(false);
+    // };
 
     const handleQuestionCancel = () => {
         setTempQuestion(question.question);
@@ -80,10 +80,10 @@ export function DateField({ question, index }: IProps) {
         setIsEditingDescription(false);
     };
 
-    const handlePlaceholderCancel = () => {
-        setTempPlaceholder(question.placeholder || '');
-        setIsEditingPlaceholder(false);
-    };
+    // const handlePlaceholderCancel = () => {
+    //     setTempPlaceholder(question.placeholder || '');
+    //     setIsEditingPlaceholder(false);
+    // };
 
     return (
         <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
@@ -167,7 +167,23 @@ export function DateField({ question, index }: IProps) {
                     )}
                 </div>
                 <div className="space-y-2">
-                    {isEditingPlaceholder ? (
+                    <div className="flex items-baseline gap-3 border-b-2 pb-2 border-primary-700/30 w-fit">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm opacity-80">Month</span>
+                            <span className="text-primary-700/50 text-3xl italic">MM</span>
+                        </div>
+                        <div className="text-primary-700/30 mt-auto text-4xl">/</div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm opacity-80">Day</span>
+                            <span className="text-primary-700/50 text-3xl italic">DD</span>
+                        </div>
+                        <div className="text-primary-700/30 mt-auto text-4xl">/</div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm opacity-80">Year</span>
+                            <span className="text-primary-700/50 text-3xl italic">YYYY</span>
+                        </div>
+                    </div>
+                    {/* {isEditingPlaceholder ? (
                         <Input
                             ref={placeholderInputRef}
                             value={tempPlaceholder}
@@ -187,23 +203,6 @@ export function DateField({ question, index }: IProps) {
                         <>
                             <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
                                 {question.placeholder || "Your Answer goes here ..."}
-                                <AnimatePresence mode="wait">
-                                    {
-                                        question.validation?.max && (
-                                            <motion.span
-                                                initial={{ opacity: 0, x: 15 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: 15 }}
-                                                transition={{ duration: 0.2 }}
-                                                key="min-char-warning"
-                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic"
-                                            >
-                                                0 / {Number(question.validation?.max)}
-                                            </motion.span>
-                                        )
-                                    }
-                                </AnimatePresence>
-
                             </div>
                             <AnimatePresence mode="wait">
                                 {
@@ -222,14 +221,8 @@ export function DateField({ question, index }: IProps) {
                                     )
                                 }
                             </AnimatePresence>
-                            <p
-                                onClick={() => setIsEditingPlaceholder(true)}
-                                className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"
-                            >
-                                Click to edit placeholder
-                            </p>
                         </>
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>
