@@ -56,13 +56,13 @@ type PropType = ComponentPropsWithRef<'button'> & {
 }
 
 export const PrevButton: React.FC<PropType> = (props) => {
-    const { children, isVertical = false, onClick, ...restProps } = props
+    const { isVertical = false, onClick, ...restProps } = props
 
     useEffect(() => {
         const handleKeydown = (event: KeyboardEvent) => {
             if (event.ctrlKey && (event.key === 'ArrowLeft' || event.key === 'ArrowUp')) {
                 event.preventDefault()
-                onClick && onClick(event as any)
+                if (onClick) onClick({} as React.MouseEvent<HTMLButtonElement>)
             }
         }
 
@@ -99,13 +99,13 @@ export const PrevButton: React.FC<PropType> = (props) => {
 }
 
 export const NextButton: React.FC<PropType> = (props) => {
-    const { children, isVertical = false, onClick, ...restProps } = props
+    const { isVertical = false, onClick, ...restProps } = props
 
     useEffect(() => {
         const handleKeydown = (event: KeyboardEvent) => {
             if (event.ctrlKey && (event.key === 'ArrowRight' || event.key === 'ArrowDown')) {
                 event.preventDefault()
-                onClick && onClick(event as any)
+                if (onClick) onClick({} as React.MouseEvent<HTMLButtonElement>)
             }
         }
 

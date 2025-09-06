@@ -1,9 +1,4 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
 
 
 interface IProps {
@@ -12,9 +7,9 @@ interface IProps {
 }
 
 export function BarChoiceRatingField({ question, index }: IProps) {
-    const [hoverValue, setHoverValue] = useState(0);
-    const maxValue: number = Number(question.validation?.max) || 10;
-    const minValue: number = Number(question.validation?.min) || 1;
+    // const [hoverValue, setHoverValue] = useState(0);
+    // const maxValue: number = Number(question.validation?.max) || 10;
+    // const minValue: number = Number(question.validation?.min) || 1;
 
     // const handleBarClick = (rating: number) => {
     //     if (!disabled) {

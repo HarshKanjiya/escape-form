@@ -1,9 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 
 interface IProps {
@@ -12,8 +8,8 @@ interface IProps {
 }
 
 export function StarRatingField({ question, index }: IProps) {
-    const [hoverValue, setHoverValue] = useState(0);
-    const maxStars = typeof question.validation?.max === "number" ? question.validation.max : 5;
+    // const [hoverValue, setHoverValue] = useState(0);
+    // const maxStars = typeof question.validation?.max === "number" ? question.validation.max : 5;
 
     // const handleStarClick = (rating: number) => {
     //     if (!disabled) {

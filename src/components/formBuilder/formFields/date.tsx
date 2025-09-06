@@ -5,9 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Info } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface IProps {
     question: IQuestion,
@@ -18,14 +17,11 @@ export function DateField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
-    // const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.question);
     const [tempDescription, setTempDescription] = useState(question.description || '');
-    const [tempPlaceholder, setTempPlaceholder] = useState(question.placeholder || '');
 
     const questionInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
-    const placeholderInputRef = useRef<HTMLInputElement>(null);
 
     // Auto-focus when entering edit mode
     useEffect(() => {
@@ -42,13 +38,6 @@ export function DateField({ question, index }: IProps) {
         }
     }, [isEditingDescription]);
 
-    // useEffect(() => {
-    //     if (isEditingPlaceholder && placeholderInputRef.current) {
-    //         placeholderInputRef.current.focus();
-    //         placeholderInputRef.current.select();
-    //     }
-    // }, [isEditingPlaceholder]);
-
     const handleQuestionSave = () => {
         if (tempQuestion.trim() !== question.question) {
             updateQuestion(question.id, { question: tempQuestion.trim() });
@@ -63,13 +52,6 @@ export function DateField({ question, index }: IProps) {
         setIsEditingDescription(false);
     };
 
-    // const handlePlaceholderSave = () => {
-    //     if (tempPlaceholder !== (question.placeholder || '')) {
-    //         updateQuestion(question.id, { placeholder: tempPlaceholder });
-    //     }
-    //     setIsEditingPlaceholder(false);
-    // };
-
     const handleQuestionCancel = () => {
         setTempQuestion(question.question);
         setIsEditingQuestion(false);
@@ -79,11 +61,6 @@ export function DateField({ question, index }: IProps) {
         setTempDescription(question.description || '');
         setIsEditingDescription(false);
     };
-
-    // const handlePlaceholderCancel = () => {
-    //     setTempPlaceholder(question.placeholder || '');
-    //     setIsEditingPlaceholder(false);
-    // };
 
     return (
         <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
@@ -183,46 +160,6 @@ export function DateField({ question, index }: IProps) {
                             <span className="text-primary-700/50 text-3xl italic">YYYY</span>
                         </div>
                     </div>
-                    {/* {isEditingPlaceholder ? (
-                        <Input
-                            ref={placeholderInputRef}
-                            value={tempPlaceholder}
-                            onChange={(e) => setTempPlaceholder(e.target.value)}
-                            onBlur={handlePlaceholderSave}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handlePlaceholderSave();
-                                } else if (e.key === 'Escape') {
-                                    handlePlaceholderCancel();
-                                }
-                            }}
-                            className="border-dashed px-4 !py-5 !text-xl"
-                            placeholder="Your Answer goes here ..."
-                        />
-                    ) : (
-                        <>
-                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
-                                {question.placeholder || "Your Answer goes here ..."}
-                            </div>
-                            <AnimatePresence mode="wait">
-                                {
-                                    question.validation?.min && (
-                                        <motion.small
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.15 }}
-                                            key="min-char-warning"
-                                            className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"
-                                        >
-                                            <Info size={14} />
-                                            Minimum {Number(question.validation?.min)} Characters Required
-                                        </motion.small>
-                                    )
-                                }
-                            </AnimatePresence>
-                        </>
-                    )} */}
                 </div>
             </div>
         </div>

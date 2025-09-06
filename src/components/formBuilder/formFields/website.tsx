@@ -1,9 +1,4 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
 
 interface IProps {
     question: IQuestion,
@@ -11,12 +6,12 @@ interface IProps {
 }
 
 export function WebsiteField({ question, index }: IProps) {
-    const formatUrl = (url: string) => {
-        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-            return `https://${url}`;
-        }
-        return url;
-    };
+    // const formatUrl = (url: string) => {
+    //     if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+    //         return `https://${url}`;
+    //     }
+    //     return url;
+    // };
 
     // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     onChange?.(e.target.value);

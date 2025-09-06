@@ -1,9 +1,4 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
 
 
 interface IProps {
@@ -11,14 +6,14 @@ interface IProps {
     index: number
 }
 
-// Default emotion images with emojis as fallback
-const defaultImages = [
-    { value: "1", emoji: "😢", label: "Very Dissatisfied" },
-    { value: "2", emoji: "😕", label: "Dissatisfied" },
-    { value: "3", emoji: "😐", label: "Neutral" },
-    { value: "4", emoji: "🙂", label: "Satisfied" },
-    { value: "5", emoji: "😊", label: "Very Satisfied" }
-];
+// // Default emotion images with emojis as fallback
+// const defaultImages = [
+//     { value: "1", emoji: "😢", label: "Very Dissatisfied" },
+//     { value: "2", emoji: "😕", label: "Dissatisfied" },
+//     { value: "3", emoji: "😐", label: "Neutral" },
+//     { value: "4", emoji: "🙂", label: "Satisfied" },
+//     { value: "5", emoji: "😊", label: "Very Satisfied" }
+// ];
 
 export function ImageChoiceRatingField({ question, index }: IProps) {
     // const [hoverValue, setHoverValue] = useState("");

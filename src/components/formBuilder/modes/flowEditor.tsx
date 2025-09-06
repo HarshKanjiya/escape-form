@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Minus, Plus, RotateCcw } from "lucide-react";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Configuration object for the flow editor
 const FLOW_CONFIG = {

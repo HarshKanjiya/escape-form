@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
 import { NextButton, PrevButton, usePrevNextButtons } from "@/components/ui/carouselAerrowButtons";
 import { DotButtonNav, useDotButton } from "@/components/ui/carouselDotButtons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";

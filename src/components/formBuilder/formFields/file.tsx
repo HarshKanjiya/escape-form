@@ -1,9 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 
 interface IProps {
@@ -12,7 +8,7 @@ interface IProps {
 }
 
 export function FileUploadField({ question, index }: IProps) {
-    const [dragOver, setDragOver] = useState(false);
+    // const [dragOver, setDragOver] = useState(false);
 
     // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     const files = Array.from(e.target.files || []);

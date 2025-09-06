@@ -31,8 +31,8 @@ export function DateFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!minDateValidation && selectedQuestion?.validation?.min) {
-            updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, min: undefined } });
+        if (!minDateValidation && selectedQuestion?.validation?.min && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: undefined } });
             setMinDate(null);
         }
         else if (minDateValidation && minDateRef.current) {
@@ -42,8 +42,8 @@ export function DateFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!maxDateValidation && selectedQuestion?.validation?.max) {
-            updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, max: undefined } });
+        if (!maxDateValidation && selectedQuestion?.validation?.max && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: undefined } });
             setMaxDate(null);
         }
         else if (maxDateValidation && maxDateRef.current) {

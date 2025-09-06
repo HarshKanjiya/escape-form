@@ -32,8 +32,8 @@ export function ShortTextFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!minLenValidation && selectedQuestion?.validation?.min) {
-            updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, min: undefined } });
+        if (!minLenValidation && selectedQuestion?.validation?.min && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: undefined } });
             setMinLength(0);
         }
         else if (minLenValidation && minLenRef.current) {
@@ -44,8 +44,8 @@ export function ShortTextFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!maxLenValidation && selectedQuestion?.validation?.max) {
-            updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, max: undefined } });
+        if (!maxLenValidation && selectedQuestion?.validation?.max && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: undefined } });
             setMaxLength(0);
         }
         else if (maxLenValidation && maxLenRef.current) {
@@ -59,10 +59,10 @@ export function ShortTextFieldConfig() {
         setTouched(true);
         switch (fieldName) {
             case 'min':
-                if (selectedQuestion?.validation?.min != minLength && minLength) updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, min: minLenValidation ? minLength : undefined } });
+                if (selectedQuestion?.validation?.min != minLength && minLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: minLenValidation ? minLength : undefined } });
                 break;
             case 'max':
-                if (selectedQuestion?.validation?.max != maxLength && maxLength) updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, max: maxLenValidation ? maxLength : undefined } });
+                if (selectedQuestion?.validation?.max != maxLength && maxLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: maxLenValidation ? maxLength : undefined } });
                 break;
         }
     }
