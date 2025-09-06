@@ -48,7 +48,7 @@ export function NumberFieldConfig() {
             updateQuestion(selectedQuestion?.id!, { validation: { ...selectedQuestion?.validation, max: undefined } });
             setMaxLength(0);
         }
-        else if (maxLenRef.current) {
+        else if (maxLenValidation && maxLenRef.current) {
             maxLenRef.current?.focus();
             maxLenRef.current?.select();
 
@@ -98,7 +98,7 @@ export function NumberFieldConfig() {
 
     return (
         <div className="flex flex-col overflow-y-clip">
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-center justify-between pb-3">
                 <Label htmlFor="short-text-required">Required</Label>
                 <Switch id="short-text-required" checked={required} onCheckedChange={onRequireChange} />
             </div>
@@ -125,7 +125,7 @@ export function NumberFieldConfig() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                     >
-                        <Input className="my-2" type="number" placeholder="Min Length" ref={minLenRef} value={minLength} onKeyDown={handleKeyDown}
+                        <Input className="my-2 mt-4" type="number" placeholder="Min Value" ref={minLenRef} value={minLength} onKeyDown={handleKeyDown}
                             onChange={(e) => setMinLength(Number(e.target.value))} onBlur={() => onFieldBlur('min')} onInput={handleInput} />
                     </motion.div>
                 }
@@ -140,7 +140,7 @@ export function NumberFieldConfig() {
                         layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.validation?.max)}</motion.small>
                 }
             </AnimatePresence>
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-center justify-between pt-3">
                 <Label htmlFor="short-text-max">Maximum Value
                     <Tooltip delayDuration={200}>
                         <TooltipTrigger tabIndex={-1}>
@@ -163,7 +163,7 @@ export function NumberFieldConfig() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                     >
-                        <Input className="my-2" type="number" placeholder="Max Length" ref={maxLenRef} value={maxLength} onKeyDown={handleKeyDown}
+                        <Input className="my-2 mt-4" type="number" placeholder="Max Value" ref={maxLenRef} value={maxLength} onKeyDown={handleKeyDown}
                             onChange={(e) => setMaxLength(Number(e.target.value))} onBlur={() => onFieldBlur('max')} onInput={handleInput} />
                     </motion.div>
                 }
