@@ -1,16 +1,16 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { Globe } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-interface WebsiteProps {
-    question: IQuestion;
-    value?: string;
-    onChange?: (value: string) => void;
-    disabled?: boolean;
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function Website({ question, value = "", onChange, disabled = false }: WebsiteProps) {
+export function Website({ question, index }: IProps) {
     const formatUrl = (url: string) => {
         if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
             return `https://${url}`;
@@ -18,20 +18,24 @@ export function Website({ question, value = "", onChange, disabled = false }: We
         return url;
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange?.(e.target.value);
-    };
+    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     onChange?.(e.target.value);
+    // };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const formattedUrl = formatUrl(e.target.value);
-        if (formattedUrl !== e.target.value) {
-            onChange?.(formattedUrl);
-        }
-    };
+    // const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    //     const formattedUrl = formatUrl(e.target.value);
+    //     if (formattedUrl !== e.target.value) {
+    //         onChange?.(formattedUrl);
+    //     }
+    // };
 
     return (
-        <div className="space-y-2">
-            <Label htmlFor={question.id} className="text-sm font-medium">
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">
+            {/* <Label htmlFor={question.id} className="text-sm font-medium">
                 {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -55,7 +59,8 @@ export function Website({ question, value = "", onChange, disabled = false }: We
             </div>
             <p className="text-xs text-muted-foreground">
                 URL will be automatically prefixed with https:// if needed
-            </p>
+            </p> */}
+        </div>
         </div>
     );
 }

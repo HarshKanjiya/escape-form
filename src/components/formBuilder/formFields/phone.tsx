@@ -1,39 +1,44 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { Phone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-interface PhoneProps {
-    question: IQuestion;
-    value?: string;
-    onChange?: (value: string) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function PhoneField({ question, value = "", onChange, disabled = false }: PhoneProps) {
-    const formatPhoneNumber = (value: string) => {
-        // Remove all non-digits
-        const digits = value.replace(/\D/g, '');
+export function PhoneField({ question, index }: IProps) {
+    // const formatPhoneNumber = (value: string) => {
+    //     // Remove all non-digits
+    //     const digits = value.replace(/\D/g, '');
         
-        // Format as (XXX) XXX-XXXX for US phone numbers
-        if (digits.length >= 10) {
-            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
-        } else if (digits.length >= 6) {
-            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-        } else if (digits.length >= 3) {
-            return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-        }
-        return digits;
-    };
+    //     // Format as (XXX) XXX-XXXX for US phone numbers
+    //     if (digits.length >= 10) {
+    //         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+    //     } else if (digits.length >= 6) {
+    //         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    //     } else if (digits.length >= 3) {
+    //         return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    //     }
+    //     return digits;
+    // };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formatted = formatPhoneNumber(e.target.value);
-        onChange?.(formatted);
-    };
+    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const formatted = formatPhoneNumber(e.target.value);
+    //     onChange?.(formatted);
+    // };
 
     return (
-        <div className="space-y-2">
-            <Label htmlFor={question.id} className="text-sm font-medium">
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">
+            {/* <Label htmlFor={question.id} className="text-sm font-medium">
                 {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -56,7 +61,8 @@ export function PhoneField({ question, value = "", onChange, disabled = false }:
             </div>
             <p className="text-xs text-muted-foreground">
                 Phone number will be automatically formatted
-            </p>
+            </p> */}
+        </div>
         </div>
     );
 }

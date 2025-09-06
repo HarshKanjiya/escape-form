@@ -1,18 +1,24 @@
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
+import { useEffect, useRef, useState } from "react";
 
-interface RadioProps {
-    question: IQuestion;
-    value?: string;
-    onChange?: (value: string) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function Radio({ question, value = "", onChange, disabled = false }: RadioProps) {
+export function Radio({ question, index }: IProps) {
     return (
-        <div className="space-y-4">
-            <div>
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">
+            {/* <div>
                 <Label className="text-sm font-medium">
                     {question.question}
                     {question.required && <span className="text-red-500 ml-1">*</span>}
@@ -44,7 +50,8 @@ export function Radio({ question, value = "", onChange, disabled = false }: Radi
             
             {(!question.options || question.options.length === 0) && (
                 <p className="text-sm text-muted-foreground italic">No options available</p>
-            )}
+            )} */}
+        </div>
         </div>
     );
 }

@@ -1,25 +1,30 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
+import { useEffect, useRef, useState } from "react";
 
-interface DropdownProps {
-    question: IQuestion;
-    value?: string;
-    onChange?: (value: string) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function Dropdown({ question, value = "", onChange, disabled = false }: DropdownProps) {
+export function Dropdown({ question, index }: IProps) {
     return (
-        <div className="space-y-2">
-            <Label className="text-sm font-medium">
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">            {/* <Label className="text-sm font-medium">
                 {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             {question.description && (
                 <p className="text-sm text-muted-foreground">{question.description}</p>
             )}
-            
+
             <Select
                 value={value}
                 onValueChange={onChange}
@@ -37,10 +42,11 @@ export function Dropdown({ question, value = "", onChange, disabled = false }: D
                     ))}
                 </SelectContent>
             </Select>
-            
+
             {(!question.options || question.options.length === 0) && (
                 <p className="text-sm text-muted-foreground italic">No options available</p>
-            )}
+            )} */}
+        </div>
         </div>
     );
 }

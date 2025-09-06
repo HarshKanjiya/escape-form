@@ -1,49 +1,55 @@
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface BarChoiceRatingProps {
-    question: IQuestion;
-    value?: number;
-    onChange?: (value: number) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function BarChoiceRating({ question, value = 0, onChange, disabled = false }: BarChoiceRatingProps) {
+export function BarChoiceRating({ question, index }: IProps) {
     const [hoverValue, setHoverValue] = useState(0);
     const maxValue: number = Number(question.validation?.max) || 10;
     const minValue: number = Number(question.validation?.min) || 1;
 
-    const handleBarClick = (rating: number) => {
-        if (!disabled) {
-            onChange?.(rating);
-        }
-    };
+    // const handleBarClick = (rating: number) => {
+    //     if (!disabled) {
+    //         onChange?.(rating);
+    //     }
+    // };
 
-    const handleBarHover = (rating: number) => {
-        if (!disabled) {
-            setHoverValue(rating);
-        }
-    };
+    // const handleBarHover = (rating: number) => {
+    //     if (!disabled) {
+    //         setHoverValue(rating);
+    //     }
+    // };
 
-    const handleMouseLeave = () => {
-        setHoverValue(0);
-    };
+    // const handleMouseLeave = () => {
+    //     setHoverValue(0);
+    // };
 
-    const getBarColor = (barValue: number) => {
-        const currentValue = hoverValue || value;
-        if (barValue <= currentValue) {
-            const percentage = (barValue / maxValue) * 100;
-            if (percentage <= 33) return 'bg-red-500';
-            if (percentage <= 66) return 'bg-yellow-500';
-            return 'bg-green-500';
-        }
-        return 'bg-gray-200 hover:bg-gray-300';
-    };
+    // const getBarColor = (barValue: number) => {
+    //     const currentValue = hoverValue || value;
+    //     if (barValue <= currentValue) {
+    //         const percentage = (barValue / maxValue) * 100;
+    //         if (percentage <= 33) return 'bg-red-500';
+    //         if (percentage <= 66) return 'bg-yellow-500';
+    //         return 'bg-green-500';
+    //     }
+    //     return 'bg-gray-200 hover:bg-gray-300';
+    // };
 
     return (
-        <div className="space-y-4">
-            <div>
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">
+                {/* <div>
                 <Label className="text-sm font-medium">
                     {question.question}
                     {question.required && <span className="text-red-500 ml-1">*</span>}
@@ -97,6 +103,7 @@ export function BarChoiceRating({ question, value = 0, onChange, disabled = fals
                     )}
                     <span>High</span>
                 </div>
+            </div> */}
             </div>
         </div>
     );

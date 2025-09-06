@@ -209,6 +209,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     updateQuestion: (id: string, question: Partial<IQuestion>) => {
+        console.log('POSITION [ called ]');
         const { questions, selectedQuestionId, selectedQuestion } = get();
         const updatedQuestions = questions.map(q => q.id === id ? { ...q, ...question } : q);
         const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };

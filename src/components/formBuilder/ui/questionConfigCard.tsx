@@ -62,7 +62,6 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        {/* Number config component will go here */}
                         <div className="p-4">Number configuration</div>
                     </motion.div>
                 );

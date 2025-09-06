@@ -1,14 +1,14 @@
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { Card } from "@/components/ui/card";
-import { Check, Image as ImageIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface ImageChoiceRatingProps {
-    question: IQuestion;
-    value?: string;
-    onChange?: (value: string) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
 // Default emotion images with emojis as fallback
@@ -20,35 +20,38 @@ const defaultImages = [
     { value: "5", emoji: "😊", label: "Very Satisfied" }
 ];
 
-export function ImageChoiceRating({ question, value = "", onChange, disabled = false }: ImageChoiceRatingProps) {
-    const [hoverValue, setHoverValue] = useState("");
+export function ImageChoiceRating({ question, index }: IProps) {
+    // const [hoverValue, setHoverValue] = useState("");
 
-    const handleImageClick = (imageValue: string) => {
-        if (!disabled) {
-            onChange?.(imageValue);
-        }
-    };
+    // const handleImageClick = (imageValue: string) => {
+    //     if (!disabled) {
+    //         onChange?.(imageValue);
+    //     }
+    // };
 
-    const handleImageHover = (imageValue: string) => {
-        if (!disabled) {
-            setHoverValue(imageValue);
-        }
-    };
+    // const handleImageHover = (imageValue: string) => {
+    //     if (!disabled) {
+    //         setHoverValue(imageValue);
+    //     }
+    // };
 
-    const handleMouseLeave = () => {
-        setHoverValue("");
-    };
+    // const handleMouseLeave = () => {
+    //     setHoverValue("");
+    // };
 
-    // Use custom options if provided, otherwise use default emotion images
-    const images = question.options?.map((option, index) => ({
-        value: (index + 1).toString(),
-        emoji: defaultImages[index]?.emoji || "⭐",
-        label: option
-    })) || defaultImages;
+    // // Use custom options if provided, otherwise use default emotion images
+    // const images = question.options?.map((option, index) => ({
+    //     value: (index + 1).toString(),
+    //     emoji: defaultImages[index]?.emoji || "⭐",
+    //     label: option
+    // })) || defaultImages;
 
     return (
-        <div className="space-y-4">
-            <div>
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">            {/* <div>
                 <Label className="text-sm font-medium">
                     {question.question}
                     {question.required && <span className="text-red-500 ml-1">*</span>}
@@ -82,17 +85,14 @@ export function ImageChoiceRating({ question, value = "", onChange, disabled = f
                             onMouseEnter={() => handleImageHover(image.value)}
                         >
                             <div className="p-4 flex flex-col items-center text-center space-y-2">
-                                {/* Emoji or placeholder image */}
                                 <div className="text-4xl mb-2">
                                     {image.emoji || <ImageIcon className="h-8 w-8 text-muted-foreground" />}
                                 </div>
                                 
-                                {/* Label */}
                                 <span className="text-xs font-medium text-muted-foreground">
                                     {image.label}
                                 </span>
                                 
-                                {/* Selection indicator */}
                                 {isSelected && (
                                     <div className="absolute top-2 right-2">
                                         <div className="bg-primary text-primary-foreground rounded-full p-1">
@@ -112,7 +112,8 @@ export function ImageChoiceRating({ question, value = "", onChange, disabled = f
                         Selected: {images.find(img => img.value === value)?.label}
                     </span>
                 </div>
-            )}
+            )} */}
+            </div>
         </div>
     );
 }

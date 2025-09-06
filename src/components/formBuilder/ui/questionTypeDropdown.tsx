@@ -32,7 +32,7 @@ export default function QuestionTypeDropdown() {
 
     return (
         <div className="space-y-3">
-            <Label>Type</Label>
+            <Label>Question Type</Label>
             <Select value={selectedQuestion?.type} onValueChange={onChange}>
                 <SelectTrigger className="w-full">
                     <div className="flex items-center gap-2">

@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Info } from "lucide-react";
 
 interface ShortTextProps {
     question: IQuestion,
@@ -114,7 +116,20 @@ export function ShortText({ question, index }: ShortTextProps) {
                         >
                             <span className="flex items-center gap-2">
                                 <span>{question.question || "Click to add question..."}</span>
-                                {question.required && <span className="text-destructive">*</span>}
+                                <AnimatePresence mode="wait">
+                                    {question.required && (
+                                        <motion.span
+                                            key="required-star"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.1 }}
+                                            className="text-destructive"
+                                        >
+                                            *
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
                             </span>
                         </div>
                     )}
@@ -141,7 +156,7 @@ export function ShortText({ question, index }: ShortTextProps) {
                         <div
                             onClick={() => setIsEditingDescription(true)}
                             className={cn(
-                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors",
+                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
                                 !question.description && "italic opacity-70"
                             )}
                         >
@@ -163,14 +178,22 @@ export function ShortText({ question, index }: ShortTextProps) {
                                     handlePlaceholderCancel();
                                 }
                             }}
-                            className="border-dashed px-4 py-3 !text-xl"
+                            className="border-dashed px-4 !py-5 !text-xl"
                             placeholder="Your Answer goes here ..."
                         />
                     ) : (
                         <>
-                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40">
+                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
                                 {question.placeholder || "Your Answer goes here ..."}
+                                {
+                                    question.validation?.max && <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic">0 / {Number(question.validation?.max)}</span>
+                                }
                             </div>
+                            {
+                                question.validation?.min && <span className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 pt-2">
+                                    <Info size={14} />
+                                    Minimum {Number(question.validation?.min)} Characters Required</span>
+                            }
                             <p
                                 onClick={() => setIsEditingPlaceholder(true)}
                                 className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"

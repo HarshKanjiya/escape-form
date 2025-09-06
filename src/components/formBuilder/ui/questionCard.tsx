@@ -35,77 +35,72 @@ export default function QuestionCard({ question, index }: IProps) {
 
         case eQuestionType.longText:
             return (
-                <LongText question={question} />
+                <LongText question={question} index={index} />
             );
 
         case eQuestionType.number:
             return (
-                <Number question={question} />
+                <Number question={question} index={index} />
             );
 
         case eQuestionType.date:
             return (
-                <Date question={question} />
+                <Date question={question} index={index} />
             );
 
         case eQuestionType.file:
             return (
-                <FileUpload question={question} />
+                <FileUpload question={question} index={index} />
             );
 
         case eQuestionType.radio:
             return (
-                <Radio question={question} />
+                <Radio question={question} index={index} />
             );
 
         case eQuestionType.checkbox:
             return (
-                <CheckboxField question={question} />
+                <CheckboxField question={question} index={index} />
             );
 
         case eQuestionType.dropdown:
             return (
-                <Dropdown question={question} />
+                <Dropdown question={question} index={index} />
             );
 
         case eQuestionType.email:
             return (
-                <Email question={question} />
+                <Email question={question} index={index} />
             );
 
         case eQuestionType.phone:
             return (
-                <PhoneField question={question} />
+                <PhoneField question={question} index={index} />
             );
 
         case eQuestionType.address:
             return (
-                <Address question={question} />
-            );
-
-        case eQuestionType.address:
-            return (
-                <Address question={question} />
+                <Address question={question} index={index} />
             );
 
         case eQuestionType.website:
             return (
-                <Website question={question} />
+                <Website question={question} index={index} />
             );
 
         case eQuestionType.starRating:
             return (
-                <StarRating question={question} />
+                <StarRating question={question} index={index} />
             );
 
         case eQuestionType.barChoiceRating:
             return (
-                <BarChoiceRating question={question} />
+                <BarChoiceRating question={question} index={index} />
             );
 
         case eQuestionType.imageChoiceRating:
             return (
-                <ImageChoiceRating question={question} />
+                <ImageChoiceRating question={question} index={index} />
             );
 
         default:

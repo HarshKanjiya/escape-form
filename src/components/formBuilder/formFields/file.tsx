@@ -1,40 +1,43 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { Upload, File, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface FileUploadProps {
-    question: IQuestion;
-    value?: File[];
-    onChange?: (value: File[]) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function FileUpload({ question, value = [], onChange, disabled = false }: FileUploadProps) {
+export function FileUpload({ question, index }: IProps) {
     const [dragOver, setDragOver] = useState(false);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        onChange?.([...value, ...files]);
-    };
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const files = Array.from(e.target.files || []);
+    //     onChange?.([...value, ...files]);
+    // };
 
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-        setDragOver(false);
-        const files = Array.from(e.dataTransfer.files);
-        onChange?.([...value, ...files]);
-    };
+    // const handleDrop = (e: React.DragEvent) => {
+    //     e.preventDefault();
+    //     setDragOver(false);
+    //     const files = Array.from(e.dataTransfer.files);
+    //     onChange?.([...value, ...files]);
+    // };
 
-    const removeFile = (index: number) => {
-        const newFiles = value.filter((_, i) => i !== index);
-        onChange?.(newFiles);
-    };
+    // const removeFile = (index: number) => {
+    //     const newFiles = value.filter((_, i) => i !== index);
+    //     onChange?.(newFiles);
+    // };
 
     return (
-        <div className="space-y-4">
-            <Label className="text-sm font-medium">
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">
+                {/* <Label className="text-sm font-medium">
                 {question.question}
                 {question.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -92,7 +95,8 @@ export function FileUpload({ question, value = [], onChange, disabled = false }:
                         </div>
                     ))}
                 </div>
-            )}
+            )} */}
+            </div>
         </div>
     );
 }

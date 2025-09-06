@@ -3,12 +3,11 @@
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import QuestionTypeDropdown from "./ui/questionTypeDropdown";
 import QuestionConfigCard from "./ui/questionConfigCard";
+import QuestionTypeDropdown from "./ui/questionTypeDropdown";
 
 export default function RightBar() {
-    const { selectedQuestion, updateQuestion } = useFormBuilder();
+    const { selectedQuestionId } = useFormBuilder();
     return (
         <div className="bg-background border-l z-30 overflow-visible h-full w-[360px]">
             <div className="flex flex-col h-full">
@@ -18,16 +17,29 @@ export default function RightBar() {
                             <span className='text-md overflow-ellipsis line-clamp-1'>Field Config</span>
                         </div>
                         <div className="p-3 space-y-3">
-                            <Card className="p-4">
-                                <CardContent className="p-0">
-                                    <QuestionTypeDropdown />
-                                </CardContent>
-                            </Card>
-                            <Card className="p-4">
-                                <CardContent className="p-0">
-                                    <QuestionConfigCard />
-                                </CardContent>
-                            </Card>
+                            {
+                                selectedQuestionId ?
+                                    <>
+                                        <Card className="p-4">
+                                            <CardContent className="p-0">
+                                                <QuestionTypeDropdown />
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="p-4">
+                                            <CardContent className="p-0">
+                                                <QuestionConfigCard />
+                                            </CardContent>
+                                        </Card>
+                                    </> :
+                                    <>
+                                        <Card className="p-4">
+                                            <CardContent className="p-0 flex items-center justify-center h-52">
+                                                <Label className="mb-2">Selected a Question to modify</Label>
+                                            </CardContent>
+                                        </Card>
+                                    </>
+                            }
+
                         </div>
                     </div>
                 </div>

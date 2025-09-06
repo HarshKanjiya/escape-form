@@ -1,38 +1,42 @@
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
-import { Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface StarRatingProps {
-    question: IQuestion;
-    value?: number;
-    onChange?: (value: number) => void;
-    disabled?: boolean;
+
+interface IProps {
+    question: IQuestion,
+    index: number
 }
 
-export function StarRating({ question, value = 0, onChange, disabled = false }: StarRatingProps) {
+export function StarRating({ question, index }: IProps) {
     const [hoverValue, setHoverValue] = useState(0);
     const maxStars = typeof question.validation?.max === "number" ? question.validation.max : 5;
 
-    const handleStarClick = (rating: number) => {
-        if (!disabled) {
-            onChange?.(rating);
-        }
-    };
+    // const handleStarClick = (rating: number) => {
+    //     if (!disabled) {
+    //         onChange?.(rating);
+    //     }
+    // };
 
-    const handleStarHover = (rating: number) => {
-        if (!disabled) {
-            setHoverValue(rating);
-        }
-    };
+    // const handleStarHover = (rating: number) => {
+    //     if (!disabled) {
+    //         setHoverValue(rating);
+    //     }
+    // };
 
-    const handleMouseLeave = () => {
-        setHoverValue(0);
-    };
+    // const handleMouseLeave = () => {
+    //     setHoverValue(0);
+    // };
 
     return (
-        <div className="space-y-4">
-            <div>
+        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
+            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
+                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
+            </div>
+            <div className="space-y-4 w-full flex-1">            {/* <div>
                 <Label className="text-sm font-medium">
                     {question.question}
                     {question.required && <span className="text-red-500 ml-1">*</span>}
@@ -86,7 +90,8 @@ export function StarRating({ question, value = 0, onChange, disabled = false }: 
                     )}
                     <span>Excellent</span>
                 </div>
-            </div>
+            </div> */}
+        </div>
         </div>
     );
 }

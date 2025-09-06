@@ -7,7 +7,6 @@ import MainContentHeader from "./mainContentHeader";
 import FlowEditor from "./modes/flowEditor";
 import FormEditor from "./modes/formEditor";
 
-
 export default function MainContent() {
     const { viewMode } = useFormBuilder()
     return (
