@@ -1,6 +1,13 @@
-import { IQuestion } from "@/types/form";
-import { useState } from "react";
+"use client";
 
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
+import { IQuestion } from "@/types/form";
+import { AnimatePresence, motion } from "framer-motion";
+import { Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface IProps {
     question: IQuestion,
@@ -8,24 +15,54 @@ interface IProps {
 }
 
 export function FileUploadField({ question, index }: IProps) {
-    // const [dragOver, setDragOver] = useState(false);
 
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const files = Array.from(e.target.files || []);
-    //     onChange?.([...value, ...files]);
-    // };
+    const { updateQuestion } = useFormBuilder();
+    const [isEditingQuestion, setIsEditingQuestion] = useState(false);
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempDescription, setTempDescription] = useState(question.description || '');
 
-    // const handleDrop = (e: React.DragEvent) => {
-    //     e.preventDefault();
-    //     setDragOver(false);
-    //     const files = Array.from(e.dataTransfer.files);
-    //     onChange?.([...value, ...files]);
-    // };
+    const questionInputRef = useRef<HTMLInputElement>(null);
+    const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
 
-    // const removeFile = (index: number) => {
-    //     const newFiles = value.filter((_, i) => i !== index);
-    //     onChange?.(newFiles);
-    // };
+    // Auto-focus when entering edit mode
+    useEffect(() => {
+        if (isEditingQuestion && questionInputRef.current) {
+            questionInputRef.current.focus();
+            questionInputRef.current.select();
+        }
+    }, [isEditingQuestion]);
+
+    useEffect(() => {
+        if (isEditingDescription && descriptionInputRef.current) {
+            descriptionInputRef.current.focus();
+            descriptionInputRef.current.select();
+        }
+    }, [isEditingDescription]);
+
+    const handleQuestionSave = () => {
+        if (tempQuestion.trim() !== question.question) {
+            updateQuestion(question.id, { question: tempQuestion.trim() });
+        }
+        setIsEditingQuestion(false);
+    };
+
+    const handleDescriptionSave = () => {
+        if (tempDescription !== (question.description || '')) {
+            updateQuestion(question.id, { description: tempDescription });
+        }
+        setIsEditingDescription(false);
+    };
+
+    const handleQuestionCancel = () => {
+        setTempQuestion(question.question);
+        setIsEditingQuestion(false);
+    };
+
+    const handleDescriptionCancel = () => {
+        setTempDescription(question.description || '');
+        setIsEditingDescription(false);
+    };
 
     return (
         <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
@@ -33,65 +70,99 @@ export function FileUploadField({ question, index }: IProps) {
                 <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
             </div>
             <div className="space-y-4 w-full flex-1">
-                {/* <Label className="text-sm font-medium">
-                {question.question}
-                {question.required && <span className="text-red-500 ml-1">*</span>}
-            </Label>
-            {question.description && (
-                <p className="text-sm text-muted-foreground">{question.description}</p>
-            )}
-            
-            <div
-                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                    dragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
-                } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-primary/50"}`}
-                onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => !disabled && document.getElementById(`file-${question.id}`)?.click()}
-            >
-                <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground mb-2">
-                    Drop files here or click to browse
-                </p>
-                <Input
-                    id={`file-${question.id}`}
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileChange}
-                    disabled={disabled}
-                    required={question.required && value.length === 0}
-                />
-            </div>
-
-            {value.length > 0 && (
                 <div className="space-y-2">
-                    <Label className="text-sm font-medium">Selected Files:</Label>
-                    {value.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded-md">
-                            <div className="flex items-center space-x-2">
-                                <File className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm truncate">{file.name}</span>
-                                <span className="text-xs text-muted-foreground">
-                                    ({(file.size / 1024).toFixed(1)} KB)
-                                </span>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeFile(index)}
-                                disabled={disabled}
-                            >
-                                <X className="h-4 w-4" />
-                            </Button>
+                    {isEditingQuestion ? (
+                        <Input
+                            ref={questionInputRef}
+                            value={tempQuestion}
+                            onChange={(e) => setTempQuestion(e.target.value)}
+                            onBlur={handleQuestionSave}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleQuestionSave();
+                                } else if (e.key === 'Escape') {
+                                    handleQuestionCancel();
+                                }
+                            }}
+                            className="!py-6 !px-4 !text-xl border-none"
+                            placeholder="Enter your question..."
+                        />
+                    ) : (
+                        <div
+                            onClick={() => setIsEditingQuestion(true)}
+                            className={cn(
+                                "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
+                                !question.question && "text-muted-foreground"
+                            )}
+                        >
+                            <span className="flex items-center gap-2">
+                                <span>{question.question || "Click to add question..."}</span>
+                                <AnimatePresence mode="wait">
+                                    {question.required && (
+                                        <motion.span
+                                            key="required-star"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.1 }}
+                                            className="text-destructive"
+                                        >
+                                            *
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </span>
                         </div>
-                    ))}
+                    )}
                 </div>
-            )} */}
+                <div>
+                    {isEditingDescription ? (
+                        <Textarea
+                            ref={descriptionInputRef}
+                            value={tempDescription}
+                            onChange={(e) => setTempDescription(e.target.value)}
+                            onBlur={handleDescriptionSave}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && e.ctrlKey) {
+                                    handleDescriptionSave();
+                                } else if (e.key === 'Escape') {
+                                    handleDescriptionCancel();
+                                }
+                            }}
+                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            placeholder="Add description (optional)..."
+                            rows={3}
+                        />
+                    ) : (
+                        <div
+                            onClick={() => setIsEditingDescription(true)}
+                            className={cn(
+                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
+                                !question.description && "italic opacity-70"
+                            )}
+                        >
+                            {question.description || "Description (optional)"}
+                        </div>
+                    )}
+                </div>
+                <div className="space-y-2">
+
+                    <div
+                        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors border-muted-foreground/25 `}
+                    >
+                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">
+                            Drop files here or click to browse
+                        </p>
+                        <Input
+                            id={`file-${question.id}`}
+                            type="file"
+                            multiple
+                            className="hidden"
+                            required={question.required}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

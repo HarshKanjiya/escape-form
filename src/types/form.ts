@@ -12,6 +12,9 @@ export interface IQuestion {
         min?: number | Date | undefined;
         max?: number | Date | undefined;
         pattern?: string;
+        maxSizeMB?: number;
+        anyFileType?: boolean;
+        allowedFileTypes?: string[];
     };
     logic?: {
         conditions: Array<{
@@ -51,3 +54,21 @@ export interface IThankYouScreen {
     title: string;
     description?: string;
 }
+
+export const fileTypes = [
+    { label: 'Image (JPEG)', value: 'image/jpeg' },
+    { label: 'Image (PNG)', value: 'image/png' },
+    { label: 'Image (GIF)', value: 'image/gif' },
+    { label: 'Text File', value: 'text/plain' },
+    { label: 'CSV File', value: 'text/csv' },
+    { label: 'PDF', value: 'application/pdf' },
+    { label: 'Word Document', value: 'application/msword' },
+    { label: 'Word Document (OpenXML)', value: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+    { label: 'Excel Spreadsheet', value: 'application/vnd.ms-excel' },
+    { label: 'Excel Spreadsheet (OpenXML)', value: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+    { label: 'PowerPoint Presentation', value: 'application/vnd.ms-powerpoint' },
+    { label: 'PowerPoint Presentation (OpenXML)', value: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
+    { label: 'ZIP Archive', value: 'application/zip' },
+    { label: 'RAR Archive', value: 'application/vnd.rar' },
+    { label: '7z Archive', value: 'application/x-7z-compressed' }
+];

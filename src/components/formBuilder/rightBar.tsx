@@ -32,12 +32,12 @@ export default function RightBar() {
                             {
                                 selectedQuestionId ?
                                     <>
-                                        <Card className="p-4">
+                                        <Card className="p-4 shadow-none">
                                             <CardContent className="p-0">
                                                 <QuestionTypeDropdown />
                                             </CardContent>
                                         </Card>
-                                        <Card className="p-4">
+                                        <Card className="p-4 shadow-none">
                                             <CardContent className="p-0">
                                                 <QuestionConfigCard />
                                             </CardContent>

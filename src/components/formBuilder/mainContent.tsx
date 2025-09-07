@@ -12,7 +12,7 @@ export default function MainContent() {
     return (
         <div className="flex-1 h-full w-full flex flex-col items-center">
             <MainContentHeader />
-            <div className="h-full w-full flex-1 overflow-auto">
+            <div className="h-full w-full flex-1 overflow-hidden">
                 <AnimatePresence initial={false} mode="wait">
                     {viewMode === eViewMode.Builder ? (
                         <motion.div

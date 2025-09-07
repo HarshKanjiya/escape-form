@@ -178,6 +178,6 @@ export function ShortTextFieldConfig() {
                         layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.validation?.min)} - 999999</motion.small>
                 }
             </AnimatePresence>
-        </div >
+        </div>
     );
 }

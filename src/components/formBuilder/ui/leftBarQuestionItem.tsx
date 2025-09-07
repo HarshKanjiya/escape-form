@@ -11,8 +11,8 @@ export default function LeftBarQuestionItem({ question }: { question: IQuestion 
     const { selectedQuestionId, setSelectedQuestionId, deleteQuestion } = useFormBuilder();
     return (
         <li
-            className={cn('flex gap-2 items-center py-2 px-2 select-none cursor-grab bg-white shadow-md dark:bg-accent transition-all duration-200 rounded-sm group',
-                selectedQuestionId == question.id ? 'bg-primary/10 dark:bg-primary/30' : '')}
+            className={cn('flex gap-2 items-center py-2 px-2 select-none cursor-grab bg-white shadow-none dark:bg-accent transition-all duration-200 group border border-accent-foreground/10 rounded-md',
+                selectedQuestionId == question.id ? 'bg-primary/5 dark:bg-primary/20' : '')}
             onClick={() => setSelectedQuestionId(question.id)}
         >
             <div className="flex gap-2 items-center flex-1">

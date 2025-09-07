@@ -138,7 +138,7 @@ export default function LeftBar() {
                                 <div className='flex items-center gap-2'>
                                     <span className={cn(
                                         'text-sm border rounded px-2 py-0.5',
-                                        status === 'draft' ? 'text-yellow-400/90 bg-yellow-600/20 border-yellow-400/40' : ''
+                                        status === 'draft' ? 'text-yellow-500 dark:text-yellow-400/90 bg-yellow-50 dark:bg-yellow-600/20 border-yellow-400/40' : ''
                                     )}>{status}</span>
                                     <FormConfigDialog />
                                 </div>
