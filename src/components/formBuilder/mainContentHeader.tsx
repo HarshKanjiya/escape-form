@@ -1,6 +1,6 @@
 "use client";
 
-import { eViewMode, eViewScreenMode } from "@/enums/form";
+import { eFormStatus, eViewMode, eViewScreenMode } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "framer-motion";
 import { Archive, ArchiveRestore, Laptop, PencilRuler, Play, RefreshCcw, Rocket, Smartphone, TrendingUpDown } from "lucide-react";
@@ -11,7 +11,7 @@ import AddQuestionDialog from "./ui/addIQuestionDialog";
 
 export default function MainContentHeader() {
 
-    const { viewMode, viewScreenMode, setViewMode, setViewScreenMode, isSaving } = useFormBuilder()
+    const { viewMode, viewScreenMode, setViewMode, setViewScreenMode, isSaving, status } = useFormBuilder()
     return (
         <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-background">
             <div className="flex items-center gap-2">
@@ -95,17 +95,24 @@ export default function MainContentHeader() {
                 </div>
                 <Separator orientation="vertical" className="!h-8" />
                 <div className="flex items-center gap-2">
-                    <Button>
-                        <Rocket className="mr-1" size={14} />
-                        Publish
-                    </Button>
-                    <Button size={'icon'} className="!p-1" variant={'secondary'}>
-                        <Archive size={14} />
-                    </Button>
-                    <Button>
-                        <ArchiveRestore className="mr-1" size={14} />
-                        Restore
-                    </Button>
+                    {
+                        status == eFormStatus.draft ?
+                            <Button>
+                                <Rocket className="mr-1" size={14} />
+                                Publish
+                            </Button>
+                            : null
+                    }
+                    {
+                        status == eFormStatus.archived ?
+                            <Button>
+                                <ArchiveRestore className="mr-1" size={14} />
+                                Restore
+                            </Button>
+                            : <Button size={'icon'} className="!p-1" variant={'secondary'}>
+                                <Archive size={14} />
+                            </Button>
+                    }
                 </div>
             </div>
         </div>

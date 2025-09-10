@@ -145,8 +145,8 @@ export function FileUploadField({ question, index }: IProps) {
                         </div>
                     )}
                 </div>
-                <div className="space-y-2">
 
+                <div className="space-y-2">
                     <div
                         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors border-muted-foreground/25 `}
                     >

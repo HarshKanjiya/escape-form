@@ -136,10 +136,6 @@ export default function LeftBar() {
                             <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b'>
                                 <span className='text-md overflow-ellipsis line-clamp-1'>{formName}</span>
                                 <div className='flex items-center gap-2'>
-                                    <span className={cn(
-                                        'text-sm border rounded px-2 py-0.5',
-                                        status === 'draft' ? 'text-yellow-500 dark:text-yellow-400/90 bg-yellow-50 dark:bg-yellow-600/20 border-yellow-400/40' : ''
-                                    )}>{status}</span>
                                     <FormConfigDialog />
                                 </div>
                             </div>
