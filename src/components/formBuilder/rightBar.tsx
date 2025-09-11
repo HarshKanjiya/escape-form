@@ -13,7 +13,7 @@ export default function RightBar() {
     const { selectedQuestionId, deleteQuestion } = useFormBuilder();
 
     return (
-        <div className="bg-background border-l z-30 overflow-visible h-full w-[360px]">
+        <div className="bg-accent/50 border-l z-30 overflow-visible h-full w-[360px]">
             <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                     <div className='w-full h-full flex flex-col'>
@@ -32,12 +32,12 @@ export default function RightBar() {
                             {
                                 selectedQuestionId ?
                                     <>
-                                        <Card className="p-4 shadow-none">
+                                        <Card className="p-4 shadow-none border-accent bg-white dark:bg-accent">
                                             <CardContent className="p-0">
                                                 <QuestionTypeDropdown />
                                             </CardContent>
                                         </Card>
-                                        <Card className="p-4 shadow-none">
+                                        <Card className="p-4 shadow-none border-accent bg-white dark:bg-accent">
                                             <CardContent className="p-0">
                                                 <QuestionConfigCard />
                                             </CardContent>

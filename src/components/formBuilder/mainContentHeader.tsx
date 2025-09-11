@@ -13,7 +13,7 @@ export default function MainContentHeader() {
 
     const { viewMode, viewScreenMode, setViewMode, setViewScreenMode, isSaving, status } = useFormBuilder()
     return (
-        <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-background">
+        <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent/50">
             <div className="flex items-center gap-2">
                 <AddQuestionDialog />
                 <Separator orientation="vertical" className="!h-8" />

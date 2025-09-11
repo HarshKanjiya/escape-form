@@ -130,7 +130,7 @@ export default function LeftBar() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col h-full bg-accent/50">
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                         <div className='w-full h-full flex flex-col gap-2'>
                             <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b'>

@@ -1,5 +1,6 @@
 "use client";
 
+import { FeedbackModel } from "@/components/shared/feedBack";
 import TeamsDropdown from "@/components/teams/TeamsDropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -43,10 +44,7 @@ export default function Header({ }) {
                 ) : null}
             </div>
             <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="h-8 w-8 sm:w-auto">
-                    <MessageSquare className="w-4 h-4 mx-2 sm:ml-0" />
-                    <p className="hidden sm:block">Feedback</p>
-                </Button>
+                <FeedbackModel />
                 {/* <NotificationInbox /> */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -79,12 +77,6 @@ export default function Header({ }) {
                                     Account Settings
                                 </div>
                             </DropdownMenuItem>
-                            {/* <DropdownMenuItem asChild>
-                                <Link href="/account/preferences" className="flex items-center">
-                                    <Settings className="w-4 h-4 mr-2" />
-                                    Preferences
-                                </Link>
-                            </DropdownMenuItem> */}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
