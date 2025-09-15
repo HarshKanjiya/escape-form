@@ -44,7 +44,7 @@ export default function RightBar() {
                                         </Card>
                                     </> :
                                     <>
-                                        <Card className="p-4">
+                                        <Card className="p-4 shadow-none border-accent bg-white dark:bg-accent">
                                             <CardContent className="p-0 flex items-center justify-center h-52">
                                                 <Label className="mb-2">Selected a Question to modify</Label>
                                             </CardContent>

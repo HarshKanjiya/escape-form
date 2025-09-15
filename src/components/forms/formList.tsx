@@ -159,7 +159,7 @@ export function FormList() {
     const [searchQuery, setSearchQuery] = useState("");
     const [forms, setForms] = useState<Form[]>([]);
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const params = useParams();
     const teamId = params.teamId as string;
@@ -167,6 +167,7 @@ export function FormList() {
 
     // Memoize keyboard shortcuts setup
     useEffect(() => {
+        getForms();
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.ctrlKey || e.metaKey) {
                 if (e.key === 'k') {
@@ -180,15 +181,14 @@ export function FormList() {
             }
         };
 
-        getForms();
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
 
     }, []);
 
     const getForms = useCallback(async () => {
-        setLoading(true);
         try {
+            setLoading(true);
             const res = await getProjectForms(projectId);
             if (res.error) {
                 toast.error("Failed to load forms");
@@ -291,7 +291,7 @@ export function FormList() {
             </div>
 
             {
-                !filteredforms?.length ? <EmptyState searchQuery={searchQuery} projectId={projectId} /> :
+                (!filteredforms?.length && !loading) ? <EmptyState searchQuery={searchQuery} projectId={projectId} /> :
                     viewMode === "grid" ?
                         <FormGridView forms={filteredforms} loading={loading} /> : <FormTableView forms={filteredforms} teamId={teamId} loading={loading} />
             }

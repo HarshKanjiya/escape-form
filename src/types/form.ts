@@ -13,6 +13,7 @@ export interface IQuestion {
         max?: number | Date | undefined;
         pattern?: string;
         maxSizeMB?: number;
+        randomize?: boolean;
         anyFileType?: boolean;
         allowedFileTypes?: string[];
     };

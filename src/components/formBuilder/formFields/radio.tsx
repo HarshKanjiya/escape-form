@@ -1,10 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { CornerDownRight, GripVertical } from "lucide-react";
+import { CornerDownRight, Cross, GripVertical, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -170,9 +171,24 @@ export function RadioField({ question, index }: IProps) {
                 {(() => {
                     const [options, setOptions] = useState<string[]>(question.options && question.options.length > 0 ? question.options : [""]);
                     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+                    // Stable IDs for smooth Framer Motion enter/exit and layout animations
+                    const optionIdsRef = useRef<string[]>([]);
+                    const idCounterRef = useRef(0);
                     useEffect(() => {
                         setOptions(question.options && question.options.length > 0 ? question.options : [""]);
                     }, [question.options]);
+
+                    // Ensure IDs array length matches options and keep IDs stable per index
+                    useEffect(() => {
+                        const ids = optionIdsRef.current;
+                        if (ids.length < options.length) {
+                            for (let j = ids.length; j < options.length; j++) {
+                                ids.push(`${Date.now()}-${idCounterRef.current++}`);
+                            }
+                        } else if (ids.length > options.length) {
+                            optionIdsRef.current = ids.slice(0, options.length);
+                        }
+                    }, [options.length]);
 
                     const { updateQuestion } = useFormBuilder();
                     const handleOptionChange = (idx: number, value: string) => {
@@ -185,6 +201,8 @@ export function RadioField({ question, index }: IProps) {
                     };
                     const handleAddOption = () => {
                         setOptions(prev => {
+                            // Create a stable id for the new option before render
+                            optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
                             const updated = [...prev, ""];
                             setTimeout(() => {
                                 inputRefs.current[updated.length - 1]?.focus();
@@ -192,40 +210,76 @@ export function RadioField({ question, index }: IProps) {
                             return updated;
                         });
                     };
-                    return options.map((option, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                            <div className="size-5 border border-border rounded-full bg-background" />
-                            <Input
-                                className="flex-1 max-w-[250px]"
-                                placeholder={`Option ${i + 1}`}
-                                value={option}
-                                ref={el => { inputRefs.current[i] = el; }}
-                                onChange={e => handleOptionChange(i, e.target.value)}
-                                onBlur={handleOptionBlur}
-                                onKeyDown={e => {
-                                    if (e.key === 'Enter') {
-                                        if (i === options.length - 1) {
-                                            handleAddOption();
-                                        } else {
-                                            // Focus next input
-                                            inputRefs.current[i + 1]?.focus();
-                                        }
-                                    }
-                                }}
-                            />
-                            <div className="h-9 aspect-square bg-accent flex items-center justify-center rounded">
-                                <GripVertical className="cursor-move text-muted-foreground" size={18} />
-                            </div>
-                            {i === options.length - 1 && (
-                                <pre className="text-sm text-muted-foreground italic flex items-center gap-3 ml-2">
-                                    <CornerDownRight size={16} />
-                                    Enter to add New
-                                </pre>
-                            )}
-                        </div>
-                    ));
+                    const handleRemoveOption = (idx: number) => {
+                        const newOptions = options.filter((_, i) => i !== idx);
+                        const ensured = newOptions.length > 0 ? newOptions : [""];
+                        // Remove corresponding ID to keep others stable
+                        optionIdsRef.current.splice(idx, 1);
+                        // If we ensured an empty placeholder (i.e., list became empty), also add a new id
+                        if (ensured.length > newOptions.length) {
+                            optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
+                        }
+                        setOptions(ensured);
+                        updateQuestion(question.id, { options: ensured });
+                        // Manage focus to a sensible input after deletion
+                        setTimeout(() => {
+                            const targetIndex = Math.min(idx, ensured.length - 1);
+                            inputRefs.current[targetIndex]?.focus();
+                        }, 0);
+                    };
+                    return (
+                        <motion.div layout className="space-y-3">
+                            <AnimatePresence initial={false}>
+                                {options.map((option, i) => (
+                                    <motion.div
+                                        key={optionIdsRef.current[i] ?? `opt-${i}`}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.18, ease: "easeOut", layout: { duration: 0.25 } }}
+                                        className="flex items-center gap-3"
+                                    >
+                                        <div className="size-5 border border-border rounded-full bg-background" />
+                                        <div className="relative flex-1 max-w-[250px]">
+                                            <Input
+                                                className="flex-1"
+                                                placeholder={`Option ${i + 1}`}
+                                                value={option}
+                                                ref={el => { inputRefs.current[i] = el; }}
+                                                onChange={e => handleOptionChange(i, e.target.value)}
+                                                onBlur={handleOptionBlur}
+                                                onKeyDown={e => {
+                                                    if (e.key === 'Enter') {
+                                                        if (i === options.length - 1) {
+                                                            handleAddOption();
+                                                        } else {
+                                                            // Focus next input
+                                                            inputRefs.current[i + 1]?.focus();
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        {/* <Button variant={'secondary'} size={'icon'}>
+                                            <GripVertical className="cursor-move text-muted-foreground" size={18} />
+                                        </Button> */}
+                                        <Button variant={'destructive'} size={'icon'} onClick={() => handleRemoveOption(i)} aria-label={`Delete option ${i + 1}`}>
+                                            <Trash size={18} />
+                                        </Button>
+                                        {i === options.length - 1 && (
+                                            <pre className="text-sm text-muted-foreground italic flex items-center gap-3 ml-2">
+                                                <CornerDownRight size={16} className="-skew-x-[16deg]" />
+                                                Enter to add New
+                                            </pre>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+                    );
                 })()}
             </div>
-        </div>
+        </div >
     );
 }

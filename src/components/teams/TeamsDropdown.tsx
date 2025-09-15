@@ -42,52 +42,54 @@ export default function TeamsDropdown() {
     };
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-auto md:w-[200px] justify-between"
-                    disabled={isLoading}
-                >
-                    {isLoading ? "Loading..." : (activeTeam?.name || "Select Team")}
-                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-                <Command>
-                    <CommandInput placeholder="Search teams..." />
-                    <CommandList>
-                        <CommandEmpty>No teams found.</CommandEmpty>
-                        {teams.length > 0 && (
-                            <CommandGroup>
-                                {teams.map((team) => (
-                                    <CommandItem
-                                        key={team.id}
-                                        value={team.id}
-                                        onSelect={() => {
-                                            switchTeam(team)
-                                            setOpen(false)
-                                        }}
-                                    >
-                                        <CheckIcon
-                                            className={cn(
-                                                "mr-2 h-4 w-4",
-                                                activeTeam?.id === team.id ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
-                                        {team.name}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        )}
-                        <CommandItem className="w-full">
-                            <AddTeam buttonWidth="w-full" triggerVariant="outline" />
-                        </CommandItem>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
+        <>
+            {activeTeam?.name}
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="!px-1"
+                        disabled={isLoading}
+                    >
+                        <ChevronsUpDownIcon className="w-2 px-0" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                        <CommandInput placeholder="Search teams..." />
+                        <CommandList>
+                            <CommandEmpty>No teams found.</CommandEmpty>
+                            {teams.length > 0 && (
+                                <CommandGroup>
+                                    {teams.map((team) => (
+                                        <CommandItem
+                                            key={team.id}
+                                            value={team.id}
+                                            onSelect={() => {
+                                                switchTeam(team)
+                                                setOpen(false)
+                                            }}
+                                        >
+                                            <CheckIcon
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    activeTeam?.id === team.id ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {team.name}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            )}
+                            <CommandItem className="w-full">
+                                <AddTeam buttonWidth="w-full" triggerVariant="outline" />
+                            </CommandItem>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+        </>
     )
 }

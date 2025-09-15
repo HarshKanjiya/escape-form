@@ -12,6 +12,7 @@ import { Braces, SeparatorHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import AddQuestionDialog from "../ui/addIQuestionDialog";
 import QuestionCard from "../ui/questionCard";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function FormEditor() {
 
@@ -60,26 +61,27 @@ export default function FormEditor() {
     if (!questions?.length) {
         return (
             <div className="h-full w-full flex flex-col items-center p-8 justify-center">
-                <div className="bg-gradient-to-br from-accent/50 to-accent/20 border border-border rounded-xl p-8 flex flex-col gap-6 items-center justify-center max-w-md text-center shadow-sm">
-                    <div className="bg-gradient-to-br from-primary/20 to-primary/10 p-4 rounded-full rotate-12 shadow-lg">
-                        <Braces size={48} className="text-primary" />
-                    </div>
-                    <div className="space-y-2">
-                        <h3 className="text-xl font-semibold text-foreground">No Questions Yet</h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                            Start building your form by adding questions from the sidebar.
-                            Create engaging forms with various question types.
-                        </p>
-                    </div>
-                    <AddQuestionDialog>
-                        <Button
-                            variant="outline"
-                            className="mt-2 bg-background/50 hover:bg-background/80 transition-colors"
-                        >
-                            Add First Question
-                        </Button>
-                    </AddQuestionDialog>
-                </div>
+                <Card className="p-4 shadow-none border-accent bg-white dark:bg-accent">
+                    <CardContent className="p-8 flex flex-col gap-6 items-center justify-center max-w-md text-center ">
+                        <div className="bg-gradient-to-br from-primary/20 to-primary/10 p-4 rounded-full rotate-12 outline-4 outline-offset-4 outline-primary/10">
+                            <Braces size={48} className="text-primary" />
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-foreground">No Questions Yet</h3>
+                            <p className="text-muted-foreground text-sm leading-relaxed">
+                                Start building your form by adding questions from the sidebar.
+                                Create engaging forms with various question types.
+                            </p>
+                        </div>
+                        <AddQuestionDialog>
+                            <Button>
+                                Add First Question
+                            </Button>
+                        </AddQuestionDialog>
+                    </CardContent>
+                </Card>
+                {/* <div className="bg-gradient-to-br from-accent/50 to-accent/20 border rounded-xl  shadow-none border-accent bg-white dark:bg-accent">
+                </div> */}
             </div>
         )
     }
