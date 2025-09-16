@@ -2,12 +2,12 @@
 
 import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import QuestionIcon from "./questionIcon";
-import { useFormBuilder } from "@/store/useFormBuilder";
 
 interface IAddItemDialogProps {
     children?: React.ReactNode;
@@ -112,7 +112,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 <DialogTrigger asChild>
                     {
                         children ? children :
-                            <Button variant={'secondary'} size={'sm'}>
+                            <Button variant={'secondary'} size={'sm'} className="">
                                 <Plus className="mr-2" />
                                 Add Item
                             </Button>

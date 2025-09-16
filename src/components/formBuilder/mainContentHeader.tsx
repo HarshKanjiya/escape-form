@@ -8,10 +8,27 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
+import { useRouter, useParams } from "next/navigation";
 
 export default function MainContentHeader() {
 
+    const params = useParams();
+
     const { viewMode, viewScreenMode, setViewMode, setViewScreenMode, isSaving, status } = useFormBuilder()
+
+    const onPreviewClick = () => {
+        try {
+            const teamId = params?.["teamId"] as string | undefined;
+            const projectId = params?.["projectId"] as string | undefined;
+            const formId = params?.["formId"] as string | undefined;
+            if (!teamId || !projectId || !formId) return;
+            const previewUrl = `/${teamId}/${projectId}/forms/${formId}/preview`;
+            window.open(previewUrl, '_blank', 'noopener,noreferrer');
+        } catch (e) {
+            console.error('Failed to open preview', e);
+        }
+    }
+
     return (
         <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent/50">
             <div className="flex items-center gap-2">
@@ -52,7 +69,7 @@ export default function MainContentHeader() {
                             <div>
                                 <Tooltip delayDuration={500}>
                                     <TooltipTrigger asChild>
-                                        <Button variant="ghost" size="icon">
+                                        <Button className="cursor-pointer" variant="ghost" size="icon" onClick={onPreviewClick}>
                                             <Play />
                                         </Button>
                                     </TooltipTrigger>
