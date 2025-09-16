@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { eQuestionType } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { Calendar, CaseSensitive, ChartBarBig, ChevronsUpDown, CircleDot, FileText, Hash, Images, Link2, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
+import { Calendar, CaseSensitive, ChartBarBig, CircleDot, FileText, Hash, Images, Link2, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
 import { useCallback } from "react";
 
 const questionTypes = [
@@ -14,9 +14,9 @@ const questionTypes = [
     { value: eQuestionType.phone, label: "Phone", icon: Phone },
     { value: eQuestionType.address, label: "Address", icon: MapPin },
     { value: eQuestionType.website, label: "Website", icon: Link2 },
-    { value: eQuestionType.radio, label: "Multiple Choice", icon: CircleDot },
-    { value: eQuestionType.checkbox, label: "Checkbox", icon: SquareCheckBig },
-    { value: eQuestionType.dropdown, label: "Dropdown", icon: ChevronsUpDown },
+    { value: eQuestionType.radio, label: "Single Choice", icon: CircleDot },
+    { value: eQuestionType.checkbox, label: "Multiple Choice", icon: SquareCheckBig },
+    // { value: eQuestionType.dropdown, label: "Dropdown", icon: ChevronsUpDown },
     { value: eQuestionType.file, label: "File Upload", icon: FileText },
     { value: eQuestionType.starRating, label: "Star Rating", icon: Star },
     { value: eQuestionType.barChoiceRating, label: "Rating Scale", icon: ChartBarBig },

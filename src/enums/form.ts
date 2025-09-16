@@ -23,7 +23,7 @@ export enum eQuestionType {
     file = "file",
     radio = "radio",
     checkbox = "checkbox",
-    dropdown = "dropdown",
+    // dropdown = "dropdown",
     email = "email",
     phone = "phone",
     address = "address",

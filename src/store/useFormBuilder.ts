@@ -190,26 +190,17 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
         const newQues: IQuestion[] = [];
         newQuestions.forEach((type, index) => {
-            const newQuestion: IQuestion = {
-                id: `question-${Date.now()}`,
-                type,
-                question: `New ${type.replace('_', ' ')} question`,
-                required: false,
-                position: { x: (exeLen + index) * 200, y: 200 },
-                options: type === eQuestionType.checkbox || type === eQuestionType.dropdown ? ['Option 1', 'Option 2'] : undefined,
-            };
+            const newQuestion: IQuestion = prepareNewQuestionObject(type, exeLen, index);
             newQues.push(newQuestion);
         })
         const newQuestionsList = [...questions, ...newQues];
-        set({
-            questions: newQuestionsList,
-            selectedQuestionId: newQues[newQues.length - 1].id,
-            selectedQuestion: newQues[newQues.length - 1],
-        });
+
+        const lastQue = newQuestionsList[newQuestionsList.length - 1];
+        set({ questions: newQuestionsList, selectedQuestionId: lastQue.id, selectedQuestion: lastQue });
     },
 
     updateQuestion: (id: string, question: Partial<IQuestion>) => {
-        console.log('POSITION [ called ]');
+        console.log('POSITION [ called ]', question);
         const { questions, selectedQuestionId, selectedQuestion } = get();
         const updatedQuestions = questions.map(q => q.id === id ? { ...q, ...question } : q);
         const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
@@ -282,3 +273,34 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
 }))
+
+
+
+const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: number): IQuestion => {
+    const baseObject: IQuestion = {
+        id: `question-${Date.now()}`,
+        type,
+        question: `New ${type.replace('_', ' ')} question (Click to edit)`,
+        required: false,
+        options: type === eQuestionType.checkbox || type === eQuestionType.radio ? ['Option 1', 'Option 2'] : undefined,
+        position: { x: (exeLen + index) * 200, y: 200 },
+    };
+
+    switch (type) {
+        case eQuestionType.shortText:
+        case eQuestionType.longText:
+        case eQuestionType.number:
+            baseObject.validation = { min: undefined, max: undefined };
+            break;
+        case eQuestionType.checkbox:
+        case eQuestionType.radio:
+            // case eQuestionType.dropdown:
+            baseObject.options = ['Option 1', 'Option 2'];
+            baseObject.validation = { randomize: false };
+            break;
+        default:
+            break;
+    }
+
+    return baseObject;
+};

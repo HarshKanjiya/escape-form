@@ -66,9 +66,9 @@ const fields: IFieldSet[] = [
         title: 'Choice Based',
         description: 'Choice based set of input fields',
         items: [
-            { id: eQuestionType.radio, label: 'Radio', accent: 'bg-emerald-400/30' },
-            { id: eQuestionType.checkbox, label: 'Checkbox', accent: 'bg-emerald-400/30' },
-            { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.radio, label: 'Single Choice', accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.checkbox, label: 'Multiple Choice', accent: 'bg-emerald-400/30' },
+            // { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/30' },
         ]
     },
     {

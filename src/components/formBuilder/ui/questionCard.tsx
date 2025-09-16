@@ -4,7 +4,7 @@ import { AddressField } from "../formFields/address";
 import { BarChoiceRatingField } from "../formFields/barChoiceRating";
 import { CheckboxField } from "../formFields/checkbox";
 import { DateField } from "../formFields/date";
-import { DropdownField } from "../formFields/dropdown";
+// import { DropdownField } from "../formFields/dropdown";
 import { EmailField } from "../formFields/email";
 import { FileUploadField } from "../formFields/file";
 import { ImageChoiceRatingField } from "../formFields/imageChoiceRating";
@@ -63,10 +63,10 @@ export default function QuestionCard({ question, index }: IProps) {
                 <CheckboxField question={question} index={index} />
             );
 
-        case eQuestionType.dropdown:
-            return (
-                <DropdownField question={question} index={index} />
-            );
+        // case eQuestionType.dropdown:
+        //     return (
+        //         <DropdownField question={question} index={index} />
+        //     );
 
         case eQuestionType.email:
             return (

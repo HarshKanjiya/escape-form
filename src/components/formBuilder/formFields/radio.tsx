@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { CornerDownRight, Cross, GripVertical, Trash } from "lucide-react";
+import { CornerDownRight, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -264,7 +266,7 @@ export function RadioField({ question, index }: IProps) {
                                         {/* <Button variant={'secondary'} size={'icon'}>
                                             <GripVertical className="cursor-move text-muted-foreground" size={18} />
                                         </Button> */}
-                                        <Button variant={'destructive'} size={'icon'} onClick={() => handleRemoveOption(i)} aria-label={`Delete option ${i + 1}`}>
+                                        <Button disabled={options.length == 1} variant={'destructive'} size={'icon'} onClick={() => handleRemoveOption(i)} aria-label={`Delete option ${i + 1}`}>
                                             <Trash size={18} />
                                         </Button>
                                         {i === options.length - 1 && (

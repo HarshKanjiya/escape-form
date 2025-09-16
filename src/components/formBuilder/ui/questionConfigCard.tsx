@@ -7,7 +7,7 @@ import { AddressFieldConfig } from "../formFields/config/address";
 import { BarChoiceRatingFieldConfig } from "../formFields/config/barChoiceRating";
 import { CheckboxFieldFieldConfig } from "../formFields/config/checkbox";
 import { DateFieldConfig } from "../formFields/config/date";
-import { DropdownFieldConfig } from "../formFields/config/dropdown";
+// import { DropdownFieldConfig } from "../formFields/config/dropdown";
 import { EmailFieldConfig } from "../formFields/config/email";
 import { FileUploadFieldConfig } from "../formFields/config/file";
 import { ImageChoiceRatingFieldConfig } from "../formFields/config/imageChoiceRating";
@@ -135,19 +135,19 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.dropdown:
-                return (
-                    <motion.div
-                        key={uniqueKey}
-                        variants={fadeInVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                    >
-                        <DropdownFieldConfig />
-                    </motion.div>
-                );
+            // case eQuestionType.dropdown:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <DropdownFieldConfig />
+            //         </motion.div>
+            //     );
 
             case eQuestionType.email:
                 return (

@@ -9,7 +9,7 @@ import { useFormBuilder } from "@/store/useFormBuilder";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { Braces, SeparatorHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddQuestionDialog from "../ui/addIQuestionDialog";
 import QuestionCard from "../ui/questionCard";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,12 +33,13 @@ export default function FormEditor() {
     const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } = usePrevNextButtons(emblaApi);
 
     useEffect(() => {
-        if (questions && questions[selectedIndex]) {
+        if (questions && selectedIndex && questions[selectedIndex]) {
             setSelectedQuestionId(questions[selectedIndex].id);
         }
     }, [selectedIndex]);
 
     useEffect(() => {
+
         if (selectedQuestion && questions.length > 0 && emblaApi) {
             const index = questions.findIndex(q => q.id === selectedQuestion.id);
             if (index !== -1) {
@@ -47,7 +48,7 @@ export default function FormEditor() {
                 }, 1);
             }
         }
-    }, [selectedQuestion, questions, emblaApi]);
+    }, [selectedQuestion, emblaApi]);
 
     // Force reinitialization when direction changes
     useEffect(() => {

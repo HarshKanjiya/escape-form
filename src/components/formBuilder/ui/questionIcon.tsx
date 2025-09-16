@@ -1,5 +1,5 @@
 import { eQuestionType } from "@/enums/form";
-import { Calendar, CaseSensitive, ChartBarBig, ChevronsUpDown, CircleDot, FileText, Hash, Images, Link2, LucideIcon, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
+import { Calendar, CaseSensitive, ChartBarBig, CircleDot, FileText, Hash, Images, Link2, LucideIcon, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
 
 const iconMapping: Record<eQuestionType, LucideIcon> = {
     [eQuestionType.shortText]: CaseSensitive,
@@ -9,7 +9,7 @@ const iconMapping: Record<eQuestionType, LucideIcon> = {
     [eQuestionType.file]: FileText,
     [eQuestionType.radio]: CircleDot,
     [eQuestionType.checkbox]: SquareCheckBig,
-    [eQuestionType.dropdown]: ChevronsUpDown,
+    // [eQuestionType.dropdown]: ChevronsUpDown,
     [eQuestionType.email]: Mail,
     [eQuestionType.phone]: Phone,
     [eQuestionType.address]: MapPin,

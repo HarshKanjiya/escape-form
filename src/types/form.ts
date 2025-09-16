@@ -12,10 +12,11 @@ export interface IQuestion {
         min?: number | Date | undefined;
         max?: number | Date | undefined;
         pattern?: string;
-        maxSizeMB?: number;
-        randomize?: boolean;
-        anyFileType?: boolean;
-        allowedFileTypes?: string[];
+        maxSizeMB?: number;                     // for file upload field 
+        randomize?: boolean;                    // for multiple choice, checkbox, dropdown
+        anyFileType?: boolean;                  // for file upload field
+        allowedFileTypes?: string[];            // MIME types
+        international?: boolean;                // for phone number field
     };
     logic?: {
         conditions: Array<{

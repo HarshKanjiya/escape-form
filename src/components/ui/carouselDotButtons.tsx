@@ -11,7 +11,7 @@ export const DotButtonNav: React.FC<DotButtonNavProps> = ({ slideCount, currentI
             {Array.from({ length: slideCount }).map((_, idx) => (
                 <DotButton
                     key={idx}
-                    className={`carousel-dot${idx === currentIndex ? " carousel-dot--selected" : ""}`}
+                    className={`h-3 w-3 rounded-full transition-all duration-200 cursor-pointer ${idx === currentIndex ? "!bg-secondary-foreground/80" : "bg-secondary-foreground/20"}`}
                     aria-label={`Go to slide ${idx + 1}`}
                     aria-pressed={idx === currentIndex}
                     onClick={() => onDotClick(idx)}
