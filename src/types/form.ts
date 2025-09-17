@@ -16,7 +16,7 @@ export interface IQuestion {
         randomize?: boolean;                    // for multiple choice, checkbox, dropdown
         anyFileType?: boolean;                  // for file upload field
         allowedFileTypes?: string[];            // MIME types
-        international?: boolean;                // for phone number field
+        allowAnyCountry?: boolean;                // for phone number field
     };
     logic?: {
         conditions: Array<{

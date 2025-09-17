@@ -281,6 +281,7 @@ const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: nu
         id: `question-${Date.now()}`,
         type,
         question: `New ${type.replace('_', ' ')} question (Click to edit)`,
+        placeholder: `Enter your answer`,
         required: false,
         options: type === eQuestionType.checkbox || type === eQuestionType.radio ? ['Option 1', 'Option 2'] : undefined,
         position: { x: (exeLen + index) * 200, y: 200 },
@@ -297,6 +298,10 @@ const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: nu
             // case eQuestionType.dropdown:
             baseObject.options = ['Option 1', 'Option 2'];
             baseObject.validation = { randomize: false };
+            break;
+
+        case eQuestionType.phone:
+            baseObject.validation = { allowAnyCountry: true };
             break;
         default:
             break;
