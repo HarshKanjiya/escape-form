@@ -16,7 +16,13 @@ export interface IQuestion {
         randomize?: boolean;                    // for multiple choice, checkbox, dropdown
         anyFileType?: boolean;                  // for file upload field
         allowedFileTypes?: string[];            // MIME types
-        allowAnyCountry?: boolean;                // for phone number field
+        allowAnyCountry?: boolean;              // for phone number field
+        allowedCountries?: string[];            // ISO country codes
+        add?: IAddress;                         // for address field
+        starCount?: number;                     // for star rating field
+        detailBtnText?: string;                 // for detail field
+        userConsentText?: string;               // for consent field
+        userConsentRequired?: boolean;          // for consent field
     };
     logic?: {
         conditions: Array<{
@@ -33,6 +39,17 @@ export interface IQuestion {
     };
     customCss?: string;
 }
+
+export interface IAddress {
+    address?: boolean;
+    address2?: boolean;
+    city?: boolean;
+    state?: boolean;
+    zip?: boolean;
+    country?: boolean;
+    postalCode?: boolean;
+}
+
 export interface IWorkflowConnection {
     id: string;
     from: string;

@@ -1,4 +1,12 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 interface IProps {
     question: IQuestion,
@@ -6,23 +14,55 @@ interface IProps {
 }
 
 export function WebsiteField({ question, index }: IProps) {
-    // const formatUrl = (url: string) => {
-    //     if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-    //         return `https://${url}`;
-    //     }
-    //     return url;
-    // };
 
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     onChange?.(e.target.value);
-    // };
+    const { updateQuestion } = useFormBuilder();
+    const [isEditingQuestion, setIsEditingQuestion] = useState(false);
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
+    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempDescription, setTempDescription] = useState(question.description || '');
 
-    // const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    //     const formattedUrl = formatUrl(e.target.value);
-    //     if (formattedUrl !== e.target.value) {
-    //         onChange?.(formattedUrl);
-    //     }
-    // };
+    const questionInputRef = useRef<HTMLInputElement>(null);
+    const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto-focus when entering edit mode
+    useEffect(() => {
+        if (isEditingQuestion && questionInputRef.current) {
+            questionInputRef.current.focus();
+            questionInputRef.current.select();
+        }
+    }, [isEditingQuestion]);
+
+    useEffect(() => {
+        if (isEditingDescription && descriptionInputRef.current) {
+            descriptionInputRef.current.focus();
+            descriptionInputRef.current.select();
+        }
+    }, [isEditingDescription]);
+
+    const handleQuestionSave = () => {
+        if (tempQuestion.trim() !== question.question) {
+            updateQuestion(question.id, { question: tempQuestion.trim() });
+        }
+        setIsEditingQuestion(false);
+    };
+
+    const handleDescriptionSave = () => {
+        if (tempDescription !== (question.description || '')) {
+            updateQuestion(question.id, { description: tempDescription });
+        }
+        setIsEditingDescription(false);
+    };
+
+    const handleQuestionCancel = () => {
+        setTempQuestion(question.question);
+        setIsEditingQuestion(false);
+    };
+
+    const handleDescriptionCancel = () => {
+        setTempDescription(question.description || '');
+        setIsEditingDescription(false);
+    };
 
     return (
         <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
@@ -30,32 +70,87 @@ export function WebsiteField({ question, index }: IProps) {
                 <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
             </div>
             <div className="space-y-4 w-full flex-1">
-            {/* <Label htmlFor={question.id} className="text-sm font-medium">
-                {question.question}
-                {question.required && <span className="text-red-500 ml-1">*</span>}
-            </Label>
-            {question.description && (
-                <p className="text-sm text-muted-foreground">{question.description}</p>
-            )}
-            <div className="relative">
-                <Input
-                    id={question.id}
-                    type="url"
-                    placeholder={question.placeholder || "https://example.com"}
-                    value={value}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disabled={disabled}
-                    required={question.required}
-                    className="w-full pl-10"
-                    pattern={question.validation?.pattern || "https?://.+"}
-                />
-                <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <div className="space-y-2">
+                    {isEditingQuestion ? (
+                        <Input
+                            ref={questionInputRef}
+                            value={tempQuestion}
+                            onChange={(e) => setTempQuestion(e.target.value)}
+                            onBlur={handleQuestionSave}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleQuestionSave();
+                                } else if (e.key === 'Escape') {
+                                    handleQuestionCancel();
+                                }
+                            }}
+                            className="!py-6 !px-4 !text-xl border-none"
+                            placeholder="Enter your question..."
+                        />
+                    ) : (
+                        <div
+                            onClick={() => setIsEditingQuestion(true)}
+                            className={cn(
+                                "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
+                                !question.question && "text-muted-foreground"
+                            )}
+                        >
+                            <span className="flex items-center gap-2">
+                                <span>{question.question || "Click to add question..."}</span>
+                                <AnimatePresence mode="wait">
+                                    {question.required && (
+                                        <motion.span
+                                            key="required-star"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.1 }}
+                                            className="text-destructive"
+                                        >
+                                            *
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </span>
+                        </div>
+                    )}
+                </div>
+                <div>
+                    {isEditingDescription ? (
+                        <Textarea
+                            ref={descriptionInputRef}
+                            value={tempDescription}
+                            onChange={(e) => setTempDescription(e.target.value)}
+                            onBlur={handleDescriptionSave}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && e.ctrlKey) {
+                                    handleDescriptionSave();
+                                } else if (e.key === 'Escape') {
+                                    handleDescriptionCancel();
+                                }
+                            }}
+                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            placeholder="Add description (optional)..."
+                            rows={3}
+                        />
+                    ) : (
+                        <div
+                            onClick={() => setIsEditingDescription(true)}
+                            className={cn(
+                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
+                                !question.description && "italic opacity-70"
+                            )}
+                        >
+                            {question.description || "Description (optional)"}
+                        </div>
+                    )}
+                </div>
+                <div className="space-y-2">
+                    <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
+                        http://
+                    </div>
+                </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-                URL will be automatically prefixed with https:// if needed
-            </p> */}
-        </div>
         </div>
     );
 }

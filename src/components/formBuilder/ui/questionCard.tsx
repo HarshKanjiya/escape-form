@@ -1,13 +1,11 @@
 import { eQuestionType } from "@/enums/form";
 import { IQuestion } from "@/types/form";
 import { AddressField } from "../formFields/address";
-import { BarChoiceRatingField } from "../formFields/barChoiceRating";
 import { CheckboxField } from "../formFields/checkbox";
 import { DateField } from "../formFields/date";
 // import { DropdownField } from "../formFields/dropdown";
 import { EmailField } from "../formFields/email";
 import { FileUploadField } from "../formFields/file";
-import { ImageChoiceRatingField } from "../formFields/imageChoiceRating";
 import { LongTextField } from "../formFields/longText";
 import { NumberField } from "../formFields/number";
 import { PhoneField } from "../formFields/phone";
@@ -15,6 +13,7 @@ import { RadioField } from "../formFields/radio";
 import { ShortTextField } from "../formFields/shortText";
 import { StarRatingField } from "../formFields/starRating";
 import { WebsiteField } from "../formFields/website";
+import { DetailField } from "../formFields/detail";
 
 interface IProps {
     question: IQuestion | null;
@@ -41,6 +40,11 @@ export default function QuestionCard({ question, index }: IProps) {
         case eQuestionType.number:
             return (
                 <NumberField question={question} index={index} />
+            );
+
+        case eQuestionType.detail:
+            return (
+                <DetailField question={question} index={index} />
             );
 
         case eQuestionType.date:
@@ -93,15 +97,15 @@ export default function QuestionCard({ question, index }: IProps) {
                 <StarRatingField question={question} index={index} />
             );
 
-        case eQuestionType.barChoiceRating:
-            return (
-                <BarChoiceRatingField question={question} index={index} />
-            );
+        // case eQuestionType.barChoiceRating:
+        //     return (
+        //         <BarChoiceRatingField question={question} index={index} />
+        //     );
 
-        case eQuestionType.imageChoiceRating:
-            return (
-                <ImageChoiceRatingField question={question} index={index} />
-            );
+        // case eQuestionType.imageChoiceRating:
+        //     return (
+        //         <ImageChoiceRatingField question={question} index={index} />
+        //     );
 
         default:
             return (

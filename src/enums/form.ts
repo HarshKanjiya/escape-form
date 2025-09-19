@@ -21,6 +21,7 @@ export enum eQuestionType {
     number = "number",
     date = "date",
     file = "file",
+    detail = "detail",
     radio = "radio",
     checkbox = "checkbox",
     // dropdown = "dropdown",
@@ -29,8 +30,8 @@ export enum eQuestionType {
     address = "address",
     website = "website",
     starRating = "star_rating",
-    barChoiceRating = "bar_choice_rating",
-    imageChoiceRating = "image_choice_rating",
+    // barChoiceRating = "bar_choice_rating",
+    // imageChoiceRating = "image_choice_rating",
 }
 
 export enum eFormType {

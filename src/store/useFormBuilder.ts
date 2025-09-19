@@ -303,6 +303,10 @@ const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: nu
         case eQuestionType.phone:
             baseObject.validation = { allowAnyCountry: true };
             break;
+        case eQuestionType.detail:
+            baseObject.validation = { detailBtnText: 'Continue' };
+            baseObject.question = 'Click to add details...';
+            break;
         default:
             break;
     }

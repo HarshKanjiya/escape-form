@@ -3,24 +3,39 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFormBuilder } from "@/store/useFormBuilder";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import CountryDropdown from "../../ui/countryDropdown";
+import { CountryMultiSelect } from "../../ui/countryDropdown";
 
 export function PhoneFieldConfig() {
     const { updateQuestion, selectedQuestion } = useFormBuilder();
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [international, setInternational] = useState(selectedQuestion?.validation?.allowAnyCountry || false);
-    const [country, setCountry] = useState<any>(undefined);
+    const [anyCountry, setAnyCountry] = useState(selectedQuestion?.validation?.allowAnyCountry || false);
+    const [countries, setCountry] = useState<any[]>(selectedQuestion?.validation?.allowedCountries || []);
 
     useEffect(() => {
         if (required != selectedQuestion?.required) updateQuestion(selectedQuestion?.id || '', { required });
     }, [required]);
 
     useEffect(() => {
-        if (international != selectedQuestion?.validation?.allowAnyCountry) updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: international } });
-    }, [international]);
+        if (anyCountry != selectedQuestion?.validation?.allowAnyCountry) {
+            if (anyCountry) {
+                updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: true, allowedCountries: [] } });
+                setCountry([]);
+            }
+            else {
+                updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: false, allowedCountries: countries } });
+            }
+        }
+    }, [anyCountry]);
+
+    useEffect(() => {
+        if (countries.length && countries != selectedQuestion?.validation?.allowedCountries) {
+            updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: false, allowedCountries: countries } });
+        }
+    }, [countries]);
 
     return (
         <div className="flex flex-col overflow-y-clip">
@@ -30,15 +45,23 @@ export function PhoneFieldConfig() {
             </div>
             <div className="flex items-center justify-between pb-3">
                 <Label htmlFor="phone-international">Any Country</Label>
-                <Switch id="phone-international" checked={international} onCheckedChange={setInternational} />
+                <Switch id="phone-international" checked={anyCountry} onCheckedChange={setAnyCountry} />
             </div>
-            {
-                !international && (
-                    <div className="flex items-center justify-between">
-                        <CountryDropdown value={country} onChange={setCountry} />
-                    </div>
-                )
-            }
+            <AnimatePresence mode="wait" initial={false}>
+                {
+                    !anyCountry && (
+                        <motion.div
+                            layout
+                            key={'min-length-div'}
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                        >
+                            <CountryMultiSelect values={countries} onChange={setCountry} />
+                        </motion.div>
+                    )
+                }
+            </AnimatePresence>
         </div>
     );
 }

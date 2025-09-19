@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
@@ -120,6 +119,20 @@ export function EmailField({ question, index }: IProps) {
                         >
                             <span className="flex items-center gap-2">
                                 <span>{question.question || "Click to add question..."}</span>
+                                <AnimatePresence mode="wait">
+                                    {question.required && (
+                                        <motion.span
+                                            key="required-star"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.1 }}
+                                            className="text-destructive"
+                                        >
+                                            *
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
                             </span>
                         </div>
                     )}
@@ -176,23 +189,6 @@ export function EmailField({ question, index }: IProps) {
                             <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
                                 {question.placeholder || "name@example.com"}
                             </div>
-                            <AnimatePresence mode="wait">
-                                {
-                                    question.validation?.min && (
-                                        <motion.small
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.15 }}
-                                            key="min-char-warning"
-                                            className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"
-                                        >
-                                            <Info size={14} />
-                                            Minimum {Number(question.validation?.min)} Characters Required
-                                        </motion.small>
-                                    )
-                                }
-                            </AnimatePresence>
                             <p
                                 onClick={() => setIsEditingPlaceholder(true)}
                                 className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"

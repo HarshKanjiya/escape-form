@@ -3,10 +3,11 @@
 import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+import { Check, Plus, Search } from "lucide-react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import { Input } from "../../ui/input";
 import QuestionIcon from "./questionIcon";
 
 interface IAddItemDialogProps {
@@ -17,25 +18,63 @@ interface IItemProps {
     field: IField;
     selectedField: eQuestionType | null;
     setSelectedField: (id: eQuestionType) => void;
-    onDblClick: () => void;
+    onAdd: () => void;
 }
 
-function FieldItem({ field: { id, label, accent }, selectedField, setSelectedField, onDblClick }: IItemProps) {
+const FieldItem = memo(function FieldItem({ field: { id, label, accent }, selectedField, setSelectedField, onAdd }: IItemProps) {
+    const isSelected = selectedField === id;
+
+    const handleKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (isSelected) onAdd(); else setSelectedField(id);
+        }
+        if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)) {
+            e.preventDefault();
+            const items = Array.from(document.querySelectorAll('[data-field-item="true"]')) as HTMLElement[];
+            const currentIndex = items.findIndex(el => el === e.currentTarget);
+            if (currentIndex === -1) return;
+            const dir = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
+            const nextIndex = (currentIndex + dir + items.length) % items.length;
+            items[nextIndex]?.focus();
+        }
+    };
 
     return (
         <div
+            role="option"
+            aria-selected={isSelected}
+            tabIndex={0}
+            data-field-item="true"
+            onKeyDown={handleKey}
             onClick={() => setSelectedField(id)}
-            onDoubleClick={onDblClick}
-            className={cn("flex gap-3 items-center bg-accent p-2 rounded-lg border hover:border-primary transition-all duration-200 select-none cursor-pointer",
-                selectedField === id ? "bg-primary/30" : "border-transparent",
-            )}>
-            <div className={cn('rounded-sm p-1', accent)}>
-                <QuestionIcon questionType={id} size={16} />
+            onDoubleClick={onAdd}
+            className={cn(
+                "group relative flex items-center gap-3 rounded-xl border p-2.5 text-sm outline-none cursor-pointer select-none transition-colors bg-background dark:bg-foreground/5",
+                "hover:bg-muted/60 hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/40",
+                isSelected && "border-primary/50 bg-primary/10 dark:bg-primary/15"
+            )}
+        >
+            <div
+                className={cn(
+                    "flex size-8 items-center justify-center rounded-md border transition-colors",
+                    accent,
+                    "group-hover:brightness-110",
+                    isSelected && "ring-1 ring-primary/60 border-primary/50"
+                )}
+            >
+                <QuestionIcon questionType={id} size={18} />
             </div>
-            <span className="!font-light text-sm">{label}</span>
+            <div className="flex flex-col min-w-0">
+                <span className="font-medium leading-tight truncate">{label}</span>
+            </div>
+            {isSelected && (
+                <Check className="absolute right-2 top-2 size-4 text-primary" />
+            )}
+            <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-transparent group-hover:ring-border/40" />
         </div>
     );
-}
+});
 
 interface IFieldSet {
     title: string;
@@ -44,53 +83,74 @@ interface IFieldSet {
 }
 
 interface IField {
-    accent: string;
     label: string;
     id: eQuestionType;
+    accent: string; // accent color utility for icon background
+    keywords?: string[]; // for search discoverability
 }
 
+// Field taxonomy – no static color classes; rely on theme tokens only
 const fields: IFieldSet[] = [
     {
         title: 'Common',
-        description: 'Common set of input fields',
-
+        description: 'Basic input primitives',
         items: [
-            { id: eQuestionType.shortText, label: 'Short Text', accent: 'bg-fuchsia-400/60' },
-            { id: eQuestionType.longText, label: 'Long Text', accent: 'bg-fuchsia-400/60' },
-            { id: eQuestionType.number, label: 'Number', accent: 'bg-fuchsia-400/60' },
-            { id: eQuestionType.date, label: 'Date', accent: 'bg-fuchsia-400/60' },
-            { id: eQuestionType.file, label: 'File', accent: 'bg-fuchsia-400/60' },
+            { id: eQuestionType.shortText, label: 'Short Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'single line'] },
+            { id: eQuestionType.longText, label: 'Long Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'paragraph'] },
+            { id: eQuestionType.number, label: 'Number', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['numeric', 'integer'] },
+            { id: eQuestionType.date, label: 'Date', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['calendar', 'time'] },
+            { id: eQuestionType.file, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
+            { id: eQuestionType.detail, label: 'Detail Block', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['content', 'static'] },
         ]
     },
     {
         title: 'Choice Based',
-        description: 'Choice based set of input fields',
+        description: 'Select one or many options',
         items: [
-            { id: eQuestionType.radio, label: 'Single Choice', accent: 'bg-emerald-400/30' },
-            { id: eQuestionType.checkbox, label: 'Multiple Choice', accent: 'bg-emerald-400/30' },
-            // { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/30' },
+            { id: eQuestionType.radio, label: 'Single Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['radio', 'single'] },
+            { id: eQuestionType.checkbox, label: 'Multiple Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['multi', 'checkbox'] },
+            // { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
         ]
     },
     {
-        title: 'Contact info',
-        description: 'Contact information fields',
+        title: 'Contact Info',
+        description: 'Collect respondent contact details',
         items: [
-            { id: eQuestionType.email, label: 'Email', accent: 'bg-amber-400/60' },
-            { id: eQuestionType.phone, label: 'Phone', accent: 'bg-amber-400/60' },
-            { id: eQuestionType.address, label: 'Address', accent: 'bg-amber-400/60' },
-            { id: eQuestionType.website, label: 'Website', accent: 'bg-amber-400/60' },
+            { id: eQuestionType.email, label: 'Email', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'mail'] },
+            { id: eQuestionType.phone, label: 'Phone', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'tel'] },
+            { id: eQuestionType.address, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
+            { id: eQuestionType.website, label: 'Website', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['url'] },
         ]
     },
     {
         title: 'Rating',
-        description: 'Rating fields',
+        description: 'Measure sentiment or preference',
         items: [
-            { id: eQuestionType.starRating, label: 'Star', accent: 'bg-indigo-400/60' },
-            { id: eQuestionType.barChoiceRating, label: 'Choice', accent: 'bg-indigo-400/60' },
-            { id: eQuestionType.imageChoiceRating, label: 'Picture Choice', accent: 'bg-indigo-400/60' },
+            { id: eQuestionType.starRating, label: 'Star Rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'stars'] },
+            // { id: eQuestionType.barChoiceRating, label: 'Choice Rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'scale'] },
+            // { id: eQuestionType.imageChoiceRating, label: 'Picture Choice', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['image', 'choice'] },
         ]
     },
-]
+];
+
+// Extra descriptions for preview panel
+const fieldDescriptions: Record<eQuestionType, string> = {
+    [eQuestionType.shortText]: 'Single line input suitable for names, short answers, tags.',
+    [eQuestionType.longText]: 'Multi-line text area for extended responses and feedback.',
+    [eQuestionType.number]: 'Numeric input with optional validation constraints.',
+    [eQuestionType.date]: 'Date picker for selecting a specific date.',
+    [eQuestionType.file]: 'Upload field to collect documents or images.',
+    [eQuestionType.detail]: 'A static content block to show instructions or context.',
+    [eQuestionType.radio]: 'Let respondents choose exactly one option.',
+    [eQuestionType.checkbox]: 'Allow multiple selections from a list of options.',
+    [eQuestionType.email]: 'Email address field with validation.',
+    [eQuestionType.phone]: 'International phone number input with validation.',
+    [eQuestionType.address]: 'Structured address entry (street, city, etc.).',
+    [eQuestionType.website]: 'Website / URL field with protocol validation.',
+    [eQuestionType.starRating]: 'Collect a quick 1–5 star satisfaction rating.',
+    // [eQuestionType.barChoiceRating]: 'Horizontal choice scale to compare options.',
+    // [eQuestionType.imageChoiceRating]: 'Selectable picture choices for visual surveys.',
+};
 
 
 export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
@@ -98,54 +158,194 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
 
     const [selectedField, setSelectedField] = useState<eQuestionType | null>(null);
     const [open, setOpen] = useState(false);
-    const save = () => {
+
+    const [query, setQuery] = useState("");
+    const [activeSection, setActiveSection] = useState<string>("All");
+
+    const save = useCallback(() => {
         if (selectedField) {
             addQuestions([selectedField]);
             setSelectedField(null);
             setOpen(false);
+            setQuery("");
+            setActiveSection("All");
         }
-    }
+    }, [selectedField]);
+
+    const filteredSets = useMemo(() => {
+        const lower = query.toLowerCase();
+        const predicate = (f: IField) =>
+            !lower || f.label.toLowerCase().includes(lower) || f.keywords?.some(k => k.includes(lower));
+
+        return fields
+            .map(set => ({
+                ...set,
+                items: set.items.filter(predicate)
+            }))
+            .filter(set => set.items.length > 0 || !query);
+    }, [query]);
+
+    const allVisibleItems = useMemo(() => {
+        const setsToUse = activeSection === 'All' ? filteredSets : filteredSets.filter(s => s.title === activeSection);
+        return setsToUse.flatMap(s => s.items);
+    }, [filteredSets, activeSection]);
 
     return (
-        <>
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                    {
-                        children ? children :
-                            <Button variant={'secondary'} size={'sm'} className="">
-                                <Plus className="mr-2" />
-                                Add Item
-                            </Button>
-                    }
-                </DialogTrigger>
-                <DialogContent className="w-full sm:min-w-[70vw] md:min-w-[60vw] lg:min-w-[50vw] p-0">
-                    <DialogTitle className="p-4 border-b">Add New Item</DialogTitle>
-                    <div className="p-4 flex flex-col gap-4 w-full min-h-64 overflow-auto max-h-[60vh] sm:max-h-[70vh]">
-                        {
-                            fields.map((set, index) => {
-                                return (
-                                    <div key={index} className="w-full py-2 flex flex-col gap-2">
-                                        <h4 className="font-medium border-b pb-2">{set.title}</h4>
-                                        <div className="overflow-auto w-full gap-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-                                            {
-                                                set.items.map((field, index) => {
-                                                    return (
-                                                        <FieldItem key={index} field={field} selectedField={selectedField} setSelectedField={(code: eQuestionType) => setSelectedField(code)} onDblClick={save} />
-                                                    )
-                                                })
-                                            }
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setQuery(''); setActiveSection('All'); setSelectedField(null); } }}>
+            <DialogTrigger asChild>
+                {children ? (
+                    children
+                ) : (
+                    <Button variant={'secondary'} size={'sm'}>
+                        <Plus className="mr-2" /> Add Item
+                    </Button>
+                )}
+            </DialogTrigger>
+            <DialogContent className="w-full sm:min-w-[80vw] min-h-[70vh] lg:min-w-[70vw] xl:min-w-[60vw] p-0 overflow-hidden flex flex-col gap-0 max-h-[85vh]">
+                <DialogTitle className="flex items-center justify-between gap-4 p-4 border-b text-base">
+                    <span>Add New Field</span>
+                </DialogTitle>
+                <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent transition-opacity duration-150">
+                    <div className="md:w-[58%] lg:w-[60%] xl:w-[65%] flex flex-col border-r min-h-0">
+                        {/* Search & filters */}
+                        <div className="p-4 pb-2 flex flex-col gap-3 border-b bg-background">
+                            <div className="relative">
+                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search field types..."
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    className="pl-8 h-9"
+                                />
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                                {['All', ...fields.map(f => f.title)].map(section => {
+                                    const active = activeSection === section;
+                                    return (
+                                        <button
+                                            key={section}
+                                            onClick={() => setActiveSection(section)}
+                                            className={cn(
+                                                "px-3 h-7 rounded-full border text-[11px] font-medium tracking-wide transition-all",
+                                                "hover:bg-accent/60 hover:text-accent-foreground",
+                                                active && "bg-primary/15 text-primary border-primary/40 dark:bg-primary/25"
+                                            )}
+                                        >
+                                            {section}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        {/* Scrollable list */}
+                        <div className="flex-1 overflow-auto p-4" role="listbox" aria-label="Question types" style={{ scrollBehavior: 'auto' }}>
+                            {activeSection === 'All'
+                                ? filteredSets.map((set, sIndex) => (
+                                    <div key={sIndex} className="mb-6 last:mb-0">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h4 className="font-semibold text-sm flex items-center gap-2">
+                                                {set.title}
+                                                <span className="text-[11px] rounded-md bg-muted px-1.5 py-0.5 font-normal text-muted-foreground">
+                                                    {set.items.length}
+                                                </span>
+                                            </h4>
+                                            <p className="text-xs text-muted-foreground hidden md:block max-w-[45%] truncate">{set.description}</p>
+                                        </div>
+                                        {set.items.length ? (
+                                            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
+                                                {set.items.map(field => (
+                                                    <FieldItem
+                                                        key={field.id}
+                                                        field={field}
+                                                        selectedField={selectedField}
+                                                        setSelectedField={setSelectedField}
+                                                        onAdd={save}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-xs text-muted-foreground italic">No matches in this section.</div>
+                                        )}
+                                    </div>
+                                ))
+                                : (
+                                    filteredSets.filter(f => f.title === activeSection).map(set => (
+                                        <div key={set.title} className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="font-semibold text-sm">{set.title}</h4>
+                                                <p className="text-xs text-muted-foreground max-w-[50%] truncate">{set.description}</p>
+                                            </div>
+                                            {set.items.length ? (
+                                                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
+                                                    {set.items.map(field => (
+                                                        <FieldItem
+                                                            key={field.id}
+                                                            field={field}
+                                                            selectedField={selectedField}
+                                                            setSelectedField={setSelectedField}
+                                                            onAdd={save}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="text-xs text-muted-foreground italic">No matches found.</div>
+                                            )}
+                                        </div>
+                                    ))
+                                )}
+                            {!allVisibleItems.length && (
+                                <div className="flex flex-col items-center justify-center py-16 text-center gap-3 text-muted-foreground">
+                                    <Search className="size-8 opacity-40" />
+                                    <p className="text-sm">No field types match "{query}"</p>
+                                    <Button variant="ghost" size="sm" onClick={() => setQuery("")}>Reset search</Button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {/* Preview panel */}
+                    <div className="hidden md:flex flex-col flex-1 min-h-0 bg-background transition-opacity duration-150">
+                        <div className="p-4 border-b">
+                            <h3 className="text-sm font-semibold tracking-wide">Preview</h3>
+                            <p className="text-xs text-muted-foreground mt-1">Get a quick sense of how the field behaves before inserting it.</p>
+                        </div>
+                        <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center text-center will-change-transform will-change-opacity">
+                            {selectedField ? (
+                                // <DemoQuestion questionType={selectedField} />
+                                <div className="max-w-sm w-full flex flex-col items-center gap-4">
+                                    <div className="rounded-xl border bg-muted/30 p-6 w-full relative">
+                                        <div className="relative flex flex-col gap-4 items-center">
+                                            <div className="size-14 rounded-lg flex items-center justify-center border bg-primary/10 text-primary">
+                                                <QuestionIcon questionType={selectedField} size={30} />
+                                            </div>
+                                            <h4 className="text-base font-semibold tracking-tight">{allVisibleItems.find(i => i.id === selectedField)?.label}</h4>
+                                            <p className="text-xs text-muted-foreground leading-relaxed">{fieldDescriptions[selectedField]}</p>
                                         </div>
                                     </div>
-                                )
-                            })
-                        }
+                                    <div className="flex gap-2 w-full">
+                                        <Button className="flex-1" onClick={save} disabled={!selectedField}>Add Field</Button>
+                                        <Button variant="outline" className="flex-1" onClick={() => setSelectedField(null)} disabled={!selectedField}>Clear</Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center gap-4 max-w-xs">
+                                    <div className="size-14 rounded-xl border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                                        <Search className="size-6" />
+                                    </div>
+                                    <p className="text-sm font-medium">Select a field type</p>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">Browse categories or use search to quickly locate the field you need.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <DialogFooter className='border-t bg-background p-3 pt-4 px-4'>
-                        <Button type='button' variant='ghost' onClick={() => setOpen(false)}>Cancel</Button>
-                        <Button type='submit' form='form-settings' onClick={save}>Add</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </>
+                </div>
+                <DialogFooter className='border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-3 px-4'>
+                    <div className="mr-auto hidden md:flex text-xs text-muted-foreground items-center gap-2">
+                        <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] border">↵</span> Add selected
+                    </div>
+                    <Button type='button' variant='ghost' onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button type='button' onClick={save} disabled={!selectedField}>Add</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

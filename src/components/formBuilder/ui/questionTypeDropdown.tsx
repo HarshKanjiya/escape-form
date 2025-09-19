@@ -2,13 +2,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { eQuestionType } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { Calendar, CaseSensitive, ChartBarBig, CircleDot, FileText, Hash, Images, Link2, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
+import { Book, Calendar, CaseSensitive, CircleDot, FileText, Hash, Link2, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
 import { useCallback } from "react";
 
 const questionTypes = [
     { value: eQuestionType.shortText, label: "Short Text", icon: CaseSensitive },
     { value: eQuestionType.longText, label: "Long Text", icon: CaseSensitive },
     { value: eQuestionType.number, label: "Number", icon: Hash },
+    { value: eQuestionType.detail, label: "Details", icon: Book },
     { value: eQuestionType.date, label: "Date", icon: Calendar },
     { value: eQuestionType.email, label: "Email", icon: Mail },
     { value: eQuestionType.phone, label: "Phone", icon: Phone },
@@ -19,8 +20,8 @@ const questionTypes = [
     // { value: eQuestionType.dropdown, label: "Dropdown", icon: ChevronsUpDown },
     { value: eQuestionType.file, label: "File Upload", icon: FileText },
     { value: eQuestionType.starRating, label: "Star Rating", icon: Star },
-    { value: eQuestionType.barChoiceRating, label: "Rating Scale", icon: ChartBarBig },
-    { value: eQuestionType.imageChoiceRating, label: "Image Choice", icon: Images },
+    // { value: eQuestionType.barChoiceRating, label: "Rating Scale", icon: ChartBarBig },
+    // { value: eQuestionType.imageChoiceRating, label: "Image Choice", icon: Images },
 ];
 
 export default function QuestionTypeDropdown() {

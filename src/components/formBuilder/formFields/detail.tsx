@@ -1,12 +1,14 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { Info, StarIcon } from "lucide-react";
+import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
@@ -14,32 +16,12 @@ interface IProps {
     index: number
 }
 
-export function StarRatingField({ question, index }: IProps) {
-
+export function DetailField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
-    const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.question);
-    const [tempDescription, setTempDescription] = useState(question.description || '');
-    const [mockCount, setMockCount] = useState<number[]>([]);
 
     const questionInputRef = useRef<HTMLInputElement>(null);
-    const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
-
-    const STAR_ANIMATE = { scale: 1, opacity: 1 };
-    const STAR_EXIT = { scale: 0, opacity: 0 };
-
-    const prevLengthRef = useRef<number>(0);
-    const isAdding = mockCount.length > prevLengthRef.current;
-    useEffect(() => {
-        prevLengthRef.current = mockCount.length;
-    }, [mockCount.length]);
-
-    // Mock star rating
-    useEffect(() => {
-        const count = question.validation?.starCount || 5;
-        setMockCount(Array.from({ length: count }, (_, i) => i + 1));
-    }, [question.validation?.starCount]);
 
     // Auto-focus when entering edit mode
     useEffect(() => {
@@ -49,13 +31,6 @@ export function StarRatingField({ question, index }: IProps) {
         }
     }, [isEditingQuestion]);
 
-    useEffect(() => {
-        if (isEditingDescription && descriptionInputRef.current) {
-            descriptionInputRef.current.focus();
-            descriptionInputRef.current.select();
-        }
-    }, [isEditingDescription]);
-
     const handleQuestionSave = () => {
         if (tempQuestion.trim() !== question.question) {
             updateQuestion(question.id, { question: tempQuestion.trim() });
@@ -63,21 +38,9 @@ export function StarRatingField({ question, index }: IProps) {
         setIsEditingQuestion(false);
     };
 
-    const handleDescriptionSave = () => {
-        if (tempDescription !== (question.description || '')) {
-            updateQuestion(question.id, { description: tempDescription });
-        }
-        setIsEditingDescription(false);
-    };
-
     const handleQuestionCancel = () => {
         setTempQuestion(question.question);
         setIsEditingQuestion(false);
-    };
-
-    const handleDescriptionCancel = () => {
-        setTempDescription(question.description || '');
-        setIsEditingDescription(false);
     };
 
     return (
@@ -131,53 +94,20 @@ export function StarRatingField({ question, index }: IProps) {
                         </div>
                     )}
                 </div>
-                <div>
-                    {isEditingDescription ? (
-                        <Textarea
-                            ref={descriptionInputRef}
-                            value={tempDescription}
-                            onChange={(e) => setTempDescription(e.target.value)}
-                            onBlur={handleDescriptionSave}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && e.ctrlKey) {
-                                    handleDescriptionSave();
-                                } else if (e.key === 'Escape') {
-                                    handleDescriptionCancel();
-                                }
-                            }}
-                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
-                            placeholder="Add description (optional)..."
-                            rows={3}
-                        />
-                    ) : (
-                        <div
-                            onClick={() => setIsEditingDescription(true)}
-                            className={cn(
-                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
-                                !question.description && "italic opacity-70"
-                            )}
-                        >
-                            {question.description || "Description (optional)"}
+
+                {
+                    question.validation?.userConsentRequired && (
+                        <div className="space-x-2">
+                            <Checkbox disabled />
+                            <span className="text-sm text-muted-foreground">{question.validation?.userConsentText || 'User consent text'}</span>
                         </div>
-                    )}
-                </div>
-                <div className="flex items-center gap-2 text-lg text-primary-500/70">
-                    <AnimatePresence initial={false}>
-                        {mockCount.map((value, i) => (
-                            <motion.div
-                                key={value}
-                                initial={isAdding ? { scale: 0, opacity: 0, y: 0 } : false}
-                                animate={STAR_ANIMATE}
-                                exit={STAR_EXIT}
-                                transition={{ duration: 0.25, delay: isAdding ? i * 0.05 : 0 }}
-                                layout
-                            >
-                                <StarIcon />
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                </div>
+                    )
+                }
+
+                <Button size={'lg'} disabled={!question.validation?.userConsentRequired} >
+                    {question.validation?.detailBtnText}
+                </Button>
             </div>
-        </div >
+        </div>
     );
 }

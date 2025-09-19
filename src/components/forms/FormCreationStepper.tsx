@@ -222,12 +222,12 @@ function DetailsStep({ form }: DetailsStepProps) {
             <Card>
                 <CardHeader>
                     <div className="text-center space-y-3">
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text">
                             Let`&apos;s start with the basics
                         </h2>
-                        <p className="text-muted-foreground text-lg max-w-md mx-auto">
+                        {/* <p className="text-muted-foreground text-lg max-w-md mx-auto">
                             Give your form a name and description. Don`&apos;t worry, you can always change these later.
-                        </p>
+                        </p> */}
                     </div>
                 </CardHeader>
                 <CardContent className='flex flex-col gap-4'>

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -188,8 +189,8 @@ export function PhoneField({ question, index }: IProps) {
                     )}
                 </div>
                 <div className="flex items-start gap-2">
-                    <div className="p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40">
-                        + 91
+                    <div className="p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 flex items-center gap-1.5 pr-1.5">
+                        <span>+ 91</span> <ChevronDown className="mt-1" />
                     </div>
                     <div className="space-y-2 flex-1">
                         {isEditingPlaceholder ? (

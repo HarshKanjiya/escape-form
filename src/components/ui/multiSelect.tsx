@@ -9,8 +9,10 @@ import { Button } from "./button";
 import { createPortal } from "react-dom";
 
 export interface MultiSelectOption {
-  label: string;
+  label: string; // display label (used as fallback)
   value: string;
+  // optional arbitrary data bag for custom renderers
+  meta?: Record<string, any>;
 }
 
 interface MultiSelectProps {
@@ -22,6 +24,14 @@ interface MultiSelectProps {
   triggerClassName?: string;
   contentClassName?: string;
   disabled?: boolean;
+  /** custom renderer for each option inside the dropdown list */
+  renderOption?: (option: MultiSelectOption, selected: boolean) => React.ReactNode;
+  /** custom renderer for trigger value summary */
+  renderTriggerValue?: (selected: MultiSelectOption[]) => React.ReactNode;
+  /** button variant passthrough */
+  triggerVariant?: React.ComponentProps<typeof Button>["variant"];
+  /** button size passthrough */
+  triggerSize?: React.ComponentProps<typeof Button>["size"];
 }
 
 export const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -33,6 +43,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   triggerClassName,
   contentClassName,
   disabled = false,
+  renderOption,
+  renderTriggerValue,
+  triggerVariant = "secondary",
+  triggerSize,
 }) => {
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -70,11 +84,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     setOpen(true);
   };
 
+  const selectedOptions = React.useMemo(
+    () => options.filter(o => value.includes(o.value)),
+    [options, value]
+  );
+
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative w-full", className)}>
       <Button
         type="button"
-        variant={"secondary"}
+        variant={triggerVariant}
+        size={triggerSize}
         ref={triggerRef}
         className={cn(
           "w-full flex items-center justify-between",
@@ -87,12 +107,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         aria-expanded={open}
       >
         <span className="flex text-muted-foreground flex-wrap gap-1 min-h-[1.5rem] items-center line-clamp-1 text-ellipsis overflow-hidden">
-          {value.length === 0 ? (
+          {selectedOptions.length === 0 ? (
             <span>{placeholder}</span>
+          ) : renderTriggerValue ? (
+            renderTriggerValue(selectedOptions)
+          ) : selectedOptions.length > 3 ? (
+            `${selectedOptions.length} items selected`
           ) : (
-            value.length > 3 ? `${value.length} items selected` :
-              value.map((val) => options.find((o) => o.value === val)?.label || val)
-                .join(", ")
+            selectedOptions.map(o => o.label).join(", ")
           )}
         </span>
         <ChevronDownIcon className="size-4 opacity-50 ml-2" />
@@ -140,8 +162,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                     }
                   }}
                 >
-                  <span className="flex-1">{option.label}</span>
-                  {selected && <CheckIcon className="size-4 text-primary" />}
+                  {renderOption ? (
+                    renderOption(option, selected)
+                  ) : (
+                    <>
+                      <span className="flex-1">{option.label}</span>
+                      {selected && <CheckIcon className="size-4 text-primary" />}
+                    </>
+                  )}
                 </div>
               );
             })}

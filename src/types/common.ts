@@ -41,3 +41,10 @@ export function createErrorResponse(
     message
   }
 }
+
+export interface CountryOption {
+  code: string; // ISO 2
+  dialCode: string; // +1, +91 etc
+  name: string;
+  flag: string; // Emoji flag
+}

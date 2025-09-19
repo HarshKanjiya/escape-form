@@ -4,13 +4,12 @@ import { eQuestionType } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "framer-motion";
 import { AddressFieldConfig } from "../formFields/config/address";
-import { BarChoiceRatingFieldConfig } from "../formFields/config/barChoiceRating";
 import { CheckboxFieldFieldConfig } from "../formFields/config/checkbox";
 import { DateFieldConfig } from "../formFields/config/date";
 // import { DropdownFieldConfig } from "../formFields/config/dropdown";
+import { DetailConfig } from "../formFields/config/detail";
 import { EmailFieldConfig } from "../formFields/config/email";
 import { FileUploadFieldConfig } from "../formFields/config/file";
-import { ImageChoiceRatingFieldConfig } from "../formFields/config/imageChoiceRating";
 import { LongTextFieldConfig } from "../formFields/config/longText";
 import { NumberFieldConfig } from "../formFields/config/number";
 import { PhoneFieldConfig } from "../formFields/config/phone";
@@ -90,6 +89,20 @@ export default function QuestionConfigCard() {
                         transition={transition}
                     >
                         <DateFieldConfig />
+                    </motion.div>
+                );
+
+            case eQuestionType.detail:
+                return (
+                    <motion.div
+                        key={uniqueKey}
+                        variants={fadeInVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <DetailConfig />
                     </motion.div>
                 );
 
@@ -219,33 +232,33 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.barChoiceRating:
-                return (
-                    <motion.div
-                        key={uniqueKey}
-                        variants={fadeInVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                    >
-                        <BarChoiceRatingFieldConfig />
-                    </motion.div>
-                );
+            // case eQuestionType.barChoiceRating:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <BarChoiceRatingFieldConfig />
+            //         </motion.div>
+            // );
 
-            case eQuestionType.imageChoiceRating:
-                return (
-                    <motion.div
-                        key={uniqueKey}
-                        variants={fadeInVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                    >
-                        <ImageChoiceRatingFieldConfig />
-                    </motion.div>
-                );
+            // case eQuestionType.imageChoiceRating:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <ImageChoiceRatingFieldConfig />
+            //         </motion.div>
+            //     );
 
             default:
                 return (
