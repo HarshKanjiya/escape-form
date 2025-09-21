@@ -104,7 +104,7 @@ export function NumberFieldConfig() {
             </div>
             <div className="flex items-center justify-between py-3">
                 <Label htmlFor="short-text-min-max">Minimum Value
-                    <Tooltip delayDuration={200}>
+                    <Tooltip delayDuration={100}>
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>
@@ -142,7 +142,7 @@ export function NumberFieldConfig() {
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
                 <Label htmlFor="short-text-max">Maximum Value
-                    <Tooltip delayDuration={200}>
+                    <Tooltip delayDuration={100}>
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>

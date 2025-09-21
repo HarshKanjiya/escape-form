@@ -13,7 +13,7 @@ import { useFormBuilder } from '@/store/useFormBuilder';
 import { FormUpdate } from '@/types/db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BarChart2, ChevronDown, Clock, Eye, EyeOff, ImagePlus, Lock, MonitorSmartphone, Replace, Settings, Shield, Trash2, Users2 } from 'lucide-react';
+import { BarChart2, ChevronDown, Clock, ImagePlus, MonitorSmartphone, Replace, Settings, Shield, Trash2, Users2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
@@ -78,7 +78,7 @@ export default function FormConfigDialog() {
     return (
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) { reset(); } }}>
             <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label='Edit Settings'><Settings /></Button>
+                <Button variant="secondary" size="icon" aria-label='Edit Settings'><Settings /></Button>
             </DialogTrigger>
             <DialogContent className='md:min-w-[720px] max-h-[85vh] flex flex-col p-0 overflow-hidden'>
                 <DialogHeader className='px-4 py-3 border-b bg-background'>
@@ -338,44 +338,13 @@ export default function FormConfigDialog() {
                                                 <div className='h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary'><Shield className='h-4 w-4' /></div>
                                                 <div>
                                                     <FormLabel className='text-sm'>Password Protected</FormLabel>
-                                                    <FormDescription>Require a password for access.</FormDescription>
+                                                    <FormDescription>Require a password for access (Passwords can be set in form dashboard).</FormDescription>
                                                 </div>
                                             </div>
                                             <FormControl>
                                                 <Switch checked={field.value} onCheckedChange={field.onChange} />
                                             </FormControl>
                                         </FormItem>
-                                        <AnimatePresence initial={false}>
-                                            {watchPasswordProtected && (
-                                                <motion.div
-                                                    key='password-field'
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: "80px", opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    transition={{ duration: 0.2, }}
-                                                    style={{ overflow: 'hidden' }}
-                                                    className='col-span-2 w-full p-3 pt-4'
-                                                >
-                                                    <div className='pt-1'>
-                                                        <FormField control={form.control} name='password' render={({ field }) => (
-                                                            <FormItem>
-                                                                <FormLabel>Password</FormLabel>
-                                                                <FormControl>
-                                                                    <div className='relative'>
-                                                                        <Lock size={16} className='absolute left-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none' />
-                                                                        <Input className='pl-10' type={showPassword ? 'text' : 'password'} placeholder='Enter password' {...field} />
-                                                                        <Button type='button' variant='ghost' size={'icon'} className='absolute right-0.5 top-1/2 -translate-y-1/2' onClick={() => setShowPassword(!showPassword)}>
-                                                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                                                        </Button>
-                                                                    </div>
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )} />
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
                                     </div>
                                 )} />
                                 <FormField control={form.control} name='require_consent' render={({ field }) => (

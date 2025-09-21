@@ -62,7 +62,7 @@ export default function FormEditor() {
     if (!questions?.length) {
         return (
             <div className="h-full w-full flex flex-col items-center p-8 justify-center">
-                <Card className="p-4 shadow-none border-accent bg-white dark:bg-accent">
+                <Card className="p-4 border-none dark:bg-accent shadow-none">
                     <CardContent className="p-8 flex flex-col gap-6 items-center justify-center max-w-md text-center ">
                         <div className="bg-gradient-to-br from-primary/20 to-primary/10 p-4 rounded-full rotate-12 outline-4 outline-offset-4 outline-primary/10">
                             <Braces size={48} className="text-primary" />
@@ -90,7 +90,7 @@ export default function FormEditor() {
     return (
         <div className="h-full w-full flex flex-col items-center">
             <div className="flex items-center justify-end w-full p-2">
-                <Tooltip delayDuration={500}>
+                <Tooltip delayDuration={100}>
                     <TooltipTrigger asChild>
                         <Button variant={'secondary'} size={'icon'} onClick={() => setDirection(direction === eWorkflowDirection.Horizontal ? eWorkflowDirection.Vertical : eWorkflowDirection.Horizontal)}>
                             <motion.span

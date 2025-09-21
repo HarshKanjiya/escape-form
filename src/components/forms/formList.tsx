@@ -132,7 +132,7 @@ function FormTableView({ forms, teamId, loading }: { forms: Form[]; teamId: stri
 function EmptyState({ searchQuery, projectId }: { searchQuery: string, projectId: string }) {
     return (
         <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-24 h-24  rounded-full flex items-center justify-center mb-4">
                 <Plus className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-semibold mb-2">No forms found</h3>

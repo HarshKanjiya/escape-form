@@ -28,7 +28,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/${teamId}/${project.id}`} className="block" onClick={() => setActiveProject(project)}>
-      <Card className="group relative transition-all duration-200 cursor-pointer bg-white dark:bg-accent overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border-accent shadow-[0px_4px_33px_-10px_rgba(0,_0,_0,_0.05)] dark:shadow-none">
+      <Card className="group relative transition-all duration-200 cursor-pointer bg-white dark:bg-accent overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border shadow-[0px_4px_33px_-10px_rgba(0,_0,_0,_0.05)] dark:shadow-none">
         <CardContent className="px-4 sm:p-6">
           <div className="flex items-center space-x-4">
 

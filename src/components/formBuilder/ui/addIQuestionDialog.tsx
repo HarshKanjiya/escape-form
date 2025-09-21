@@ -205,11 +205,11 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 <DialogTitle className="flex items-center justify-between gap-4 p-4 border-b text-base">
                     <span>Add New Field</span>
                 </DialogTitle>
-                <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent transition-opacity duration-150">
+                <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent-bg transition-opacity duration-150">
                     <div className="md:w-[58%] lg:w-[60%] xl:w-[65%] flex flex-col border-r min-h-0">
                         {/* Search & filters */}
-                        <div className="p-4 pb-2 flex flex-col gap-3 border-b bg-background">
-                            <div className="relative">
+                        <div className="p-4 pb-2 flex items-center gap-3 border-b bg-background">
+                            <div className="relative flex-1">
                                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search field types..."
@@ -304,10 +304,10 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                     </div>
                     {/* Preview panel */}
                     <div className="hidden md:flex flex-col flex-1 min-h-0 bg-background transition-opacity duration-150">
-                        <div className="p-4 border-b">
+                        {/* <div className="p-4 border-b">
                             <h3 className="text-sm font-semibold tracking-wide">Preview</h3>
                             <p className="text-xs text-muted-foreground mt-1">Get a quick sense of how the field behaves before inserting it.</p>
-                        </div>
+                        </div> */}
                         <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center text-center will-change-transform will-change-opacity">
                             {selectedField ? (
                                 // <DemoQuestion questionType={selectedField} />

@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
-import { Menu, SidebarIcon, X } from 'lucide-react';
+import { FileText, Menu, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FormConfigDialog from './ui/formConfigDialog';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
@@ -130,21 +130,33 @@ export default function LeftBar() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <div className="flex flex-col h-full bg-accent/50">
+                <div className="flex flex-col h-full bg-accent-bg">
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                         <div className='w-full h-full flex flex-col gap-2'>
-                            <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b'>
-                                <span className='text-md overflow-ellipsis line-clamp-1'>{formName}</span>
+                            <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b h-[53px]'>
+                                <span className={cn('text-md overflow-ellipsis line-clamp-1', isExpanded ? 'visible' : 'hidden')}>{formName}</span>
                                 <div className='flex items-center gap-2'>
                                     <FormConfigDialog />
                                 </div>
                             </div>
                             <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-1'>
-                                {
+                                {questions.length > 0 ? (
                                     questions.map((question, index) => (
-                                        <LeftBarQuestionItem key={question.id + index} question={question} />
+                                        <LeftBarQuestionItem isExpanded={isExpanded} key={question.id + index} question={question} />
                                     ))
-                                }
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+                                        <div className="mb-4 p-3 rounded-full bg-background border-accent">
+                                            <FileText />
+                                        </div>
+                                        <h3 className="text-sm font-medium text-foreground mb-1">
+                                            No questions yet
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+                                            Start building your form by adding your first question
+                                        </p>
+                                    </div>
+                                )}
                             </ul>
                         </div>
                     </div>

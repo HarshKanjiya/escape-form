@@ -75,7 +75,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
     if (isVertical) {
         return (
             <div className='flex justify-between items-center gap-3 w-40'>
-                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-1">
+                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
                     Ctrl <MoveUp size={14} />
                 </pre>
                 <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>

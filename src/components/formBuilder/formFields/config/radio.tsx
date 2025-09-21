@@ -38,7 +38,7 @@ export function RadioFieldConfig() {
             </div>
             <div className="flex items-center justify-between">
                 <Label htmlFor="short-text-randomize">Randomize
-                    <Tooltip delayDuration={200}>
+                    <Tooltip delayDuration={100}>
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>

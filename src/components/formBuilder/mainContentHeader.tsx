@@ -30,7 +30,7 @@ export default function MainContentHeader() {
     }
 
     return (
-        <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent/50">
+        <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent-bg">
             <div className="flex items-center gap-2">
                 <AddQuestionDialog />
                 <Separator orientation="vertical" className="!h-8" />
@@ -46,7 +46,7 @@ export default function MainContentHeader() {
                                 layout
                             >
                                 <div>
-                                    <Tooltip delayDuration={500}>
+                                    <Tooltip delayDuration={100}>
                                         <TooltipTrigger asChild>
                                             <Button variant="ghost" size="icon" onClick={() => setViewScreenMode(viewScreenMode === eViewScreenMode.Desktop ? eViewScreenMode.Mobile : eViewScreenMode.Desktop)}>
                                                 {viewScreenMode === eViewScreenMode.Desktop ? <Laptop /> : <Smartphone />}
@@ -67,7 +67,7 @@ export default function MainContentHeader() {
                             layout
                         >
                             <div>
-                                <Tooltip delayDuration={500}>
+                                <Tooltip delayDuration={100}>
                                     <TooltipTrigger asChild>
                                         <Button className="cursor-pointer" variant="ghost" size="icon" onClick={onPreviewClick}>
                                             <Play />
@@ -89,7 +89,7 @@ export default function MainContentHeader() {
                     </span>
                 }
                 <div className="flex items-center gap-1">
-                    <Tooltip delayDuration={500}>
+                    <Tooltip delayDuration={100}>
                         <TooltipTrigger asChild>
                             <Button variant={viewMode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Builder)}>
                                 <PencilRuler />
@@ -99,7 +99,7 @@ export default function MainContentHeader() {
                             Form Editor
                         </TooltipContent>
                     </Tooltip>
-                    <Tooltip delayDuration={500}>
+                    <Tooltip delayDuration={100}>
                         <TooltipTrigger asChild>
                             <Button variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
                                 <TrendingUpDown />
