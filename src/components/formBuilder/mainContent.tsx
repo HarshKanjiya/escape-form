@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import MainContentHeader from "./mainContentHeader";
 import FlowEditor from "./modes/flowEditor";
 import FormEditor from "./modes/formEditor";
+import FormPreview from "./modes/formPreview";
 
 export default function MainContent() {
     const { viewMode } = useFormBuilder()
@@ -28,7 +29,8 @@ export default function MainContent() {
                                 >
                                     <FormEditor />
                                 </motion.div>
-                            ) : (
+                            ) : null}
+                            {viewMode === eViewMode.Workflow ? (
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -40,7 +42,20 @@ export default function MainContent() {
                                 >
                                     <FlowEditor />
                                 </motion.div>
-                            )}
+                            ) : null}
+                            {viewMode === eViewMode.Preview ? (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ type: 'tween' }}
+                                    key="form-editor"
+                                    layout
+                                    className="w-full h-full"
+                                >
+                                    <FormPreview />
+                                </motion.div>
+                            ) : null}
                         </AnimatePresence>
                     </div >
                 </div >

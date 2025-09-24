@@ -1,6 +1,7 @@
 'use client'
 
-import { eFormStatus, eFormType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
+import { updateFormData } from '@/actions/form';
+import { eFormPageType, eFormStatus, eFormType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
 import { Form, FormUpdate } from '@/types/db';
 import { IThankYouScreen, IWelcomeScreen, IQuestion, IWorkflowConnection } from '@/types/form';
 import { create } from 'zustand';
@@ -31,7 +32,7 @@ const defaultFormSettings: FormUpdate = {
     close_at: null,
     open_at: null,
     allow_anonymous: true,
-    config: {},
+    config: [],
     status: 'draft',
     multiple_submissions: true,
     max_responses: null,
@@ -41,6 +42,7 @@ const defaultFormSettings: FormUpdate = {
 
 interface IFormBuilderStore {
     // CONFIG
+    id?: string;
     name: string;
     description?: string;
     project_id: string;
@@ -80,6 +82,7 @@ interface IFormBuilderStore {
     isSaving: boolean;
     isLoading: boolean;
     viewScreenMode: eViewScreenMode;
+    formPageType: eFormPageType;
 
     initForm: (form: Form) => void;
     addQuestions: (questions: eQuestionType[]) => void;
@@ -94,9 +97,12 @@ interface IFormBuilderStore {
     setViewMode: (mode: eViewMode) => void;
     setSelectedQuestionId: (id: string | null) => void;
     setIsLoading: (loading: boolean) => void;
+    setIsSaving: (loading: boolean) => void;
+
 }
 
 export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
+    id: '',
     name: '',
     description: '',
     project_id: '',
@@ -131,9 +137,12 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     dataSource: defaultFormSettings,
     connections: [],
     viewScreenMode: eViewScreenMode.Desktop,
+    formPageType: eFormPageType.MultiStep,
 
     initForm: (form: Form) => {
-        set({
+
+        const formData: Partial<IFormBuilderStore> = {
+            id: form.id,
             name: form.name,
             description: form.description || undefined,
             project_id: form.project_id,
@@ -159,6 +168,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             thank_you_screen: form.thank_you_screen ? (form.thank_you_screen as unknown as IThankYouScreen) : undefined,
             config: form.config || {},
             dataSource: {
+                id: form.id,
                 name: form.name,
                 description: form.description,
                 project_id: form.project_id,
@@ -175,13 +185,21 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
                 close_at: form.close_at,
                 open_at: form.open_at,
                 allow_anonymous: form.allow_anonymous,
-                config: form.config || {},
+                config: form.config || [],
                 status: form.status,
                 multiple_submissions: form.multiple_submissions,
                 max_responses: form.max_responses,
                 password_protected: form.password_protected,
-            }
-        });
+            },
+        }
+
+        if (form?.config?.length) {
+            formData.questions = form.config
+            formData.selectedQuestionId = form.config[0].id;
+            formData.selectedQuestion = form.config[0];
+        }
+
+        set({ ...formData });
     },
 
     addQuestions: (newQuestions: eQuestionType[]) => {
@@ -197,6 +215,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
         const lastQue = newQuestionsList[newQuestionsList.length - 1];
         set({ questions: newQuestionsList, selectedQuestionId: lastQue.id, selectedQuestion: lastQue });
+        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
     },
 
     updateQuestion: (id: string, question: Partial<IQuestion>) => {
@@ -206,6 +225,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
         if (id === selectedQuestionId) changes['selectedQuestion'] = { ...selectedQuestion, ...question } as IQuestion;
         set(changes);
+        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
     },
 
     changeQuestionSequence: (oldIndex: number, newIndex: number) => {
@@ -234,6 +254,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             else changes['selectedQuestion'] = changes['selectedQuestionId'] = null;
         }
         set(changes);
+        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
     },
 
     updateForm: (form: FormUpdate) => {
@@ -272,8 +293,30 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ isLoading: loading });
     },
 
+    setIsSaving: (loading: boolean) => {
+        set({ isSaving: loading });
+    },
+
 }))
 
+
+const updateFormDetails = async (id: string, config: any, setSaving: (isSaving: boolean) => void): Promise<boolean> => {
+    setSaving(true);
+    const dto = { id, config };
+    try {
+        const response = await updateFormData(dto);
+        if (!response.success) {
+            console.error('Error updating form details:', response.message);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Error updating form details:', error);
+        return false;
+    } finally {
+        setSaving(false);
+    }
+}
 
 
 const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: number): IQuestion => {

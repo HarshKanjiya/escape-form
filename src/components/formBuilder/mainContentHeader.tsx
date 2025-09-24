@@ -8,25 +8,25 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
-import { useRouter, useParams } from "next/navigation";
 
 export default function MainContentHeader() {
 
-    const params = useParams();
+    // const params = useParams();
 
-    const { viewMode, viewScreenMode, setViewMode, setViewScreenMode, isSaving, status } = useFormBuilder()
+    const { viewMode, viewScreenMode, isSaving, status, setViewMode, setViewScreenMode } = useFormBuilder()
 
     const onPreviewClick = () => {
-        try {
-            const teamId = params?.["teamId"] as string | undefined;
-            const projectId = params?.["projectId"] as string | undefined;
-            const formId = params?.["formId"] as string | undefined;
-            if (!teamId || !projectId || !formId) return;
-            const previewUrl = `/${teamId}/${projectId}/forms/${formId}/preview`;
-            window.open(previewUrl, '_blank', 'noopener,noreferrer');
-        } catch (e) {
-            console.error('Failed to open preview', e);
-        }
+        setViewMode(eViewMode.Preview);
+        // try {
+        //     const teamId = params?.["teamId"] as string | undefined;
+        //     const projectId = params?.["projectId"] as string | undefined;
+        //     const formId = params?.["formId"] as string | undefined;
+        //     if (!teamId || !projectId || !formId) return;
+        //     const previewUrl = `/${teamId}/${projectId}/forms/${formId}/preview`;
+        //     window.open(previewUrl, '_blank', 'noopener,noreferrer');
+        // } catch (e) {
+        //     console.error('Failed to open preview', e);
+        // }
     }
 
     return (
@@ -36,7 +36,7 @@ export default function MainContentHeader() {
                 <Separator orientation="vertical" className="!h-8" />
                 <div className="flex items-center gap-1">
                     <AnimatePresence mode="sync" initial={false}>
-                        {viewMode === eViewMode.Builder && (
+                        {viewMode === eViewMode.Preview && (
                             <motion.div
                                 initial={{ opacity: 0, width: 0 }}
                                 animate={{ opacity: 1, width: 'auto' }}

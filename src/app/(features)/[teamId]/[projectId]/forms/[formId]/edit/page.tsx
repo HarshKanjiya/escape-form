@@ -86,7 +86,7 @@ export default function Page() {
     useEffect(() => {
         setIsLoading(true);
         getForm();
-    }, [params?.formId]);
+    }, []);
 
     const getForm = async () => {
         const formId = params.formId;

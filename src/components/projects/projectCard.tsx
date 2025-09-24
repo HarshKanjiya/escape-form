@@ -31,13 +31,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <Card className="group relative transition-all duration-200 cursor-pointer bg-white dark:bg-accent overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border shadow-[0px_4px_33px_-10px_rgba(0,_0,_0,_0.05)] dark:shadow-none">
         <CardContent className="px-4 sm:p-6">
           <div className="flex items-center space-x-4">
-
-            <div className="p-3 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+            {/* <div className="p-3 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
               <Folder className="w-8 h-8 text-primary" />
             </div>
             <div className="absolute -left-8 -bottom-5 -z-10 opacity-70">
               <Folder className="w-28 h-28 sm:w-36 sm:h-36 text-secondary" />0
-            </div>
+            </div> */}
 
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-foreground line-clamp-1 mb-1">

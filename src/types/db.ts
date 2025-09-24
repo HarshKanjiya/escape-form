@@ -1,3 +1,5 @@
+import { IQuestion } from "./form"
+
 export type Json =
     | string
     | number
@@ -27,7 +29,7 @@ export interface Database {
                     custom_domain: string | null
                     created_by: string
                     status: string
-                    config: Json | null
+                    config: IQuestion[]
                     multiple_submissions: boolean
                     password_protected: boolean
                     require_consent: boolean
@@ -81,7 +83,7 @@ export interface Database {
                     custom_domain?: string | null
                     created_by?: string
                     status?: string
-                    config?: Json | null
+                    config?: IQuestion[]
                     multiple_submissions?: boolean
                     password_protected?: boolean
                     require_consent?: boolean

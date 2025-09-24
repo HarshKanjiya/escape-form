@@ -4,6 +4,11 @@ export enum eViewScreenMode {
     Mobile = 'mobile',
 }
 
+export enum eFormPageType {
+    SinglePage = 'single_page',
+    MultiStep = 'multi_step',
+}
+
 export enum eViewMode {
     Builder = 'builder',
     Workflow = 'workflow',
