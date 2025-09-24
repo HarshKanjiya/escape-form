@@ -46,7 +46,7 @@ export default function ShortQuestion({
     return (
         <div
             className={cn("space-y-2", className)}
-            {...(question.customCss && { style: { cssText: question.customCss } as any })}
+            {...(question.customCss && { style: { cssText: question.customCss } as React.CSSProperties & { cssText: string } })}
         >
             {/* Question Label */}
             <div className="space-y-1">

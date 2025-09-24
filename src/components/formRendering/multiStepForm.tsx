@@ -51,7 +51,7 @@ const slideVariants = {
 
 export default function RenderMultiStepForm({ questions }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [formData, setFormData] = useState<Record<string, string | number | boolean | string[]>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     const [direction, setDirection] = useState(0);
@@ -91,7 +91,7 @@ export default function RenderMultiStepForm({ questions }: Props) {
         return () => clearInterval(animationInterval);
     }, [progress]);
 
-    const handleFieldChange = (questionId: string, value: any) => {
+    const handleFieldChange = (questionId: string, value: string | number | boolean | string[]) => {
         setFormData(prev => ({
             ...prev,
             [questionId]: value
@@ -199,7 +199,7 @@ export default function RenderMultiStepForm({ questions }: Props) {
                 return (
                     <ShortQuestion
                         question={question}
-                        value={formData[question.id] || ""}
+                        value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
                         onChange={(value) => handleFieldChange(question.id, value)}
                         error={errors[question.id]}
                         className="mb-8 w-full"
@@ -210,7 +210,7 @@ export default function RenderMultiStepForm({ questions }: Props) {
                 return (
                     <div className="mb-8 p-6 border border-dashed border-gray-300 rounded-lg">
                         <p className="text-sm text-muted-foreground">
-                            Field type "{question.type}" not yet implemented
+                            Field type &quot;{question.type}&quot; not yet implemented
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                             Question: {question.question}

@@ -8,15 +8,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { createPortal } from "react-dom";
 
-export interface MultiSelectOption {
+export interface MultiSelectOption<T = Record<string, string | number | boolean | null | undefined>> {
   label: string; // display label (used as fallback)
   value: string;
   // optional arbitrary data bag for custom renderers
-  meta?: Record<string, any>;
+  meta?: T;
 }
 
-interface MultiSelectProps {
-  options: MultiSelectOption[];
+interface MultiSelectProps<T = Record<string, string | number | boolean | null | undefined>> {
+  options: MultiSelectOption<T>[];
   value: string[];
   onChange: (value: string[]) => void;
   placeholder?: string;
@@ -25,16 +25,16 @@ interface MultiSelectProps {
   contentClassName?: string;
   disabled?: boolean;
   /** custom renderer for each option inside the dropdown list */
-  renderOption?: (option: MultiSelectOption, selected: boolean) => React.ReactNode;
+  renderOption?: (option: MultiSelectOption<T>, selected: boolean) => React.ReactNode;
   /** custom renderer for trigger value summary */
-  renderTriggerValue?: (selected: MultiSelectOption[]) => React.ReactNode;
+  renderTriggerValue?: (selected: MultiSelectOption<T>[]) => React.ReactNode;
   /** button variant passthrough */
   triggerVariant?: React.ComponentProps<typeof Button>["variant"];
   /** button size passthrough */
   triggerSize?: React.ComponentProps<typeof Button>["size"];
 }
 
-export const MultiSelect: React.FC<MultiSelectProps> = ({
+export const MultiSelect = <T = Record<string, string | number | boolean | null | undefined>>({
   options,
   value,
   onChange,
@@ -47,7 +47,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   renderTriggerValue,
   triggerVariant = "secondary",
   triggerSize,
-}) => {
+}: MultiSelectProps<T>) => {
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 

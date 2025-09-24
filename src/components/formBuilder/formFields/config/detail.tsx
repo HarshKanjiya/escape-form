@@ -75,13 +75,13 @@ export function DetailConfig() {
     };
 
     const inputFn = (e: React.FormEvent<HTMLInputElement>) => {
-        var value = e.currentTarget.value;
+        let value = e.currentTarget.value;
         if (value.length > 50) value = value.slice(0, 50);
         setText(value);
     }
 
     const consentInputFn = (e: React.FormEvent<HTMLInputElement>) => {
-        var value = e.currentTarget.value;
+        let value = e.currentTarget.value;
         if (value.length > 50) value = value.slice(0, 50);
         setUserConsentText(value);
     }

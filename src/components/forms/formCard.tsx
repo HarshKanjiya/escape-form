@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Form } from "@/types/db";
-import { Calendar, Folder, MoreHorizontal } from "lucide-react";
+import { Calendar, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 

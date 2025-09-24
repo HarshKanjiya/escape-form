@@ -300,7 +300,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 }))
 
 
-const updateFormDetails = async (id: string, config: any, setSaving: (isSaving: boolean) => void): Promise<boolean> => {
+const updateFormDetails = async (id: string, config: IQuestion[], setSaving: (isSaving: boolean) => void): Promise<boolean> => {
     setSaving(true);
     const dto = { id, config };
     try {

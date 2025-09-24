@@ -296,7 +296,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                             {!allVisibleItems.length && (
                                 <div className="flex flex-col items-center justify-center py-16 text-center gap-3 text-muted-foreground">
                                     <Search className="size-8 opacity-40" />
-                                    <p className="text-sm">No field types match "{query}"</p>
+                                    <p className="text-sm">No field types match &quot;{query}&quot;</p>
                                     <Button variant="ghost" size="sm" onClick={() => setQuery("")}>Reset search</Button>
                                 </div>
                             )}

@@ -13,7 +13,7 @@ export function PhoneFieldConfig() {
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
     const [anyCountry, setAnyCountry] = useState(selectedQuestion?.validation?.allowAnyCountry || false);
-    const [countries, setCountry] = useState<any[]>(selectedQuestion?.validation?.allowedCountries || []);
+    const [countries, setCountry] = useState<string[]>(selectedQuestion?.validation?.allowedCountries || []);
 
     useEffect(() => {
         if (required != selectedQuestion?.required) updateQuestion(selectedQuestion?.id || '', { required });

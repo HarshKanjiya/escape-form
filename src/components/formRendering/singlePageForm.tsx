@@ -10,10 +10,10 @@ interface Props {
 }
 
 export default function RenderSinglePageForm({ questions }: Props) {
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [formData, setFormData] = useState<Record<string, string | number | boolean | string[]>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const handleFieldChange = (questionId: string, value: any) => {
+    const handleFieldChange = (questionId: string, value: string | number | boolean | string[]) => {
         setFormData(prev => ({
             ...prev,
             [questionId]: value
@@ -35,7 +35,7 @@ export default function RenderSinglePageForm({ questions }: Props) {
                     <ShortQuestion
                         key={question.id}
                         question={question}
-                        value={formData[question.id] || ""}
+                        value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
                         onChange={(value) => handleFieldChange(question.id, value)}
                         error={errors[question.id]}
                         className="mb-6"
@@ -46,7 +46,7 @@ export default function RenderSinglePageForm({ questions }: Props) {
                 return (
                     <div key={question.id} className="mb-6 p-4 border border-dashed border-gray-300 rounded-lg">
                         <p className="text-sm text-muted-foreground">
-                            Field type "{question.type}" not yet implemented
+                            Field type &quot;{question.type}&quot; not yet implemented
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                             Question: {question.question}

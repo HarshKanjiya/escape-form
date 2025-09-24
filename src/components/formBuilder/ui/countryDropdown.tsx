@@ -165,7 +165,7 @@ export const CountryMultiSelect: React.FC<CountryMultiSelectProps> = ({
 }) => {
     const countries = useFilteredCountries(include, exclude);
 
-    const options: MultiSelectOption[] = React.useMemo(() => countries.map(c => ({
+    const options: MultiSelectOption<CountryOption>[] = React.useMemo(() => countries.map(c => ({
         label: c.name,
         value: c.code,
         meta: c,
@@ -177,7 +177,7 @@ export const CountryMultiSelect: React.FC<CountryMultiSelectProps> = ({
     };
 
     return (
-        <MultiSelect
+        <MultiSelect<CountryOption>
             options={options}
             value={values}
             onChange={handleChange}
@@ -189,7 +189,7 @@ export const CountryMultiSelect: React.FC<CountryMultiSelectProps> = ({
             renderTriggerValue={(selected) => {
                 if (!selected.length) return null;
                 if (selected.length === 1) {
-                    const c = selected[0].meta as CountryOption;
+                    const c = selected[0].meta!;
                     return (
                         <span className="flex items-center gap-2 truncate">
                             <span className="text-base leading-none">{c.flag}</span>
@@ -205,7 +205,7 @@ export const CountryMultiSelect: React.FC<CountryMultiSelectProps> = ({
                 return (
                     <span className="flex items-center gap-1 flex-wrap text-left">
                         {selected.slice(0, 3).map(s => {
-                            const c = s.meta as CountryOption; return (
+                            const c = s.meta!; return (
                                 <span key={c.code} className="flex items-center gap-1 rounded bg-muted/60 px-1 py-0.5 text-xs">
                                     <span>{c.flag}</span>
                                     <span className="font-medium">{c.code}</span>
@@ -219,7 +219,7 @@ export const CountryMultiSelect: React.FC<CountryMultiSelectProps> = ({
                 );
             }}
             renderOption={(option, selected) => {
-                const c = option.meta as CountryOption;
+                const c = option.meta!;
                 return (
                     <span className="flex items-center gap-3 w-full">
                         <span className="text-lg leading-none w-6 text-center">{c.flag}</span>

@@ -1,5 +1,5 @@
 import { eQuestionType } from "@/enums/form";
-import { Book, Calendar, CaseSensitive, ChartBarBig, CircleDot, FileText, Hash, Images, Link2, LucideIcon, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
+import { Book, Calendar, CaseSensitive, CircleDot, FileText, Hash, Link2, LucideIcon, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
 
 const iconMapping: Record<eQuestionType, LucideIcon> = {
     [eQuestionType.shortText]: CaseSensitive,
@@ -16,8 +16,8 @@ const iconMapping: Record<eQuestionType, LucideIcon> = {
     [eQuestionType.address]: MapPin,
     [eQuestionType.website]: Link2,
     [eQuestionType.starRating]: Star,
-    [eQuestionType.barChoiceRating]: ChartBarBig,
-    [eQuestionType.imageChoiceRating]: Images,
+    // [eQuestionType.barChoiceRating]: ChartBarBig,
+    // [eQuestionType.imageChoiceRating]: Images,
 };
 
 export default function QuestionIcon({ questionType, size = 16, ...props }: { questionType: eQuestionType; size?: number }) {
