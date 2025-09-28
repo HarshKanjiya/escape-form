@@ -26,7 +26,8 @@ import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import ShortQuestion from "./fields/shortQuestion";
+import RenderShortQuestion from "./fields/shortQuestion";
+import RenderField from "./fields/renderField";
 
 interface Props {
     questions: IQuestion[];
@@ -193,35 +194,6 @@ export default function RenderMultiStepForm({ questions }: Props) {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [currentStep, isLastStep, formData]);
 
-    const renderField = (question: IQuestion) => {
-        switch (question.type) {
-            case eQuestionType.shortText:
-                return (
-                    <ShortQuestion
-                        question={question}
-                        value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
-                        onChange={(value) => handleFieldChange(question.id, value)}
-                        error={errors[question.id]}
-                        className="mb-8 w-full"
-                    />
-                );
-            // Add other field types here as needed
-            default:
-                return (
-                    <div className="mb-8 p-6 border border-dashed border-gray-300 rounded-lg">
-                        <p className="text-sm text-muted-foreground">
-                            Field type &quot;{question.type}&quot; not yet implemented
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Question: {question.question}
-                        </p>
-                    </div>
-                );
-        }
-    };
-
-
-
     if (!questions || questions.length === 0) {
         return (
             <div className="p-8 h-full w-full flex items-center justify-center">
@@ -270,13 +242,13 @@ export default function RenderMultiStepForm({ questions }: Props) {
                             }}
                             className="min-h-[160px] flex items-center justify-center flex-col w-full"
                         >
-                            {currentQuestion && renderField(currentQuestion)}
+                            {currentQuestion && <RenderField question={currentQuestion} formData={formData} handleFieldChange={handleFieldChange} />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="flex items-center justify-between pt-6 border-t">
+                <div className="flex items-center justify-between pt-6 mt-12 border-t">
                     <Button
                         variant="outline"
                         onClick={handlePrevious}

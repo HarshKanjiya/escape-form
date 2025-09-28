@@ -1,124 +1,77 @@
-
-import { IQuestion } from "@/types/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { IQuestion } from "@/types/form";
+import { useState } from "react";
 
 interface Props {
     question: IQuestion;
     value?: string;
     onChange?: (value: string) => void;
-    error?: string;
-    className?: string;
 }
 
-export default function ShortQuestion({
-    question,
-    value = "",
-    onChange,
-    error,
-    className
-}: Props) {
+export default function RenderShortQuestion({ question, value, onChange, }: Props) {
+
+    const [answer, setAnswer] = useState("");
+    const [errors, setErrors] = useState<string[]>([]);
+
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value;
-
-        // Apply validation if pattern is provided
-        if (question.validation?.pattern && inputValue) {
-            const regex = new RegExp(question.validation.pattern);
-            if (!regex.test(inputValue)) {
-                return; // Don't update if pattern doesn't match
-            }
-        }
-
-        // Apply max length validation
-        if (question.validation?.max && typeof question.validation.max === 'number') {
-            if (inputValue.length > question.validation.max) {
-                return; // Don't update if exceeds max length
-            }
-        }
-
-        onChange?.(inputValue);
+        setAnswer(e.target.value);
+        onChange?.(answer);
     };
-
-    const isRequired = question.required;
-    const hasError = !!error;
 
     return (
         <div
-            className={cn("space-y-2", className)}
-            {...(question.customCss && { style: { cssText: question.customCss } as React.CSSProperties & { cssText: string } })}
+            className='w-full space-y-2 p-2 pb-5'
         >
-            {/* Question Label */}
-            <div className="space-y-1">
+            <div className="py-2">
                 <Label
                     htmlFor={question.id}
                     className={cn(
-                        "text-base font-medium text-foreground",
-                        isRequired && "after:content-['*'] after:text-destructive after:ml-1"
+                        "font-medium text-foreground text-xl",
+                        question.required && "after:content-['*'] after:text-destructive"
                     )}
                 >
                     {question.question}
                 </Label>
 
-                {/* Description */}
                 {question.description && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-md text-muted-foreground italic py-1">
                         {question.description}
                     </p>
                 )}
             </div>
 
-            {/* Input Field */}
-            <div className="space-y-1">
+            <div className="space-y-1 relative">
                 <Input
                     id={question.id}
                     type="text"
-                    value={value}
+                    value={answer}
                     onChange={handleInputChange}
                     placeholder={question.placeholder || "Type your answer here..."}
-                    required={isRequired}
+                    required={question.required}
                     minLength={question.validation?.min as number || undefined}
                     maxLength={question.validation?.max as number || undefined}
                     pattern={question.validation?.pattern || undefined}
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? `${question.id}-error` : undefined}
-                    className={cn(
-                        "transition-all duration-200",
-                        hasError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
-                    )}
+                    className={cn('border-primary-300 border-2 py-6 px-4 !text-xl', question.validation?.max ? "pr-10" : "", "w-full")}
                 />
 
-                {/* Character count indicator */}
                 {question.validation?.max && typeof question.validation.max === 'number' && (
-                    <div className="flex justify-end">
+                    <div className="flex justify-end absolute right-3 top-1/2 -translate-y-1/2">
                         <span className={cn(
-                            "text-xs text-muted-foreground",
-                            value.length > question.validation.max * 0.9 && "text-orange-500",
-                            value.length >= question.validation.max && "text-destructive"
+                            "text-sm text-muted-foreground",
+                            answer.length > question.validation.max * 0.9 && "text-orange-500",
+                            answer.length >= question.validation.max && "text-destructive"
                         )}>
-                            {value.length} / {question.validation.max}
+                            {answer.length} / {question.validation.max}
                         </span>
                     </div>
                 )}
-
-                {/* Error message */}
-                {hasError && (
-                    <p
-                        id={`${question.id}-error`}
-                        className="text-sm text-destructive flex items-center gap-1"
-                        role="alert"
-                    >
-                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
-                        {error}
-                    </p>
-                )}
             </div>
 
-            {/* Validation hints */}
             {question.validation && (
-                <div className="text-xs text-muted-foreground space-y-1">
+                <div className="text-xs text-muted-foreground space-y-1 pt-2">
                     {question.validation.min && typeof question.validation.min === 'number' && (
                         <p>Minimum {question.validation.min} characters required</p>
                     )}

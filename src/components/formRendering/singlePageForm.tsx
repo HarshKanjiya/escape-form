@@ -3,7 +3,7 @@
 import { eQuestionType } from "@/enums/form";
 import { IQuestion } from "@/types/form";
 import { useState } from "react";
-import ShortQuestion from "./fields/shortQuestion";
+import RenderShortQuestion from "./fields/shortQuestion";
 
 interface Props {
     questions?: IQuestion[];
@@ -32,7 +32,7 @@ export default function RenderSinglePageForm({ questions }: Props) {
         switch (question.type) {
             case eQuestionType.shortText:
                 return (
-                    <ShortQuestion
+                    <RenderShortQuestion
                         key={question.id}
                         question={question}
                         value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
