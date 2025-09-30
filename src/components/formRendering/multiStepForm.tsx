@@ -53,7 +53,7 @@ const slideVariants = {
 export default function RenderMultiStepForm({ questions }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState<Record<string, string | number | boolean | string[]>>({});
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    // const [errors, setErrors] = useState<Record<string, string>>({});
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     const [direction, setDirection] = useState(0);
     const [animatedProgress, setAnimatedProgress] = useState(0);
@@ -97,51 +97,43 @@ export default function RenderMultiStepForm({ questions }: Props) {
             ...prev,
             [questionId]: value
         }));
-
-        // Clear error when user starts typing
-        if (errors[questionId]) {
-            setErrors(prev => ({
-                ...prev,
-                [questionId]: ""
-            }));
-        }
     };
 
     const validateCurrentStep = (): boolean => {
         const question = currentQuestion;
         const value = formData[question.id];
 
-        // Check if required field is filled
-        if (question.required && (!value || value.toString().trim() === "")) {
-            setErrors(prev => ({
-                ...prev,
-                [question.id]: "This field is required"
-            }));
-            return false;
-        }
+        // // Check if required field is filled
+        // if (question.required && (!value || value.toString().trim() === "")) {
+        //     setErrors(prev => ({
+        //         ...prev,
+        //         [question.id]: "This field is required"
+        //     }));
+        //     return false;
+        // }
 
-        // Check minimum length for text fields
-        if (question.validation?.min && typeof question.validation.min === 'number' && value) {
-            if (value.toString().length < question.validation.min) {
-                setErrors(prev => ({
-                    ...prev,
-                    [question.id]: `Minimum ${question.validation?.min} characters required`
-                }));
-                return false;
-            }
-        }
+        // // Check minimum length for text fields
+        // if (question.validation?.min && typeof question.validation.min === 'number' && value) {
+        //     if (value.toString().length < question.validation.min) {
+        //         setErrors(prev => ({
+        //             ...prev,
+        //             [question.id]: `Minimum ${question.validation?.min} characters required`
+        //         }));
+        //         return false;
+        //     }
+        // }
 
-        // Check pattern validation
-        if (question.validation?.pattern && value) {
-            const regex = new RegExp(question.validation.pattern);
-            if (!regex.test(value.toString())) {
-                setErrors(prev => ({
-                    ...prev,
-                    [question.id]: "Please enter a valid format"
-                }));
-                return false;
-            }
-        }
+        // // Check pattern validation
+        // if (question.validation?.pattern && value) {
+        //     const regex = new RegExp(question.validation.pattern);
+        //     if (!regex.test(value.toString())) {
+        //         setErrors(prev => ({
+        //             ...prev,
+        //             [question.id]: "Please enter a valid format"
+        //         }));
+        //         return false;
+        //     }
+        // }
 
         return true;
     };

@@ -8,12 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
 import { FormUpdate } from '@/types/db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BarChart2, ChevronDown, Clock, ImagePlus, MonitorSmartphone, Replace, Settings, Shield, Trash2, Users2 } from 'lucide-react';
+import { BarChart2, Bolt, ChevronDown, Clock, ImagePlus, MonitorSmartphone, Replace, Shield, Trash2, Users2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
@@ -78,7 +79,12 @@ export default function FormConfigDialog() {
     return (
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) { reset(); } }}>
             <DialogTrigger asChild>
-                <Button variant="secondary" size="icon" aria-label='Edit Settings'><Settings /></Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" aria-label='Edit Settings'><Bolt className='w-4 h-4' /></Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Form Settings</TooltipContent>
+                </Tooltip>
             </DialogTrigger>
             <DialogContent className='md:min-w-[720px] max-h-[85vh] flex flex-col p-0 overflow-hidden'>
                 <DialogHeader className='px-4 py-3 border-b bg-background'>

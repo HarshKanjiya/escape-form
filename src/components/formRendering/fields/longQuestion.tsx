@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { IQuestion } from "@/types/form";
 import { useState } from "react";
@@ -18,7 +19,7 @@ export default function RenderLongQuestion({ question, value = "", onChange, }: 
     const [errors, setErrors] = useState<string[]>([]);
 
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setAnswer(e.target.value);
         onChange?.(answer);
     };
@@ -46,21 +47,19 @@ export default function RenderLongQuestion({ question, value = "", onChange, }: 
             </div>
 
             <div className="space-y-1 relative">
-                <Input
+                <Textarea
                     id={question.id}
-                    type="text"
                     value={answer}
                     onChange={handleInputChange}
                     placeholder={question.placeholder || "Type your answer here..."}
                     required={question.required}
                     minLength={question.validation?.min as number || undefined}
                     maxLength={question.validation?.max as number || undefined}
-                    pattern={question.validation?.pattern || undefined}
-                    className={cn('border-primary-300 border-2 py-6 px-4 !text-xl', question.validation?.max ? "pr-10" : "", "w-full")}
-                />
-
+                    className={cn('border-primary-300 border-2 py-6 px-4 !text-xl min-h-[130px]', question.validation?.max ? "pr-10" : "", "w-full")}
+                    rows={5}
+                ></Textarea>
                 {question.validation?.max && typeof question.validation.max === 'number' && (
-                    <div className="flex justify-end absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="flex justify-end absolute right-3 top-5 -translate-y-1/2">
                         <span className={cn(
                             "text-sm text-muted-foreground",
                             answer.length > question.validation.max * 0.9 && "text-orange-500",

@@ -30,8 +30,6 @@ const MemoRenderRadioField = memo(RenderRadioField);
 const MemoRenderStarRatingField = memo(RenderStarRatingField);
 const MemoRenderWebsiteField = memo(RenderWebsiteField);
 
-
-
 interface Props {
     question: IQuestion;
     formData: { [key: string]: any };

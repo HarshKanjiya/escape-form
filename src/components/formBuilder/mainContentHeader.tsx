@@ -3,11 +3,13 @@
 import { eFormStatus, eViewMode, eViewScreenMode } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "framer-motion";
-import { Archive, ArchiveRestore, Laptop, PencilRuler, Play, RefreshCcw, Rocket, Smartphone, TrendingUpDown } from "lucide-react";
+import { Archive, ArchiveRestore, CircleX, Laptop, PencilRuler, Play, RefreshCcw, Rocket, Smartphone, TrendingUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
+import FormConfigDialog from "./ui/formConfigDialog";
+import { cn } from "@/lib/utils";
 
 export default function MainContentHeader() {
 
@@ -34,50 +36,78 @@ export default function MainContentHeader() {
             <div className="flex items-center gap-2">
                 <AddQuestionDialog />
                 <Separator orientation="vertical" className="!h-8" />
+                <FormConfigDialog />
+                <Separator orientation="vertical" className="!h-8" />
                 <div className="flex items-center gap-1">
-                    <AnimatePresence mode="sync" initial={false}>
-                        {viewMode === eViewMode.Preview && (
+                    <div className="flex items-center outline outline-secondary -outline-offset-1 rounded-md">
+                        <Tooltip delayDuration={100}>
+                            <TooltipTrigger asChild>
+                                <Button className="rounded-r-none" variant={viewMode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Builder)}>
+                                    <PencilRuler />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Form Editor
+                            </TooltipContent>
+                        </Tooltip>
+                        <Separator orientation="vertical" className="!h-[36px] mx-0" />
+                        <Tooltip delayDuration={100}>
+                            <TooltipTrigger asChild>
+                                <Button className="rounded-l-none" variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
+                                    <TrendingUpDown />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Work Flow
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
+                    <Separator orientation="vertical" className="!h-8 mx-1" />
+                    <div className={cn("flex rounded-md outline-secondary -outline-offset-1", viewMode === eViewMode.Preview ? 'outline-1' : 'outline-0')}>
+                        <AnimatePresence mode="sync" initial={false}>
+                            {viewMode === eViewMode.Preview ? (
+                                <motion.div
+                                    initial={{ opacity: 0, width: 0 }}
+                                    animate={{ opacity: 1, width: 'auto' }}
+                                    exit={{ opacity: 0, width: 0 }}
+                                    transition={{ type: 'tween', duration: 0.2 }}
+                                    key="view-toggle"
+                                    layout
+                                    className="flex items-center"
+                                >
+                                    <div>
+                                        <Tooltip delayDuration={100}>
+                                            <TooltipTrigger asChild>
+                                                <Button variant="ghost" size="icon" onClick={() => setViewScreenMode(viewScreenMode === eViewScreenMode.Desktop ? eViewScreenMode.Mobile : eViewScreenMode.Desktop)}>
+                                                    {viewScreenMode === eViewScreenMode.Desktop ? <Laptop /> : <Smartphone />}
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>View Mode</TooltipContent>
+                                        </Tooltip>
+                                    </div>
+                                    <Separator orientation="vertical" className="!h-[36px] mx-0" />
+                                </motion.div>
+                            ) : null}
                             <motion.div
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: 'auto' }}
-                                exit={{ opacity: 0, width: 0 }}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
                                 transition={{ type: 'tween', duration: 0.2 }}
-                                key="view-toggle"
+                                key="play-button"
+                                className="flex items-center gap-2"
                                 layout
                             >
-                                <div>
-                                    <Tooltip delayDuration={100}>
-                                        <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon" onClick={() => setViewScreenMode(viewScreenMode === eViewScreenMode.Desktop ? eViewScreenMode.Mobile : eViewScreenMode.Desktop)}>
-                                                {viewScreenMode === eViewScreenMode.Desktop ? <Laptop /> : <Smartphone />}
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>View Mode</TooltipContent>
-                                    </Tooltip>
-                                </div>
-                            </motion.div>
-                        )}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
-                            transition={{ type: 'tween', duration: 0.2 }}
-                            key="play-button"
-                            className="flex items-center gap-2"
-                            layout
-                        >
-                            <div>
                                 <Tooltip delayDuration={100}>
                                     <TooltipTrigger asChild>
-                                        <Button className="cursor-pointer" variant="ghost" size="icon" onClick={onPreviewClick}>
-                                            <Play />
+                                        <Button className="cursor-pointer" variant={'ghost'} size={'icon'} onClick={onPreviewClick}>
+                                            <Play /><span className="sr-only">Preview</span>
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>Preview</TooltipContent>
                                 </Tooltip>
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
             <div className="flex items-center gap-3">
@@ -88,29 +118,7 @@ export default function MainContentHeader() {
                         <span className="italic text-sm">Sync</span>
                     </span>
                 }
-                <div className="flex items-center gap-1">
-                    <Tooltip delayDuration={100}>
-                        <TooltipTrigger asChild>
-                            <Button variant={viewMode == eViewMode.Builder ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Builder)}>
-                                <PencilRuler />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            Form Editor
-                        </TooltipContent>
-                    </Tooltip>
-                    <Tooltip delayDuration={100}>
-                        <TooltipTrigger asChild>
-                            <Button variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
-                                <TrendingUpDown />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            Work Flow
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-                <Separator orientation="vertical" className="!h-8" />
+
                 <div className="flex items-center gap-2">
                     {
                         status == eFormStatus.draft ?
