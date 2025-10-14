@@ -101,7 +101,7 @@ export default function Page() {
             if (response.success && response.data) {
                 initForm(response.data);
             } else {
-                console.error('Error fetching form:', response.error);
+                console.error('Error fetching form:', response.isError);
             }
         } catch (error) {
             console.error('Error fetching form:', error);

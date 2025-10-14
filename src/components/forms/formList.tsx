@@ -190,7 +190,7 @@ export function FormList() {
         try {
             setLoading(true);
             const res = await getProjectForms(projectId);
-            if (res.error) {
+            if (res.isError) {
                 toast.error("Failed to load forms");
                 return;
             }

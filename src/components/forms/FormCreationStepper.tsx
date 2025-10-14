@@ -712,7 +712,7 @@ export function FormCreationStepper() {
         try {
             const response = await createNewForm(finalData);
             if (!response.success) {
-                toast.error(response.error || "Failed to create form");
+                toast.error(response.isError || "Failed to create form");
                 return;
             }
             router.push(`/${response.data?.id}/edit`)

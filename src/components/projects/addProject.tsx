@@ -48,7 +48,7 @@ export default function AddProject({ onSuccess }: Props = {}) {
             const dto: ProjectInsert = { ...data, team_id: teamId };
             const res = await createProject(dto);
             if (!res.success) {
-                toast.error(res.error || "Failed to create project");
+                toast.error(res.isError || "Failed to create project");
                 return;
             }
             projectForm.reset();

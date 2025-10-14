@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums for USER-DEFINED types
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+
+  @@map("form_status")
+}
+
+enum FormType {
+  REACH_OUT
+  EMBEDDED
+
+  @@map("form_type")
+}
+
+enum ResponseStatus {
+  STARTED
+  COMPLETED
+  ABANDONED
+  PARTIAL
+
+  @@map("response_status")
+}
+
+// ...existing code...
+
+model User {
+  id             String  @id @default(cuid()) @db.VarChar(30)
+  userName       String  @map("user_name") @db.Text
+  email          String  @unique @db.Text
+  phoneNumber    String? @map("phone_number") @db.Text
+  googleId       String? @unique @map("google_id") @db.Text
+  profilePicture String? @map("profile_picture") @db.Text
+  firstName      String? @map("first_name") @db.Text
+  lastName       String? @map("last_name") @db.Text
+  emailVerified  Boolean @default(false) @map("email_verified")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("users")
+}
+
+model Team {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String?   @db.VarChar
+  ownerId   String?   @map("owner_id") @db.VarChar
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp
+
+  // Relations
+  projects Project[]
+
+  @@map("teams")
+}
+
+model Project {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String    @db.Text
+  description String?   @db.Text
+  teamId      String    @map("team_id") @db.Uuid
+  createdAt   DateTime? @map("created_at") @db.Timestamptz
+  updatedAt   DateTime? @map("updated_at") @db.Timestamptz
+
+  // Relations
+  team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  forms Form[]
+
+  @@map("projects")
+}
+
+model Form {
+  id                  String      @id @default(uuid()) @db.Uuid
+  name                String      @db.Text
+  description         String?     @db.Text
+  projectId           String      @map("project_id") @db.Uuid
+  theme               String?     @db.Text
+  logoUrl             String?     @map("logo_url") @db.Text
+  welcomeScreen       Json?       @map("welcome_screen") @db.JsonB
+  thankYouScreen      Json?       @map("thank_you_screen") @db.JsonB
+  multipleSubmissions Boolean?    @map("multiple_submissions")
+  maxResponses        Int?        @map("max_responses")
+  type                FormType?
+  openAt              DateTime?   @map("open_at") @db.Timestamptz
+  closeAt             DateTime?   @map("close_at") @db.Timestamptz
+  passwordProtected   Boolean?    @map("password_protected")
+  passwordHash        String?     @map("password_hash") @db.Text
+  status              FormStatus?
+  requireConsent      Boolean?    @map("require_consent")
+  analyticsEnabled    Boolean?    @map("analytics_enabled")
+  uniqueSubdomain     String?     @map("unique_subdomain") @db.Text
+  customDomain        String?     @map("custom_domain") @db.Text
+  config              Json?       @db.JsonB
+  allowAnonymous      Boolean?    @map("allow_anonymous")
+  createdBy           String      @map("created_by") @db.Text
+  createdAt           DateTime?   @map("created_at") @db.Timestamptz
+  updatedAt           DateTime?   @map("updated_at") @db.Timestamptz
+
+  // Relations
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  responses Response[]
+
+  @@map("forms")
+}
+
+model Response {
+  id           String          @id @default(uuid()) @db.Uuid
+  formId       String          @map("form_id") @db.Uuid
+  userId       String?         @map("user_id") @db.Text
+  responseData Json            @map("response_data") @db.JsonB
+  status       ResponseStatus?
+  startedAt    DateTime?       @map("started_at") @db.Timestamptz
+  submittedAt  DateTime?       @map("submitted_at") @db.Timestamptz
+  updatedAt    DateTime?       @map("updated_at") @db.Timestamptz
+  partialSave  Boolean?        @map("partial_save")
+  files        Json?           @db.JsonB
+  notified     Boolean?
+  ipAddress    String?         @map("ip_address") @db.Text
+  userAgent    String?         @map("user_agent") @db.Text
+  referrerUrl  String?         @map("referrer_url") @db.Text
+  tags         String[]
+
+  // Relations
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@map("responses")
+}

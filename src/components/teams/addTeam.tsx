@@ -40,7 +40,7 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Prop
         try {
             const res = await createTeam(data.name);
             if (!res.success) {
-                toast.error(res.error || "Failed to create team");
+                toast.error(res.isError || "Failed to create team");
                 return;
             }
             teamForm.reset();

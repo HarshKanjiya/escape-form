@@ -3,7 +3,8 @@
 export interface ActionResponse<T = unknown> {
   success: boolean
   data?: T
-  error?: string
+  isError?: boolean
+  isWarning?: boolean
   message?: string
 }
 
@@ -21,7 +22,7 @@ export interface ActionSuccess<T = unknown> {
 
 // Helper functions to create consistent responses
 export function createSuccessResponse<T>(
-  data: T, 
+  data: T,
   message?: string
 ): ActionSuccess<T> {
   return {
@@ -32,7 +33,7 @@ export function createSuccessResponse<T>(
 }
 
 export function createErrorResponse(
-  error: string, 
+  error: string,
   message?: string
 ): ActionError {
   return {

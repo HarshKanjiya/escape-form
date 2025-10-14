@@ -189,7 +189,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         setLoading(true);
         try {
             const res = await getTeamProjects(teamId);
-            if (res.error) {
+            if (res.isError) {
                 toast.error("Failed to load projects");
                 return;
             }

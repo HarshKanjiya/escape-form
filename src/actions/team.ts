@@ -1,52 +1,44 @@
 'use server'
 
-import { ACTION_ERRORS, TABLES } from '@/enums/common'
-import { supabase } from '@/lib/supabase/supabase'
-import { ActionResponse, createErrorResponse, createSuccessResponse } from '@/types/common'
-import { Team } from '@/types/db'
-import { auth } from '@clerk/nextjs/server'
+import { getSuccessMessage, MESSAGE } from '@/constants/messages'
+import { createActionError, createActionSuccess, withActionErrorHandler } from '@/lib/api-response'
+import { validateAuth } from '@/lib/helper'
+import { prisma, Team } from '@/lib/prisma'
+import { ActionResponse } from '@/types/common'
 
-export async function getUserTeams(): Promise<ActionResponse<Team[]>> {
-    try {
-        const { userId } = await auth()
-        if (!userId) return createErrorResponse(ACTION_ERRORS.UNAUTHORIZED)
-        // Get teams where user is either owner or member
-        const { data: teams, error } = await supabase
-            .from(TABLES.TEAMS)
-            .select('*')
-            .eq('owner_id', userId)
-            .order('created_at', { ascending: false })
-        if (error) {
-            console.error('Error fetching user teams:', error)
-            return createErrorResponse(ACTION_ERRORS.DATABASE_ERROR)
-        }
+export const getUserTeams = withActionErrorHandler(async (): Promise<ActionResponse<Team[]>> => {
+    const { user, error } = await validateAuth()
+    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Team[]>
 
-        return createSuccessResponse(teams || [])
-    } catch (error) {
-        console.error('Unexpected error in getUserTeams:', error)
-        return createErrorResponse(ACTION_ERRORS.UNEXPECTED_ERROR)
+
+    const teams = await prisma.team.findMany({
+        where: { ownerId: user!.id },
+        orderBy: { createdAt: 'desc' },
+    })
+
+    return createActionSuccess(teams, getSuccessMessage('Teams'));
+})
+
+
+export const createTeam = withActionErrorHandler(async (name: string): Promise<ActionResponse<Team>> => {
+    // Validate authentication
+    const { user, error } = await validateAuth()
+    if (error) {
+        return createActionError('Authentication required') as ActionResponse<Team>
     }
-}
 
-export async function createTeam(name: string): Promise<ActionResponse<Team>> {
-    try {
-        const { userId } = await auth()
-        if (!userId) return createErrorResponse(ACTION_ERRORS.UNAUTHORIZED)
-
-        const { data, error } = await supabase
-            .from(TABLES.TEAMS)
-            .insert({ name, owner_id: userId })
-            .select('*')
-            .single()
-
-        if (error) {
-            console.error('Error creating team:', error)
-            return createErrorResponse(ACTION_ERRORS.DATABASE_ERROR)
-        }
-
-        return createSuccessResponse(data as Team)
-    } catch (error) {
-        console.error('Unexpected error in createTeam:', error)
-        return createErrorResponse(ACTION_ERRORS.UNEXPECTED_ERROR)
+    // Validate input
+    if (!name || name.trim().length === 0) {
+        return createActionError('Team name is required') as ActionResponse<Team>
     }
-}
+
+    // Create team
+    const team = await prisma.team.create({
+        data: {
+            name: name.trim(),
+            ownerId: user!.id,
+        },
+    })
+
+    return createActionSuccess(team, 'Team created successfully')
+})

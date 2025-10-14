@@ -173,7 +173,7 @@ export function TeamList() {
         setLoading(true);
         try {
             const res = await getUserTeams();
-            if (res.error) {
+            if (res.isError) {
                 toast.error("Failed to load teams");
                 return;
             }
