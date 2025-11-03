@@ -1,11 +1,15 @@
-import { getUserTeams } from "@/actions/team";
 import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
+import { apiConstants } from "@/constants/api.constants";
 import { ThemeProvider } from "@/core/theme/theme.provider";
+import { Team } from "@/generated/prisma";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
 import { ClerkProvider, SignedIn } from '@clerk/nextjs';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { auth } from "@clerk/nextjs/server";
 
 // Add this to force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -30,8 +34,25 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
-  const res = await getUserTeams();
-  const teams = res.success ? res.data || [] : [];
+  const { userId } = await auth();
+
+  async function getTeams(): Promise<Team[]> {
+    if (!userId) {
+      return [];
+    }
+    try {
+      const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
+      if (!res?.data?.success) {
+        return [];
+      }
+      return res.data.data ?? [];
+    } catch (error) {
+      console.log("Error fetching teams:", error);
+      return [];
+    }
+  }
+  const teams = await getTeams();
+  console.log('teams :df>> ', teams);
 
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: '#6336f7' } }}>
@@ -47,7 +68,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             disableTransitionOnChange
           >
             <SignedIn>
-              <HydrateTeams teams={teams} />
+              <HydrateTeams teams={teams || []} />
             </SignedIn>
             {children}
             <Toaster position="top-right" duration={3000} closeButton dir="rtl" />

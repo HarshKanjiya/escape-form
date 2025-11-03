@@ -1,6 +1,9 @@
 "use client";
 
-import { createTeam } from "@/actions/team";
+import { apiConstants } from "@/constants/api.constants";
+import { Team } from "@/generated/prisma";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -11,8 +14,6 @@ import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
-
-export const dynamic = 'force-dynamic'
 
 interface Props {
     buttonWidth?: 'w-full' | 'w-auto';
@@ -38,14 +39,13 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Prop
 
     const onTeamFormSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
-            const res = await createTeam(data.name);
-            if (!res.success) {
-                toast.error(res.isError || "Failed to create team");
+            const res = await api.post<ActionResponse<Team>>(apiConstants.team.createTeam(), data);
+            if (!res.data?.success) {
+                toast.error(res.data?.message || "Failed to create team");
                 return;
             }
             teamForm.reset();
             setDialogOpen(false);
-            // redirect(`/${res.data?.id}`);
             onSuccess?.();
         } catch (error) {
             console.error('Error creating team:', error);

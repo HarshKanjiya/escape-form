@@ -16,3 +16,8 @@ export const getSuccessMessage = (name: string) => `${name} retrieved successful
 export const createSuccessMessage = (name: string) => `${name} created successfully`
 export const updateSuccessMessage = (name: string) => `${name} updated successfully`
 export const deleteSuccessMessage = (name: string) => `${name} deleted successfully`
+
+export const getErrorMessage = (name: string) => `Failed to retrieve ${name}`
+export const createErrorMessage = (name: string) => `Failed to create ${name}`
+export const updateErrorMessage = (name: string) => `Failed to update ${name}`
+export const deleteErrorMessage = (name: string) => `Failed to delete ${name}`

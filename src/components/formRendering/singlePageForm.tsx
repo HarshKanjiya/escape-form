@@ -37,8 +37,8 @@ export default function RenderSinglePageForm({ questions }: Props) {
                         question={question}
                         value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
                         onChange={(value) => handleFieldChange(question.id, value)}
-                        error={errors[question.id]}
-                        className="mb-6"
+                        // error={errors[question.id]}
+                        // className="mb-6"
                     />
                 );
             // Add other field types here as needed

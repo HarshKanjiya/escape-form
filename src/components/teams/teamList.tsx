@@ -1,6 +1,5 @@
 "use client";
 
-import { getUserTeams } from "@/actions/team";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +15,9 @@ import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import AddTeam from "./addTeam";
 import { TeamCard } from "./teamCard";
+import { apiConstants } from "@/constants/api.constants";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
 
 export const dynamic = 'force-dynamic'
 
@@ -172,12 +174,12 @@ export function TeamList() {
     const getTeams = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await getUserTeams();
-            if (res.isError) {
+            const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
+            if (!res?.data?.success) {
                 toast.error("Failed to load teams");
                 return;
             }
-            setTeams(res.data || []);
+            setTeams(res.data.data || []);
         }
         catch (error) {
             console.error("Error fetching projects:", error);

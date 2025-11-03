@@ -38,12 +38,12 @@ enum ResponseStatus {
 
 model User {
   id             String  @id @default(cuid()) @db.VarChar(30)
-  userName       String  @map("user_name") @db.Text
+  userName       String  @map("userName") @db.Text
   email          String  @unique @db.Text
-  phoneNumber    String? @map("phone_number") @db.Text
-  googleId       String? @unique @map("google_id") @db.Text
-  profilePicture String? @map("profile_picture") @db.Text
-  firstName      String? @map("first_name") @db.Text
+  phoneNumber    String? @map("phoneNumber") @db.Text
+  googleId       String? @unique @map("googleId") @db.Text
+  profilePicture String? @map("profilePicture") @db.Text
+  firstName      String? @map("firstName") @db.Text
   lastName       String? @map("last_name") @db.Text
   emailVerified  Boolean @default(false) @map("email_verified")
 
@@ -102,7 +102,7 @@ model Form {
   analyticsEnabled    Boolean?    @map("analytics_enabled")
   uniqueSubdomain     String?     @map("unique_subdomain") @db.Text
   customDomain        String?     @map("custom_domain") @db.Text
-  config              Json?       @db.JsonB
+  config              Json[]      @map("config") @db.JsonB
   allowAnonymous      Boolean?    @map("allow_anonymous")
   createdBy           String      @map("created_by") @db.Text
   createdAt           DateTime?   @map("created_at") @db.Timestamptz

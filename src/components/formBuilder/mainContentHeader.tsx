@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
 import FormConfigDialog from "./ui/formConfigDialog";
 import { cn } from "@/lib/utils";
+import { FormStatus } from "@/generated/prisma";
 
 export default function MainContentHeader() {
 
@@ -121,7 +122,7 @@ export default function MainContentHeader() {
 
                 <div className="flex items-center gap-2">
                     {
-                        status == eFormStatus.draft ?
+                        status == FormStatus.DRAFT ?
                             <Button>
                                 <Rocket className="mr-1" size={14} />
                                 Publish
@@ -129,7 +130,7 @@ export default function MainContentHeader() {
                             : null
                     }
                     {
-                        status == eFormStatus.archived ?
+                        status == FormStatus.ARCHIVED ?
                             <Button>
                                 <ArchiveRestore className="mr-1" size={14} />
                                 Restore

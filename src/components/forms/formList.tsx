@@ -1,11 +1,9 @@
 "use client";
 
-import { getProjectForms } from "@/actions/form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Form } from "@/types/db";
 import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -14,6 +12,11 @@ import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import { FormCard } from "./formCard";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
+import { Form } from "@/generated/prisma";
+import { apiConstants } from "@/constants/api.constants";
+import { formatDate } from "@/lib/utils";
 
 export const dynamic = 'force-dynamic'
 
@@ -34,7 +37,7 @@ const switchActions = [
 ]
 
 // Move these components outside to prevent recreation on every render
-function FormGridView({ forms, loading }: { forms: Form[]; loading: boolean }) {
+function FormGridView({ forms, loading }: { forms: Partial<Form>[]; loading: boolean }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {
@@ -49,15 +52,7 @@ function FormGridView({ forms, loading }: { forms: Form[]; loading: boolean }) {
     );
 }
 
-function FormTableView({ forms, teamId, loading }: { forms: Form[]; teamId: string; loading: boolean }) {
-    const formatDate = useCallback((dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    }, []);
-
+function FormTableView({ forms, teamId, loading }: { forms: Partial<Form>[]; teamId: string; loading: boolean }) {
     return (
         <div className="border rounded-lg">
             <Table>
@@ -99,7 +94,7 @@ function FormTableView({ forms, teamId, loading }: { forms: Form[]; teamId: stri
                                         <div>
                                             <div className="font-medium">{form.name}</div>
                                             <div className="text-sm text-muted-foreground">
-                                                ID: {form?.id.slice(0, 8)}...
+                                                ID: {form.id!.slice(0, 8)}...
                                             </div>
                                         </div>
                                     </TableCell>
@@ -108,7 +103,7 @@ function FormTableView({ forms, teamId, loading }: { forms: Form[]; teamId: stri
                                             {form.description || "No description"}
                                         </div>
                                     </TableCell>
-                                    <TableCell>{formatDate(form.created_at)}</TableCell>
+                                    <TableCell>{formatDate(form.createdAt!)}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">Active</Badge>
                                     </TableCell>
@@ -157,7 +152,7 @@ function EmptyState({ searchQuery, projectId }: { searchQuery: string, projectId
 
 export function FormList() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [forms, setForms] = useState<Form[]>([]);
+    const [forms, setForms] = useState<Partial<Form>[]>([]);
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [loading, setLoading] = useState(true);
 
@@ -189,12 +184,12 @@ export function FormList() {
     const getForms = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await getProjectForms(projectId);
-            if (res.isError) {
+            const res = await api.get<ActionResponse<Partial<Form>[]>>(apiConstants.form.getForms(projectId));
+            if (!res.data.success) {
                 toast.error("Failed to load forms");
                 return;
             }
-            setForms(res.data || []);
+            setForms(res.data.data || []);
         }
         catch (error) {
             console.error("Error fetching forms:", error);
@@ -202,7 +197,7 @@ export function FormList() {
         } finally {
             setLoading(false);
         }
-    }, [])
+    }, [projectId])
 
     // Memoize filtered forms to prevent unnecessary recalculations
     const filteredforms = useMemo(() => {
@@ -210,9 +205,8 @@ export function FormList() {
         if (!searchLower) return forms;
 
         return forms.filter((form) =>
-            form.name.toLowerCase().includes(searchLower) ||
-            (form.description?.toLowerCase().includes(searchLower) ?? false) ||
-            form.id.toLowerCase().includes(searchLower)
+            (form.name && form.name.toLowerCase().includes(searchLower)) ||
+            (form.description?.toLowerCase().includes(searchLower) ?? false)
         );
     }, [forms, searchQuery]);
 

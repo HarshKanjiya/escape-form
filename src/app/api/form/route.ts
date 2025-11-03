@@ -9,11 +9,11 @@ import { NextRequest } from "next/server";
 export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Form[]>
+    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const { limit, offset } = getPaginationParams(request);
     const projectId = request.nextUrl.searchParams.get('projectId') || '';
-    if (!projectId) return createActionError('projectId is required') as ActionResponse<Form[]>
+    if (!projectId) return createActionError('projectId is required')
 
     const forms = await prisma.form.findMany({
         where: { projectId: projectId },
@@ -30,7 +30,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 export const POST = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Form>
+    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const body: Partial<Form> = await parseRequestBody(request);
     const validationErrors = validateRequiredFields(body,
@@ -53,7 +53,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             type: FormType.REACH_OUT,
             multipleSubmissions: body.multipleSubmissions || false,
             thankYouScreen: body.thankYouScreen || {},
-            config: body.config || {},
+            config: (Array.isArray(body.config) ? body.config.filter((v) => v !== null) : []) as any,
             welcomeScreen: body.welcomeScreen || {},
             customDomain: null,
             uniqueSubdomain: null,
@@ -66,26 +66,4 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         }
     })
     return createActionSuccess(form, getSuccessMessage('Form created successfully'));
-});
-
-export const PUT = withErrorHandler(async (request: NextRequest) => {
-
-    const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Form>
-    const body: Partial<Form> & { id?: string } = await parseRequestBody(request);
-    const validationErrors = validateRequiredFields(body,
-        ['id', 'name', 'projectId']
-    );
-    if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
-    const existingForm = await prisma.form.findFirst({
-        where: { id: body.id, createdBy: user!.id }
-    });
-    if (!existingForm) return createActionError(MESSAGE.FORM_NOT_FOUND_OR_ACCESS_DENIED) as ActionResponse<Form>
-    const updatedForm = await prisma.form.update({
-        where: { id: body.id },
-        data: {
-            ...body
-        },
-    });
-    return createActionSuccess(updatedForm, getSuccessMessage('Form updated successfully'));
 });

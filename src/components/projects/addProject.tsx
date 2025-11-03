@@ -1,6 +1,5 @@
 "use client";
 
-import { createProject } from "@/actions/project";
 import { ProjectInsert } from "@/types/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
@@ -14,6 +13,11 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
+import { Project } from "@/generated/prisma";
+import { apiConstants } from "@/constants/api.constants";
+import { createErrorMessage } from "@/constants/messages";
 
 export const dynamic = 'force-dynamic'
 
@@ -46,9 +50,9 @@ export default function AddProject({ onSuccess }: Props = {}) {
         }
         try {
             const dto: ProjectInsert = { ...data, team_id: teamId };
-            const res = await createProject(dto);
-            if (!res.success) {
-                toast.error(res.isError || "Failed to create project");
+            const res = await api.post<ActionResponse<Project>>(apiConstants.project.createProject(), dto);
+            if (!res.data.success) {
+                toast.error(res.data.message || createErrorMessage("Project"));
                 return;
             }
             projectForm.reset();

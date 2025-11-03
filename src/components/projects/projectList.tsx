@@ -12,10 +12,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwitchButton } from "../ui/switchButton";
 import { ProjectCard } from "./projectCard";
 import AddProject from "./addProject";
-import { getTeamProjects } from "@/actions/project";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { useStore } from "@/store/useStore";
+import api from "@/lib/axios";
+import { apiConstants } from "@/constants/api.constants";
+import { ActionResponse } from "@/types/common";
+import { getErrorMessage } from "@/constants/messages";
 
 export const dynamic = 'force-dynamic'
 
@@ -188,16 +191,16 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
     const getProjects = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await getTeamProjects(teamId);
-            if (res.isError) {
-                toast.error("Failed to load projects");
+            const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects(teamId));
+            if (!res.data.success) {
+                toast.error(res.data.message || getErrorMessage("Projects"));
                 return;
             }
-            setProjects(res.data || []);
+            setProjects(res.data.data || []);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
-            toast.error("Failed to load projects");
+            toast.error(getErrorMessage("Projects"));
         } finally {
             setLoading(false);
         }

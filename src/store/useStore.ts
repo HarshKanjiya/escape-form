@@ -1,6 +1,6 @@
 'use client'
 
-import { Project, Team } from '@/types/db'
+import { Project, Team } from '@/generated/prisma'
 import { create } from 'zustand'
 
 interface TeamStore {

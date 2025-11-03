@@ -1,13 +1,16 @@
 "use client";
 
-import { createNewForm } from "@/actions/form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { apiConstants } from "@/constants/api.constants";
+import { eFormType } from "@/enums/form";
+import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
+import { ActionResponse } from "@/types/common";
 import { FormInsert } from "@/types/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from 'framer-motion';
@@ -29,7 +32,7 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { eFormType } from "@/enums/form";
+import { Form as FormType } from "@/generated/prisma";
 
 interface FormTemplate {
     id: string;
@@ -710,12 +713,12 @@ export function FormCreationStepper() {
             type: selectedType || eFormType.reachOut,
         };
         try {
-            const response = await createNewForm(finalData);
-            if (!response.success) {
-                toast.error(response.isError || "Failed to create form");
+            const response = await api.post<ActionResponse<FormType>>(apiConstants.form.createForm(), finalData);
+            if (!response.data?.success) {
+                toast.error(response.data?.message || "Failed to create form");
                 return;
             }
-            router.push(`/${response.data?.id}/edit`)
+            router.push(`/${response.data?.data?.id}/edit`)
         }
         catch (err) {
             console.error("Error creating form:", err);

@@ -10,14 +10,13 @@ import {
     withErrorHandler,
 } from '@/lib/api-response';
 import { getPaginationParams, parseRequestBody, validateAuth } from '@/lib/helper';
-import { prisma, Project } from '@/lib/prisma';
-import { ActionResponse } from '@/types/common';
+import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Project[]>
+    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
 
     const { limit, offset } = getPaginationParams(request);
     const teamId = request.nextUrl.searchParams.get('teamId') || '';
@@ -37,7 +36,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 export const POST = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED) as ActionResponse<Project>
+    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const body = await parseRequestBody(request);
     const validationErrors = validateRequiredFields(body, ['name', 'teamId']);

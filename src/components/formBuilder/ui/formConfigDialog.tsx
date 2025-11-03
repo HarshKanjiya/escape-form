@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Form as FormType } from '@/generated/prisma';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
 import { FormUpdate } from '@/types/db';
@@ -23,20 +24,19 @@ import z from 'zod';
 const formSettingsSchema = z.object({
     name: z.string().min(1, 'Name is required').max(80, 'Max 80 characters'),
     description: z.string().max(240, 'Max 240 characters').optional().or(z.literal('')),
-    logo_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-    analytics_enabled: z.boolean(),
-    welcome_screen_enabled: z.boolean(),
-    welcome_screen: z.string().max(500, 'Too long').optional().or(z.literal('')),
-    thank_you_screen_enabled: z.boolean(),
-    thank_you_screen: z.string().max(500, 'Too long').optional().or(z.literal('')),
-    time_bound: z.boolean(),
-    open_at: z.string().optional().or(z.literal('')),
-    close_at: z.string().optional().or(z.literal('')),
-    multiple_submissions: z.boolean(),
-    allow_anonymous: z.boolean(),
-    password_protected: z.boolean(),
-    password: z.string().min(6, 'Password too short').max(64, 'Password too long').optional(),
-    require_consent: z.boolean(),
+    logoUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+    analyticsEnabled: z.boolean(),
+    welcomeScreenEnabled: z.boolean(),
+    welcomeScreen: z.string().max(500, 'Too long').optional().or(z.literal('')),
+    thankYouScreenEnabled: z.boolean(),
+    thankYouScreen: z.string().max(500, 'Too long').optional().or(z.literal('')),
+    timeBound: z.boolean(),
+    openAt: z.date().optional().or(z.literal('')),
+    closeAt: z.date().optional().or(z.literal('')),
+    multipleSubmissions: z.boolean(),
+    allowAnonymous: z.boolean(),
+    passwordProtected: z.boolean(),
+    requireConsent: z.boolean(),
 });
 
 type FormSettingsData = z.infer<typeof formSettingsSchema>;
@@ -48,33 +48,30 @@ export default function FormConfigDialog() {
     const { dataSource, updateForm } = useFormBuilder();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dragActive, setDragActive] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(formSettingsSchema),
         defaultValues: {
             name: dataSource?.name || '',
             description: dataSource?.description || '',
-            logo_url: dataSource?.logo_url || '',
-            thank_you_screen_enabled: !!dataSource?.thank_you_screen,
-            thank_you_screen: typeof dataSource?.thank_you_screen === 'string' ? dataSource?.thank_you_screen : '',
-            welcome_screen_enabled: !!dataSource?.welcome_screen,
-            welcome_screen: typeof dataSource?.welcome_screen === 'string' ? dataSource?.welcome_screen : '',
-            analytics_enabled: !!dataSource?.analytics_enabled,
-            time_bound: !!(dataSource?.open_at || dataSource?.close_at),
-            open_at: dataSource?.open_at || '',
-            close_at: dataSource?.close_at || '',
-            multiple_submissions: !!dataSource?.multiple_submissions,
-            allow_anonymous: !!dataSource?.allow_anonymous,
-            password_protected: !!dataSource?.password_protected,
-            password: '',
-            require_consent: !!dataSource?.require_consent,
+            logoUrl: dataSource?.logoUrl || '',
+            thankYouScreenEnabled: !!dataSource?.thankYouScreen,
+            thankYouScreen: typeof dataSource?.thankYouScreen === 'string' ? dataSource?.thankYouScreen : '',
+            welcomeScreenEnabled: !!dataSource?.welcomeScreen,
+            welcomeScreen: typeof dataSource?.welcomeScreen === 'string' ? dataSource?.welcomeScreen : '',
+            analyticsEnabled: !!dataSource?.analyticsEnabled,
+            timeBound: !!(dataSource?.openAt || dataSource?.closeAt),
+            openAt: dataSource?.openAt || '',
+            closeAt: dataSource?.closeAt || '',
+            multipleSubmissions: !!dataSource?.multipleSubmissions,
+            allowAnonymous: !!dataSource?.allowAnonymous,
+            passwordProtected: !!dataSource?.passwordProtected,
+            requireConsent: !!dataSource?.requireConsent,
         }
     });
 
     const { watch, handleSubmit, reset, formState: { isSubmitting } } = form;
-    const watchTimeBound = watch('time_bound');
-    const watchPasswordProtected = watch('password_protected');
+    const watchTimeBound = watch('timeBound');
 
     return (
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) { reset(); } }}>
@@ -93,29 +90,25 @@ export default function FormConfigDialog() {
                 <Form {...form}>
                     <form id='form-settings' className='space-y-4 overflow-y-auto px-6 pt-6 pb-6 custom-scrollbar' onSubmit={handleSubmit(async (values) => {
                         let hasError = false;
-                        if (values.time_bound) {
-                            if (!values.open_at) { form.setError('open_at', { message: 'Open date required' }); hasError = true; }
-                            if (!values.close_at) { form.setError('close_at', { message: 'Close date required' }); hasError = true; }
-                        }
-                        if (values.password_protected && !values.password) {
-                            form.setError('password', { message: 'Password required' });
-                            hasError = true;
+                        if (values.timeBound) {
+                            if (!values.openAt) { form.setError('openAt', { message: 'Open date required' }); hasError = true; }
+                            if (!values.closeAt) { form.setError('closeAt', { message: 'Close date required' }); hasError = true; }
                         }
                         if (hasError) return;
                         // Prepare update payload
-                        const update: Partial<FormUpdate> = {
+                        const update: Partial<FormType> = {
                             name: values.name,
                             description: values.description || null,
-                            logo_url: values.logo_url || null,
-                            thank_you_screen: values.thank_you_screen_enabled ? values.thank_you_screen || '' : null,
-                            welcome_screen: values.welcome_screen_enabled ? values.welcome_screen || '' : null,
-                            open_at: values.time_bound ? values.open_at || null : null,
-                            close_at: values.time_bound ? values.close_at || null : null,
-                            multiple_submissions: values.multiple_submissions,
-                            password_protected: values.password_protected,
-                            require_consent: values.require_consent,
-                            analytics_enabled: values.analytics_enabled,
-                            allow_anonymous: values.allow_anonymous,
+                            logoUrl: values.logoUrl || null,
+                            thankYouScreen: values.thankYouScreenEnabled ? values.thankYouScreen || '' : null,
+                            welcomeScreen: values.welcomeScreenEnabled ? values.welcomeScreen || '' : null,
+                            openAt: values.timeBound ? values.openAt || null : null,
+                            closeAt: values.timeBound ? values.closeAt || null : null,
+                            multipleSubmissions: values.multipleSubmissions,
+                            passwordProtected: values.passwordProtected,
+                            requireConsent: values.requireConsent,
+                            analyticsEnabled: values.analyticsEnabled,
+                            allowAnonymous: values.allowAnonymous,
                         };
                         // TODO: handle password hashing externally if needed
                         updateForm(update);
@@ -123,7 +116,7 @@ export default function FormConfigDialog() {
                     })}>
                         {/* Row: Logo upload (drag/drop) on left, Name & Description stacked on right */}
                         <div className='flex flex-col md:flex-row gap-8'>
-                            <FormField control={form.control} name='logo_url' render={({ field }) => (
+                            <FormField control={form.control} name='logoUrl' render={({ field }) => (
                                 <FormItem className='flex flex-col'>
                                     <FormLabel>Logo</FormLabel>
                                     <FormControl>
@@ -224,7 +217,7 @@ export default function FormConfigDialog() {
                                         <p className='text-sm text-muted-foreground'>Enable built-in metrics for this form.</p>
                                     </div>
                                 </div>
-                                <FormField control={form.control} name='analytics_enabled' render={({ field }) => (
+                                <FormField control={form.control} name='analyticsEnabled' render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -244,7 +237,7 @@ export default function FormConfigDialog() {
                                 <div className='space-y-4'>
                                     <div className='flex items-center justify-between'>
                                         <FormLabel>Welcome Screen</FormLabel>
-                                        <FormField control={form.control} name='welcome_screen_enabled' render={({ field }) => (
+                                        <FormField control={form.control} name='welcomeScreenEnabled' render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
                                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -256,7 +249,7 @@ export default function FormConfigDialog() {
                                 <div className='space-y-4'>
                                     <div className='flex items-center justify-between'>
                                         <FormLabel>Thank You Screen</FormLabel>
-                                        <FormField control={form.control} name='thank_you_screen_enabled' render={({ field }) => (
+                                        <FormField control={form.control} name='thankYouScreenEnabled' render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
                                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -280,7 +273,7 @@ export default function FormConfigDialog() {
                                         <p className='text-sm text-muted-foreground'>Restrict submissions to a window.</p>
                                     </div>
                                 </div>
-                                <FormField control={form.control} name='time_bound' render={({ field }) => (
+                                <FormField control={form.control} name='timeBound' render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -300,8 +293,8 @@ export default function FormConfigDialog() {
                                         style={{ overflow: 'hidden' }}
                                     >
                                         <div className='grid md:grid-cols-2 gap-4 pt-5'>
-                                            <DateTimeField form={form} name='open_at' label='Open At' />
-                                            <DateTimeField form={form} name='close_at' label='Close At' />
+                                            <DateTimeField form={form} name='openAt' label='Open At' />
+                                            <DateTimeField form={form} name='closeAt' label='Close At' />
                                         </div>
                                     </motion.div>
                                 }
@@ -315,7 +308,7 @@ export default function FormConfigDialog() {
                                 <h3 className='font-medium'>Submission & Privacy</h3>
                             </div>
                             <div className='grid md:grid-cols-2 gap-6'>
-                                <FormField control={form.control} name='multiple_submissions' render={({ field }) => (
+                                <FormField control={form.control} name='multipleSubmissions' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border-accent border p-3'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Multiple Submissions</FormLabel>
@@ -326,7 +319,7 @@ export default function FormConfigDialog() {
                                         </FormControl>
                                     </FormItem>
                                 )} />
-                                <FormField control={form.control} name='allow_anonymous' render={({ field }) => (
+                                <FormField control={form.control} name='allowAnonymous' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border-accent border p-3'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Allow Anonymous</FormLabel>
@@ -337,7 +330,7 @@ export default function FormConfigDialog() {
                                         </FormControl>
                                     </FormItem>
                                 )} />
-                                <FormField control={form.control} name='password_protected' render={({ field }) => (
+                                <FormField control={form.control} name='passwordProtected' render={({ field }) => (
                                     <div className='flex flex-col items-center rounded-md border border-accent col-span-2 bg-background w-full'>
                                         <FormItem className='flex flex-row w-full items-center justify-between p-3 '>
                                             <div className='space-y-0.5 flex items-center gap-2'>
@@ -353,7 +346,7 @@ export default function FormConfigDialog() {
                                         </FormItem>
                                     </div>
                                 )} />
-                                <FormField control={form.control} name='require_consent' render={({ field }) => (
+                                <FormField control={form.control} name='requireConsent' render={({ field }) => (
                                     <FormItem className='flex flex-row items-center justify-between rounded-md border border-accent p-3 md:col-span-2'>
                                         <div className='space-y-0.5'>
                                             <FormLabel className='text-sm'>Require Consent</FormLabel>
@@ -379,7 +372,7 @@ export default function FormConfigDialog() {
 }
 
 
-function DateTimeField({ form, name, label }: { form: FormSettingsForm; name: 'open_at' | 'close_at'; label: string }) {
+function DateTimeField({ form, name, label }: { form: FormSettingsForm; name: 'openAt' | 'closeAt'; label: string }) {
     const [open, setOpen] = useState(false);
     const [dateState, setDateState] = useState<Date | undefined>(undefined);
     const [timeState, setTimeState] = useState<string>('');

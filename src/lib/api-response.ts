@@ -233,12 +233,12 @@ export function validateRequiredFields(
 export function createActionSuccess<T>(
     data: T,
     message?: string
-): ActionResponse<T> {
-    return {
+): NextResponse<ActionResponse<T>> {
+    return NextResponse.json({
         success: true,
         data,
         message,
-    };
+    });
 }
 
 /**
@@ -247,13 +247,13 @@ export function createActionSuccess<T>(
 export function createActionError(
     message: string,
     isWarning: boolean = false
-): ActionResponse {
-    return {
+): NextResponse<ActionResponse> {
+    return NextResponse.json({
         success: false,
         message,
         isError: !isWarning,
         isWarning,
-    };
+    });
 }
 
 /**
@@ -261,18 +261,18 @@ export function createActionError(
  */
 export function createActionValidationError(
     message: string = 'Validation failed'
-): ActionResponse {
-    return {
+): NextResponse<ActionResponse> {
+    return NextResponse.json({
         success: false,
         message,
         isError: true,
-    };
+    });
 }
 
 /**
  * Handle errors in server actions
  */
-export function handleActionError(error: any): ActionResponse {
+export function handleActionError(error: any): NextResponse<ActionResponse> {
     console.error('Server Action Error:', error);
 
     if (error.code && error.code.startsWith('P')) {
@@ -296,17 +296,17 @@ export function handleActionError(error: any): ActionResponse {
 /**
  * Async error handler wrapper for server actions
  */
-export function withActionErrorHandler<T extends any[], R>(
-    fn: (...args: T) => Promise<ActionResponse<R>>
-) {
-    return async (...args: T): Promise<ActionResponse<R | undefined>> => {
-        try {
-            return await fn(...args);
-        } catch (error: any) {
-            return handleActionError(error) as ActionResponse<R | undefined>;
-        }
-    };
-}
+// export function withActionErrorHandler<T extends any[], R>(
+//     fn: (...args: T) => Promise<ActionResponse<R>>
+// ) {
+//     return async (...args: T): Promise<ActionResponse<R | undefined>> => {
+//         try {
+//             return await fn(...args);
+//         } catch (error: any) {
+//             return handleActionError(error);
+//         }
+//     };
+// }
 
 /**
  * Async error handler wrapper for API routes

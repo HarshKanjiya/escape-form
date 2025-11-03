@@ -1,7 +1,7 @@
 'use client';
 
+import { Team } from '@/generated/prisma';
 import { useStore } from '@/store/useStore';
-import { Team } from '@/types/db';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

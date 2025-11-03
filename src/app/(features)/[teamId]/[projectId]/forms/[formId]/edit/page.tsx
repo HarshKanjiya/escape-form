@@ -1,13 +1,17 @@
 "use client";
 
-import { getFormById } from "@/actions/form";
 import LeftBar from "@/components/formBuilder/leftBar";
 import MainContent from "@/components/formBuilder/mainContent";
 import RightBar from "@/components/formBuilder/rightBar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getErrorMessage } from "@/constants/messages";
+import { Form } from "@/generated/prisma";
+import api from "@/lib/axios";
 import { useFormBuilder } from "@/store/useFormBuilder";
+import { ActionResponse } from "@/types/common";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 // Loading skeleton component that mimics the form builder layout
 function FormBuilderLoadingSkeleton() {
@@ -97,12 +101,14 @@ export default function Page() {
 
         try {
             setIsLoading(true);
-            const response = await getFormById(params["formId"] as string);
-            if (response.success && response.data) {
-                initForm(response.data);
-            } else {
-                console.error('Error fetching form:', response.isError);
+            const response = await api.get<ActionResponse<Form>>(params["formId"] as string);
+
+            if (!response.data.success) {
+                toast.error(response.data.message || getErrorMessage("Form"));
+                setIsLoading(false);
+                return;
             }
+            if (response.data.data) initForm(response.data.data);
         } catch (error) {
             console.error('Error fetching form:', error);
         } finally {

@@ -3,27 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Form } from "@/types/db";
+import { Form } from "@/generated/prisma";
+import { formatDate } from "@/lib/utils";
 import { Calendar, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 interface FormCardProps {
-    form: Form;
+    form: Partial<Form>;
 }
 
 export function FormCard({ form }: FormCardProps) {
     const params = useParams();
     const teamId = params.teamId as string;
     const projectId = params.projectId as string;
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    };
 
     return (
         <Link href={`${projectId}/forms/${form.id}/edit`} className="block">
@@ -43,7 +36,10 @@ export function FormCard({ form }: FormCardProps) {
                             </h3>
                             <div className="flex items-center text-xs text-muted-foreground">
                                 <Calendar className="w-3 h-3 mr-1" />
-                                <span>Created {formatDate(form.created_at)}</span>
+                                {
+                                    form?.createdAt &&
+                                    <span>Created {formatDate(form?.createdAt)}</span>
+                                }
                             </div>
                         </div>
 

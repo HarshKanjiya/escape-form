@@ -1,42 +1,44 @@
 'use client'
 
-import { updateFormData } from '@/actions/form';
-import { eFormPageType, eFormStatus, eFormType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
-import { Form, FormUpdate } from '@/types/db';
+import { apiConstants } from '@/constants/api.constants';
+import { eFormPageType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
+import { Form, FormStatus, FormType } from '@/generated/prisma';
+import api from '@/lib/axios';
+import { ActionResponse } from '@/types/common';
+// import { Form, FormUpdate } from '@/types/db';
 import { IThankYouScreen, IWelcomeScreen, IQuestion, IWorkflowConnection } from '@/types/form';
 import { create } from 'zustand';
 
-const defaultFormSettings: FormUpdate = {
+const defaultFormSettings: Partial<Form> = {
     name: 'Untitled Form',
     description: null,
-    project_id: '',
-    logo_url: null,
-    thank_you_screen: {
+    projectId: '',
+    logoUrl: null,
+    thankYouScreen: {
         enabled: true,
         title: 'Thank you!',
         description: 'Your response has been recorded.',
     },
-    welcome_screen: {
+    welcomeScreen: {
         enabled: true,
         title: 'Welcome to our form',
         description: 'Thank you for taking the time to fill out this form.',
-        button_text: 'Start',
+        buttonText: 'Start',
     },
-    password_hash: null,
-    require_consent: false,
+    requireConsent: false,
     theme: null,
-    unique_subdomain: null,
-    custom_domain: null,
-    analytics_enabled: true,
-    type: 'reach-out',
-    close_at: null,
-    open_at: null,
-    allow_anonymous: true,
+    uniqueSubdomain: null,
+    customDomain: null,
+    analyticsEnabled: true,
+    type: FormType.REACH_OUT,
+    closeAt: null,
+    openAt: null,
+    allowAnonymous: true,
     config: [],
-    status: 'draft',
-    multiple_submissions: true,
-    max_responses: null,
-    password_protected: false,
+    status: FormStatus.DRAFT,
+    multipleSubmissions: true,
+    maxResponses: null,
+    passwordProtected: false,
 }
 
 
@@ -45,31 +47,30 @@ interface IFormBuilderStore {
     id?: string;
     name: string;
     description?: string;
-    project_id: string;
-    logo_url?: string;
-    unique_subdomain?: string;
-    custom_domain?: string;
-    password_hash?: string;
-    analytics_enabled: boolean;
-    allow_anonymous: boolean;
-    multiple_submissions: boolean;
-    password_protected: boolean;
-    require_consent: boolean;
-    close_at?: Date;
-    open_at?: Date;
-    type: eFormType;
-    status: eFormStatus;
+    projectId: string;
+    logoUrl?: string;
+    uniqueSubdomain?: string;
+    customDomain?: string;
+    analyticsEnabled: boolean;
+    allowAnonymous: boolean;
+    multipleSubmissions: boolean;
+    passwordProtected: boolean;
+    requireConsent: boolean;
+    closeAt?: Date;
+    openAt?: Date;
+    type: FormType;
+    status: FormStatus;
     theme?: unknown;
-    created_at?: Date;
-    updated_at?: Date;
-    created_by?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    createdBy?: string;
 
     // APP
-    max_responses: number;
+    maxResponses: number;
 
     // FORM
-    welcome_screen?: IWelcomeScreen;
-    thank_you_screen?: IThankYouScreen;
+    welcomeScreen?: IWelcomeScreen | null;
+    thankYouScreen?: IThankYouScreen | null;
     config: unknown;
 
     // STATE
@@ -77,7 +78,7 @@ interface IFormBuilderStore {
     selectedQuestion: IQuestion | null;
     questions: IQuestion[];
     viewMode: eViewMode,
-    dataSource: FormUpdate,
+    dataSource: Partial<Form>,
     connections: IWorkflowConnection[];
     isSaving: boolean;
     isLoading: boolean;
@@ -90,7 +91,7 @@ interface IFormBuilderStore {
     changeQuestionSequence: (oldIndex: number, newIndex: number) => void;
     moveQuestion: (id: string, position: { x: number; y: number }) => void;
     deleteQuestion: (questionId: string) => void;
-    updateForm: (form: FormUpdate) => void;
+    updateForm: (form: Partial<Form>) => void;
     addConnection: (connection: IWorkflowConnection) => void;
     removeConnection: (connectionId: string) => void;
     setViewScreenMode: (mode: eViewScreenMode) => void;
@@ -105,27 +106,26 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     id: '',
     name: '',
     description: '',
-    project_id: '',
-    logo_url: '',
-    unique_subdomain: '',
-    custom_domain: '',
-    password_hash: '',
-    analytics_enabled: false,
-    allow_anonymous: false,
-    multiple_submissions: false,
-    password_protected: false,
-    require_consent: false,
-    close_at: undefined,
-    open_at: undefined,
-    type: eFormType.reachOut,
-    status: eFormStatus.draft,
+    projectId: '',
+    logoUrl: '',
+    uniqueSubdomain: '',
+    customDomain: '',
+    analyticsEnabled: false,
+    allowAnonymous: false,
+    multipleSubmissions: false,
+    passwordProtected: false,
+    requireConsent: false,
+    closeAt: undefined,
+    openAt: undefined,
+    type: FormType.REACH_OUT,
+    status: FormStatus.DRAFT,
     theme: undefined,
-    created_at: undefined,
-    updated_at: undefined,
-    created_by: undefined,
-    max_responses: 0,
-    welcome_screen: undefined,
-    thank_you_screen: undefined,
+    createdAt: undefined,
+    updatedAt: undefined,
+    createdBy: undefined,
+    maxResponses: 0,
+    welcomeScreen: undefined,
+    thankYouScreen: undefined,
     config: {},
     isSaving: false,
     isLoading: false,
@@ -145,58 +145,57 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             id: form.id,
             name: form.name,
             description: form.description || undefined,
-            project_id: form.project_id,
-            logo_url: form.logo_url || undefined,
-            unique_subdomain: form.unique_subdomain || undefined,
-            custom_domain: form.custom_domain || undefined,
-            password_hash: form.password_hash || undefined,
-            analytics_enabled: form.analytics_enabled,
-            allow_anonymous: form.allow_anonymous,
-            multiple_submissions: form.multiple_submissions,
-            password_protected: form.password_protected,
-            require_consent: form.require_consent,
-            close_at: form.close_at ? new Date(form.close_at) : undefined,
-            open_at: form.open_at ? new Date(form.open_at) : undefined,
-            type: form.type as eFormType,
-            status: form.status as eFormStatus,
+            projectId: form.projectId,
+            logoUrl: form.logoUrl || undefined,
+            uniqueSubdomain: form.uniqueSubdomain || undefined,
+            customDomain: form.customDomain || undefined,
+            analyticsEnabled: !!form.analyticsEnabled,
+            allowAnonymous: !!form.allowAnonymous,
+            multipleSubmissions: !!form.multipleSubmissions,
+            passwordProtected: !!form.passwordProtected,
+            requireConsent: !!form.requireConsent,
+            closeAt: form.closeAt ? new Date(form.closeAt) : undefined,
+            openAt: form.openAt ? new Date(form.openAt) : undefined,
+            type: form.type as FormType,
+            status: form.status as FormStatus,
             theme: form.theme || undefined,
-            created_at: new Date(form.created_at),
-            updated_at: new Date(form.updated_at),
-            created_by: form.created_by,
-            max_responses: form.max_responses || 0,
-            welcome_screen: form.welcome_screen ? (form.welcome_screen as unknown as IWelcomeScreen) : undefined,
-            thank_you_screen: form.thank_you_screen ? (form.thank_you_screen as unknown as IThankYouScreen) : undefined,
-            config: form.config || {},
+            createdAt: form.createdAt!,
+            updatedAt: form.updatedAt!,
+            createdBy: form.createdBy,
+            maxResponses: form.maxResponses || 0,
+            welcomeScreen: form.welcomeScreen ? (form.welcomeScreen as any) : null,
+            thankYouScreen: form.thankYouScreen ? (form.thankYouScreen as any) : null,
+            config: form.config || [],
             dataSource: {
                 id: form.id,
                 name: form.name,
                 description: form.description,
-                project_id: form.project_id,
-                logo_url: form.logo_url,
-                thank_you_screen: form.thank_you_screen,
-                welcome_screen: form.welcome_screen,
-                password_hash: form.password_hash,
-                require_consent: form.require_consent,
+                projectId: form.projectId,
+                logoUrl: form.logoUrl,
+                thankYouScreen: form.thankYouScreen,
+                welcomeScreen: form.welcomeScreen,
+                requireConsent: form.requireConsent,
                 theme: form.theme,
-                unique_subdomain: form.unique_subdomain,
-                custom_domain: form.custom_domain,
-                analytics_enabled: form.analytics_enabled,
+                uniqueSubdomain: form.uniqueSubdomain,
+                customDomain: form.customDomain,
+                analyticsEnabled: form.analyticsEnabled,
                 type: form.type,
-                close_at: form.close_at,
-                open_at: form.open_at,
-                allow_anonymous: form.allow_anonymous,
+                closeAt: form.closeAt,
+                openAt: form.openAt,
+                allowAnonymous: form.allowAnonymous,
                 config: form.config || [],
                 status: form.status,
-                multiple_submissions: form.multiple_submissions,
-                max_responses: form.max_responses,
-                password_protected: form.password_protected,
+                multipleSubmissions: form.multipleSubmissions,
+                maxResponses: form.maxResponses,
+                passwordProtected: form.passwordProtected,
             },
         }
 
-        if (form?.config?.length) {
-            formData.questions = form.config
-            formData.selectedQuestionId = form.config[0].id;
-            formData.selectedQuestion = form.config[0];
+        if (Array.isArray(form.config) && form.config.length) {
+            const config = form.config as unknown as IQuestion[];
+            formData.questions = config;
+            formData.selectedQuestionId = config[0]?.id as any;
+            formData.selectedQuestion = config[0] ?? null;
         }
 
         set({ ...formData });
@@ -257,7 +256,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         updateFormDetails(get().id!, get().questions!, get().setIsSaving);
     },
 
-    updateForm: (form: FormUpdate) => {
+    updateForm: (form: Partial<Form>) => {
         const { dataSource } = get();
         set({ dataSource: { ...dataSource, ...form } });
     },
@@ -304,9 +303,9 @@ const updateFormDetails = async (id: string, config: IQuestion[], setSaving: (is
     setSaving(true);
     const dto = { id, config };
     try {
-        const response = await updateFormData(dto);
-        if (!response.success) {
-            console.error('Error updating form details:', response.message);
+        const response = await api.put<ActionResponse>(apiConstants.form.updateForm(id), dto);
+        if (!response.data.success) {
+            console.error('Error updating form details:', response.data.message);
             return false;
         }
         return true;
