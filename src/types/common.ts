@@ -5,7 +5,8 @@ export interface ActionResponse<T = unknown> {
   data?: T
   isError?: boolean
   isWarning?: boolean
-  message?: string
+  message?: string,
+  totalItems?: number
 }
 
 export interface ActionError {

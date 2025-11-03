@@ -7,19 +7,22 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { Project } from "@/generated/prisma";
+import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { formatDate, showError } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 import { ActionResponse } from "@/types/common";
-import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { Folder, LayoutGrid, List, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import CustomPagination from "../ui/customPagination";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
+import { Kbd, KbdGroup } from "../ui/kbd";
 import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import AddProject from "./addProject";
 import { ProjectCard } from "./projectCard";
-import { Kbd, KbdGroup } from "../ui/kbd";
 
 interface ProjectListProps {
     projects?: Project[];
@@ -130,21 +133,31 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
 
 function EmptyState({ searchQuery }: { searchQuery: string }) {
     return (
-        <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-                <Plus className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">No projects found</h3>
-            <p className="text-muted-foreground mb-6">
-                {searchQuery
-                    ? "No projects match your search criteria."
-                    : "Get started by creating your first project."
-                }
-            </p>
-            {!searchQuery && (
-                <AddProject />
-            )}
-        </div>
+        <Empty>
+            <EmptyHeader>
+                <EmptyMedia variant="icon">
+                    <Folder />
+                </EmptyMedia>
+                <EmptyTitle>No Projects Yet</EmptyTitle>
+                <EmptyDescription>
+                    {
+                        searchQuery?.length ? (
+                            <span>
+                                No projects match your search criteria.
+                            </span>
+                        ) :
+                            <span>
+                                Get started by creating your first project.
+                            </span>
+                    }
+                </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+                {!searchQuery && (
+                    <AddProject />
+                )}
+            </EmptyContent>
+        </Empty>
     );
 }
 
@@ -194,6 +207,8 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
             setLoading(false);
         }
     }, [teamId])
+
+    const { page, limit, totalPages, totalItems, onPaginationChange, setTotalItems } = usePagination(getProjects);
 
     const filteredProjects = useMemo(() => {
         const searchLower = searchQuery.toLowerCase().trim();
@@ -281,6 +296,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                 viewMode === "grid" ?
                     <ProjectGridView projects={filteredProjects} loading={loading} /> : <ProjectTableView projects={filteredProjects} teamId={teamId} loading={loading} />
             }
+            <CustomPagination limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
     );
 }

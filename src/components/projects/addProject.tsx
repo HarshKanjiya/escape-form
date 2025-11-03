@@ -1,6 +1,5 @@
 "use client";
 
-import { ProjectInsert } from "@/types/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -49,7 +48,7 @@ export default function AddProject({ onSuccess }: Props = {}) {
             return;
         }
         try {
-            const dto: ProjectInsert = { ...data, team_id: teamId };
+            const dto = { ...data, teamId };
             const res = await api.post<ActionResponse<Project>>(apiConstants.project.createProject(), dto);
             if (!res.data.success) {
                 toast.error(res.data.message || createErrorMessage("Project"));

@@ -5,9 +5,10 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
+
     const { error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
-    console.log('POSITION [ REQUEST HIT ]');
+
     const { limit, offset } = getPaginationParams(request);
     const teamId = request.nextUrl.searchParams.get('teamId') || '';
 
@@ -20,7 +21,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         skip: offset,
     })
 
-    return createActionSuccess(projects, getSuccessMessage('Projects'));
+    const count = await prisma.project.count({ where: { teamId: teamId } });
+
+    return createActionSuccess(projects, getSuccessMessage('Projects'), count);
 });
 
 export const POST = withErrorHandler(async (request: NextRequest) => {

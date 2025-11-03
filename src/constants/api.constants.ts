@@ -7,11 +7,11 @@ export const apiConstants = {
         deleteTeam: (id: string) => `team/${id}`
     },
     project: {
-        getProjects: (id: string) => `projects?teamId=${id}`,
-        getProjectById: (id: string) => `projects/${id}`,
-        createProject: () => 'projects',
-        updateProject: (id: string) => `projects/${id}`,
-        deleteProject: (id: string) => `projects/${id}`
+        getProjects: (id: string) => `project?teamId=${id}`,
+        getProjectById: (id: string) => `project/${id}`,
+        createProject: () => 'project',
+        updateProject: (id: string) => `project/${id}`,
+        deleteProject: (id: string) => `project/${id}`
     },
     form: {
         getForms: (projectId: string) => `forms?projectId=${projectId}`,

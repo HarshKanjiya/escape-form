@@ -232,12 +232,14 @@ export function validateRequiredFields(
  */
 export function createActionSuccess<T>(
     data: T,
-    message?: string
+    message?: string,
+    totalItems?: number
 ): NextResponse<ActionResponse<T>> {
     return NextResponse.json({
         success: true,
         data,
         message,
+        totalItems
     });
 }
 
