@@ -4,23 +4,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Project } from "@/types/db";
+import { apiConstants } from "@/constants/api.constants";
+import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { Project } from "@/generated/prisma";
+import api from "@/lib/axios";
+import { formatDate, showError } from "@/lib/utils";
+import { useStore } from "@/store/useStore";
+import { ActionResponse } from "@/types/common";
 import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SwitchButton } from "../ui/switchButton";
-import { ProjectCard } from "./projectCard";
-import AddProject from "./addProject";
-import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
-import { useStore } from "@/store/useStore";
-import api from "@/lib/axios";
-import { apiConstants } from "@/constants/api.constants";
-import { ActionResponse } from "@/types/common";
-import { getErrorMessage } from "@/constants/messages";
-
-export const dynamic = 'force-dynamic'
+import { SwitchButton } from "../ui/switchButton";
+import AddProject from "./addProject";
+import { ProjectCard } from "./projectCard";
+import { Kbd, KbdGroup } from "../ui/kbd";
 
 interface ProjectListProps {
     projects?: Project[];
@@ -41,7 +40,6 @@ const switchActions = [
     },
 ]
 
-// Move these components outside to prevent recreation on every render
 function ProjectGridView({ projects, loading }: { projects: Project[]; loading: boolean }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,14 +57,6 @@ function ProjectGridView({ projects, loading }: { projects: Project[]; loading: 
 
 function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; teamId: string; loading: boolean }) {
     const { setActiveProject } = useStore((state) => state);
-
-    const formatDate = useCallback((dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    }, []);
 
     return (
         <div className="border rounded-lg">
@@ -118,7 +108,7 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                                             {project.description || "No description"}
                                         </div>
                                     </TableCell>
-                                    <TableCell>{formatDate(project.created_at)}</TableCell>
+                                    <TableCell>{formatDate(project.createdAt)}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">Active</Badge>
                                     </TableCell>
@@ -131,7 +121,6 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                                     </TableCell>
                                 </TableRow>
                             ))
-
                     }
                 </TableBody>
             </Table>
@@ -193,20 +182,19 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         try {
             const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects(teamId));
             if (!res.data.success) {
-                toast.error(res.data.message || getErrorMessage("Projects"));
+                showError(res.data.message || getErrorMessage("Projects"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
                 return;
             }
             setProjects(res.data.data || []);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
-            toast.error(getErrorMessage("Projects"));
+            showError(getErrorMessage("Projects"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
         } finally {
             setLoading(false);
         }
     }, [teamId])
 
-    // Memoize filtered projects to prevent unnecessary recalculations
     const filteredProjects = useMemo(() => {
         const searchLower = searchQuery.toLowerCase().trim();
         if (!searchLower) return projects;
@@ -257,9 +245,12 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                             onChange={handleSearchChange}
                             className="pl-10 pr-20 py-5"
                         />
-                        <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                            <Badge variant="outline">Ctrl</Badge>
-                            <Badge variant="outline">K</Badge>
+                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                            <KbdGroup>
+                                <Kbd>Ctrl</Kbd>
+                                <span>+</span>
+                                <Kbd>K</Kbd>
+                            </KbdGroup>
                         </div>
                     </div>
                     {searchQuery && (

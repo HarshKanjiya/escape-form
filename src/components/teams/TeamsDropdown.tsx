@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
-import { Team } from "@/types/db";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { Button } from "../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import AddTeam from "./addTeam";
+import { Team } from "@/generated/prisma";
 
 
 export default function TeamsDropdown() {

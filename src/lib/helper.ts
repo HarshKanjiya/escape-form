@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
+import { toast } from 'sonner';
 import { createAuthErrorResponse } from './api-response';
 
 /**
@@ -7,11 +8,11 @@ import { createAuthErrorResponse } from './api-response';
  */
 export async function validateAuth() {
   const { userId } = await auth();
-  
+
   if (!userId) {
     return { user: null, error: createAuthErrorResponse() };
   }
-  
+
   return { user: { id: userId }, error: null };
 }
 
@@ -126,11 +127,11 @@ export function generateSlug(text: string): string {
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -139,7 +140,7 @@ export function formatFileSize(bytes: number): string {
  */
 // export function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
 //   const result = { ...target };
-  
+
 //   for (const key in source) {
 //     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
 //       result[key] = deepMerge(result[key] || {}, source[key]);
@@ -147,6 +148,6 @@ export function formatFileSize(bytes: number): string {
 //       result[key] = source[key] as T[typeof key];
 //     }
 //   }
-  
+
 //   return result;
 // }

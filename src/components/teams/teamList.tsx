@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useStore } from "@/store/useStore";
-import { Team } from "@/types/db";
 import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -18,8 +17,8 @@ import { TeamCard } from "./teamCard";
 import { apiConstants } from "@/constants/api.constants";
 import api from "@/lib/axios";
 import { ActionResponse } from "@/types/common";
-
-export const dynamic = 'force-dynamic'
+import { Team } from "@/generated/prisma";
+import { formatDate } from "@/lib/utils";
 
 type ViewMode = "grid" | "list";
 
@@ -53,13 +52,6 @@ function TeamGridView({ teams, loading }: { teams: Team[]; loading: boolean }) {
 }
 
 function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: string; loading: boolean }) {
-    const formatDate = useCallback((dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    }, []);
 
     return (
         <div className="border rounded-lg">
@@ -102,7 +94,7 @@ function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: stri
                                             </div> */}
                                         </div>
                                     </TableCell>
-                                    <TableCell>{formatDate(team.created_at)}</TableCell>
+                                    <TableCell>{formatDate(team.createdAt)}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">Active</Badge>
                                     </TableCell>
@@ -174,7 +166,9 @@ export function TeamList() {
     const getTeams = useCallback(async () => {
         setLoading(true);
         try {
+            debugger
             const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
+            debugger
             if (!res?.data?.success) {
                 toast.error("Failed to load teams");
                 return;
@@ -195,8 +189,8 @@ export function TeamList() {
         if (!searchLower) return teams;
 
         return teams.filter((team) =>
-            team.name.toLowerCase().includes(searchLower) ||
-            team.id.toLowerCase().includes(searchLower)
+            team?.name?.toLowerCase().includes(searchLower) ||
+            team?.id?.toLowerCase().includes(searchLower)
         );
     }, [teams, searchQuery]);
 

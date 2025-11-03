@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Team } from "@/types/db";
+import { Team } from "@/generated/prisma";
+import { formatDate } from "@/lib/utils";
 import { Building2, Calendar, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
@@ -12,14 +13,6 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ team }: TeamCardProps) {
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    };
 
     return (
         <Link href={`/${team.id}`} className="block">
@@ -39,7 +32,7 @@ export function TeamCard({ team }: TeamCardProps) {
                             </h3>
                             <div className="flex items-center text-xs text-muted-foreground">
                                 <Calendar className="w-3 h-3 mr-1" />
-                                <span>Created {formatDate(team.created_at)}</span>
+                                <span>Created {formatDate(team.createdAt)}</span>
                             </div>
                         </div>
 

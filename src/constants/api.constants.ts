@@ -1,7 +1,7 @@
 export const apiConstants = {
     team: {
         getTeams: () => 'team',
-        getTeamById: (id: string) => `team/${id}`,
+        getUserTeams: () => `team/byUserId`,
         createTeam: () => 'team',
         updateTeam: (id: string) => `team/${id}`,
         deleteTeam: (id: string) => `team/${id}`
