@@ -1,15 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { Team } from "@/generated/prisma";
 import { useStore } from "@/store/useStore";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import AddTeam from "./addTeam";
-import { Team } from "@/generated/prisma";
+import { Separator } from "../ui/separator";
 
 
 export default function TeamsDropdown() {
@@ -43,7 +41,7 @@ export default function TeamsDropdown() {
 
     return (
         <>
-            {activeTeam?.name}
+            {/* {activeTeam?.name}
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
@@ -89,7 +87,42 @@ export default function TeamsDropdown() {
                         </CommandList>
                     </Command>
                 </PopoverContent>
-            </Popover>
+            </Popover> */}
+
+            <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 bg-accent py-2.5 px-3 rounded-lg">
+                    <div className="text-start flex flex-col gap-1 leading-none">
+                        <span className="text-sm leading-none truncate max-w-[17ch]">
+                            {activeTeam?.name}
+                        </span>
+                    </div>
+                    <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-52" align="start">
+                    <DropdownMenuLabel>Teams</DropdownMenuLabel>
+                    {teams.map((team) => (
+                        <DropdownMenuItem
+                            key={team.id}
+                            onClick={() => switchTeam(team)}
+                        >
+                            <div className="flex items-center gap-2">
+                                <div className="flex flex-col">
+                                    <span>{team.name}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {/* {formatDate(team.createdAt)} */}
+                                    </span>
+                                </div>
+                            </div>
+                            {activeTeam?.id === team.id && (
+                                <Check className="ml-auto" />
+                            )}
+                        </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuItem className="p-1 w-full">
+                        <AddTeam buttonWidth="w-full" triggerVariant="outline"/>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </>
     )
 }
