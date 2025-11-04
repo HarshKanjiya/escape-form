@@ -190,15 +190,19 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    const getProjects = useCallback(async () => {
+    const { page, limit, totalPages, totalItems, onPaginationChange, setTotalItems } = usePagination();
+
+    const getProjects = async () => {
         setLoading(true);
         try {
-            const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects(teamId));
+            const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects({ teamId, page, limit }));
             if (!res.data.success) {
                 showError(res.data.message || getErrorMessage("Projects"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
                 return;
             }
             setProjects(res.data.data || []);
+            setTotalItems(100);
+            // setTotalItems(res.data.totalItems || 0);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
@@ -206,9 +210,11 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         } finally {
             setLoading(false);
         }
-    }, [teamId])
+    }
 
-    const { page, limit, totalPages, totalItems, onPaginationChange, setTotalItems } = usePagination(getProjects);
+    useEffect(() => {
+        getProjects();
+    }, [page, limit]);
 
     const filteredProjects = useMemo(() => {
         const searchLower = searchQuery.toLowerCase().trim();

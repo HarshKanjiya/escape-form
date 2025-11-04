@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const itemsPerPage = 10;
 
-export const usePagination = (getData: () => void) => {
+export const usePagination = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(itemsPerPage);
     const [totalItems, setTotalItems] = useState(0);
-
-    useEffect(() => {
-        getData();
-    }, [page, limit]);
-
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     const goToNextPage = () => {

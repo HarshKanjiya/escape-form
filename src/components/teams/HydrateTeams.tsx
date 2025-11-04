@@ -9,15 +9,14 @@ import { useStore } from '@/store/useStore';
 import { ActionResponse } from '@/types/common';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 interface Props {
     children: React.ReactNode;
 }
 
 export default function HydrateTeams({ children }: Props) {
-    const [loading, setLoading] = useState(true);
-    const { setTeams } = useStore((state) => state);
+    const { isLoading, setTeams, setLoading } = useStore((state) => state);
     const { userId, isLoaded } = useAuth();
     const router = useRouter();
 
@@ -46,7 +45,7 @@ export default function HydrateTeams({ children }: Props) {
         fetchTeams();
     }, [userId, isLoaded]);
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <div className="text-center">

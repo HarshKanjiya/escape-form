@@ -1,9 +1,9 @@
-import { Label } from "@radix-ui/react-label";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./pagination";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
-import { Button, buttonVariants } from "./button";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Label } from "@radix-ui/react-label";
+import { Button, buttonVariants } from "./button";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CustomPaginationProps {
     page: number;
@@ -14,10 +14,34 @@ interface CustomPaginationProps {
 
 const CustomPagination = ({ page, limit, totalItems, onChange }: CustomPaginationProps) => {
 
+    const totalPages = Math.ceil(totalItems / limit);
 
     // if (totalItems === 0 || limit <= Number(process.env.DEFAULT_PAGINATION_LIMIT || 10)) {
     //     return null
     // }
+
+    const changePage = (newPage: number) => {
+        onChange(newPage, limit);
+    }
+
+    const getVisiblePages = () => {
+        const maxVisible = 5;
+        const halfVisible = Math.floor(maxVisible / 2);
+
+        let startPage = Math.max(1, page - halfVisible);
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+        // Adjust if we're near the end
+        if (endPage - startPage + 1 < maxVisible) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        return Array.from(
+            { length: endPage - startPage + 1 },
+            (_, i) => startPage + i
+        );
+    };
+
 
     return (
         <div className="w-full flex items-center justify-between gap-2">
@@ -41,63 +65,45 @@ const CustomPagination = ({ page, limit, totalItems, onChange }: CustomPaginatio
 
             <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    {(page - 1) * limit + 1}-{page * limit} of {totalItems}
+                    showing {(page - 1) * limit + 1} to {page * limit} of {totalItems}
                 </span>
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious href="#" />
+                            <Button variant="ghost" size="icon" onClick={() => changePage(1)}>
+                                <ChevronFirst />
+                            </Button>
                         </PaginationItem>
                         <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink
-                                href="#"
-                                isActive
-                                className={cn(
-                                    "shadow-none! hover:text-secondary-foreground! border-none!",
-                                    buttonVariants({
-                                        variant: "secondary",
-                                        size: "icon",
-                                    })
-                                )}
+                            <Button variant="ghost" size="icon" onClick={() => changePage(page - 1)}
+                                disabled={page === 1}
                             >
-                                2
-                            </PaginationLink>
+                                <ChevronLeft />
+                            </Button>
+                        </PaginationItem>
+                        {getVisiblePages().map((pageNum) => (
+                            <PaginationItem key={pageNum} onClick={() => changePage(pageNum)}>
+                                <PaginationLink
+                                    isActive={pageNum === page}
+                                    className={pageNum === page ? cn("shadow-none hover:text-secondary-foreground border-none", buttonVariants({ variant: "outline", size: "icon", className: 'dark:!bg-muted' })) : ""}
+                                >
+                                    {pageNum}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <Button variant="ghost" size="icon" onClick={() => changePage(page + 1)}
+                                disabled={page === totalPages}>
+                                <ChevronRight />
+                            </Button>
                         </PaginationItem>
                         <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" />
+                            <Button variant="ghost" size="icon" onClick={() => changePage(totalPages)}>
+                                <ChevronLast />
+                            </Button>
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
-                {/* <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <Button
-                                aria-label="Go to previous page"
-                                size="icon"
-                                variant="ghost"
-                                disabled={page === 1}
-                            >
-                                <ChevronLeftIcon className="h-4 w-4" />
-                            </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <Button
-                                aria-label="Go to next page"
-                                size="icon"
-                                variant="ghost"
-                                disabled={page * limit >= totalItems}
-                            >
-                                <ChevronRightIcon className="h-4 w-4" />
-                            </Button>
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination> */}
             </div>
         </div>
     )

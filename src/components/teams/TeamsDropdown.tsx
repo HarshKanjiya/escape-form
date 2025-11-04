@@ -2,21 +2,19 @@
 
 import { Team } from "@/generated/prisma";
 import { useStore } from "@/store/useStore";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { useEffect } from "react";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Spinner } from "../ui/spinner";
 import AddTeam from "./addTeam";
-import { Separator } from "../ui/separator";
 
 
 export default function TeamsDropdown() {
 
-    const [open, setOpen] = useState(false);
-    const { teams, activeTeam, setActiveTeam } = useStore((state) => state);
+    const { teams, activeTeam, isLoading, setActiveTeam } = useStore((state) => state);
     const pathname = usePathname();
-
-    const isLoading = false;
 
     useEffect(() => {
         if (teams.length === 0) return;
@@ -91,12 +89,16 @@ export default function TeamsDropdown() {
 
             <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 bg-accent py-2.5 px-3 rounded-lg">
-                    <div className="text-start flex flex-col gap-1 leading-none">
-                        <span className="text-sm leading-none truncate max-w-[17ch]">
+                    <div className="text-start flex items-center gap-2 leading-none w-[120px]">
+                        <span className="text-sm leading-none truncate w-full">
                             {activeTeam?.name}
                         </span>
                     </div>
-                    <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
+                    {
+                        isLoading ?
+                            <Spinner className="ml-6 h-4 w-4 text-muted-foreground" /> :
+                            <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
+                    }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-52" align="start">
                     <DropdownMenuLabel>Teams</DropdownMenuLabel>
@@ -118,11 +120,17 @@ export default function TeamsDropdown() {
                             )}
                         </DropdownMenuItem>
                     ))}
-                    <DropdownMenuItem className="p-1 w-full">
-                        <AddTeam buttonWidth="w-full" triggerVariant="outline"/>
-                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="dark:bg-zinc-600" />
+                    <AddTeam>
+                        <Button variant="ghost" className="w-full justify-start">
+                            <Plus className="mr-2" />
+                            <span>Create New Team</span>
+                        </Button>
+                    </AddTeam>
+                    {/* <DropdownMenuItem className="p-1 w-full">
+                    </DropdownMenuItem> */}
                 </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu >
         </>
     )
 }

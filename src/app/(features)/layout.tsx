@@ -1,7 +1,5 @@
 import Header from "@/core/components/Header";
 
-export const dynamic = 'force-dynamic'
-
 export default async function Layout({ children }: { children: React.ReactNode; }) {
     return (
         <div className="flex h-screen w-full flex-col bg-accent-bg">

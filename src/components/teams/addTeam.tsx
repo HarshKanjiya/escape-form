@@ -19,13 +19,14 @@ interface Props {
     buttonWidth?: 'w-full' | 'w-auto';
     triggerVariant?: 'default' | 'outline';
     onSuccess?: () => void;
+    children?: React.ReactNode;
 }
 
 const formSchema = z.object({
     name: z.string().min(3, 'Team name must be at least 3 characters').max(30, 'Team name must be less than 30 characters'),
 });
 
-export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Props = { buttonWidth: 'w-full', triggerVariant: 'outline' }) {
+export default function AddTeam({ buttonWidth, triggerVariant, onSuccess, children }: Props = { buttonWidth: 'w-full', triggerVariant: 'outline' }) {
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const teamForm = useForm<z.infer<typeof formSchema>>({
@@ -65,10 +66,16 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess }: Prop
         <div className={buttonWidth}>
             <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
                 <DialogTrigger asChild>
-                    <Button className={`${triggerVariant === 'outline' ? 'border' : ''}`} variant={triggerVariant}>
-                        <Plus className="mr-2" />
-                        Create New Team
-                    </Button>
+                    {
+                        children ? (
+                            children
+                        ) : (
+                            <Button className={`${triggerVariant === 'outline' ? 'border' : ''}`} variant={triggerVariant}>
+                                <Plus className="mr-2" />
+                                Create New Team
+                            </Button>
+                        )
+                    }
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

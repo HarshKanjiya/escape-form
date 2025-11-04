@@ -1,3 +1,5 @@
+import { objToQueryString } from "@/lib/utils";
+
 export const apiConstants = {
     team: {
         getTeams: () => 'team',
@@ -7,7 +9,7 @@ export const apiConstants = {
         deleteTeam: (id: string) => `team/${id}`
     },
     project: {
-        getProjects: (id: string) => `project?teamId=${id}`,
+        getProjects: (data: Record<string, any>) => getUrlWithParams(`project`, data),
         getProjectById: (id: string) => `project/${id}`,
         createProject: () => 'project',
         updateProject: (id: string) => `project/${id}`,
@@ -22,3 +24,8 @@ export const apiConstants = {
     }
 
 };
+
+const getUrlWithParams = (baseUrl: string, params: Record<string, any>): string => {
+    const paramStr = objToQueryString(params);
+    return `${baseUrl}?${paramStr}`;
+}

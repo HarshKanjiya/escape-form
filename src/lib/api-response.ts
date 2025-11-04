@@ -26,6 +26,10 @@ export enum ErrorType {
     INTERNAL_ERROR = 'INTERNAL_ERROR',
 }
 
+const headers = {
+    'content-type': 'application/json'
+}
+
 /**
  * Create a successful API response
  */
@@ -40,7 +44,7 @@ export function createSuccessResponse<T>(
         data,
     };
 
-    return NextResponse.json(response, { status });
+    return NextResponse.json(response, { status, headers });
 }
 
 /**
@@ -58,7 +62,7 @@ export function createErrorResponse(
         isError: true,
     };
 
-    return NextResponse.json(response, { status });
+    return NextResponse.json(response, { status, headers });
 }
 
 /**
@@ -255,7 +259,9 @@ export function createActionError(
         message,
         isError: !isWarning,
         isWarning,
-    });
+    },
+        { headers }
+    );
 }
 
 /**

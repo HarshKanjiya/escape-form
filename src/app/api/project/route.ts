@@ -8,12 +8,11 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
-
-    const { limit, offset } = getPaginationParams(request);
+    
     const teamId = request.nextUrl.searchParams.get('teamId') || '';
-
     if (!teamId) return createValidationErrorResponse({ teamId: ['teamId is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
-
+    
+    const { limit, offset } = getPaginationParams(request);
     const projects = await prisma.project.findMany({
         where: { teamId: teamId },
         orderBy: { createdAt: 'desc' },
@@ -54,3 +53,4 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
     return createSuccessResponse(newProject, createSuccessMessage('Project'), HttpStatus.CREATED);
 });
+
