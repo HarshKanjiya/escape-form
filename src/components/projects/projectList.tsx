@@ -6,42 +6,30 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Project } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { formatDate, showError } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 import { ActionResponse } from "@/types/common";
+import { debounce } from "lodash";
 import { Folder, LayoutGrid, List, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { ButtonGroup } from "../ui/button-group";
 import CustomPagination from "../ui/customPagination";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { Kbd, KbdGroup } from "../ui/kbd";
+import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
-import { SwitchButton } from "../ui/switchButton";
 import AddProject from "./addProject";
 import { ProjectCard } from "./projectCard";
 
 interface ProjectListProps {
     projects?: Project[];
 }
-
-type ViewMode = "grid" | "list";
-
-const switchActions = [
-    {
-        id: "grid",
-        icon: <LayoutGrid className="h-4 w-4" />,
-        onClick: () => console.log("Grid view selected"),
-    },
-    {
-        id: "list",
-        icon: <List className="h-4 w-4" />,
-        onClick: () => console.log("List view selected"),
-    },
-]
 
 function ProjectGridView({ projects, loading }: { projects: Project[]; loading: boolean }) {
     return (
@@ -164,7 +152,7 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
 export function ProjectList({ projects: initialProjects }: ProjectListProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [projects, setProjects] = useState<Project[]>(initialProjects || []);
-    const [viewMode, setViewMode] = useState<ViewMode>("grid");
+    const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
     const [loading, setLoading] = useState(false);
 
     const params = useParams();
@@ -190,19 +178,18 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    const { page, limit, totalPages, totalItems, onPaginationChange, setTotalItems } = usePagination();
+    const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
     const getProjects = async () => {
         setLoading(true);
         try {
-            const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects({ teamId, page, limit }));
+            const res = await api.get<ActionResponse<Project[]>>(apiConstants.project.getProjects({ teamId, page, limit, search: searchQuery }));
             if (!res.data.success) {
                 showError(res.data.message || getErrorMessage("Projects"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
                 return;
             }
             setProjects(res.data.data || []);
-            setTotalItems(100);
-            // setTotalItems(res.data.totalItems || 0);
+            setTotalItems(res.data.totalItems || 0);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
@@ -216,32 +203,15 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         getProjects();
     }, [page, limit]);
 
-    const filteredProjects = useMemo(() => {
-        const searchLower = searchQuery.toLowerCase().trim();
-        if (!searchLower) return projects;
+    const debounceFn = debounce(getProjects, 500);
 
-        return projects.filter((project) =>
-            project.name.toLowerCase().includes(searchLower) ||
-            (project.description?.toLowerCase().includes(searchLower) ?? false) ||
-            project.id.toLowerCase().includes(searchLower)
-        );
-    }, [projects, searchQuery]);
-
-    // Memoize callbacks to prevent unnecessary re-renders
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
+        debounceFn();
     }, []);
 
     const clearSearch = useCallback(() => {
         setSearchQuery("");
-    }, []);
-
-    switchActions[0].onClick = useCallback(() => {
-        setViewMode("grid");
-    }, []);
-
-    switchActions[1].onClick = useCallback(() => {
-        setViewMode("list");
     }, []);
 
     return (
@@ -286,22 +256,27 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                     )}
                 </div>
                 <div className="flex items-center gap-2">
-                    <SwitchButton options={switchActions} defaultSelected="grid" />
+                    <ButtonGroup aria-label="View Mode Selection">
+                        <Button variant={viewMode === LIST_VIEW_TYPE.GRID ? "secondary" : "outline"} size="icon" onClick={() => setViewMode(LIST_VIEW_TYPE.GRID)}>
+                            <LayoutGrid className="h-6 w-6" />
+                        </Button>
+                        <Button variant={viewMode === LIST_VIEW_TYPE.LIST ? "secondary" : "outline"} size="icon" onClick={() => setViewMode(LIST_VIEW_TYPE.LIST)}>
+                            <List className="h-6 w-6" />
+                        </Button>
+                    </ButtonGroup>
+
                 </div>
             </div>
 
             <div className="text-sm text-muted-foreground">
-                {searchQuery ? (
-                    <>Showing {filteredProjects.length} of {projects.length} projects</>
-                ) : (
-                    <>{projects.length} project{projects.length !== 1 ? 's' : ''} total</>
-                )}
+                {projects.length} project{projects.length !== 1 ? 's' : ''} total
             </div>
 
-            {(!filteredProjects?.length && !loading) ? <EmptyState searchQuery={searchQuery} /> :
+            {(!projects?.length && !loading) ? <EmptyState searchQuery={searchQuery} /> :
                 viewMode === "grid" ?
-                    <ProjectGridView projects={filteredProjects} loading={loading} /> : <ProjectTableView projects={filteredProjects} teamId={teamId} loading={loading} />
+                    <ProjectGridView projects={projects} loading={loading} /> : <ProjectTableView projects={projects} teamId={teamId} loading={loading} />
             }
+            <Separator />
             <CustomPagination limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
     );

@@ -21,3 +21,9 @@ export const TABLES = {
     PROJECTS: 'projects',
     FORMS: 'forms'
 } as const;
+
+
+export const LIST_VIEW_TYPE = {
+    GRID: 'grid',
+    LIST: 'list'
+} as const;

@@ -13,7 +13,7 @@ export function formatDate(date: Date | null, locale: string = 'en-US'): string 
     year: 'numeric',
     month: '2-digit',
     day: '2-digit'
-  }).format(date);
+  }).format(new Date(date));
 }
 
 export const showToast = (message: string, description?: string, type: 'success' | 'error' | "info" | "warning" = 'success') => {

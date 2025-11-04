@@ -8,13 +8,35 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
-    
+
     const teamId = request.nextUrl.searchParams.get('teamId') || '';
+    const search = request.nextUrl.searchParams.get('search') || '';
     if (!teamId) return createValidationErrorResponse({ teamId: ['teamId is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
-    
+
     const { limit, offset } = getPaginationParams(request);
+
+    let condition: Record<string, any> = { teamId: teamId };
+    if (search) {
+        condition = {
+            AND: {
+                teamId: teamId,
+                OR: {
+                    name: {
+                        contains: search,
+                        mode: 'insensitive'
+                    },
+                    description: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                }
+            }
+        }
+    }
+
+
     const projects = await prisma.project.findMany({
-        where: { teamId: teamId },
+        where: condition,
         orderBy: { createdAt: 'desc' },
         take: limit,
         skip: offset,
@@ -48,6 +70,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             name: name.trim(),
             description: description?.trim(),
             teamId,
+            createdAt: new Date(),
         }
     });
 
