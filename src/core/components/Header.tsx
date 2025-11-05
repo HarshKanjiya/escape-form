@@ -1,14 +1,14 @@
 "use client";
 
 import { FeedbackModel } from "@/components/shared/feedBack";
-import TeamsDropdown from "@/components/teams/TeamsDropdown";
+import TeamsDropdown from "@/components/teams/teamsDropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useStore } from "@/store/useStore";
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
-import { MessageSquare, User } from "lucide-react";
+import { User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";

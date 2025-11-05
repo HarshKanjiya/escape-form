@@ -9,16 +9,18 @@ interface CustomPaginationProps {
     page: number;
     limit: number;
     totalItems: number;
+    loading?: boolean;
     onChange: (page: number, limit: number) => void;
 }
 
-const CustomPagination = ({ page, limit, totalItems, onChange }: CustomPaginationProps) => {
+const CustomPagination = ({ page, limit, totalItems, loading, onChange }: CustomPaginationProps) => {
+
+    if (loading || totalItems === 0 || limit <= Number(process.env.DEFAULT_PAGINATION_LIMIT || 10)) {
+        return null
+    }
 
     const totalPages = Math.ceil(totalItems / limit);
 
-    // if (totalItems === 0 || limit <= Number(process.env.DEFAULT_PAGINATION_LIMIT || 10)) {
-    //     return null
-    // }
 
     const changePage = (newPage: number) => {
         onChange(newPage, limit);

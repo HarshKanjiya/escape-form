@@ -16,11 +16,11 @@ export const apiConstants = {
         deleteProject: (id: string) => `project/${id}`
     },
     form: {
-        getForms: (projectId: string) => `forms?projectId=${projectId}`,
-        getFormById: (id: string) => `forms/${id}`,
-        createForm: () => 'forms',
-        updateForm: (id: string) => `forms/${id}`,
-        deleteForm: (id: string) => `forms/${id}`
+        getForms: (projectId: string) => `form?projectId=${projectId}`,
+        getFormById: (id: string) => `form/${id}`,
+        createForm: () => 'form',
+        updateForm: (id: string) => `form/${id}`,
+        deleteForm: (id: string) => `form/${id}`
     }
 
 };

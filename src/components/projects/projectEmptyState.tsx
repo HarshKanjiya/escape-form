@@ -1,41 +1,35 @@
-import { ClipboardList, Folder, LayoutTemplate } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../ui/button";
+import { Folder } from "lucide-react";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
+import AddProject from "./addProject";
 
-
-function FormEmptyState({ searchQuery, projectId }: { searchQuery: string, projectId: string }) {
+function ProjectEmptyState({ searchQuery }: { searchQuery: string }) {
     return (
         <Empty>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
-                    <ClipboardList />
+                    <Folder />
                 </EmptyMedia>
-                <EmptyTitle>No Forms Yet</EmptyTitle>
+                <EmptyTitle>No Projects Yet</EmptyTitle>
                 <EmptyDescription>
                     {
                         searchQuery?.length ? (
                             <span>
-                                No forms match your search criteria.
+                                No projects match your search criteria.
                             </span>
                         ) :
                             <span>
-                                Get started by creating your first form.
+                                Get started by creating your first project.
                             </span>
                     }
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
                 {!searchQuery && (
-                    <Link href={`${projectId}/forms/new`}>
-                        <Button>
-                            Create Form
-                        </Button>
-                    </Link>
+                    <AddProject />
                 )}
             </EmptyContent>
         </Empty>
     );
 }
 
-export default FormEmptyState;
+export default ProjectEmptyState;

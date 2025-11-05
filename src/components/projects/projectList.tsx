@@ -2,146 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Project } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
-import { formatDate, showError } from "@/lib/utils";
-import { useStore } from "@/store/useStore";
+import { showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { Eye, Folder, Folders, LayoutGrid, List, Search, Settings, Trash2, X } from "lucide-react";
-import Link from "next/link";
+import { Folders, LayoutGrid, List, Search, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import CustomPagination from "../ui/customPagination";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
-import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import AddProject from "./addProject";
-import { ProjectCard } from "./projectCard";
+import ProjectEmptyState from "./projectEmptyState";
+import ProjectGridView from "./projectGridView";
+import ProjectTableView from "./projectTableView";
 
 interface ProjectListProps {
     projects?: Project[];
-}
-
-function ProjectGridView({ projects, loading }: { projects: Project[]; loading: boolean }) {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {
-                loading ?
-                    Array.from({ length: 6 }).map((_, index) => (
-                        <Skeleton key={index} className="h-32 w-full" />
-                    ))
-                    :
-                    projects.map((project) => <ProjectCard key={project.id} project={project} />)
-            }
-        </div>
-    );
-}
-
-function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; teamId: string; loading: boolean }) {
-    const { setActiveProject } = useStore((state) => state);
-
-    return (
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead className="w-[120px] text-center">Created</TableHead>
-                        <TableHead className="w-[100px] text-center">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {
-                        loading ?
-                            Array.from({ length: 5 }).map((_, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                            :
-                            projects.map((project) => (
-                                <TableRow key={project.id}>
-                                    <TableCell>
-                                        <div>
-                                            <div className="font-medium">{project.name}</div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="max-w-[300px] truncate">
-                                            {project.description || "No description"}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="tracking-widest">{formatDate(project.createdAt)}</TableCell>
-                                    <TableCell className="flex gap-3 p-2">
-                                        <Link href={`/${teamId}/${project.id}`}>
-                                            <Button size="icon" variant="outline" onClick={() => setActiveProject(project)}>
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                        </Link>
-                                        <Button size="icon" variant="outline">
-                                            <Settings className="h-4 w-4" />
-                                        </Button>
-                                        <Button size="icon" variant="destructive">
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                    }
-                </TableBody>
-            </Table>
-        </div >
-    );
-}
-
-function EmptyState({ searchQuery }: { searchQuery: string }) {
-    return (
-        <Empty>
-            <EmptyHeader>
-                <EmptyMedia variant="icon">
-                    <Folder />
-                </EmptyMedia>
-                <EmptyTitle>No Projects Yet</EmptyTitle>
-                <EmptyDescription>
-                    {
-                        searchQuery?.length ? (
-                            <span>
-                                No projects match your search criteria.
-                            </span>
-                        ) :
-                            <span>
-                                Get started by creating your first project.
-                            </span>
-                    }
-                </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-                {!searchQuery && (
-                    <AddProject />
-                )}
-            </EmptyContent>
-        </Empty>
-    );
 }
 
 export function ProjectList({ projects: initialProjects }: ProjectListProps) {
@@ -273,12 +156,12 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
                 {projects.length} project{projects.length !== 1 ? 's' : ''} total
             </div>
 
-            {(!projects?.length && !loading) ? <EmptyState searchQuery={searchQuery} /> :
+            {(!projects?.length && !loading) ? <ProjectEmptyState searchQuery={searchQuery} /> :
                 viewMode === LIST_VIEW_TYPE.GRID ?
                     <ProjectGridView projects={projects} loading={loading} /> : <ProjectTableView projects={projects} teamId={teamId} loading={loading} />
             }
-            <Separator />
-            <CustomPagination limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
+            {projects.length > 0 && <Separator />}
+            <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
     );
 }

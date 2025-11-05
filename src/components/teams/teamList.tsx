@@ -2,136 +2,28 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Team } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
-import { formatDate, showError } from "@/lib/utils";
+import { showError } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { Building2, Eye, LayoutGrid, List, Search, Settings, Trash2, X } from "lucide-react";
-import Link from "next/link";
+import { Building2, LayoutGrid, List, Search, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import CustomPagination from "../ui/customPagination";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
-import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import AddTeam from "./addTeam";
-import { TeamCard } from "./teamCard";
+import EmptyState from "./teamEmptyState";
+import TeamGridView from "./teamGridView";
+import TeamTableView from "./teamTableView";
 
-
-// Move these components outside to prevent recreation on every render
-function TeamGridView({ teams, loading }: { teams: Team[]; loading: boolean }) {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {
-                loading ?
-                    Array.from({ length: 5 }).map((_, index) => (
-                        <Skeleton key={index} className="h-32 w-full" />
-                    ))
-                    :
-                    teams.map((team) => <TeamCard key={team.id} team={team} />)
-            }
-        </div>
-    );
-}
-
-function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: string; loading: boolean }) {
-
-    return (
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="w-[120px] text-center">Created</TableHead>
-                        <TableHead className="w-[100px] text-center">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {
-                        loading ?
-                            Array.from({ length: 5 }).map((_, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                            :
-                            teams.map((team) => (
-                                <TableRow key={team.id}>
-                                    <TableCell>
-                                        <div>
-                                            <div className="font-medium">{team.name}</div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="tracking-widest">{formatDate(team.createdAt)}</TableCell>
-                                    <TableCell className="flex gap-3 p-2">
-                                        <Link href={`/${teamId}/${team.id}`}>
-                                            <Button size="icon" variant="outline">
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                        </Link>
-                                        <Button size="icon" variant="outline">
-                                            <Settings className="h-4 w-4" />
-                                        </Button>
-                                        <Button size="icon" variant="destructive">
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-
-                    }
-                </TableBody>
-            </Table>
-        </div >
-    );
-}
-
-function EmptyState({ searchQuery }: { searchQuery: string }) {
-    return (
-        <Empty>
-            <EmptyHeader>
-                <EmptyMedia variant="icon">
-                    <Building2 />
-                </EmptyMedia>
-                <EmptyTitle>No Teams Yet</EmptyTitle>
-                <EmptyDescription>
-                    {
-                        searchQuery?.length ? (
-                            <span>
-                                No teams match your search criteria.
-                            </span>
-                        ) :
-                            <span>
-                                Get started by creating your first team.
-                            </span>
-                    }
-                </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-                {!searchQuery && (
-                    <AddTeam />
-                )}
-            </EmptyContent>
-        </Empty>
-    );
-}
 
 export function TeamList() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -267,8 +159,8 @@ export function TeamList() {
                 viewMode === "grid" ?
                     <TeamGridView teams={teams} loading={loading} /> : <TeamTableView teams={teams} teamId={teamId} loading={loading} />
             }
-            <Separator />
-            <CustomPagination limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
+            {teams.length > 0 && <Separator />}
+            <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
     );
 }

@@ -8,31 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiConstants } from "@/constants/api.constants";
 import { eFormType } from "@/enums/form";
+import { Form as FormType } from "@/generated/prisma";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
-import { FormInsert } from "@/types/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-    BarChart3,
-    CheckCircle,
-    ChevronLeft,
-    ChevronRight,
-    Code,
-    ExternalLink,
-    FileText,
-    Link2,
-    Palette,
-    Users
-} from "lucide-react";
+import { BarChart3, Check, CheckCircle, CheckCircle2, ChevronLeft, ChevronRight, Code, ExternalLink, FileText, Link2, Palette, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from 'react';
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Form as FormType } from "@/generated/prisma";
 
 interface FormTemplate {
     id: string;
@@ -193,7 +181,7 @@ function Stepper({ currentStep, totalSteps }: StepperProps) {
                                     )}
                                 >
                                     {isCompleted ? (
-                                        <CheckCircle className="w-4 h-4" />
+                                        <Check className="w-4 h-4" />
                                     ) : (
                                         <span className="text-sm font-medium">{stepNumber}</span>
                                     )}
@@ -225,12 +213,9 @@ function DetailsStep({ form }: DetailsStepProps) {
             <Card>
                 <CardHeader>
                     <div className="text-center space-y-3">
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text">
-                            Let`&apos;s start with the basics
+                        <h2 className="text-2xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text">
+                            Basic Form Details
                         </h2>
-                        {/* <p className="text-muted-foreground text-lg max-w-md mx-auto">
-                            Give your form a name and description. Don`&apos;t worry, you can always change these later.
-                        </p> */}
                     </div>
                 </CardHeader>
                 <CardContent className='flex flex-col gap-4'>
@@ -239,10 +224,8 @@ function DetailsStep({ form }: DetailsStepProps) {
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-base font-medium flex items-center gap-2">
+                                <FormLabel className="text-base font-medium flex items-center gap-2 required">
                                     Form Name
-                                    <span className="text-red-500 text-sm">*</span>
-                                    <span className="text-xs text-muted-foreground font-normal">(Required)</span>
                                 </FormLabel>
                                 <FormControl>
                                     <Input
@@ -263,17 +246,16 @@ function DetailsStep({ form }: DetailsStepProps) {
                             <FormItem>
                                 <FormLabel className="text-base font-medium flex items-center gap-2">
                                     Description
-                                    <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                                 </FormLabel>
                                 <FormControl>
                                     <Textarea
                                         {...field}
                                         placeholder="Tell us what this form is for. This helps you organize your forms and provides context for respondents."
                                         rows={4}
-                                        className="text-base resize-none transition-all duration-200 focus:border-primary focus:ring-primary/20 hover:border-gray-400"
+                                        className="text-base resize-none transition-all duration-200 focus:border-primary focus:ring-primary/20 hover:border-gray-400 min-h-24"
                                     />
                                 </FormControl>
-                                <FormDescription>
+                                <FormDescription className="mt-2">
                                     A good description helps respondents understand the purpose of your form.
                                 </FormDescription>
                             </FormItem>
@@ -299,13 +281,12 @@ function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
                     Select how you want to share your form with respondents
                 </p>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-10 max-w-3xl mx-auto">
+            <div className="flex gap-10 items-center justify-center mx-auto">
                 <Card
                     className={cn(
-                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border-2 shadow-none",
+                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary/40 border-2 shadow-none max-w-[370px] h-[270px]",
                         selectedType === eFormType.reachOut
-                            ? "ring-2 ring-primary scale-105"
+                            ? "ring-2 ring-primary scale-100"
                             : "scale-100"
                     )}
                     onClick={() => onTypeSelect(eFormType.reachOut)}
@@ -348,11 +329,11 @@ function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
                         </ul>
                     </CardContent>
                 </Card>
-                <Card
+                {/* <Card
                     className={cn(
-                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary border-2 shadow-none",
+                        "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary/40 border-2 shadow-none max-w-[370px] h-[270px]",
                         selectedType === eFormType.embedded
-                            ? "ring-2 ring-primary scale-105"
+                            ? "ring-2 ring-primary scale-100"
                             : "scale-100"
                     )}
                     onClick={() => onTypeSelect(eFormType.embedded)}
@@ -394,7 +375,7 @@ function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
                             </li>
                         </ul>
                     </CardContent>
-                </Card>
+                </Card> */}
             </div>
         </div >
     );
@@ -693,7 +674,7 @@ export function FormCreationStepper() {
     const canProceed = () => {
         switch (currentStep) {
             case 1:
-                return form.watch("name")?.trim() !== "";
+                return form.watch("name")?.trim()?.length > 3;
             case 2:
                 return selectedType !== null;
             case 3:
@@ -706,8 +687,8 @@ export function FormCreationStepper() {
     const handleSubmit = async (data: FormValues) => {
         // Combine form data with additional selections
 
-        const finalData: FormInsert = {
-            project_id: projectId,
+        const finalData = {
+            projectId: projectId,
             name: data.name || "",
             description: data.description || "",
             type: selectedType || eFormType.reachOut,
@@ -735,10 +716,8 @@ export function FormCreationStepper() {
     };
 
     return (
-        // <div className="overfalow-hidden h-full">
         <Form {...form}>
             <div className=" p-2 h-full relative pt-8 ">
-                {/* SVG background behind all content */}
                 <div className='fixed inset-0 pointer-events-none z-0 border rounded-2xl custom-bg opacity-20 h-full custom-bg-animation'>
                     <svg
                         width="100%"
@@ -760,7 +739,7 @@ export function FormCreationStepper() {
                 <div className="relative z-10 w-full mx-auto">
                     {/* Header */}
                     <div className="text-center mb-2 max-w-3xl mx-auto">
-                        <h1 className="text-2xl font-bold mb-1">Create a Form in 3 Steps</h1>
+                        <h1 className="text-2xl font-medium mb-1">Create a Form in <span className="underline underline-offset-1 ">3 Steps</span></h1>
                         <p className="text-muted-foreground text-sm">
                             Build beautiful, responsive forms in minutes
                         </p>
@@ -821,7 +800,7 @@ export function FormCreationStepper() {
                                     >
                                         <Button
                                             variant={'outline'}
-                                            className="flex-1 px-7 py-8 text-left justify-start"
+                                            className="flex-1 px-7 py-8 text-left justify-start !bg-muted"
                                             onClick={handlePrevious}
                                         >
                                             <ChevronLeft className="w-4 h-4 mr-2" />
@@ -882,6 +861,5 @@ export function FormCreationStepper() {
                 </div>
             </div>
         </Form>
-        // </div>
     );
 }

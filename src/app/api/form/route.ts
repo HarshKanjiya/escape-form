@@ -3,7 +3,6 @@ import { Form, FormStatus, FormType } from "@/generated/prisma";
 import { createActionError, createActionSuccess, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { getPaginationParams, parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
-import { ActionResponse } from "@/types/common";
 import { NextRequest } from "next/server";
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -38,11 +37,17 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     );
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
 
-    const form = prisma.form.create({
+    const project = await prisma.project.findUnique({
+        where: { id: body.projectId! },
+    });
+    if (!project) return createActionError('Project not found');
+
+    const form = await prisma.form.create({
         data: {
             name: body.name!.trim(),
             description: body.description?.trim(),
             projectId: body.projectId!,
+            teamId: project.teamId,
             allowAnonymous: body.allowAnonymous || false,
             theme: body.theme || 'light',
             analyticsEnabled: body.analyticsEnabled || false,

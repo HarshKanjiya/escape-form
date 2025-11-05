@@ -60,6 +60,7 @@ export function createErrorResponse(
         success: false,
         message,
         isError: true,
+        data: errors,
     };
 
     return NextResponse.json(response, { status, headers });

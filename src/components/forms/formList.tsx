@@ -1,27 +1,27 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
+import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Form } from "@/generated/prisma";
+import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
+import { showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
-import { Folders, LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { debounce } from "lodash";
+import { ClipboardList, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
-import { SwitchButton } from "../ui/switchButton";
-import FormGridView from "./formGridView";
-import FormEmptyState from "./formEmptyState";
-import FormTableView from "./formTableView";
-import { LIST_VIEW_TYPE } from "@/enums/common";
-import { usePagination } from "@/hooks/usePagination";
-import { showError } from "@/lib/utils";
-import { getErrorMessage, MESSAGE } from "@/constants/messages";
-import { debounce } from "lodash";
+import { useCallback, useEffect, useState } from "react";
+import CustomPagination from "../ui/customPagination";
 import { Kbd, KbdGroup } from "../ui/kbd";
+import { Separator } from "../ui/separator";
+import { SwitchButton } from "../ui/switchButton";
+import FormEmptyState from "./formEmptyState";
+import FormGridView from "./formGridView";
+import FormTableView from "./formTableView";
 
 
 export function FormList() {
@@ -106,7 +106,7 @@ export function FormList() {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="flex gap-4 items-center">
                     <div className="p-3 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/10">
-                        <Folders className="w-8 h-8 text-primary" />
+                        <ClipboardList className="w-8 h-8 text-primary" />
                     </div>
                     <div>
                         <h1 className="text-2xl font-medium">Forms</h1>
@@ -164,6 +164,8 @@ export function FormList() {
                     viewMode === "grid" ?
                         <FormGridView forms={forms} loading={loading} /> : <FormTableView forms={forms} teamId={teamId} loading={loading} />
             }
+            {forms.length > 0 && <Separator />}
+            <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div >
     );
 }

@@ -18,8 +18,6 @@ import { Project } from "@/generated/prisma";
 import { apiConstants } from "@/constants/api.constants";
 import { createErrorMessage } from "@/constants/messages";
 
-export const dynamic = 'force-dynamic'
-
 const formSchema = z.object({
     name: z.string().min(3, 'Project name must be at least 3 characters').max(30, 'Project name must be less than 30 characters'),
     description: z.string().max(200, 'Project description must be less than 200 characters').optional(),
