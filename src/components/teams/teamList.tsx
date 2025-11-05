@@ -1,39 +1,31 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { apiConstants } from "@/constants/api.constants";
+import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { LIST_VIEW_TYPE } from "@/enums/common";
+import { Team } from "@/generated/prisma";
+import { usePagination } from "@/hooks/usePagination";
+import api from "@/lib/axios";
+import { formatDate, showError } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
-import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { ActionResponse } from "@/types/common";
+import { debounce } from "lodash";
+import { Building2, Eye, LayoutGrid, List, Search, Settings, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { useCallback, useEffect, useState } from "react";
+import CustomPagination from "../ui/customPagination";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
+import { Kbd, KbdGroup } from "../ui/kbd";
+import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
 import AddTeam from "./addTeam";
 import { TeamCard } from "./teamCard";
-import { apiConstants } from "@/constants/api.constants";
-import api from "@/lib/axios";
-import { ActionResponse } from "@/types/common";
-import { Team } from "@/generated/prisma";
-import { formatDate } from "@/lib/utils";
 
-type ViewMode = "grid" | "list";
-
-const switchActions = [
-    {
-        id: "grid",
-        icon: <LayoutGrid className="h-4 w-4" />,
-        onClick: () => console.log("Grid view selected"),
-    },
-    {
-        id: "list",
-        icon: <List className="h-4 w-4" />,
-        onClick: () => console.log("List view selected"),
-    },
-]
 
 // Move these components outside to prevent recreation on every render
 function TeamGridView({ teams, loading }: { teams: Team[]; loading: boolean }) {
@@ -59,9 +51,8 @@ function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: stri
                 <TableHeader>
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="w-[100px]">Actions</TableHead>
+                        <TableHead className="w-[120px] text-center">Created</TableHead>
+                        <TableHead className="w-[100px] text-center">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -69,9 +60,6 @@ function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: stri
                         loading ?
                             Array.from({ length: 5 }).map((_, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
                                     <TableCell>
                                         <Skeleton className="h-6" />
                                     </TableCell>
@@ -89,20 +77,20 @@ function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: stri
                                     <TableCell>
                                         <div>
                                             <div className="font-medium">{team.name}</div>
-                                            {/* <div className="text-sm text-muted-foreground">
-                                                ID: {team?.id.slice(0, 8)}...
-                                            </div> */}
                                         </div>
                                     </TableCell>
-                                    <TableCell>{formatDate(team.createdAt)}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="secondary">Active</Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button size="sm" variant="outline">
-                                            <Link href={`/${teamId}/${team.id}`}>
-                                                Open
-                                            </Link>
+                                    <TableCell className="tracking-widest">{formatDate(team.createdAt)}</TableCell>
+                                    <TableCell className="flex gap-3 p-2">
+                                        <Link href={`/${teamId}/${team.id}`}>
+                                            <Button size="icon" variant="outline">
+                                                <Eye className="h-4 w-4" />
+                                            </Button>
+                                        </Link>
+                                        <Button size="icon" variant="outline">
+                                            <Settings className="h-4 w-4" />
+                                        </Button>
+                                        <Button size="icon" variant="destructive">
+                                            <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -117,35 +105,47 @@ function TeamTableView({ teams, teamId, loading }: { teams: Team[]; teamId: stri
 
 function EmptyState({ searchQuery }: { searchQuery: string }) {
     return (
-        <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-                <Plus className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">No projects found</h3>
-            <p className="text-muted-foreground mb-6">
-                {searchQuery
-                    ? "No projects match your search criteria."
-                    : "Get started by creating your first project."
-                }
-            </p>
-            {!searchQuery && (
-                <AddTeam triggerVariant="default" />
-            )}
-        </div>
+        <Empty>
+            <EmptyHeader>
+                <EmptyMedia variant="icon">
+                    <Building2 />
+                </EmptyMedia>
+                <EmptyTitle>No Teams Yet</EmptyTitle>
+                <EmptyDescription>
+                    {
+                        searchQuery?.length ? (
+                            <span>
+                                No teams match your search criteria.
+                            </span>
+                        ) :
+                            <span>
+                                Get started by creating your first team.
+                            </span>
+                    }
+                </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+                {!searchQuery && (
+                    <AddTeam />
+                )}
+            </EmptyContent>
+        </Empty>
     );
 }
 
 export function TeamList() {
     const [searchQuery, setSearchQuery] = useState("");
     const { teams, setTeams } = useStore((state) => state);
-    const [viewMode, setViewMode] = useState<ViewMode>("grid");
+    const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
     const [loading, setLoading] = useState(false);
 
     const params = useParams();
     const teamId = params.teamId as string;
 
-    // Memoize keyboard shortcuts setup
+    const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
+
     useEffect(() => {
+        getTeams();
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.ctrlKey || e.metaKey) {
                 if (e.key === 'k') {
@@ -163,79 +163,86 @@ export function TeamList() {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    const getTeams = useCallback(async () => {
+    const getTeams = async () => {
         setLoading(true);
         try {
-            debugger
             const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
-            debugger
             if (!res?.data?.success) {
-                toast.error("Failed to load teams");
+                showError(res.data.message || getErrorMessage('teams'));
                 return;
             }
             setTeams(res.data.data || []);
+            setTotalItems(res.data.data?.length || 0);
         }
         catch (error) {
             console.error("Error fetching projects:", error);
-            toast.error("Failed to load projects");
+            showError(getErrorMessage('teams'), MESSAGE.PLEASE_TRY_AGAIN_LATER);
         } finally {
             setLoading(false);
         }
-    }, [setTeams])
+    }
 
-    // Memoize filtered projects to prevent unnecessary recalculations
-    const filteredTeams = useMemo(() => {
-        const searchLower = searchQuery.toLowerCase().trim();
-        if (!searchLower) return teams;
 
-        return teams.filter((team) =>
-            team?.name?.toLowerCase().includes(searchLower) ||
-            team?.id?.toLowerCase().includes(searchLower)
-        );
-    }, [teams, searchQuery]);
+    useEffect(() => {
+        getTeams();
+    }, [page, limit]);
 
-    // Memoize callbacks to prevent unnecessary re-renders
+    const debounceFn = debounce(getTeams, 500);
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
+        debounceFn();
     }, []);
 
     const clearSearch = useCallback(() => {
         setSearchQuery("");
     }, []);
 
-    switchActions[0].onClick = useCallback(() => {
-        setViewMode("grid");
-    }, []);
-
-    switchActions[1].onClick = useCallback(() => {
-        setViewMode("list");
-    }, []);
+    const switchActions = [
+        {
+            id: LIST_VIEW_TYPE.GRID,
+            icon: <LayoutGrid className="h-4 w-4" />,
+            onClick: () => setViewMode(LIST_VIEW_TYPE.GRID),
+        },
+        {
+            id: LIST_VIEW_TYPE.LIST,
+            icon: <List className="h-4 w-4" />,
+            onClick: () => setViewMode(LIST_VIEW_TYPE.LIST),
+        },
+    ]
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold">Teams</h1>
-                    <p className="text-muted-foreground">
-                        Manage and organize your teams
-                    </p>
+                <div className="flex gap-4 items-center">
+                    <div className="p-3 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/10">
+                        <Building2 className="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-medium">Teams</h1>
+                        <p className="text-muted-foreground">
+                            Manage and organize your teams
+                        </p>
+                    </div>
                 </div>
                 <AddTeam onSuccess={() => getTeams()} />
             </div>
 
             <div className="flex flex-row gap-4 items-center justify-between">
                 <div className="relative max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                     <div className="relative">
                         <Input
                             placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5"
+                            className="pl-10 pr-20 py-5 bg-background shadow-none border-accent"
                         />
-                        <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                            <Badge variant="outline">Ctrl</Badge>
-                            <Badge variant="outline">K</Badge>
+                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                            <KbdGroup>
+                                <Kbd>Ctrl</Kbd>
+                                <span>+</span>
+                                <Kbd>K</Kbd>
+                            </KbdGroup>
                         </div>
                     </div>
                     {searchQuery && (
@@ -249,24 +256,19 @@ export function TeamList() {
                         </Button>
                     )}
                 </div>
-
-                <div className="flex items-center gap-2">
-                    <SwitchButton options={switchActions} defaultSelected="grid" />
-                </div>
+                <SwitchButton options={switchActions} defaultSelected={viewMode} size="sm" />
             </div>
 
             <div className="text-sm text-muted-foreground">
-                {searchQuery ? (
-                    <>Showing {filteredTeams.length} of {teams.length} teams</>
-                ) : (
-                    <>{teams.length} team{teams.length !== 1 ? 's' : ''} total</>
-                )}
+                {teams.length} team{teams.length !== 1 ? 's' : ''} total
             </div>
 
-            {!filteredTeams?.length ? <EmptyState searchQuery={searchQuery} /> :
+            {!teams?.length ? <EmptyState searchQuery={searchQuery} /> :
                 viewMode === "grid" ?
-                    <TeamGridView teams={filteredTeams} loading={loading} /> : <TeamTableView teams={filteredTeams} teamId={teamId} loading={loading} />
+                    <TeamGridView teams={teams} loading={loading} /> : <TeamTableView teams={teams} teamId={teamId} loading={loading} />
             }
+            <Separator />
+            <CustomPagination limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
     );
 }

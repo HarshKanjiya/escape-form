@@ -3,164 +3,39 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { apiConstants } from "@/constants/api.constants";
+import { Form } from "@/generated/prisma";
+import api from "@/lib/axios";
+import { ActionResponse } from "@/types/common";
+import { Folders, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Skeleton } from "../ui/skeleton";
 import { SwitchButton } from "../ui/switchButton";
-import { FormCard } from "./formCard";
-import api from "@/lib/axios";
-import { ActionResponse } from "@/types/common";
-import { Form } from "@/generated/prisma";
-import { apiConstants } from "@/constants/api.constants";
-import { formatDate } from "@/lib/utils";
+import FormGridView from "./formGridView";
+import FormEmptyState from "./formEmptyState";
+import FormTableView from "./formTableView";
+import { LIST_VIEW_TYPE } from "@/enums/common";
+import { usePagination } from "@/hooks/usePagination";
+import { showError } from "@/lib/utils";
+import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { debounce } from "lodash";
+import { Kbd, KbdGroup } from "../ui/kbd";
 
-export const dynamic = 'force-dynamic'
-
-
-type ViewMode = "grid" | "list";
-
-const switchActions = [
-    {
-        id: "grid",
-        icon: <LayoutGrid className="h-4 w-4" />,
-        onClick: () => console.log("Grid view selected"),
-    },
-    {
-        id: "list",
-        icon: <List className="h-4 w-4" />,
-        onClick: () => console.log("List view selected"),
-    },
-]
-
-// Move these components outside to prevent recreation on every render
-function FormGridView({ forms, loading }: { forms: Partial<Form>[]; loading: boolean }) {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {
-                loading ?
-                    Array.from({ length: 5 }).map((_, index) => (
-                        <Skeleton key={index} className="h-32 w-full" />
-                    ))
-                    :
-                    forms.map((form) => <FormCard key={form.id} form={form} />)
-            }
-        </div>
-    );
-}
-
-function FormTableView({ forms, teamId, loading }: { forms: Partial<Form>[]; teamId: string; loading: boolean }) {
-    return (
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="w-[100px]">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {
-                        loading ?
-                            Array.from({ length: 5 }).map((_, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                            :
-                            forms.map((form) => (
-                                <TableRow key={form.id}>
-                                    <TableCell>
-                                        <div>
-                                            <div className="font-medium">{form.name}</div>
-                                            <div className="text-sm text-muted-foreground">
-                                                ID: {form.id!.slice(0, 8)}...
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="max-w-[300px] truncate">
-                                            {form.description || "No description"}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{formatDate(form.createdAt!)}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="secondary">Active</Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button size="sm" variant="outline">
-                                            <Link href={`/${teamId}/${form.id}`}>
-                                                Open
-                                            </Link>
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-
-                    }
-                </TableBody>
-            </Table>
-        </div >
-    );
-}
-
-function EmptyState({ searchQuery, projectId }: { searchQuery: string, projectId: string }) {
-    return (
-        <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24  rounded-full flex items-center justify-center mb-4">
-                <Plus className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">No forms found</h3>
-            <p className="text-muted-foreground mb-6">
-                {searchQuery
-                    ? "No forms match your search criteria."
-                    : "Get started by creating your first form."
-                }
-            </p>
-            {!searchQuery && (
-                <div>
-                    <Link href={`${projectId}/forms/new`}>
-                        <Button >
-                            Create Form
-                        </Button>
-                    </Link>
-                </div>
-            )}
-        </div>
-    );
-}
 
 export function FormList() {
     const [searchQuery, setSearchQuery] = useState("");
     const [forms, setForms] = useState<Partial<Form>[]>([]);
-    const [viewMode, setViewMode] = useState<ViewMode>("grid");
+    const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
     const [loading, setLoading] = useState(true);
 
     const params = useParams();
     const teamId = params.teamId as string;
     const projectId = params.projectId as string;
 
-    // Memoize keyboard shortcuts setup
+    const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
+
     useEffect(() => {
         getForms();
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -181,62 +56,65 @@ export function FormList() {
 
     }, []);
 
-    const getForms = useCallback(async () => {
+    const getForms = async () => {
         try {
             setLoading(true);
             const res = await api.get<ActionResponse<Partial<Form>[]>>(apiConstants.form.getForms(projectId));
             if (!res.data.success) {
-                toast.error("Failed to load forms");
+                showError(res.data.message || getErrorMessage("forms"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
                 return;
             }
             setForms(res.data.data || []);
         }
         catch (error) {
             console.error("Error fetching forms:", error);
-            toast.error("Failed to load forms");
+            showError(getErrorMessage("forms"), MESSAGE.PLEASE_TRY_AGAIN_LATER);
         } finally {
             setLoading(false);
         }
-    }, [projectId])
+    }
 
-    // Memoize filtered forms to prevent unnecessary recalculations
-    const filteredforms = useMemo(() => {
-        const searchLower = searchQuery.toLowerCase().trim();
-        if (!searchLower) return forms;
+    useEffect(() => {
+        getForms();
+    }, [page, limit]);
 
-        return forms.filter((form) =>
-            (form.name && form.name.toLowerCase().includes(searchLower)) ||
-            (form.description?.toLowerCase().includes(searchLower) ?? false)
-        );
-    }, [forms, searchQuery]);
-
-    // Memoize callbacks to prevent unnecessary re-renders
+    const debounceFn = debounce(getForms, 500);
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
+        debounceFn();
     }, []);
 
     const clearSearch = useCallback(() => {
         setSearchQuery("");
     }, []);
 
-    switchActions[0].onClick = useCallback(() => {
-        setViewMode("grid");
-    }, []);
-
-    switchActions[1].onClick = useCallback(() => {
-        setViewMode("list");
-    }, []);
+    const switchActions = [
+        {
+            id: LIST_VIEW_TYPE.GRID,
+            icon: <LayoutGrid className="h-4 w-4" />,
+            onClick: () => setViewMode(LIST_VIEW_TYPE.GRID),
+        },
+        {
+            id: LIST_VIEW_TYPE.LIST,
+            icon: <List className="h-4 w-4" />,
+            onClick: () => setViewMode(LIST_VIEW_TYPE.LIST),
+        },
+    ]
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold">forms</h1>
-                    <p className="text-muted-foreground">
-                        Manage and organize your team forms
-                    </p>
+                <div className="flex gap-4 items-center">
+                    <div className="p-3 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/10">
+                        <Folders className="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-medium">Forms</h1>
+                        <p className="text-muted-foreground">
+                            Manage and organize your team forms
+                        </p>
+                    </div>
                 </div>
-
                 <Link href={`${projectId}/forms/new`}>
                     <Button>
                         <Plus className="mr-2 h-4 w-4" />
@@ -247,17 +125,20 @@ export function FormList() {
 
             <div className="flex flex-row gap-4 items-center justify-between">
                 <div className="relative max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                     <div className="relative">
                         <Input
-                            placeholder="Search forms"
+                            placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5"
+                            className="pl-10 pr-20 py-5 bg-background shadow-none border-accent"
                         />
-                        <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                            <Badge variant="outline">Ctrl</Badge>
-                            <Badge variant="outline">K</Badge>
+                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                            <KbdGroup>
+                                <Kbd>Ctrl</Kbd>
+                                <span>+</span>
+                                <Kbd>K</Kbd>
+                            </KbdGroup>
                         </div>
                     </div>
                     {searchQuery && (
@@ -271,23 +152,17 @@ export function FormList() {
                         </Button>
                     )}
                 </div>
-                <div className="flex items-center gap-2">
-                    <SwitchButton options={switchActions} defaultSelected="grid" />
-                </div>
+                <SwitchButton options={switchActions} defaultSelected={viewMode} size="sm" />
             </div>
 
             <div className="text-sm text-muted-foreground">
-                {searchQuery ? (
-                    <>Showing {filteredforms.length} of {forms.length} forms</>
-                ) : (
-                    <>{forms.length} form{forms.length !== 1 ? 's' : ''} total</>
-                )}
+                {forms.length} form{forms.length !== 1 ? 's' : ''} total
             </div>
 
             {
-                (!filteredforms?.length && !loading) ? <EmptyState searchQuery={searchQuery} projectId={projectId} /> :
+                (!forms?.length && !loading) ? <FormEmptyState searchQuery={searchQuery} projectId={projectId} /> :
                     viewMode === "grid" ?
-                        <FormGridView forms={filteredforms} loading={loading} /> : <FormTableView forms={filteredforms} teamId={teamId} loading={loading} />
+                        <FormGridView forms={forms} loading={loading} /> : <FormTableView forms={forms} teamId={teamId} loading={loading} />
             }
         </div >
     );

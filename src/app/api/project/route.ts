@@ -40,6 +40,13 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         orderBy: { createdAt: 'desc' },
         take: limit,
         skip: offset,
+        include: {
+            _count: {
+                select: {
+                    forms: true,
+                }
+            }
+        }
     })
 
     const count = await prisma.project.count({ where: { teamId: teamId } });
@@ -71,6 +78,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             description: description?.trim(),
             teamId,
             createdAt: new Date(),
+            updatedAt: new Date(),
         }
     });
 

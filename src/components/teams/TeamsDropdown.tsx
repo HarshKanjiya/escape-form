@@ -2,11 +2,12 @@
 
 import { Team } from "@/generated/prisma";
 import { useStore } from "@/store/useStore";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, CopySlash, Plus, Search, X } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import AddTeam from "./addTeam";
 
@@ -14,6 +15,10 @@ import AddTeam from "./addTeam";
 export default function TeamsDropdown() {
 
     const { teams, activeTeam, isLoading, setActiveTeam } = useStore((state) => state);
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredTeams, setFilteredTeams] = useState<Team[]>(teams);
+
     const pathname = usePathname();
 
     useEffect(() => {
@@ -32,105 +37,97 @@ export default function TeamsDropdown() {
         }
     }, [teams, pathname, activeTeam, setActiveTeam]);
 
+    useEffect(() => {
+        if (searchTerm === "") {
+            setFilteredTeams(teams);
+        } else {
+            setFilteredTeams(
+                teams.filter((team) =>
+                    team?.name?.toLowerCase()?.includes(searchTerm.toLowerCase())
+                )
+            );
+        }
+    }, [searchTerm, teams]);
+
     const switchTeam = (team: Team) => {
         setActiveTeam(team);
         redirect(`/${team.id}`);
     };
 
     return (
-        <>
-            {/* {activeTeam?.name}
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="!px-1"
-                        disabled={isLoading}
-                    >
-                        <ChevronsUpDownIcon className="w-2 px-0" />
+        <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 bg-accent py-2.5 px-3 rounded-lg">
+                <div className="text-start flex items-center gap-2 leading-none w-[120px]">
+                    <span className="text-sm leading-none truncate w-full">
+                        {activeTeam?.name}
+                    </span>
+                </div>
+                {
+                    isLoading ?
+                        <Spinner className="ml-6 h-4 w-4 text-muted-foreground" /> :
+                        <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
+                }
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-52" align="start">
+                <div className="relative -m-1 bg-accent">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Input
+                        type="text"
+                        autoFocus
+                        placeholder="Search teams..."
+                        className="pl-10 pr-10 shadow-none !border-none !outline-none focus-within:!ring-0"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Button variant="ghost" size="icon" onClick={() => setSearchTerm("")} className="absolute right-1 rounded-full top-1/2 -translate-y-1/2 h-7 w-7" >
+                        <X className="h-4 w-4" />
                     </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                        <CommandInput placeholder="Search teams..." />
-                        <CommandList>
-                            <CommandEmpty>No teams found.</CommandEmpty>
-                            {teams.length > 0 && (
-                                <CommandGroup>
-                                    {teams.map((team) => (
-                                        <CommandItem
-                                            key={team.id}
-                                            value={team.id}
-                                            onSelect={() => {
-                                                switchTeam(team)
-                                                setOpen(false)
-                                            }}
-                                        >
-                                            <CheckIcon
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    activeTeam?.id === team.id ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                            {team.name}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            )}
-                            <CommandItem className="w-full">
-                                <AddTeam buttonWidth="w-full" triggerVariant="outline" />
-                            </CommandItem>
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover> */}
-
-            <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 bg-accent py-2.5 px-3 rounded-lg">
-                    <div className="text-start flex items-center gap-2 leading-none w-[120px]">
-                        <span className="text-sm leading-none truncate w-full">
-                            {activeTeam?.name}
-                        </span>
-                    </div>
-                    {
-                        isLoading ?
-                            <Spinner className="ml-6 h-4 w-4 text-muted-foreground" /> :
-                            <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
-                    }
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-52" align="start">
-                    <DropdownMenuLabel>Teams</DropdownMenuLabel>
-                    {teams.map((team) => (
-                        <DropdownMenuItem
-                            key={team.id}
-                            onClick={() => switchTeam(team)}
-                        >
-                            <div className="flex items-center gap-2">
-                                <div className="flex flex-col">
-                                    <span>{team.name}</span>
-                                    <span className="text-xs text-muted-foreground">
-                                        {/* {formatDate(team.createdAt)} */}
-                                    </span>
-                                </div>
+                </div>
+                <DropdownMenuSeparator className="dark:bg-zinc-700" />
+                {filteredTeams.map((team) => (
+                    <DropdownMenuItem
+                        key={team.id}
+                        onClick={() => switchTeam(team)}
+                    >
+                        <div className="flex items-center gap-2">
+                            <div className="flex flex-col">
+                                <span>{team.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                    {/* {formatDate(team.createdAt)} */}
+                                </span>
                             </div>
-                            {activeTeam?.id === team.id && (
-                                <Check className="ml-auto" />
-                            )}
-                        </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator className="dark:bg-zinc-600" />
+                        </div>
+                        {activeTeam?.id === team.id && (
+                            <Check className="ml-auto" />
+                        )}
+                    </DropdownMenuItem>
+                ))}
+                {
+                    filteredTeams.length === 0 && !isLoading && (
+                        <DropdownMenuLabel className="text-center flex flex-col gap-3 items-center justify-center py-6">
+                            <CopySlash className="h-6 w-6 text-muted-foreground" />
+                            {
+                                searchTerm ?
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-muted-foreground">No teams found with</span>
+                                        <span className="font-medium text-lg text-accent-foreground break-all"> "{searchTerm}"</span>
+                                    </div>
+                                    :
+                                    "You are not part of any teams yet"
+                            }
+                        </DropdownMenuLabel>
+                    )
+                }
+                <DropdownMenuSeparator className="dark:bg-zinc-700" />
+                <div className="-m-1 bg-muted">
                     <AddTeam>
                         <Button variant="ghost" className="w-full justify-start">
                             <Plus className="mr-2" />
                             <span>Create New Team</span>
                         </Button>
                     </AddTeam>
-                    {/* <DropdownMenuItem className="p-1 w-full">
-                    </DropdownMenuItem> */}
-                </DropdownMenuContent>
-            </DropdownMenu >
-        </>
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

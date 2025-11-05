@@ -70,7 +70,8 @@ const CustomPagination = ({ page, limit, totalItems, onChange }: CustomPaginatio
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
-                            <Button variant="ghost" size="icon" onClick={() => changePage(1)}>
+                            <Button variant="ghost" size="icon" onClick={() => changePage(1)}
+                                disabled={page === 1}>
                                 <ChevronFirst />
                             </Button>
                         </PaginationItem>
@@ -98,7 +99,8 @@ const CustomPagination = ({ page, limit, totalItems, onChange }: CustomPaginatio
                             </Button>
                         </PaginationItem>
                         <PaginationItem>
-                            <Button variant="ghost" size="icon" onClick={() => changePage(totalPages)}>
+                            <Button variant="ghost" size="icon" onClick={() => changePage(totalPages)}
+                                disabled={page === totalPages}>
                                 <ChevronLast />
                             </Button>
                         </PaginationItem>

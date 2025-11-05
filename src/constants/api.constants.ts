@@ -2,7 +2,7 @@ import { objToQueryString } from "@/lib/utils";
 
 export const apiConstants = {
     team: {
-        getTeams: () => 'team',
+        getTeams: (data: Record<string, any> = {}) => getUrlWithParams(`team`, data),
         getUserTeams: () => `team/byUserId`,
         createTeam: () => 'team',
         updateTeam: (id: string) => `team/${id}`,

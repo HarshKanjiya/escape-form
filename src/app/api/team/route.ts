@@ -12,6 +12,11 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const teams = await prisma.team.findMany({
         where: { ownerId: user.id },
         orderBy: { createdAt: 'desc' },
+        include: {
+            _count: {
+                select: { projects: true },
+            },
+        },
     })
 
     return createActionSuccess(teams, getSuccessMessage('Teams'));
