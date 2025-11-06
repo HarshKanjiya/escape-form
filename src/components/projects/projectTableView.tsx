@@ -2,13 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Project } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
-import { useStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useStore";
 import { Eye, Settings, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 
 function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; teamId: string; loading: boolean }) {
-    const { setActiveProject } = useStore((state) => state);
+    const { setActiveProject } = useGlobalStore((state) => state);
 
     return (
         <div className="border rounded-lg">

@@ -1,9 +1,13 @@
 import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/core/theme/theme.provider";
+import { Team } from '@/generated/prisma';
+import { prisma } from "@/lib/prisma";
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,6 +29,23 @@ export const metadata: Metadata = {
 
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+
+  // Fetch teams for logged-in users
+  let teams: Team[] = [];
+  const { userId } = await auth();
+
+  if (userId) {
+    try {
+      teams = await prisma.team.findMany({
+        where: { ownerId: userId },
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+      teams = [];
+    }
+  }
+
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: '#6336f7' } }}>
       <html lang="en" suppressHydrationWarning>
@@ -39,7 +60,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             disableTransitionOnChange
           >
             <SignedIn>
-              <HydrateTeams>
+              <HydrateTeams teams={teams}>
                 {children}
               </HydrateTeams>
             </SignedIn>

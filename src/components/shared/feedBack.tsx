@@ -77,7 +77,7 @@ export function FeedbackModel({
                 {children ? (
                     children
                 ) : (
-                    <Button variant="outline" size="sm" className="h-8 w-8 sm:w-auto">
+                    <Button variant="outline" className="sm:w-auto">
                         <MessageSquare className="w-4 h-4 mx-2 sm:ml-0" />
                         <p className="hidden sm:block">Feedback</p>
                     </Button>

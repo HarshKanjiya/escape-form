@@ -1,12 +1,9 @@
 'use client'
 
-import { apiConstants } from '@/constants/api.constants'
 import { Project, Team } from '@/generated/prisma'
-import api from '@/lib/axios'
-import { ActionResponse } from '@/types/common'
 import { create } from 'zustand'
 
-interface TeamStore {
+interface GlobalStore {
   teams: Team[]
   projects: Project[]
   activeTeam: Team | null
@@ -21,7 +18,7 @@ interface TeamStore {
   setLoading: (loading: boolean) => void
 }
 
-export const useStore = create<TeamStore>((set) => ({
+export const useGlobalStore = create<GlobalStore>((set) => ({
   teams: [],
   projects: [],
   activeTeam: null,

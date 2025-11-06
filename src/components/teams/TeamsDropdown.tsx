@@ -1,7 +1,7 @@
 "use client";
 
 import { Team } from "@/generated/prisma";
-import { useStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useStore";
 import { Check, ChevronsUpDown, CopySlash, Plus, Search, X } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import AddTeam from "./addTeam";
 
 export default function TeamsDropdown() {
 
-    const { teams, activeTeam, isLoading, setActiveTeam } = useStore((state) => state);
+    const { teams, activeTeam, isLoading, setActiveTeam } = useGlobalStore((state) => state);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredTeams, setFilteredTeams] = useState<Team[]>(teams);

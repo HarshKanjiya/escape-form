@@ -1,49 +1,90 @@
 'use client';
 
-import { apiConstants } from '@/constants/api.constants';
-import { getErrorMessage, MESSAGE } from '@/constants/messages';
+import { REGEX } from '@/constants/common';
 import { Team } from '@/generated/prisma';
-import api from '@/lib/axios';
-import { showError } from '@/lib/utils';
-import { useStore } from '@/store/useStore';
-import { ActionResponse } from '@/types/common';
-import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
+import { useGlobalStore } from '@/store/useStore';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface Props {
     children: React.ReactNode;
+    teams?: Team[];
 }
 
-export default function HydrateTeams({ children }: Props) {
-    const { isLoading, setTeams, setLoading } = useStore((state) => state);
-    const { userId, isLoaded } = useAuth();
+export default function HydrateTeams({ children, teams }: Props) {
+    const { isLoading, setTeams, setLoading, setActiveTeam } = useGlobalStore((state) => state);
+    // const { userId, isLoaded } = useAuth();
     const router = useRouter();
+    const path = usePathname();
 
     useEffect(() => {
-        async function fetchTeams() {
-            if (!isLoaded || !userId) {
-                setLoading(false);
-                return;
-            }
 
-            try {
-                const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
-                if (!res?.data?.success || !res.data.data?.length) {
-                    setTeams([]);
-                    router.push('/teams/create');
-                    return;
-                }
-                setTeams(res.data.data ?? []);
-            } catch (error) {
-                showError(getErrorMessage('teams'), MESSAGE.PLEASE_TRY_AGAIN_LATER);
-            } finally {
-                setLoading(false);
+        if (!teams?.length) {
+            setTeams([]);
+            router.push('/teams/create');
+            return;
+        }
+        const pathSegments = path.split('/').filter(Boolean);
+        if (!pathSegments.length) {
+            router.push(teams[0].id);
+            setActiveTeam(teams[0]);
+        } else if (pathSegments.length === 1) {
+            if (REGEX.uuid.test(pathSegments[1])) {
+                const teamExists = teams.some(team => team.id === pathSegments[1]);
+                if (!teamExists) {
+                    router.push(teams[0].id);
+                    setActiveTeam(teams[0]);
+                } else setActiveTeam(teams.find(team => team.id === pathSegments[1])!);
+            } else if (pathSegments[0].split('-').length > 3) {
+                router.push(teams[0].id);
+                setActiveTeam(teams[0]);
             }
         }
+        setTeams(teams ?? []);
 
-        fetchTeams();
-    }, [userId, isLoaded]);
+
+        // async function fetchTeams() {
+        //     if (!isLoaded || !userId) {
+        //         setLoading(false);
+        //         return;
+        //     }
+
+        //     try {
+        //         const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
+        //         if (!res?.data?.success || !res.data.data?.length) {
+        //             setTeams([]);
+        //             router.push('/teams/create');
+        //             return;
+        //         }
+        //         const pathSegments = path.split('/').filter(Boolean);
+        //         if (!pathSegments.length) {
+        //             router.push(`/teams/${res.data.data[0].id}`);
+        //             setActiveTeam(res.data.data[0]);
+        //         } else if (pathSegments[0] === 'teams' && pathSegments.length === 2) {
+        //             if (REGEX.uuid.test(pathSegments[1])) {
+        //                 const teamExists = res.data.data.some(team => team.id === pathSegments[1]);
+        //                 if (!teamExists) {
+        //                     router.push(`/teams/${res.data.data[0].id}`);
+        //                     setActiveTeam(res.data.data[0]);
+        //                 }
+        //             } else if (pathSegments[1].split('-').length > 3) {
+        //                 router.push(`/teams/${res.data.data[0].id}`);
+        //                 setActiveTeam(res.data.data[0]);
+        //             }
+        //         }
+
+        //        
+        //         setTeams(res.data.data ?? []);
+        //     } catch (error) {
+        //         showError(getErrorMessage('teams'), MESSAGE.PLEASE_TRY_AGAIN_LATER);
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // }
+
+        // fetchTeams();
+        // }, [userId, isLoaded]);
+    }, []);
 
     if (isLoading) {
         return (

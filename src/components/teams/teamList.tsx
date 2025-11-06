@@ -9,7 +9,7 @@ import { Team } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { showError } from "@/lib/utils";
-import { useStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useStore";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
 import { Building2, LayoutGrid, List, Search, X } from "lucide-react";
@@ -27,7 +27,7 @@ import TeamTableView from "./teamTableView";
 
 export function TeamList() {
     const [searchQuery, setSearchQuery] = useState("");
-    const { teams, setTeams } = useStore((state) => state);
+    const { teams, setTeams } = useGlobalStore((state) => state);
     const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
     const [loading, setLoading] = useState(false);
 

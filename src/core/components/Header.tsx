@@ -1,24 +1,26 @@
 "use client";
 
+import { CreditsIcon } from "@/components/shared/creditIcon";
 import { FeedbackModel } from "@/components/shared/feedBack";
 import TeamsDropdown from "@/components/teams/teamsDropdown";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useStore } from "@/store/useStore";
+import { Separator } from "@/components/ui/separator";
+import { useGlobalStore } from "@/store/useStore";
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
-import { User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Header({ }) {
     const { user } = useUser();
-    const { teams, activeProject } = useStore((state) => state);
+    const { teams, activeProject } = useGlobalStore((state) => state);
     const { openUserProfile } = useClerk();
-    const { setTheme, theme } = useTheme()
-
+    const { setTheme, theme } = useTheme();
     const themes = ['light', 'dark', 'system'];
 
 
@@ -43,9 +45,26 @@ export default function Header({ }) {
                     </span>
                 ) : null}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
                 <FeedbackModel />
-                {/* <NotificationInbox /> */}
+                <Separator orientation="vertical" className="!h-8" />
+
+                <div className="h-9 rounded-2xl border w-[130px] flex items-center justify-center p-1 gap-2">
+                    <CreditsIcon className="h-6 w-6" />
+                    <div className="flex-1 text-muted-foreground">
+                        133.54
+                    </div>
+                </div>
+
+                <div className="mr-3 relative">
+                    <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
+                        1
+                    </Badge>
+                    <Button variant='outline' size='icon' >
+                        <Bell className="w-4 h-4" />
+                    </Button>
+                </div>
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full">

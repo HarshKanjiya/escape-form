@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Project } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
-import { useStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useStore";
 import { DatabaseIcon, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -17,7 +17,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   const params = useParams();
   const teamId = params.teamId as string;
-  const { setActiveProject } = useStore((state) => state);
+  const { setActiveProject } = useGlobalStore((state) => state);
 
   return (
     <Link href={`/${teamId}/${project.id}`} className="block" onClick={() => setActiveProject(project)}>
