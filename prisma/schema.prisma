@@ -14,15 +14,11 @@ enum FormStatus {
   PUBLISHED
   CLOSED
   ARCHIVED
-
-  @@map("form_status")
 }
 
 enum FormType {
   REACH_OUT
   EMBEDDED
-
-  @@map("form_type")
 }
 
 enum ResponseStatus {
@@ -30,25 +26,32 @@ enum ResponseStatus {
   COMPLETED
   ABANDONED
   PARTIAL
+}
 
-  @@map("response_status")
+enum TransactionType {
+  CREDIT
+  DEBIT
+  TRANSFER
+  RESPONSE
+  REFUND
+  AI_USAGE
 }
 
 // ...existing code...
 
 model User {
   id             String  @id @default(cuid()) @db.VarChar(30)
-  userName       String  @map("userName") @db.Text
+  userName       String  @db.Text
   email          String  @unique @db.Text
-  phoneNumber    String? @map("phoneNumber") @db.Text
-  googleId       String? @unique @map("googleId") @db.Text
-  profilePicture String? @map("profilePicture") @db.Text
-  firstName      String? @map("firstName") @db.Text
-  lastName       String? @map("last_name") @db.Text
-  emailVerified  Boolean @default(false) @map("email_verified")
+  phoneNumber    String? @db.Text
+  googleId       String? @unique @db.Text
+  profilePicture String? @db.Text
+  firstName      String? @db.Text
+  lastName       String? @db.Text
+  emailVerified  Boolean @default(false)
 
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@map("users")
 }
@@ -56,24 +59,91 @@ model User {
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
   name      String?   @db.VarChar
-  ownerId   String?   @map("owner_id") @db.VarChar
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp
+  ownerId   String?   @db.VarChar
+  valid     Boolean   @default(true) @db.Boolean
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime? @updatedAt @db.Timestamp
+  // createdBy String?   @db.VarChar
 
   // Relations
   projects Project[]
   forms    Form[]
+  wallet   Wallet?
 
   @@map("teams")
+}
+
+model Wallet {
+  id           String    @id @default(cuid()) @db.VarChar(30)
+  teamId       String    @unique @db.Uuid
+  balance      Float     @default(0) @db.DoublePrecision
+  currency     String    @default("INR") @db.VarChar(3)
+  currencyRate Float     @default(1) @db.DoublePrecision
+  createdAt    DateTime  @default(now()) @db.Timestamptz
+  updatedAt    DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  transactions Transaction[]
+  team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id          String          @id @default(cuid()) @db.VarChar(30)
+  walletId    String          @db.VarChar(30)
+  type        TransactionType
+  amount      Float           @db.DoublePrecision
+  description String?         @db.Text
+  createdAt   DateTime        @default(now()) @db.Timestamptz
+  createdBy   String?         @db.VarChar
+
+  // Relations
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@map("transactions")
+}
+
+model Plan {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String    @db.Text
+  description String?   @db.Text
+  price       Float     @db.DoublePrecision
+  currency    String    @default("INR") @db.VarChar(3)
+  valid       Boolean   @default(true) @db.Boolean
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  features Feature[]
+
+  @@map("plans")
+}
+
+model Feature {
+  id          String    @id @default(uuid()) @db.Uuid
+  planId      String    @db.Uuid
+  key         String    @db.Text
+  name        String?   @db.Text
+  description String?   @db.Text
+  valid       Boolean   @default(true) @db.Boolean
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("features")
 }
 
 model Project {
   id          String    @id @default(uuid()) @db.Uuid
   name        String    @db.Text
   description String?   @db.Text
-  teamId      String    @map("team_id") @db.Uuid
-  createdAt   DateTime? @map("created_at") @db.Timestamptz
-  updatedAt   DateTime? @map("updated_at") @db.Timestamptz
+  teamId      String    @db.Uuid
+  valid       Boolean   @default(true) @db.Boolean
+  createdAt   DateTime? @db.Timestamptz
+  updatedAt   DateTime? @db.Timestamptz
 
   // Relations
   team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -86,29 +156,30 @@ model Form {
   id                  String      @id @default(uuid()) @db.Uuid
   name                String      @db.Text
   description         String?     @db.Text
-  teamId              String      @map("team_id") @db.Uuid
-  projectId           String      @map("project_id") @db.Uuid
+  teamId              String      @db.Uuid
+  projectId           String      @db.Uuid
   theme               String?     @db.Text
-  logoUrl             String?     @map("logo_url") @db.Text
-  welcomeScreen       Json?       @map("welcome_screen") @db.JsonB
-  thankYouScreen      Json?       @map("thank_you_screen") @db.JsonB
-  multipleSubmissions Boolean?    @map("multiple_submissions")
-  maxResponses        Int?        @map("max_responses")
+  logoUrl             String?     @db.Text
+  welcomeScreen       Json?       @db.JsonB
+  thankYouScreen      Json?       @db.JsonB
+  multipleSubmissions Boolean?    @db.Boolean
+  maxResponses        Int?
   type                FormType?
-  openAt              DateTime?   @map("open_at") @db.Timestamptz
-  closeAt             DateTime?   @map("close_at") @db.Timestamptz
-  passwordProtected   Boolean?    @map("password_protected")
-  passwordHash        String?     @map("password_hash") @db.Text
+  openAt              DateTime?   @db.Timestamptz
+  closeAt             DateTime?   @db.Timestamptz
+  passwordProtected   Boolean?
+  passwordHash        String?     @db.Text
   status              FormStatus?
-  requireConsent      Boolean?    @map("require_consent")
-  analyticsEnabled    Boolean?    @map("analytics_enabled")
-  uniqueSubdomain     String?     @map("unique_subdomain") @db.Text
-  customDomain        String?     @map("custom_domain") @db.Text
-  config              Json[]      @map("config") @db.JsonB
-  allowAnonymous      Boolean?    @map("allow_anonymous")
-  createdBy           String      @map("created_by") @db.Text
-  createdAt           DateTime?   @map("created_at") @db.Timestamptz
-  updatedAt           DateTime?   @map("updated_at") @db.Timestamptz
+  requireConsent      Boolean?
+  analyticsEnabled    Boolean?
+  uniqueSubdomain     String?     @db.Text
+  customDomain        String?     @db.Text
+  config              Json[]      @db.JsonB
+  allowAnonymous      Boolean?
+  createdBy           String      @db.Text
+  createdAt           DateTime?   @db.Timestamptz
+  updatedAt           DateTime?   @db.Timestamptz
+  valid               Boolean     @default(true) @db.Boolean
 
   // Relations
   project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -120,20 +191,21 @@ model Form {
 
 model Response {
   id           String          @id @default(uuid()) @db.Uuid
-  formId       String          @map("form_id") @db.Uuid
-  userId       String?         @map("user_id") @db.Text
-  responseData Json            @map("response_data") @db.JsonB
+  formId       String          @db.Uuid
+  userId       String?         @db.Text
+  responseData Json            @db.JsonB
   status       ResponseStatus?
-  startedAt    DateTime?       @map("started_at") @db.Timestamptz
-  submittedAt  DateTime?       @map("submitted_at") @db.Timestamptz
-  updatedAt    DateTime?       @map("updated_at") @db.Timestamptz
-  partialSave  Boolean?        @map("partial_save")
+  startedAt    DateTime?       @db.Timestamptz
+  submittedAt  DateTime?       @db.Timestamptz
+  updatedAt    DateTime?       @db.Timestamptz
+  partialSave  Boolean?        @db.Boolean
   files        Json?           @db.JsonB
   notified     Boolean?
-  ipAddress    String?         @map("ip_address") @db.Text
-  userAgent    String?         @map("user_agent") @db.Text
-  referrerUrl  String?         @map("referrer_url") @db.Text
+  ipAddress    String?         @db.Text
+  userAgent    String?         @db.Text
+  referrerUrl  String?         @db.Text
   tags         String[]
+  valid        Boolean         @default(true) @db.Boolean
 
   // Relations
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
