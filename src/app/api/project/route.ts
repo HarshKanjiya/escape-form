@@ -13,7 +13,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const search = request.nextUrl.searchParams.get('search') || '';
     if (!teamId) return createValidationErrorResponse({ teamId: ['teamId is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
 
-    const { limit, offset } = getPaginationParams(request);
+    const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
 
     let condition: Record<string, any> = { teamId: teamId };
     if (search) {
@@ -37,7 +37,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const projects = await prisma.project.findMany({
         where: condition,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { [orderBy]: orderDirection },
         take: limit,
         skip: offset,
         include: {

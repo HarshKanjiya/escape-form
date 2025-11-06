@@ -34,6 +34,8 @@ export function getPaginationParams(request: NextRequest) {
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get('page') || '1', 10);
   const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+  const orderBy = url.searchParams.get('orderBy') || 'createdAt';
+  const orderDirection = url.searchParams.get('orderDirection') === 'asc' ? 'asc' : 'desc';
 
   // Ensure reasonable limits
   const validatedLimit = Math.min(Math.max(limit, 1), 100);
@@ -44,6 +46,8 @@ export function getPaginationParams(request: NextRequest) {
     page: validatedPage,
     limit: validatedLimit,
     offset: validatedOffset,
+    orderBy,
+    orderDirection,
   };
 }
 

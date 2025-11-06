@@ -8,6 +8,7 @@ export const MESSAGE = {
     UNKNOWN_ERROR: 'An unknown error occurred',
     AUTHENTICATION_REQUIRED: 'Authentication required',
     MISSING_FIELDS_MESSAGE: 'Please provide all required fields',
+    INVALID_DATA_MESSAGE: 'Provided data is invalid',
     TEAM_NOT_FOUND_OR_ACCESS_DENIED: 'Team not found or you do not have access to it',
     FORM_NOT_FOUND_OR_ACCESS_DENIED: 'Form not found or you do not have access to it',
     PLEASE_TRY_AGAIN_LATER: 'Please try again later',

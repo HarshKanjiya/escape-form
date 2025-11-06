@@ -37,103 +37,24 @@ enum TransactionType {
   AI_USAGE
 }
 
-// ...existing code...
-
-model User {
-  id             String  @id @default(cuid()) @db.VarChar(30)
-  userName       String  @db.Text
-  email          String  @unique @db.Text
-  phoneNumber    String? @db.Text
-  googleId       String? @unique @db.Text
-  profilePicture String? @db.Text
-  firstName      String? @db.Text
-  lastName       String? @db.Text
-  emailVerified  Boolean @default(false)
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  @@map("users")
-}
-
+// #region CORE MODELS
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
   name      String?   @db.VarChar
-  ownerId   String?   @db.VarChar
+  ownerId   String?   @db.Uuid
+  planId    String?   @db.Uuid
   valid     Boolean   @default(true) @db.Boolean
   createdAt DateTime  @default(now()) @db.Timestamptz
   updatedAt DateTime? @updatedAt @db.Timestamp
   // createdBy String?   @db.VarChar
 
   // Relations
+  plan     Plan?     @relation(fields: [planId], references: [id], onDelete: SetNull)
   projects Project[]
   forms    Form[]
   wallet   Wallet?
 
   @@map("teams")
-}
-
-model Wallet {
-  id           String    @id @default(cuid()) @db.VarChar(30)
-  teamId       String    @unique @db.Uuid
-  balance      Float     @default(0) @db.DoublePrecision
-  currency     String    @default("INR") @db.VarChar(3)
-  currencyRate Float     @default(1) @db.DoublePrecision
-  createdAt    DateTime  @default(now()) @db.Timestamptz
-  updatedAt    DateTime? @updatedAt @db.Timestamptz
-
-  // Relations
-  transactions Transaction[]
-  team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("wallets")
-}
-
-model Transaction {
-  id          String          @id @default(cuid()) @db.VarChar(30)
-  walletId    String          @db.VarChar(30)
-  type        TransactionType
-  amount      Float           @db.DoublePrecision
-  description String?         @db.Text
-  createdAt   DateTime        @default(now()) @db.Timestamptz
-  createdBy   String?         @db.VarChar
-
-  // Relations
-  wallet Wallet @relation(fields: [walletId], references: [id])
-
-  @@map("transactions")
-}
-
-model Plan {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String    @db.Text
-  description String?   @db.Text
-  price       Float     @db.DoublePrecision
-  currency    String    @default("INR") @db.VarChar(3)
-  valid       Boolean   @default(true) @db.Boolean
-  createdAt   DateTime  @default(now()) @db.Timestamptz
-  updatedAt   DateTime? @updatedAt @db.Timestamptz
-
-  // Relations
-  features Feature[]
-
-  @@map("plans")
-}
-
-model Feature {
-  id          String    @id @default(uuid()) @db.Uuid
-  planId      String    @db.Uuid
-  key         String    @db.Text
-  name        String?   @db.Text
-  description String?   @db.Text
-  valid       Boolean   @default(true) @db.Boolean
-  createdAt   DateTime  @default(now()) @db.Timestamptz
-  updatedAt   DateTime? @updatedAt @db.Timestamptz
-
-  // Relations
-  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
-
-  @@map("features")
 }
 
 model Project {
@@ -211,4 +132,91 @@ model Response {
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@map("responses")
+}
+
+// #endregion
+
+// #region WALLET, TRANSACTION, PLAN, FEATURE MODELS
+
+model Wallet {
+  id           String    @id @default(cuid()) @db.VarChar(30)
+  teamId       String    @unique @db.Uuid
+  balance      Float     @default(0) @db.DoublePrecision
+  currency     String    @default("INR") @db.VarChar(3)
+  currencyRate Float     @default(1) @db.DoublePrecision
+  createdAt    DateTime  @default(now()) @db.Timestamptz
+  updatedAt    DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  transactions Transaction[]
+  team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id          String          @id @default(cuid()) @db.VarChar(30)
+  walletId    String          @db.VarChar(30)
+  type        TransactionType
+  amount      Float           @db.DoublePrecision
+  description String?         @db.Text
+  createdAt   DateTime        @default(now()) @db.Timestamptz
+  createdBy   String?         @db.VarChar
+
+  // Relations
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@map("transactions")
+}
+
+model Plan {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String    @db.Text
+  description String?   @db.Text
+  price       Float     @db.DoublePrecision
+  currency    String    @default("INR") @db.VarChar(3)
+  valid       Boolean   @default(true) @db.Boolean
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  features Feature[]
+  teams    Team[]
+
+  @@map("plans")
+}
+
+model Feature {
+  id          String    @id @default(uuid()) @db.Uuid
+  planId      String    @db.Uuid
+  key         String    @db.Text
+  name        String?   @db.Text
+  description String?   @db.Text
+  valid       Boolean   @default(true) @db.Boolean
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime? @updatedAt @db.Timestamptz
+
+  // Relations
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("features")
+}
+
+// #endregion
+
+model User {
+  id             String  @id @default(cuid()) @db.VarChar(30)
+  userName       String  @db.Text
+  email          String  @unique @db.Text
+  phoneNumber    String? @db.Text
+  googleId       String? @unique @db.Text
+  profilePicture String? @db.Text
+  firstName      String? @db.Text
+  lastName       String? @db.Text
+  emailVerified  Boolean @default(false)
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@map("users")
 }
