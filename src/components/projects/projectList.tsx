@@ -107,8 +107,7 @@ export function ProjectList({ projects: initialProjects }: ProjectListProps) {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="flex gap-4 items-center">
-                    <div className="p-3 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/10">
-                        <Folders className="w-8 h-8 text-primary" />
+                    <div className="p-3 rounded-xl bg-primary/30 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/20">                        <Folders className="w-8 h-8 text-primary" />
                     </div>
                     <div>
                         <h1 className="text-2xl font-medium">Projects</h1>

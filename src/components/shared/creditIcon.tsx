@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function CreditsIcon({ className }: { className?: string }) {
+export function CreditIcon({ className }: { className?: string }) {
     return (
         <div>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-5 h-5 text-primary", className)}>

@@ -64,8 +64,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         await prisma.transaction.create({
             data: {
                 walletId: newTeam.wallet.id,
-                amount: 50,
-                type: 'CREDIT',
+                amount: 100,
+                type: 'GIFT',
                 description: 'Little bonus for creating a new team 🎉',
                 createdAt: new Date(),
             }

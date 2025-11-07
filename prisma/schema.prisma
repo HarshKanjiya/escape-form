@@ -35,13 +35,14 @@ enum TransactionType {
   RESPONSE
   REFUND
   AI_USAGE
+  GIFT
 }
 
 // #region CORE MODELS
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
   name      String?   @db.VarChar
-  ownerId   String?   @db.Uuid
+  ownerId   String?   @db.VarChar
   planId    String?   @db.Uuid
   valid     Boolean   @default(true) @db.Boolean
   createdAt DateTime  @default(now()) @db.Timestamptz
@@ -139,13 +140,14 @@ model Response {
 // #region WALLET, TRANSACTION, PLAN, FEATURE MODELS
 
 model Wallet {
-  id           String    @id @default(cuid()) @db.VarChar(30)
-  teamId       String    @unique @db.Uuid
-  balance      Float     @default(0) @db.DoublePrecision
-  currency     String    @default("INR") @db.VarChar(3)
-  currencyRate Float     @default(1) @db.DoublePrecision
-  createdAt    DateTime  @default(now()) @db.Timestamptz
-  updatedAt    DateTime? @updatedAt @db.Timestamptz
+  id                     String    @id @default(cuid()) @db.VarChar(30)
+  teamId                 String    @unique @db.Uuid
+  balance                Float     @default(0) @db.DoublePrecision
+  nonTransferableBalance Float     @default(0) @db.DoublePrecision
+  currency               String    @default("INR") @db.VarChar(3)
+  currencyRate           Float     @default(1) @db.DoublePrecision
+  createdAt              DateTime  @default(now()) @db.Timestamptz
+  updatedAt              DateTime? @updatedAt @db.Timestamptz
 
   // Relations
   transactions Transaction[]

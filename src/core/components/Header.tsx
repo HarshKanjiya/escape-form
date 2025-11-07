@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditsIcon } from "@/components/shared/creditIcon";
+import { CreditIcon } from "@/components/shared/creditIcon";
 import { FeedbackModel } from "@/components/shared/feedBack";
 import TeamsDropdown from "@/components/teams/teamsDropdown";
 import { Badge } from "@/components/ui/badge";
@@ -11,14 +11,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { useGlobalStore } from "@/store/useStore";
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
-import { Bell, User } from "lucide-react";
+import { Bell, ShoppingBag, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Header({ }) {
     const { user } = useUser();
-    const { teams, activeProject } = useGlobalStore((state) => state);
+    const { teams, activeProject, activeTeam } = useGlobalStore((state) => state);
     const { openUserProfile } = useClerk();
     const { setTheme, theme } = useTheme();
     const themes = ['light', 'dark', 'system'];
@@ -49,12 +49,15 @@ export default function Header({ }) {
                 <FeedbackModel />
                 <Separator orientation="vertical" className="!h-8" />
 
-                <div className="h-9 rounded-2xl border w-[130px] flex items-center justify-center p-1 gap-2">
-                    <CreditsIcon className="h-6 w-6" />
-                    <div className="flex-1 text-muted-foreground">
-                        133.54
-                    </div>
-                </div>
+                {
+                    activeTeam ? (
+                        <Link href={`/${activeTeam?.id}/wallet`} >
+                            <Button variant='outline' className="flex items-center justify-center gap-2 rounded-full pl-2 pr-3">
+                                <CreditIcon className="!h-5 !w-5 text-muted-foreground" />
+                                133.54
+                            </Button>
+                        </Link>
+                    ) : null}
 
                 <div className="mr-3 relative">
                     <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
