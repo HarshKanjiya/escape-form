@@ -12,9 +12,10 @@ import { showError } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useStore";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { Building2, LayoutGrid, List, Search, X } from "lucide-react";
+import { Building2Icon, LayoutGrid, List, Search, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { IconCard } from "../shared/iconCard";
 import CustomPagination from "../ui/customPagination";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
@@ -106,8 +107,7 @@ export function TeamList() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="flex gap-4 items-center">
-                    <div className="p-3 rounded-xl bg-primary/30 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/20">                        <Building2 className="w-8 h-8 text-primary" />
-                    </div>
+                    <IconCard icon={Building2Icon} />
                     <div>
                         <h1 className="text-2xl font-medium">Teams</h1>
                         <p className="text-muted-foreground">
@@ -126,7 +126,7 @@ export function TeamList() {
                             placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5 bg-background shadow-none border-accent"
+                            className="pl-10 pr-20 py-5 !bg-muted shadow-none border-accent"
                         />
                         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
                             <KbdGroup>

@@ -8,13 +8,14 @@ import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Form } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
-import { showError } from "@/lib/utils";
+import { isValidUUID, showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { ClipboardList, LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { ClipboardListIcon, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { IconCard } from "../shared/iconCard";
 import CustomPagination from "../ui/customPagination";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
@@ -34,6 +35,9 @@ export function FormList() {
     const teamId = params.teamId as string;
     const projectId = params.projectId as string;
 
+    if (!isValidUUID(teamId) || !isValidUUID(projectId)) {
+        redirect('/error/404');
+    }
     const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
     useEffect(() => {
@@ -105,9 +109,7 @@ export function FormList() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="flex gap-4 items-center">
-                    <div className="p-3 rounded-xl bg-primary/30 flex items-center justify-center flex-shrink-0 outline-2 outline-offset-3 outline-primary/20">
-                        <ClipboardList className="w-8 h-8 text-primary" />
-                    </div>
+                    <IconCard icon={ClipboardListIcon} />
                     <div>
                         <h1 className="text-2xl font-medium">Forms</h1>
                         <p className="text-muted-foreground">
@@ -131,7 +133,7 @@ export function FormList() {
                             placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5 bg-background shadow-none border-accent"
+                            className="pl-10 pr-20 py-5 !bg-muted shadow-none border-accent"
                         />
                         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
                             <KbdGroup>
