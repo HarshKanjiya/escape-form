@@ -2,7 +2,7 @@ import { ProjectList } from "@/components/projects/projectList";
 
 export default async function ProjectsPage() {
     return (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 sm:pt-12">
             <ProjectList />
         </div>
     );

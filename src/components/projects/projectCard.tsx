@@ -28,8 +28,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               <h3 className="text-foreground line-clamp-1 mb-1">
                 {project.name}
               </h3>
-              <div className="flex items-center text-muted-foreground gap-2">
-                {project?.description ? <span className="line-clamp-1">{project.description}</span> : <span className="italic text-sm text-muted-foreground">No description</span>}
+              <div className="flex items-center text-muted-foreground/60 dark:text-muted-foreground gap-2">
+                {project?.description ? <span className=" line-clamp-1">{project.description}</span> : <span>No description</span>}
               </div>
             </div>
             <DropdownMenu>

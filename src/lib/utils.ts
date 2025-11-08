@@ -56,6 +56,7 @@ export const objToQueryString = (obj: Record<string, any>): string => {
 
 /** Validate UUID format */
 export const isValidUUID = (uuid: string): boolean => {
+  if (!uuid) return false;
   return REGEX.uuid.test(uuid);
 }
 

@@ -29,7 +29,6 @@ export default function Header({ }) {
                         className=""
                     />
                 </Link>
-
                 <TeamsDropdown />
                 {activeProject ? (
                     <span className="flex items-center gap-1">

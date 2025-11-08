@@ -4,7 +4,7 @@ import { FormList } from "@/components/forms/formList";
 export default async function FormsPage() {
 
     return (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 sm:pt-12">
             <FormList />
         </div>
     );

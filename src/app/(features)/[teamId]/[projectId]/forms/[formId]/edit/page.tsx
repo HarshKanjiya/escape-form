@@ -1,123 +1,53 @@
 "use client";
 
+import FormBuilderSkeleton from "@/components/formBuilder/formBuilderSkeleton";
 import LeftBar from "@/components/formBuilder/leftBar";
 import MainContent from "@/components/formBuilder/mainContent";
 import RightBar from "@/components/formBuilder/rightBar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage } from "@/constants/messages";
+import { ERROR_ROUTE } from "@/constants/routes.constants";
 import { Form } from "@/generated/prisma";
 import api from "@/lib/axios";
+import { isValidUUID, showError } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { ActionResponse } from "@/types/common";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
-import { toast } from "sonner";
-
-// Loading skeleton component that mimics the form builder layout
-function FormBuilderLoadingSkeleton() {
-    return (
-        <div className="flex items-center justify-center h-full w-full flex-1">
-            {/* Left Bar Skeleton */}
-            <div className="w-80 h-full border-r bg-background p-4 space-y-4">
-                <div className="flex items-center justify-between mb-6">
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                </div>
-                <Skeleton className="h-10 w-full" />
-                <div className="space-y-3">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <div key={i} className="flex items-center space-x-3 p-2">
-                            <Skeleton className="h-8 w-8 rounded" />
-                            <Skeleton className="h-4 w-full" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Main Content Skeleton */}
-            <div className="flex-1 h-full p-6 space-y-6">
-                <div className="flex items-center justify-between">
-                    <Skeleton className="h-8 w-48" />
-                    <div className="flex space-x-2">
-                        <Skeleton className="h-9 w-20" />
-                        <Skeleton className="h-9 w-20" />
-                    </div>
-                </div>
-
-                <div className="border rounded-lg p-6 space-y-4">
-                    <Skeleton className="h-6 w-64" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-
-                    <div className="space-y-4 mt-6">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="border rounded p-4 space-y-2">
-                                <Skeleton className="h-5 w-40" />
-                                <Skeleton className="h-10 w-full" />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Right Bar Skeleton */}
-            <div className="w-80 h-full border-l bg-background p-4 space-y-4">
-                <Skeleton className="h-6 w-32 mb-4" />
-                <div className="space-y-4">
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-9 w-full" />
-                    </div>
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-20 w-full" />
-                    </div>
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-16" />
-                        <Skeleton className="h-9 w-full" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 export default function Page() {
 
     const { initForm, setIsLoading, isLoading } = useFormBuilder();
     const params = useParams();
+    const formId = params.formId as string;
 
     useEffect(() => {
-        setIsLoading(true);
+        if (!formId || !isValidUUID(formId)) {
+            redirect(ERROR_ROUTE.NOT_FOUND)
+        }
+        const getForm = async () => {
+            try {
+                setIsLoading(true);
+                const response = await api.get<ActionResponse<Form>>(apiConstants.form.getFormById(formId));
+
+                if (!response.data.success) {
+                    showError(response.data.message || getErrorMessage("form"));
+                    setIsLoading(false);
+                    return;
+                }
+                if (response.data.data) initForm(response.data.data);
+            } catch (error) {
+                console.error('Error fetching form:', error);
+                showError(getErrorMessage("form"));
+            } finally {
+                setIsLoading(false);
+            }
+        }
         getForm();
     }, []);
 
-    const getForm = async () => {
-        const formId = params.formId;
-        if (!formId) {
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            const response = await api.get<ActionResponse<Form>>(params["formId"] as string);
-
-            if (!response.data.success) {
-                toast.error(response.data.message || getErrorMessage("Form"));
-                setIsLoading(false);
-                return;
-            }
-            if (response.data.data) initForm(response.data.data);
-        } catch (error) {
-            console.error('Error fetching form:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
     if (isLoading) {
-        return <FormBuilderLoadingSkeleton />;
+        return <FormBuilderSkeleton />;
     }
 
     return (

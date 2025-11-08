@@ -3,20 +3,19 @@ import { Form } from "@/generated/prisma";
 import { createActionError, createActionSuccess, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
-import { ActionResponse } from "@/types/common";
 import { NextRequest } from "next/server";
 
-export const GET = withErrorHandler(async (request: NextRequest, { formId }: { formId: string }) => {
+export const GET = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ formId: string }> }) => {
 
     const { error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
+    const { formId } = await params;
     if (!formId) return createActionError('formId is required')
 
-    const form = await prisma.form.findMany({
+    const form = await prisma.form.findFirst({
         where: { id: formId },
         orderBy: { createdAt: 'desc' },
-        take: 1
     })
 
     return createActionSuccess(form, getSuccessMessage('Form'));

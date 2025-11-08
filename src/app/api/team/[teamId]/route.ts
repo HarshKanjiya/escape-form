@@ -4,7 +4,7 @@ import { parseRequestBody, validateAuth } from '@/lib/helper';
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
-export const PATCH = withErrorHandler(async (request: NextRequest) => {
+export const PATCH = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ teamId: string }> }) => {
 
     const { user, error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
@@ -13,7 +13,7 @@ export const PATCH = withErrorHandler(async (request: NextRequest) => {
     const validationErrors = validateRequiredFields(body, ['name']);
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
 
-    const teamId = request.nextUrl.pathname.split('/').pop() || null;
+    const { teamId } = await params;
     if (!teamId) return createValidationErrorResponse({ id: ['Team Id is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
 
     const { name, ownerId } = body;
