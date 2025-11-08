@@ -57,7 +57,7 @@ export default function TeamsDropdown() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 bg-accent py-2.5 px-3 rounded-lg">
-                <div className="text-start flex items-center gap-2 leading-none w-[120px]">
+                <div className="text-start flex items-center gap-2 leading-none w-[113px]">
                     <span className="text-sm leading-none truncate w-full">
                         {activeTeam?.name}
                     </span>

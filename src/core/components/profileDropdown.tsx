@@ -1,9 +1,10 @@
+import { FeedbackModel } from "@/components/shared/feedBack";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
-import { User } from "lucide-react";
+import { LogOutIcon, MessageCircleCodeIcon, MessageSquareIcon, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 
@@ -66,11 +67,20 @@ const ProfileDropdown = () => {
                     </div>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
+                <FeedbackModel>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <div className="flex items-center cursor-pointer">
+                            <MessageCircleCodeIcon className="w-4 h-4 mr-2" />
+                            Feedback
+                        </div>
+                    </DropdownMenuItem>
+                </FeedbackModel>
                 <DropdownMenuItem>
                     <SignOutButton>
-                        <button className="flex items-center w-full text-left">
-                            Sign out
-                        </button>
+                        <div className="flex items-center cursor-pointer">
+                            <LogOutIcon className="w-4 h-4 mr-2" />
+                            Sign Out
+                        </div>
                     </SignOutButton>
                 </DropdownMenuItem>
             </DropdownMenuContent>

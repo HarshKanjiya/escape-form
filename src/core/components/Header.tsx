@@ -3,15 +3,14 @@
 import { CreditIcon } from "@/components/shared/creditIcon";
 import { FeedbackModel } from "@/components/shared/feedBack";
 import TeamsDropdown from "@/components/teams/teamsDropdown";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useGlobalStore } from "@/store/useStore";
-import { Bell, CircleFadingArrowUpIcon } from "lucide-react";
+import { CircleFadingArrowUpIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import ProfileDropdown from "./profileDropdown";
 import NotificationDropdown from "./notificationDropdown";
+import ProfileDropdown from "./profileDropdown";
 
 export default function Header({ }) {
 
@@ -38,7 +37,6 @@ export default function Header({ }) {
                 ) : null}
             </div>
             <div className="flex items-center gap-3">
-                <FeedbackModel />
                 <Separator orientation="vertical" className="!h-8" />
                 {
                     true ? (

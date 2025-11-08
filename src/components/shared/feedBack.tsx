@@ -18,19 +18,19 @@ import {
 import { MessageSquare, Paperclip, X as XIcon } from "lucide-react";
 
 interface FeedbackModelProps {
-    children?: React.ReactNode;
     dialogTitle?: React.ReactNode;
     dialogDescription?: React.ReactNode;
     dialogContent?: React.ReactNode;
     dialogFooter?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export function FeedbackModel({
-    children,
     dialogTitle = "Feedback",
     dialogDescription = "",
     dialogContent,
     dialogFooter,
+    children,
 }: FeedbackModelProps) {
     const [subject, setSubject] = React.useState("");
     const [details, setDetails] = React.useState("");
