@@ -2,8 +2,9 @@
 
 import { REGEX } from '@/constants/common';
 import { Team } from '@/generated/prisma';
+import { isValidUUID } from '@/lib/utils';
 import { useGlobalStore } from '@/store/useStore';
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface Props {
@@ -16,9 +17,10 @@ export default function HydrateTeams({ children, teams }: Props) {
     // const { userId, isLoaded } = useAuth();
     const router = useRouter();
     const path = usePathname();
+    const params = useParams();
+    const teamId = params.teamId as string;
 
     useEffect(() => {
-
         if (!teams?.length) {
             setTeams([]);
             router.push('/teams/create');
@@ -28,18 +30,26 @@ export default function HydrateTeams({ children, teams }: Props) {
         if (!pathSegments.length) {
             router.push(teams[0].id);
             setActiveTeam(teams[0]);
-        } else if (pathSegments.length === 1) {
-            if (REGEX.uuid.test(pathSegments[1])) {
-                const teamExists = teams.some(team => team.id === pathSegments[1]);
-                if (!teamExists) {
-                    router.push(teams[0].id);
-                    setActiveTeam(teams[0]);
-                } else setActiveTeam(teams.find(team => team.id === pathSegments[1])!);
-            } else if (pathSegments[0].split('-').length > 3) {
+        }
+        else if (isValidUUID(teamId)) {
+            const team = teams.find(team => team.id === teamId)!;
+            if (!team) {
                 router.push(teams[0].id);
                 setActiveTeam(teams[0]);
-            }
+            } else setActiveTeam(team);
         }
+        // else if (pathSegments.length === 1) {
+        //     if (REGEX.uuid.test(pathSegments[1])) {
+        //         const teamExists = teams.some(team => team.id === pathSegments[1]);
+        //         if (!teamExists) {
+        //             router.push(teams[0].id);
+        //             setActiveTeam(teams[0]);
+        //         } else setActiveTeam(teams.find(team => team.id === pathSegments[1])!);
+        //     } else if (pathSegments[0].split('-').length > 3) {
+        //         router.push(teams[0].id);
+        //         setActiveTeam(teams[0]);
+        //     }
+        // }
         setTeams(teams ?? []);
 
 

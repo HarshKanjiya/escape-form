@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
+import { ERROR_ROUTE } from "@/constants/routes.constants";
 import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Form } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
@@ -11,7 +12,7 @@ import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { ClipboardListIcon, LayoutGrid, List, Plus, Search, X } from "lucide-react";
+import { LayersIcon, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -36,7 +37,7 @@ export function FormList() {
     const projectId = params.projectId as string;
 
     if (!isValidUUID(teamId) || !isValidUUID(projectId)) {
-        redirect('/error/404');
+        redirect(ERROR_ROUTE.NOT_FOUND);
     }
     const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
@@ -109,7 +110,7 @@ export function FormList() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="flex gap-4 items-center">
-                    <IconCard icon={ClipboardListIcon} />
+                    <IconCard icon={LayersIcon} />
                     <div>
                         <h1 className="text-2xl font-medium">Forms</h1>
                         <p className="text-muted-foreground">

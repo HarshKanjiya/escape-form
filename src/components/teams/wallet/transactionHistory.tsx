@@ -12,6 +12,9 @@ export default function TransactionHistory() {
                             <TabsTrigger value="all" className=" h-full flex-1 text-center">
                                 All Transactions
                             </TabsTrigger>
+                            <TabsTrigger value="usage" className=" h-full flex-1 text-center">
+                                Usage
+                            </TabsTrigger>
                             <TabsTrigger value="received" className=" h-full flex-1 text-center">
                                 Received
                             </TabsTrigger>
@@ -23,6 +26,10 @@ export default function TransactionHistory() {
 
                     <TabsContent value="all" className="px-0 py-4">
                         <Transactions />
+                    </TabsContent>
+
+                    <TabsContent value="usage" className="px-0 py-4">
+                        <Transactions filter="usage" />
                     </TabsContent>
 
                     <TabsContent value="received" className="px-0 py-4">

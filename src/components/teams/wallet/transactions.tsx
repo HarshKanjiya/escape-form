@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { ArrowUpRight, ArrowDownLeft, Send } from "lucide-react"
 
 interface Transactions {
-    filter?: "all" | "received" | "sent"
+    filter?: "all" | "received" | "sent" | "usage"
 }
 
 interface ITransaction {
@@ -176,10 +176,10 @@ function TransactionItem(transaction: ITransaction) {
                 </div>
                 <div>
                     <p >{transaction.title}</p>
-                    <p className="text-sm text-muted">{transaction.description}</p>
+                    <p className="text-sm text-muted-foreground/60 dark:text-muted-foreground">{transaction.description}</p>
                 </div>
             </div>
-            <div className="text-right">
+            <div className="text-right space-y-2">
                 <div className="flex items-center justify-end gap-2">
                     <p
                         className={`font-bold ${isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-900 dark:text-white"
@@ -189,7 +189,7 @@ function TransactionItem(transaction: ITransaction) {
                     </p>
                     <CreditIcon type={isPositive ? "credit" : "debit"} />
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-400">{transaction.date}</p>
+                <p className="text-xs text-muted-foreground/60 dark:text-muted-foreground">{transaction.date}</p>
             </div>
         </div>
     )

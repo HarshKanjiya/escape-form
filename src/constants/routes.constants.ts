@@ -1,5 +1,5 @@
 export const ERROR_ROUTE = {
-    NOT_FOUND: '/error/404',
-    FORBIDDEN: '/error/403',
-    UNAUTHORIZED: '/error/401',
+    NOT_FOUND: '/404',
+    FORBIDDEN: '/403',
+    UNAUTHORIZED: '/401',
 }
