@@ -9,7 +9,7 @@ import { Team } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { showError } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
 import { Building2Icon, LayoutGrid, List, Search, X } from "lucide-react";

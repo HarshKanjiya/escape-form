@@ -6,7 +6,7 @@ import MainContent from "@/components/formBuilder/mainContent";
 import RightBar from "@/components/formBuilder/rightBar";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage } from "@/constants/messages";
-import { ERROR_ROUTE } from "@/constants/routes.constants";
+import { ERROR_ROUTES } from "@/constants/routes.constants";
 import { Form } from "@/generated/prisma";
 import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";
@@ -23,7 +23,7 @@ export default function Page() {
 
     useEffect(() => {
         if (!formId || !isValidUUID(formId)) {
-            redirect(ERROR_ROUTE.NOT_FOUND)
+            redirect(ERROR_ROUTES.NOT_FOUND)
         }
         const getForm = async () => {
             try {

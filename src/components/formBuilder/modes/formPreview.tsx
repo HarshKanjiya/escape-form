@@ -5,7 +5,7 @@ import RenderSinglePageForm from "@/components/formRendering/singlePageForm";
 import { eFormPageType, eViewScreenMode } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { motion, AnimatePresence } from "framer-motion";
-import { BatteryFull } from "lucide-react";
+import { BatteryFull, SignalIcon, WifiIcon } from "lucide-react";
 
 // Animation variants
 const desktopVariants = {
@@ -62,9 +62,11 @@ export default function FormPreview() {
                     >
                         <div className="relative bg-accent rounded-3xl px-2 pt-2 pb-2 flex items-center justify-center">
                             <div className="rounded-2xl overflow-hidden w-[375px] h-[667px] relative">
-                                <div className="bg-accent flex items-center justify-between px-6 py-1 text-xs font-medium text-foreground">
+                                <div className="bg-accent flex items-center justify-between pl-3 pr-2 py-1 text-xs font-medium text-foreground">
                                     <span>9:41</span>
-                                    <div className="flex items-center space-x-1">
+                                    <div className="flex items-center space-x-2">
+                                        <WifiIcon className="h-5 w-5" />
+                                        <SignalIcon className="h-5 w-5" />
                                         <BatteryFull className="h-6 w-6" />
                                     </div>
                                 </div>

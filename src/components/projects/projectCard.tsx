@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Project } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { DatabaseIcon, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";

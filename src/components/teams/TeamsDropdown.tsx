@@ -1,7 +1,7 @@
 "use client";
 
 import { Team } from "@/generated/prisma";
-import { useGlobalStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { Check, ChevronsUpDown, CopySlash, Plus, Search, X } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

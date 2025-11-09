@@ -1,11 +1,14 @@
 'use client';
 
-import { REGEX } from '@/constants/common';
-import { Team } from '@/generated/prisma';
+import { apiConstants } from '@/constants/api.constants';
+import { ROUTES } from '@/constants/routes.constants';
+import { Form, Project, Team } from '@/generated/prisma';
+import api from '@/lib/axios';
 import { isValidUUID } from '@/lib/utils';
-import { useGlobalStore } from '@/store/useStore';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useGlobalStore } from '@/store/useGlobalStore';
+import { ActionResponse } from '@/types/common';
+import { redirect, useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Props {
     children: React.ReactNode;
@@ -13,88 +16,100 @@ interface Props {
 }
 
 export default function HydrateTeams({ children, teams }: Props) {
-    const { isLoading, setTeams, setLoading, setActiveTeam } = useGlobalStore((state) => state);
-    // const { userId, isLoaded } = useAuth();
-    const router = useRouter();
-    const path = usePathname();
+    const { isLoading, activeTeam, activeForm, activeProject, setTeams, setActiveTeam, setActiveProject, setActiveForm } = useGlobalStore((state) => state);
     const params = useParams();
-    const teamId = params.teamId as string;
+    const [teamId, setTeamId] = useState<string | null>(params.teamId as string || null);
+    const [projectId, setProjectId] = useState<string | null>(params.projectId as string || null);
+    const [formId, setFormId] = useState<string | null>(params.formId as string || null);
 
     useEffect(() => {
         if (!teams?.length) {
             setTeams([]);
-            router.push('/teams/create');
+            redirect(ROUTES.team.create());
+        }
+        setTeams(teams ?? []);
+    }, []);
+
+    useEffect(() => {
+        if (params.teamId as string && isValidUUID(params.teamId as string)) {
+            setTeamId(params.teamId as string);
+        } else setTeamId(null);
+
+        if (params.projectId as string && isValidUUID(params.projectId as string)) {
+            setProjectId(params.projectId as string);
+        } else setProjectId(null);
+
+        if (params.formId as string && isValidUUID(params.formId as string)) {
+            setFormId(params.formId as string);
+        } else setFormId(null);
+    }, [params]);
+
+    useEffect(() => {
+
+        if (!teamId) {
+            setActiveTeam(null);
             return;
         }
-        const pathSegments = path.split('/').filter(Boolean);
-        if (!pathSegments.length) {
-            router.push(teams[0].id);
-            setActiveTeam(teams[0]);
+        if (activeTeam) return;
+        const team = teams?.find(team => team.id === teamId);
+        if (team) {
+            setActiveTeam(team);
+        } else if (teams?.length) {
+            redirect(teams[0].id);
+        } else {
+            redirect(ROUTES.team.create());
         }
-        else if (isValidUUID(teamId)) {
-            const team = teams.find(team => team.id === teamId)!;
-            if (!team) {
-                router.push(teams[0].id);
-                setActiveTeam(teams[0]);
-            } else setActiveTeam(team);
+    }, [teamId]);
+
+    useEffect(() => {
+        if (!projectId) {
+            setActiveProject(null);
+            return;
         }
-        // else if (pathSegments.length === 1) {
-        //     if (REGEX.uuid.test(pathSegments[1])) {
-        //         const teamExists = teams.some(team => team.id === pathSegments[1]);
-        //         if (!teamExists) {
-        //             router.push(teams[0].id);
-        //             setActiveTeam(teams[0]);
-        //         } else setActiveTeam(teams.find(team => team.id === pathSegments[1])!);
-        //     } else if (pathSegments[0].split('-').length > 3) {
-        //         router.push(teams[0].id);
-        //         setActiveTeam(teams[0]);
-        //     }
-        // }
-        setTeams(teams ?? []);
+        if (activeProject) return;
 
+        const getProject = async () => {
+            try {
+                const response = await api.get<ActionResponse<Project>>(apiConstants.project.getProjectById(projectId));
 
-        // async function fetchTeams() {
-        //     if (!isLoaded || !userId) {
-        //         setLoading(false);
-        //         return;
-        //     }
+                if (!response.data.success) {
+                    return;
+                }
+                const project = response.data.data;
+                if (project) {
+                    setActiveProject(project);
+                }
+            } catch (error) {
+                console.error('Error fetching form:', error);
+            }
+        }
+        getProject();
+    }, [projectId]);
 
-        //     try {
-        //         const res = await api.get<ActionResponse<Team[]>>(apiConstants.team.getTeams());
-        //         if (!res?.data?.success || !res.data.data?.length) {
-        //             setTeams([]);
-        //             router.push('/teams/create');
-        //             return;
-        //         }
-        //         const pathSegments = path.split('/').filter(Boolean);
-        //         if (!pathSegments.length) {
-        //             router.push(`/teams/${res.data.data[0].id}`);
-        //             setActiveTeam(res.data.data[0]);
-        //         } else if (pathSegments[0] === 'teams' && pathSegments.length === 2) {
-        //             if (REGEX.uuid.test(pathSegments[1])) {
-        //                 const teamExists = res.data.data.some(team => team.id === pathSegments[1]);
-        //                 if (!teamExists) {
-        //                     router.push(`/teams/${res.data.data[0].id}`);
-        //                     setActiveTeam(res.data.data[0]);
-        //                 }
-        //             } else if (pathSegments[1].split('-').length > 3) {
-        //                 router.push(`/teams/${res.data.data[0].id}`);
-        //                 setActiveTeam(res.data.data[0]);
-        //             }
-        //         }
+    useEffect(() => {
+        if (!formId) {
+            setActiveForm(null);
+            return;
+        }
 
-        //        
-        //         setTeams(res.data.data ?? []);
-        //     } catch (error) {
-        //         showError(getErrorMessage('teams'), MESSAGE.PLEASE_TRY_AGAIN_LATER);
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // }
+        const getForm = async () => {
+            try {
+                const response = await api.get<ActionResponse<Form>>(apiConstants.form.getFormById(formId));
 
-        // fetchTeams();
-        // }, [userId, isLoaded]);
-    }, []);
+                if (!response.data.success) {
+                    return;
+                }
+                const form = response.data.data;
+                if (form) {
+                    setActiveForm(form);
+                }
+            } catch (error) {
+                console.error('Error fetching form:', error);
+            }
+        }
+        getForm();
+
+    }, [formId]);
 
     if (isLoading) {
         return (

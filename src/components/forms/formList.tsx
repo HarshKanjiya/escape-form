@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
-import { ERROR_ROUTE } from "@/constants/routes.constants";
+import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { LIST_VIEW_TYPE } from "@/enums/common";
 import { Form } from "@/generated/prisma";
 import { usePagination } from "@/hooks/usePagination";
@@ -37,7 +37,7 @@ export function FormList() {
     const projectId = params.projectId as string;
 
     if (!isValidUUID(teamId) || !isValidUUID(projectId)) {
-        redirect(ERROR_ROUTE.NOT_FOUND);
+        redirect(ERROR_ROUTES.NOT_FOUND);
     }
     const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
@@ -118,7 +118,7 @@ export function FormList() {
                         </p>
                     </div>
                 </div>
-                <Link href={`${projectId}/forms/new`}>
+                <Link href={ROUTES.form.create(teamId, projectId)} >
                     <Button>
                         <Plus className="mr-2 h-4 w-4" />
                         Create Form
@@ -165,7 +165,8 @@ export function FormList() {
             {
                 (!forms?.length && !loading) ? <FormEmptyState searchQuery={searchQuery} projectId={projectId} /> :
                     viewMode === "grid" ?
-                        <FormGridView forms={forms} loading={loading} /> : <FormTableView forms={forms} teamId={teamId} loading={loading} />
+                        <FormGridView forms={forms} loading={loading} projectId={projectId} teamId={teamId} /> :
+                        <FormTableView forms={forms} loading={loading} projectId={projectId} teamId={teamId} />
             }
             {forms.length > 0 && <Separator />}
             <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />

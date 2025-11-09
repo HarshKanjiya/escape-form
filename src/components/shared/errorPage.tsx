@@ -104,29 +104,7 @@ export default function ErrorPage({
                         </div>
                     )}
                 </div>
-
-                {/* Bottom line decoration */}
                 <div className="w-24 h-px bg-white/30 mt-12"></div>
-
-                {/* Company logos section */}
-                <div className="mt-16 opacity-30">
-                    <div className="flex flex-wrap items-center justify-center gap-8 text-gray-500 text-xs">
-                        <span>Vercel</span>
-                        <span>Amazon</span>
-                        <span>Framer</span>
-                        <span>Asana</span>
-                        <span>Adobe</span>
-                        <span>Linear</span>
-                    </div>
-                    <div className="flex flex-wrap items-center justify-center gap-8 text-gray-500 text-xs mt-4">
-                        <span>Nintendo</span>
-                        <span>Coinbase</span>
-                        <span>Square</span>
-                        <span>Tesla</span>
-                        <span>Intercom</span>
-                        <span>Loom</span>
-                    </div>
-                </div>
             </div>
         </div>
     )

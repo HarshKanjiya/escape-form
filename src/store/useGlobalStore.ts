@@ -1,6 +1,6 @@
 'use client'
 
-import { Project, Team } from '@/generated/prisma'
+import { Form, Project, Team, Wallet } from '@/generated/prisma'
 import { create } from 'zustand'
 
 interface GlobalStore {
@@ -8,6 +8,8 @@ interface GlobalStore {
   projects: Project[]
   activeTeam: Team | null
   activeProject: Project | null
+  activeForm: Form | null
+  activeWallet: Wallet | null
   isLoading: boolean
 
   // Actions
@@ -16,18 +18,24 @@ interface GlobalStore {
   setProjects: (projects: Project[]) => void
   setActiveProject: (project: Project | null) => void
   setLoading: (loading: boolean) => void
+  setActiveForm: (form: Form | null) => void
+  setActiveWallet: (wallet: Wallet | null) => void
 }
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
+  isLoading: false,
   teams: [],
   projects: [],
   activeTeam: null,
   activeProject: null,
-  isLoading: false,
+  activeForm: null,
+  activeWallet: null,
 
-  setTeams: (teams) => set({ teams }),
-  setActiveTeam: (team) => set({ activeTeam: team }),
-  setProjects: (projects) => set({ projects }),
-  setActiveProject: (project) => set({ activeProject: project }),
   setLoading: (loading) => set({ isLoading: loading }),
+  setTeams: (teams) => set({ teams }),
+  setProjects: (projects) => set({ projects }),
+  setActiveTeam: (team) => set({ activeTeam: team }),
+  setActiveProject: (project) => set({ activeProject: project }),
+  setActiveForm: (form) => set({ activeForm: form }),
+  setActiveWallet: (wallet) => set({ activeWallet: wallet }),
 }))

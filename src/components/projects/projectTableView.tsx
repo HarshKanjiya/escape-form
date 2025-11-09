@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Project } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useStore";
-import { Eye, Settings, Trash2 } from "lucide-react";
+import { useGlobalStore } from "@/store/useGlobalStore";
+import { Eye, EyeIcon, Settings, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 
@@ -57,7 +57,7 @@ function ProjectTableView({ projects, teamId, loading }: { projects: Project[]; 
                                     <TableCell className="flex gap-3 p-2">
                                         <Link href={`/${teamId}/${project.id}`}>
                                             <Button size="icon" variant="outline" onClick={() => setActiveProject(project)}>
-                                                <Eye className="h-4 w-4" />
+                                                <EyeIcon className="h-4 w-4" />
                                             </Button>
                                         </Link>
                                         <Button size="icon" variant="outline">

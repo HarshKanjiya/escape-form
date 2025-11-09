@@ -3,6 +3,7 @@ import { Form } from "@/generated/prisma";
 import { createActionError, createActionSuccess, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
+import { isValidUUID } from "@/lib/utils";
 import { NextRequest } from "next/server";
 
 export const GET = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ formId: string }> }) => {
@@ -11,7 +12,7 @@ export const GET = withErrorHandler(async (request: NextRequest, { params }: { p
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const { formId } = await params;
-    if (!formId) return createActionError('formId is required')
+    if (!formId || !isValidUUID(formId)) return createActionError('formId is required')
 
     const form = await prisma.form.findFirst({
         where: { id: formId },
@@ -22,14 +23,17 @@ export const GET = withErrorHandler(async (request: NextRequest, { params }: { p
 
 })
 
-export const PUT = withErrorHandler(async (request: NextRequest, { formId }: { formId: string }) => {
+export const PUT = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ formId: string }> }) => {
 
     const { user, error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
+    const { formId } = await params;
+    if (!formId || !isValidUUID(formId)) return createActionError('formId is required');
+
     const body: Partial<Form> & { id?: string } = await parseRequestBody(request);
     const validationErrors = validateRequiredFields(body,
-        ['id', 'name', 'projectId']
+        ['id']
     );
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
     const existingForm = await prisma.form.findFirst({
@@ -39,11 +43,6 @@ export const PUT = withErrorHandler(async (request: NextRequest, { formId }: { f
     const updatedForm = await prisma.form.update({
         where: { id: formId },
         data: {
-            name: body.name?.trim() ?? existingForm.name,
-            description: body.description?.trim() ?? existingForm.description,
-            allowAnonymous: body.allowAnonymous ?? existingForm.allowAnonymous,
-            theme: body.theme ?? existingForm.theme,
-            analyticsEnabled: body.analyticsEnabled ?? existingForm.analyticsEnabled,
             logoUrl: body.logoUrl?.trim() ?? existingForm.logoUrl,
             requireConsent: body.requireConsent ?? existingForm.requireConsent,
             maxResponses: body.maxResponses ?? existingForm.maxResponses,
@@ -58,6 +57,11 @@ export const PUT = withErrorHandler(async (request: NextRequest, { formId }: { f
             openAt: body.openAt ?? existingForm.openAt,
             closeAt: body.closeAt ?? existingForm.closeAt,
             status: body.status ?? existingForm.status,
+            allowAnonymous: body.allowAnonymous ?? existingForm.allowAnonymous,
+            analyticsEnabled: body.analyticsEnabled ?? existingForm.analyticsEnabled,
+            description: body.description?.trim() ?? existingForm.description,
+            name: body.name?.trim() ?? existingForm.name,
+            theme: body.theme ?? existingForm.theme,
             updatedAt: new Date(),
         },
     });

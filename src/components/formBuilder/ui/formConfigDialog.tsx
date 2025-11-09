@@ -12,7 +12,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Form as FormType } from '@/generated/prisma';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
-import { FormUpdate } from '@/types/db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BarChart2, Bolt, ChevronDown, Clock, ImagePlus, MonitorSmartphone, Replace, Shield, Trash2, Users2 } from 'lucide-react';

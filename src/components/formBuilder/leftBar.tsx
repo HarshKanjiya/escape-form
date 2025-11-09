@@ -7,9 +7,8 @@ import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
 import { FileText, Menu, PenLine, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import FormConfigDialog from './ui/formConfigDialog';
-import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
 export default function LeftBar() {
 
@@ -136,7 +135,7 @@ export default function LeftBar() {
                         <div className='w-full h-full flex flex-col gap-2'>
                             <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b h-[53px]'>
                                 <span className={cn('text-md overflow-ellipsis line-clamp-1', isExpanded ? 'visible' : 'hidden')}>{formName}</span>
-                                <div className='flex items-center gap-2'>
+                                {/* <div className='flex items-center gap-2'>
                                     <Tooltip delayDuration={100}>
                                         <TooltipTrigger asChild>
                                             <Button size={'icon'} variant={'ghost'}>
@@ -145,7 +144,7 @@ export default function LeftBar() {
                                         </TooltipTrigger>
                                         <TooltipContent>Edit Form Name</TooltipContent>
                                     </Tooltip>
-                                </div>
+                                </div> */}
                             </div>
                             <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-1'>
                                 {questions.length > 0 ? (

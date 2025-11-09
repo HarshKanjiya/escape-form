@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGlobalStore } from "@/store/useStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { BellIcon, MegaphoneOffIcon, MoreVerticalIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -40,7 +40,7 @@ const NotificationDropdown = () => {
                     <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
                         1
                     </Badge>
-                    <Button variant='outline' size='icon'>
+                    <Button variant='outline' size='icon' className="shadow-none">
                         <BellIcon className="w-4 h-4" />
                     </Button>
                 </div>
@@ -58,7 +58,7 @@ const NotificationDropdown = () => {
                             </TabsList>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant='outline' size='icon' className="!bg-accent rounded-lg">
+                                    <Button variant='ghost' size='icon' className="rounded-lg shadow-none">
                                         <MoreVerticalIcon className="w-4 h-4" />
                                     </Button>
                                 </DropdownMenuTrigger>

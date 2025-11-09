@@ -19,6 +19,13 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         orderBy: { createdAt: 'desc' },
         take: limit,
         skip: offset,
+        include: {
+            _count: {
+                select: {
+                    responses: true
+                }
+            }
+        }
     })
 
     return createActionSuccess(forms, getSuccessMessage('Forms'));
