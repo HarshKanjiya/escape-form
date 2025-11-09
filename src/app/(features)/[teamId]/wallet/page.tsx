@@ -3,6 +3,11 @@ import TransactionHistory from "@/components/teams/wallet/transactionHistory";
 import { WalletCard } from "@/components/teams/wallet/walletCard";
 import { Wallet } from "lucide-react";
 
+export const metadata = {
+    title: "Wallet | Escape Form",
+    description: "Manage your credits and transfer funds with ease.",
+}
+
 export default function WalletPage() {
     return (
         <div className="container mx-auto px-4 py-6">
