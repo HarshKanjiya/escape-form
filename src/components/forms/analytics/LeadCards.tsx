@@ -18,18 +18,18 @@ export default function LeadCards() {
                     <div>
                         <p className="text-sm mb-3">Today's Responses</p>
                         <div className="flex items-end gap-3 ">
-                            <h2 className="text-5xl font-bold text-white tracking-tight">3</h2>
+                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">3</h2>
                             <div className="text-emerald-300 flex items-center gap-1">
-                                <span>23%</span>
+                                <span className="font-mono">23%</span>
                                 <TrendingUpIcon className="h-6 w-6 text-emerald-300 rounded-full p-0.5" />
                             </div>
                         </div>
                     </div>
 
                     <div className="flex justify-between items-end pt-4 border-t border-white/40">
-                        <div>
-                            <p className="text-primary-50 text-sm font-semibold mb-1 ">Total</p>
+                        <div className="flex gap-2 items-end">
                             <p className="font-mono font-semibold text-lg">154</p>
+                            <p className="text-primary-50 text-sm font-semibold mb-1 ">Total</p>
                         </div>
                     </div>
                 </CardContent>

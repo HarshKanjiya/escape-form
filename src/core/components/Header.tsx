@@ -81,7 +81,6 @@ export default function Header({ }) {
                 </div>
             </div>
             <div className="flex items-center gap-3">
-                <Separator orientation="vertical" className="!h-8" />
                 {
                     true ? (
                         <Link href={`/${activeTeam?.id}/upgrade`} >

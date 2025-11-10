@@ -122,62 +122,64 @@ export default function FlowEditor() {
     const gridTransform = `translate(${viewport.x % (FLOW_CONFIG.gridSize * viewport.zoom)}, ${viewport.y % (FLOW_CONFIG.gridSize * viewport.zoom)}) scale(${viewport.zoom})`;
 
     return (
-        <div
-            ref={containerRef}
-            className="flex-1 relative w-full h-full overflow-hidden select-none"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onWheel={handleWheel}
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-        >
-            {/* Grid Background */}
+        <div className="relative flex-1 h-full w-full">
             <div
-                className="absolute inset-0 pointer-events-none opacity-30"
-                style={{
-                    backgroundImage: `radial-gradient(circle, hsl(var(--foreground)) ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
-                    backgroundSize: `${30 * viewport.zoom}px ${30 * viewport.zoom}px`,
-                    backgroundPosition: `${viewport.x % (30 * viewport.zoom)}px ${viewport.y % (30 * viewport.zoom)}px`,
-                }}
-            />
-            {/* Grid Background for Dark Mode */}
-            <div
-                className="absolute inset-0 pointer-events-none opacity-30 dark:block hidden"
-                style={{
-                    backgroundImage: `radial-gradient(circle, #94a3b8 ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
-                    backgroundSize: `${30 * viewport.zoom}px ${30 * viewport.zoom}px`,
-                    backgroundPosition: `${viewport.x % (30 * viewport.zoom)}px ${viewport.y % (30 * viewport.zoom)}px`,
-                }}
-            />
-
-            {/* Content Area - This is where you'll add your flow nodes */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-                    transformOrigin: '0 0',
-                }}
+                ref={containerRef}
+                className="flex-1 relative w-full h-full overflow-hidden select-none"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onWheel={handleWheel}
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             >
-                {/* Your flow content will go here */}
-                <div className="w-full h-full">
-                    {/* Example node - you can replace this with your actual flow nodes */}
-                    <div
-                        className="absolute bg-background border-2 border-border rounded-lg p-4 shadow-lg pointer-events-auto"
-                        style={{
-                            left: '200px',
-                            top: '100px',
-                            width: '150px',
-                            height: '100px',
-                        }}
-                    >
-                        <div className="text-sm font-medium text-foreground">Sample Node</div>
-                        <div className="text-xs text-muted-foreground mt-1">Draggable node</div>
+                {/* Grid Background */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-30"
+                    style={{
+                        backgroundImage: `radial-gradient(circle, hsl(var(--foreground)) ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
+                        backgroundSize: `${30 * viewport.zoom}px ${30 * viewport.zoom}px`,
+                        backgroundPosition: `${viewport.x % (30 * viewport.zoom)}px ${viewport.y % (30 * viewport.zoom)}px`,
+                    }}
+                />
+                {/* Grid Background for Dark Mode */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-30 dark:block hidden"
+                    style={{
+                        backgroundImage: `radial-gradient(circle, #94a3b8 ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
+                        backgroundSize: `${30 * viewport.zoom}px ${30 * viewport.zoom}px`,
+                        backgroundPosition: `${viewport.x % (30 * viewport.zoom)}px ${viewport.y % (30 * viewport.zoom)}px`,
+                    }}
+                />
+
+                {/* Content Area - This is where you'll add your flow nodes */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
+                        transformOrigin: '0 0',
+                    }}
+                >
+                    {/* Your flow content will go here */}
+                    <div className="w-full h-full">
+                        {/* Example node - you can replace this with your actual flow nodes */}
+                        <div
+                            className="absolute bg-background border-2 border-border rounded-lg p-4 shadow-lg pointer-events-auto"
+                            style={{
+                                left: '200px',
+                                top: '100px',
+                                width: '150px',
+                                height: '100px',
+                            }}
+                        >
+                            <div className="text-sm font-medium text-foreground">Sample Node</div>
+                            <div className="text-xs text-muted-foreground mt-1">Draggable node</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div >
             {/* Zoom Controls */}
-            <div className="absolute bottom-4 left-4 flex gap-2 z-10" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
+            <div className="absolute bottom-4 left-4 flex gap-2 z-[999]" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
                 <div className="bg-secondary rounded px-2 py-1 text-xs text-center min-w-[60px] w-52 flex items-center justify-center gap-3">
                     <Slider
                         value={[((viewport.zoom - FLOW_CONFIG.minZoom) / (FLOW_CONFIG.maxZoom - FLOW_CONFIG.minZoom)) * 100]}
@@ -227,6 +229,6 @@ export default function FlowEditor() {
                     <RotateCcw />
                 </Button>
             </div>
-        </div >
+        </div>
     );
 }
