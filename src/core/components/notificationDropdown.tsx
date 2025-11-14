@@ -36,7 +36,7 @@ const NotificationDropdown = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <div className="mr-3 relative">
+                <div className="relative">
                     <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
                         1
                     </Badge>

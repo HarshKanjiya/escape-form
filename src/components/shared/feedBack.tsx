@@ -77,9 +77,8 @@ export function FeedbackModel({
                 {children ? (
                     children
                 ) : (
-                    <Button variant="outline" className="sm:w-auto rounded-full px-3">
-                        <MessageSquare className="w-4 h-4 mx-2 sm:ml-0" />
-                        <p className="hidden sm:block">Feedback</p>
+                    <Button variant={'outline'} size='icon' className='shadow-none'>
+                        <MessageSquare className="w-5 h-5" />
                     </Button>
                 )}
             </DialogTrigger>

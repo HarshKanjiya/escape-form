@@ -5,7 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Server Error - Escape Form",
     description: "Something went wrong on our end.",
-    applicationName: "Esacape Form",
+    applicationName: "Escape Form",
     creator: "Escape Form",
     authors: [{ name: "Escape Form", url: "https://escform.com" }],
     publisher: "Escape Form",

@@ -4,7 +4,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Unauthorized - Escape Form",
     description: "You are not authorized to access this page",
-    applicationName: "Esacape Form",
+    applicationName: "Escape Form",
     creator: "Escape Form",
     authors: [{ name: "Escape Form", url: "https://escform.com" }],
     publisher: "Escape Form",

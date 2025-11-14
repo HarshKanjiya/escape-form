@@ -13,6 +13,8 @@ import AssistantTrigger from "./assistantTrigger";
 import NotificationDropdown from "./notificationDropdown";
 import ProfileDropdown from "./profileDropdown";
 import TeamsDropdown from "@/components/teams/TeamsDropdown";
+import { FeedbackModel } from "@/components/shared/feedBack";
+import { Separator } from "@/components/ui/separator";
 
 const paths = [
     'analytics',
@@ -83,7 +85,7 @@ export default function Header({ }) {
                 {
                     true ? (
                         <Link href={`/${activeTeam?.id}/upgrade`} >
-                            <Button variant='ghost' className="flex shadow-none items-center justify-center gap-2 rounded-full !pl-2 pr-3 text-primary border-primary/30 border hover:bg-primary-100 hover:text-primary-500">
+                            <Button variant='ghost' className="flex shadow-none items-center justify-center gap-2 rounded-full text-primary border-primary/30 border hover:bg-primary-100 hover:text-primary-500">
                                 <CircleFadingArrowUpIcon className="!h-5 !w-5" />
                                 Upgrade
                             </Button>
@@ -93,7 +95,7 @@ export default function Header({ }) {
                 {
                     activeTeam ? (
                         <Link href={`/${activeTeam?.id}/wallet`} >
-                            <Button variant='outline' className="flex shadow-none items-center justify-center gap-2 rounded-full pl-2 pr-3">
+                            <Button variant='outline' className="flex shadow-none items-center justify-center gap-2 rounded-full">
                                 <CreditIcon className="!h-5 !w-5 text-muted-foreground" />
                                 133.54
                             </Button>
@@ -103,6 +105,8 @@ export default function Header({ }) {
 
                 <AssistantTrigger />
                 <NotificationDropdown />
+                <Separator orientation="vertical" className="!h-7" />
+                <FeedbackModel />
                 <ProfileDropdown />
             </div>
         </div >

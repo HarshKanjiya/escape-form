@@ -5,7 +5,6 @@ import { Team } from '@/generated/prisma';
 import { prisma } from "@/lib/prisma";
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
@@ -21,31 +20,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   adjustFontFallback: false
 });
-
-// export const metadata: Metadata = {
-//   title: "EscapeForm - Advanced Form Builder",
-//   description: "Create beautiful forms with team collaboration and advanced analytics",
-// };
-
-
-export const metadata: Metadata = {
-  title: "Escape Form - Advance Form Builder",
-  description: "Create beautiful forms with team collaboration and advanced analytics",
-  applicationName: "Esacape Form",
-  keywords: "escape form, esc form, esc form sign in, escape form sign in, form builder, online forms, form management, data collection, surveys, team collaboration",
-  creator: "Escape Form",
-  authors: [{ name: "Escape Form", url: "https://escform.com" }],
-  publisher: "Escape Form",
-  openGraph: {
-    title: "Escape Form - Advance Form Builder",
-    description: "Create beautiful forms with team collaboration and advanced analytics",
-    url: "https://dashboard.escform.com/",
-    siteName: "Escape Form",
-    type: "website",
-  }
-}
-
-
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 

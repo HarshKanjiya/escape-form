@@ -4,7 +4,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Sign Up - Escape Form",
     description: "Welcome to escForm. Log in securely to manage your forms, view submission data, and collaborate with your team",
-    applicationName: "Esacape Form",
+    applicationName: "Escape Form",
     keywords: "escape form, esc form, esc form sign up, escape form sign up, form builder, online forms, form management, data collection, surveys, team collaboration",
     creator: "Escape Form",
     authors: [{ name: "Escape Form", url: "https://escform.com" }],
