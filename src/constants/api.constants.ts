@@ -2,26 +2,26 @@ import { objToQueryString } from "@/lib/utils";
 
 export const apiConstants = {
     team: {
-        getTeams: (data: Record<string, any> = {}) => getUrlWithParams(`team`, data),
-        getAllTeams: () => `team/all`,
-        getUserTeams: () => `team/byUserId`,
-        createTeam: () => 'team',
-        updateTeam: (id: string) => `team/${id}`,
-        deleteTeam: (id: string) => `team/${id}`
+        getTeams: (data: Record<string, any> = {}) => getUrlWithParams(`teams`, data),
+        getAllTeams: () => `teams/all`,
+        getUserTeams: () => `teams/byUserId`,
+        createTeam: () => 'teams',
+        updateTeam: (id: string) => `teams/${id}`,
+        deleteTeam: (id: string) => `teams/${id}`
     },
     project: {
-        getProjects: (data: Record<string, any>) => getUrlWithParams(`project`, data),
-        getProjectById: (id: string) => `project/${id}`,
-        createProject: () => 'project',
-        updateProject: (id: string) => `project/${id}`,
-        deleteProject: (id: string) => `project/${id}`
+        getProjects: (data: Record<string, any>) => getUrlWithParams(`projects`, data),
+        getProjectById: (id: string) => `projects/${id}`,
+        createProject: () => 'projects',
+        updateProject: (id: string) => `projects/${id}`,
+        deleteProject: (id: string) => `projects/${id}`
     },
     form: {
-        getForms: (projectId: string) => `form?projectId=${projectId}`,
-        getFormById: (id: string) => `form/${id}`,
-        createForm: () => 'form',
-        updateForm: (id: string) => `form/${id}`,
-        deleteForm: (id: string) => `form/${id}`
+        getForms: (projectId: string) => `forms?projectId=${projectId}`,
+        getFormById: (id: string) => `forms/${id}`,
+        createForm: () => 'forms',
+        updateForm: (id: string) => `forms/${id}`,
+        deleteForm: (id: string) => `forms/${id}`
     }
 
 };
