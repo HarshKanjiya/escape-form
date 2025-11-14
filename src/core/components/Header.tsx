@@ -1,19 +1,18 @@
 "use client";
 
 import { CreditIcon } from "@/components/shared/creditIcon";
-import TeamsDropdown from "@/components/teams/teamsDropdown";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { ROUTES } from "@/constants/routes.constants";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { ChevronRightIcon, CircleFadingArrowUpIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import NotificationDropdown from "./notificationDropdown";
-import ProfileDropdown from "./profileDropdown";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ROUTES } from "@/constants/routes.constants";
 import AssistantTrigger from "./assistantTrigger";
+import NotificationDropdown from "./notificationDropdown";
+import ProfileDropdown from "./profileDropdown";
+import TeamsDropdown from "@/components/teams/TeamsDropdown";
 
 const paths = [
     'analytics',

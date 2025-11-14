@@ -1,23 +1,25 @@
-"use client"
+import Home from "@/components/base/home";
+import { Metadata } from "next";
 
-import { useGlobalStore } from "@/store/useGlobalStore";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+export const metadata: Metadata = {
+  title: "Home - Escape Form",
+  description: "Welcome to Escape Form, your ultimate solution for creating, managing, and analyzing online forms with ease. Sign in to access your dashboard and start building powerful forms today.",
+  applicationName: "Esacape Form",
+  keywords: "escape form, esc form, esc form sign in, escape form sign in, form builder, online forms, form management, data collection, surveys, team collaboration",
+  creator: "Escape Form",
+  authors: [{ name: "Escape Form", url: "https://escform.com" }],
+  publisher: "Escape Form",
+  openGraph: {
+    title: "Home - Escape Form",
+    description: "Welcome to Escape Form, your ultimate solution for creating, managing, and analyzing online forms with ease. Sign in to access your dashboard and start building powerful forms today.",
+    url: "https://dashboard.escform.com/",
+    siteName: "Escape Form",
+    type: "website",
+  }
+}
 
-export default function Home() {
-  const teams = useGlobalStore((state) => state.teams);
-  useEffect(() => {
-    if (teams?.length) {
-      redirect(teams[0].id)
-    }
-  }, [teams]);
-
+export default function Page() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold mb-2">Loading...</h1>
-        <p className="text-muted-foreground">Redirecting to your dashboard</p>
-      </div>
-    </div>
+    <Home />
   );
 }

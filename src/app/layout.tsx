@@ -22,10 +22,29 @@ const geistMono = Geist_Mono({
   adjustFontFallback: false
 });
 
+// export const metadata: Metadata = {
+//   title: "EscapeForm - Advanced Form Builder",
+//   description: "Create beautiful forms with team collaboration and advanced analytics",
+// };
+
+
 export const metadata: Metadata = {
-  title: "EscapeForm - Advanced Form Builder",
+  title: "Escape Form - Advance Form Builder",
   description: "Create beautiful forms with team collaboration and advanced analytics",
-};
+  applicationName: "Esacape Form",
+  keywords: "escape form, esc form, esc form sign in, escape form sign in, form builder, online forms, form management, data collection, surveys, team collaboration",
+  creator: "Escape Form",
+  authors: [{ name: "Escape Form", url: "https://escform.com" }],
+  publisher: "Escape Form",
+  openGraph: {
+    title: "Escape Form - Advance Form Builder",
+    description: "Create beautiful forms with team collaboration and advanced analytics",
+    url: "https://dashboard.escform.com/",
+    siteName: "Escape Form",
+    type: "website",
+  }
+}
+
 
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {

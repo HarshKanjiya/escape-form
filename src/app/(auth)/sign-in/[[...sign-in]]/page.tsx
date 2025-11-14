@@ -1,24 +1,30 @@
-"use client"
+import SignInComponent from "@/components/base/signIn";
+import { Metadata } from "next";
 
-import { ROUTES } from "@/constants/routes.constants";
-import { SignedOut, SignIn, useAuth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+    title: "Sign In - Escape Form",
+    description: "Welcome back to escForm. Log in securely to manage your forms, view submission data, and collaborate with your team",
+    applicationName: "Esacape Form",
+    keywords: "escape form, esc form, esc form sign in, escape form sign in, form builder, online forms, form management, data collection, surveys, team collaboration",
+    creator: "Escape Form",
+    authors: [{ name: "Escape Form", url: "https://escform.com" }],
+    publisher: "Escape Form",
+    openGraph: {
+        title: "Sign In - Escape Form",
+        description: "Welcome back to escForm. Log in securely to manage your forms, view submission data, and collaborate with your team",
+        url: "https://dashboard.escform.com/sign-in",
+        siteName: "Escape Form",
+        type: "website",
+    }
+}
+
 
 export default function LoginPage() {
-    const { isSignedIn } = useAuth();
-
-    if (isSignedIn) {
-        redirect(ROUTES.home());
-    }
 
     return (
         <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-            <SignedOut>
-                <SignIn
-                    routing="hash"
-                    signUpUrl="/sign-up"
-                    fallbackRedirectUrl="/" />
-            </SignedOut>
+            <SignInComponent />
         </div>
     )
 }

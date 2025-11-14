@@ -19,7 +19,6 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.__prisma = prisma;
 }
 
-export type { User, Team, Project, Form, Response } from '../generated/prisma';
 
 export { Prisma };
 
