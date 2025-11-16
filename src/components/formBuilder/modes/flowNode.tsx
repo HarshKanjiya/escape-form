@@ -3,6 +3,7 @@
 import { IQuestion } from "@/types/form";
 import { useCallback, useEffect, useRef } from "react";
 import QuestionIcon from "../ui/questionIcon";
+import { FlowerIcon, SplitIcon } from "lucide-react";
 
 
 export const FlowNode = ({ node, x, y, zoom, positionChange }: { node: IQuestion, x: number, y: number, zoom: number, positionChange: (id: any, position: { x: number, y: number }) => void }) => {
@@ -70,14 +71,13 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: { node: IQuestion
                 }}
                 onMouseDown={handleMouseDown}
             >
-                {/* Left Edge Point */}
-                <div className="absolute top-1/2 -translate-y-1/2 -left-8 cursor-grab">
+                {/* <div className="absolute top-1/2 -translate-y-1/2 -left-8 cursor-grab">
                     <div className="h-4 w-4 rounded-full bg-primary-400">
                     </div>
-                </div>
-                {/* Right Edge Point */}
+                </div> */}
                 <div className="absolute top-1/2 -translate-y-1/2 -right-8 cursor-crosshair">
-                    <div className="h-4 w-4 rounded-full bg-primary-400">
+                    <div className="rounded-full bg-primary-400">
+                        <SplitIcon className="rotate-90 h-6 w-6 p-1.5 text-white" />
                     </div>
                 </div>
                 {/* Node */}
