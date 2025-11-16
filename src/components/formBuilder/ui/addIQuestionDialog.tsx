@@ -4,7 +4,7 @@ import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Check, Plus, Search } from "lucide-react";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Input } from "../../ui/input";
@@ -164,6 +164,19 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
     const [query, setQuery] = useState("");
     const [activeSection, setActiveSection] = useState<string>("All");
 
+    // Add Event listner for ctrl + I
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+                e.preventDefault();
+                setOpen((prev) => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     const save = useCallback(() => {
         if (selectedField) {
             addQuestions([selectedField]);
@@ -200,7 +213,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 ) : (
                     <Tooltip delayDuration={300}>
                         <TooltipTrigger asChild>
-                            <Button variant={'secondary'}>
+                            <Button variant={'secondary'} onClick={() => setOpen(true)}>
                                 <Plus className="mr-1" />
                                 <span>Add Field</span>
                             </Button>

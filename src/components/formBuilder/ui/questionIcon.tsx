@@ -20,7 +20,7 @@ const iconMapping: Record<eQuestionType, LucideIcon> = {
     // [eQuestionType.imageChoiceRating]: Images,
 };
 
-export default function QuestionIcon({ questionType, size = 16, ...props }: { questionType: eQuestionType; size?: number }) {
+export default function QuestionIcon({ questionType, size = 16, ...props }: { questionType: eQuestionType; size?: number, [key: string]: any }) {
     const Icon = iconMapping[questionType];
     return (
         <div>

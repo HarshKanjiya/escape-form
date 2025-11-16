@@ -325,7 +325,7 @@ const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: nu
         placeholder: `Enter your answer`,
         required: false,
         options: type === eQuestionType.checkbox || type === eQuestionType.radio ? ['Option 1', 'Option 2'] : undefined,
-        position: { x: (exeLen + index) * 200, y: 200 },
+        position: { x: (exeLen + index) * 400, y: 200 },
     };
 
     switch (type) {

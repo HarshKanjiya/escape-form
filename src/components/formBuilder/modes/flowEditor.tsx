@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FlowNodeWrapper } from "./flowNode";
+import { useFormBuilder } from "@/store/useFormBuilder";
 
 // Configuration object for the flow editor
 const FLOW_CONFIG = {
@@ -21,6 +23,7 @@ interface ViewportState {
 }
 
 export default function FlowEditor() {
+    const { selectedQuestion, questions, setSelectedQuestionId } = useFormBuilder();
     const containerRef = useRef<HTMLDivElement>(null);
     const [viewport, setViewport] = useState<ViewportState>({
         x: 0,
@@ -33,11 +36,11 @@ export default function FlowEditor() {
 
     // Handle mouse down for starting drag
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        if (e.button === 0) { // Left mouse button
+        if (e.button === 0) {
+            e.preventDefault();
             setIsDragging(true);
             setDragStart({ x: e.clientX, y: e.clientY });
             setLastPointerPos({ x: e.clientX, y: e.clientY });
-            e.preventDefault();
         }
     }, []);
 
@@ -132,9 +135,9 @@ export default function FlowEditor() {
             >
                 {/* Grid Background */}
                 <div
-                    className="absolute inset-0 pointer-events-none opacity-30"
+                    className="absolute inset-0 pointer-events-none opacity-40"
                     style={{
-                        backgroundImage: `radial-gradient(circle, hsl(var(--foreground)) ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
+                        backgroundImage: `radial-gradient(circle, var(--foreground) ${viewport.zoom}px, transparent ${viewport.zoom}px)`,
                         backgroundSize: `${30 * viewport.zoom}px ${30 * viewport.zoom}px`,
                         backgroundPosition: `${viewport.x % (30 * viewport.zoom)}px ${viewport.y % (30 * viewport.zoom)}px`,
                     }}
@@ -150,30 +153,7 @@ export default function FlowEditor() {
                 />
 
                 {/* Content Area - This is where you'll add your flow nodes */}
-                <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-                        transformOrigin: '0 0',
-                    }}
-                >
-                    {/* Your flow content will go here */}
-                    <div className="w-full h-full">
-                        {/* Example node - you can replace this with your actual flow nodes */}
-                        <div
-                            className="absolute bg-background border-2 border-border rounded-lg p-4 shadow-lg pointer-events-auto"
-                            style={{
-                                left: '200px',
-                                top: '100px',
-                                width: '150px',
-                                height: '100px',
-                            }}
-                        >
-                            <div className="text-sm font-medium text-foreground">Sample Node</div>
-                            <div className="text-xs text-muted-foreground mt-1">Draggable node</div>
-                        </div>
-                    </div>
-                </div>
+                <FlowNodeWrapper nodes={questions} x={viewport.x} y={viewport.y} zoom={viewport.zoom} />
             </div >
             {/* Zoom Controls */}
             <div className="absolute bottom-4 left-4 flex gap-2 z-[999]" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
