@@ -8,7 +8,7 @@ interface Props {
     onChange?: (value: string) => void;
 }
 
-export default function RenderWebsiteField({ question, value, onChange }: Props) {
+export default function RenderWebsiteField({ }: Props) {
     return (
         <div className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
             Website Field Placeholder

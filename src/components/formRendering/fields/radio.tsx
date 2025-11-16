@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { IQuestion } from "@/types/form";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface Props {
     question: IQuestion;

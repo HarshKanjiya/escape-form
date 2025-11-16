@@ -8,7 +8,7 @@ interface Props {
     onChange?: (value: string) => void;
 }
 
-export default function RenderFileField({ question, value, onChange }: Props) {
+export default function RenderFileField({ }: Props) {
     return (
         <div className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
             Address Field Placeholder

@@ -15,6 +15,7 @@ import { useFormBuilder } from '@/store/useFormBuilder';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BarChart2, Bolt, ChevronDown, Clock, ImagePlus, MonitorSmartphone, Replace, Shield, Trash2, Users2 } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
@@ -151,7 +152,7 @@ export default function FormConfigDialog() {
                                             />
                                             {field.value ? (
                                                 <div className='w-full h-full relative'>
-                                                    <img src={field.value} alt='Logo preview' className='object-cover w-full h-full rounded-lg transition-all group-hover:brightness-90' />
+                                                    <Image src={field.value} alt='Logo preview' className='object-cover w-full h-full rounded-lg transition-all group-hover:brightness-90' />
                                                     <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 flex flex-col items-center justify-end gap-2  text-xs text-white transition-opacity'>
                                                         <div className='flex w-full gap-2 py-2 items-center justify-center'>
                                                             <Button type='button' size='icon' variant='secondary' onClick={() => document.getElementById('logoUploadInput')?.click()}>

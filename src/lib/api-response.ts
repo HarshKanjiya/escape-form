@@ -149,21 +149,21 @@ export function createDatabaseErrorResponse(
 /**
  * Handle Prisma errors and convert to standardized responses
  */
-export function handlePrismaError(error: any): NextResponse<ActionResponse> {
+export function handlePrismaError(error: unknown): NextResponse<ActionResponse> {
     console.error('Prisma error:', error);
 
     // Handle specific Prisma errors
-    if (error.code === 'P2002') {
+    if (typeof error == 'object' && error !== null && 'code' in error && error['code'] === 'P2002') {
         // Unique constraint violation
         return createConflictResponse('A record with this data already exists');
     }
 
-    if (error.code === 'P2025') {
+    if (typeof error == 'object' && error !== null && 'code' in error && error['code'] === 'P2025') {
         // Record not found
         return createNotFoundResponse('The requested record was not found');
     }
 
-    if (error.code === 'P2003') {
+    if (typeof error == 'object' && error !== null && 'code' in error && error['code'] === 'P2003') {
         // Foreign key constraint violation
         return createValidationErrorResponse(
             { reference: ['Referenced record does not exist'] },
@@ -171,7 +171,7 @@ export function handlePrismaError(error: any): NextResponse<ActionResponse> {
         );
     }
 
-    if (error.code === 'P2014') {
+    if (typeof error == 'object' && error !== null && 'code' in error && error['code'] === 'P2014') {
         // Required relation violation
         return createValidationErrorResponse(
             { relation: ['Required relation is missing'] },
@@ -192,7 +192,7 @@ export function createPaginatedResponse<T>(
     limit: number,
     total: number,
     message: string = 'Data retrieved successfully'
-): NextResponse<ActionResponse<{ items: T[]; pagination: any }>> {
+): NextResponse<ActionResponse<{ items: T[]; pagination: unknown }>> {
     const totalPages = Math.ceil(total / limit);
 
     const responseData = {
@@ -216,7 +216,7 @@ export function createPaginatedResponse<T>(
  * Validate required fields in request body
  */
 export function validateRequiredFields(
-    body: Record<string, any>,
+    body: Record<string, unknown>,
     requiredFields: string[]
 ): Record<string, string[]> | null {
     const errors: Record<string, string[]> = {};
@@ -279,67 +279,28 @@ export function createActionValidationError(
 }
 
 /**
- * Handle errors in server actions
- */
-export function handleActionError(error: any): NextResponse<ActionResponse> {
-    console.error('Server Action Error:', error);
-
-    if (error.code && error.code.startsWith('P')) {
-        // Handle Prisma errors
-        if (error.code === 'P2002') {
-            return createActionError('A record with this data already exists');
-        }
-        if (error.code === 'P2025') {
-            return createActionError('The requested record was not found');
-        }
-        return createActionError('Database operation failed');
-    }
-
-    if (error.name === 'ValidationError') {
-        return createActionValidationError(error.message || 'Validation failed');
-    }
-
-    return createActionError('An unexpected error occurred');
-}
-
-/**
- * Async error handler wrapper for server actions
- */
-// export function withActionErrorHandler<T extends any[], R>(
-//     fn: (...args: T) => Promise<ActionResponse<R>>
-// ) {
-//     return async (...args: T): Promise<ActionResponse<R | undefined>> => {
-//         try {
-//             return await fn(...args);
-//         } catch (error: any) {
-//             return handleActionError(error);
-//         }
-//     };
-// }
-
-/**
  * Async error handler wrapper for API routes
  */
-export function withErrorHandler<T extends any[], R>(
+export function withErrorHandler<T extends unknown[], R>(
     fn: (...args: T) => Promise<R>
 ) {
     return async (...args: T): Promise<R | NextResponse<ActionResponse>> => {
         try {
             return await fn(...args);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('API Error:', error);
 
             // Handle Prisma errors specifically
+            // @ts-expect-error TYPE ERROR
             if (error.code && error.code.startsWith('P')) {
                 return handlePrismaError(error);
             }
 
             // Handle validation errors
+            // @ts-expect-error TYPE ERROR
             if (error.name === 'ValidationError') {
-                return createValidationErrorResponse(
-                    error.errors || {},
-                    error.message || 'Validation failed'
-                );
+                // @ts-expect-error TYPE ERROR
+                return createValidationErrorResponse(error.errors || {}, error.message || 'Validation failed');
             }
 
             // Generic internal server error

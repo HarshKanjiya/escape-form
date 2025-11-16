@@ -13,10 +13,10 @@ interface Props {
     onChange?: (value: string) => void;
 }
 
-export default function RenderLongQuestion({ question, value = "", onChange, }: Props) {
+export default function RenderLongQuestion({ question, onChange, }: Props) {
 
     const [answer, setAnswer] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
+    // const [errors, setErrors] = useState<string[]>([]);
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

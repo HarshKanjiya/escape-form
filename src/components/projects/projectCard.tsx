@@ -62,7 +62,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <div className="text-sm text-muted-foreground flex items-center justify-between w-full border-t pt-4">
             <div className="flex items-center gap-2">
               <DatabaseIcon className="w-4 h-4 inline-block" />
-              {/* @ts-expect-error */}
+              {/* @ts-expect-error _count not added in generated type*/}
               <span>{project?._count?.forms || 0} Forms</span>
             </div>
             <div className="flex items-center gap-2">

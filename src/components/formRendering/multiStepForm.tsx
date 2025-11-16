@@ -21,12 +21,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { eQuestionType } from "@/enums/form";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import RenderShortQuestion from "./fields/shortQuestion";
 import RenderField from "./fields/renderField";
 
 interface Props {
@@ -71,7 +69,7 @@ export default function RenderMultiStepForm({ questions }: Props) {
         const difference = targetProgress - startProgress;
         const duration = 800; // 800ms animation
         const steps = 30; // Number of animation steps
-        const stepValue = difference / steps;
+        // const stepValue = difference / steps;
         const stepDuration = duration / steps;
 
         let currentAnimationStep = 0;

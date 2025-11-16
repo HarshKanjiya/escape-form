@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Project } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { Eye, EyeIcon, Settings, Trash2 } from "lucide-react";
+import { EyeIcon, Settings, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 

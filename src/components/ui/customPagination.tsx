@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
-import { Button, buttonVariants } from "./button";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./pagination";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button, buttonVariants } from "./button";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink } from "./pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
 interface CustomPaginationProps {
     page: number;

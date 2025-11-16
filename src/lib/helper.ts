@@ -1,4 +1,3 @@
-import { REGEX } from '@/constants/common';
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
 import { createAuthErrorResponse } from './api-response';
@@ -19,10 +18,11 @@ export async function validateAuth() {
 /**
  * Parse request body with error handling
  */
-export async function parseRequestBody<T = any>(request: NextRequest): Promise<T> {
+export async function parseRequestBody<T = unknown>(request: NextRequest): Promise<T> {
   try {
     return await request.json();
   } catch (error) {
+    console.error('Error parsing JSON:', error);
     throw new Error('Invalid JSON in request body');
   }
 }

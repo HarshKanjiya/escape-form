@@ -88,8 +88,8 @@ const responses: Response[] = [
 ];
 
 const PreviewResponses = () => {
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
+    // const [loading, setLoading] = useState(false);
+    // const [data, setData] = useState([]);
 
 
     return (

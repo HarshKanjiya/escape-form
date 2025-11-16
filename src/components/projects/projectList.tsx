@@ -11,7 +11,7 @@ import api from "@/lib/axios";
 import { showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
-import { FolderIcon, FoldersIcon, LayoutGrid, List, Search, X } from "lucide-react";
+import { FoldersIcon, LayoutGrid, List, Search, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IconCard } from "../shared/iconCard";

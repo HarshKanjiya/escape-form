@@ -12,7 +12,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
     const search = request.nextUrl.searchParams.get('search') || '';
 
-    let where: Record<string, Object> = { ownerId: user.id };
+    let where: Record<string, unknown> = { ownerId: user.id };
     if (search) {
         where = {
             ownerId: user.id,
@@ -38,7 +38,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     const { user, error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
 
-    const body = await parseRequestBody(request);
+    const body = await parseRequestBody<{ name: string }>(request);
     const validationErrors = validateRequiredFields(body, ['name']);
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
 

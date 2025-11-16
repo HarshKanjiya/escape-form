@@ -1,21 +1,21 @@
 
 "use client";
-import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     Dialog,
-    DialogTrigger,
+    DialogClose,
     DialogContent,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogFooter,
-    DialogClose,
+    DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MessageSquare, Paperclip, X as XIcon } from "lucide-react";
+import * as React from "react";
 
 interface FeedbackModelProps {
     dialogTitle?: React.ReactNode;
@@ -39,9 +39,9 @@ export function FeedbackModel({
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
 
-    function handlePickFiles() {
-        fileInputRef.current?.click();
-    }
+    // function handlePickFiles() {
+    //     fileInputRef.current?.click();
+    // }
 
     function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
         const next = Array.from(e.target.files ?? []);

@@ -15,7 +15,7 @@ interface Props {
 export default function RenderCheckBoxField({ question, value, onChange }: Props) {
 
     const [selectedOptions, setSelectedOptions] = useState<string[]>(value || []);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, _] = useState<string[]>([]);
 
     // Update internal state when external value changes
     useEffect(() => {

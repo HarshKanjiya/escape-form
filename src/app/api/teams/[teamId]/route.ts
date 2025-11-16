@@ -9,7 +9,7 @@ export const PATCH = withErrorHandler(async (request: NextRequest, { params }: {
     const { user, error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
 
-    const body = await parseRequestBody(request);
+    const body = await parseRequestBody<{ name: string, ownerId?: string }>(request);
     const validationErrors = validateRequiredFields(body, ['name']);
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);
 

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Team } from "@/generated/prisma";
 import { formatDate } from "@/lib/utils";
-import { Building2, Calendar, Folders, MoreHorizontal } from "lucide-react";
+import { Folders, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 interface TeamCardProps {
@@ -49,7 +49,7 @@ export function TeamCard({ team }: TeamCardProps) {
                     <div className="text-sm text-muted-foreground flex items-center justify-between w-full border-t pt-4">
                         <div className="flex items-center gap-2">
                             <Folders className="w-4 h-4 inline-block" />
-                            {/* @ts-expect-error */}
+                            {/* @ts-expect-error _count not added in generated type */}
                             <span>{team?._count?.projects || 0} Projects</span>
                         </div>
                         <div className="flex items-center gap-2">

@@ -88,7 +88,7 @@ export function FormCard({ form, projectId, teamId }: FormCardProps) {
                     <div className="text-sm text-muted-foreground flex items-center justify-between w-full border-t pt-4">
                         <div className="flex items-center gap-2">
                             <SaveAllIcon className="w-4 h-4 inline-block" />
-                            {/* @ts-expect-error */}
+                            {/* @ts-expect-error _count not added in generated type*/}
                             <span>{form?._count?.responses || 0} Responses</span>
                         </div>
                         <div className="flex items-center gap-2">

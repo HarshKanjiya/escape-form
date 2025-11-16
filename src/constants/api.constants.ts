@@ -26,7 +26,7 @@ export const apiConstants = {
 
 };
 
-const getUrlWithParams = (baseUrl: string, params: Record<string, any>): string => {
+const getUrlWithParams = (baseUrl: string, params: Record<string, string | number>): string => {
     const paramStr = objToQueryString(params);
     return `${baseUrl}?${paramStr}`;
 }

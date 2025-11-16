@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function HydrateTeams({ children, teams }: Props) {
-    const { isLoading, activeTeam, activeForm, activeProject, setTeams, setActiveTeam, setActiveProject, setActiveForm } = useGlobalStore((state) => state);
+    const { isLoading, activeTeam, activeProject, setTeams, setActiveTeam, setActiveProject, setActiveForm } = useGlobalStore((state) => state);
     const params = useParams();
     const router = useRouter();
     const [teamId, setTeamId] = useState<string | null>(params.teamId as string || null);

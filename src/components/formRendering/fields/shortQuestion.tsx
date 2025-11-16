@@ -10,10 +10,10 @@ interface Props {
     onChange?: (value: string) => void;
 }
 
-export default function RenderShortQuestion({ question, value, onChange, }: Props) {
+export default function RenderShortQuestion({ question, onChange, }: Props) {
 
     const [answer, setAnswer] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
+    // const [errors, setErrors] = useState<string[]>([]);
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

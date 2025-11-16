@@ -21,9 +21,10 @@ const NotificationDropdown = () => {
     const { activeTeam } = useGlobalStore((state) => state);
     const [activeTab, setActiveTab] = useState('Personal');
     const [tabs, setTabs] = useState<string[]>(['Personal']);
-    const [notifications, setNotifications] = useState(false);
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
+        setNotifications([])
         if (activeTeam) {
             setTabs(['Team', 'Personal']);
             setActiveTab('Team');
@@ -82,7 +83,7 @@ const NotificationDropdown = () => {
                     <DropdownMenuSeparator />
 
                     <TabsContent value="Team">
-                        {notifications ? (
+                        {notifications.length > 0 ? (
                             <div className="p-4 text-sm text-muted-foreground">
                             </div>
                         ) : (

@@ -15,7 +15,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
 
-    let condition: Record<string, Object> = { teamId: teamId };
+    let condition: Record<string, unknown> = { teamId: teamId };
     if (search) {
         condition = {
             AND: {
@@ -59,7 +59,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     const { user, error } = await validateAuth()
     if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
 
-    const body = await parseRequestBody(request);
+    const body = await parseRequestBody<{ name: string, description?: string, teamId: string }>(request);
     const validationErrors = validateRequiredFields(body, ['name', 'teamId']);
 
     if (validationErrors) return createValidationErrorResponse(validationErrors, MESSAGE.MISSING_FIELDS_MESSAGE);

@@ -39,7 +39,7 @@ export function FormList() {
     if (!isValidUUID(teamId) || !isValidUUID(projectId)) {
         redirect(ERROR_ROUTES.NOT_FOUND);
     }
-    const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
+    const { page, limit, totalItems, onPaginationChange } = usePagination();
 
     useEffect(() => {
         getForms();

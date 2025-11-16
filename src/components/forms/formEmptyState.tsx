@@ -1,4 +1,4 @@
-import { ClipboardList, Folder, LayoutTemplate } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";

@@ -44,11 +44,11 @@ export const showWarning = (message: string, description: string = "") => {
 }
 
 /** Convert object to query string */
-export const objToQueryString = (obj: Record<string, any>): string => {
+export const objToQueryString = (obj: Record<string, string | number>): string => {
   const params = new URLSearchParams();
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      params.append(key, obj[key]);
+      params.append(key, typeof obj[key] === 'string' ? obj[key] : obj[key].toString());
     }
   }
   return params.toString();
@@ -101,16 +101,16 @@ export function formatFileSize(bytes: number): string {
 
 
 /** Deep merge objects */
-export function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
-  const result: T = { ...target };
+// export function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial<T>): T {
+//   const result: T = { ...target };
 
-  for (const key in source) {
-    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-      result[key] = deepMerge(result[key] || {} as T[typeof key], source[key]);
-    } else {
-      result[key] = source[key] as T[typeof key];
-    }
-  }
+//   for (const key in source) {
+//     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+//       result[key] = deepMerge(result[key] || {} as T[typeof key], source[key]);
+//     } else {
+//       result[key] = source[key] as T[typeof key];
+//     }
+//   }
 
-  return result;
-}
+//   return result;
+// }

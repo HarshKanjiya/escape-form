@@ -162,8 +162,8 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             updatedAt: form.updatedAt!,
             createdBy: form.createdBy,
             maxResponses: form.maxResponses || 0,
-            welcomeScreen: form.welcomeScreen ? (form.welcomeScreen as any) : null,
-            thankYouScreen: form.thankYouScreen ? (form.thankYouScreen as any) : null,
+            welcomeScreen: form.welcomeScreen ? form.welcomeScreen as unknown as IWelcomeScreen : null,
+            thankYouScreen: form.thankYouScreen ? form.thankYouScreen as unknown as IThankYouScreen : null,
             config: form.config || [],
             dataSource: {
                 id: form.id,
@@ -193,7 +193,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         if (Array.isArray(form.config) && form.config.length) {
             const config = form.config as unknown as IQuestion[];
             formData.questions = config;
-            formData.selectedQuestionId = config[0]?.id as any;
+            formData.selectedQuestionId = config[0].id;
             formData.selectedQuestion = config[0] ?? null;
         }
 

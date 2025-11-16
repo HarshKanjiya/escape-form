@@ -47,9 +47,9 @@ export default function Header({ }) {
                 <TeamsDropdown />
                 <div className="text-sm text-muted-foreground flex items-center gap-1">
                     {
-                        activeProject ? (
+                        activeProject && activeTeam ? (
                             <>
-                                <Link href={ROUTES.project.list(activeTeam?.id!)}>
+                                <Link href={ROUTES.project.list(activeTeam.id)}>
                                     <Button variant='ghost' className="flex items-center gap-1 shadow-none">
                                         <span className="capitalize">{activeProject.name}</span>
                                     </Button>
@@ -58,10 +58,10 @@ export default function Header({ }) {
                         ) : null
                     }
                     {
-                        activeForm ? (
+                        activeForm && activeTeam && activeProject ? (
                             <>
                                 <ChevronRightIcon className="!h-4 !w-4 text-muted-foreground/30" />
-                                <Link href={ROUTES.form.analytics(activeTeam?.id!, activeProject?.id!, activeForm?.id!)}>
+                                <Link href={ROUTES.form.analytics(activeTeam.id, activeProject.id, activeForm.id)}>
                                     <Button variant='ghost' className="flex items-center gap-1 shadow-none">
                                         <span className="capitalize">{activeForm.name}</span>
                                     </Button>

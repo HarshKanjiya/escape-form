@@ -62,7 +62,7 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                 <TableRow key={form.id}>
                                     <TableCell className="w-18">
                                         <div className="flex items-center justify-center">
-                                        <Image src={form.logoUrl || "/logo-light.png"} alt="Form Logo" width={32} height={32} className="rounded-md" />
+                                            <Image src={form.logoUrl || "/logo-light.png"} alt="Form Logo" width={32} height={32} className="rounded-md" />
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -89,7 +89,7 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {/* @ts-expect-error */}
+                                        {/* @ts-expect-error _count not added in generated type*/}
                                         {form._count?.responses || 0}
                                     </TableCell>
                                     <TableCell className="tracking-widest">{formatDate(form.updatedAt!)}</TableCell>
