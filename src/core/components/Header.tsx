@@ -11,7 +11,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import AssistantTrigger from "./assistantTrigger";
 import NotificationDropdown from "./notificationDropdown";
 import ProfileDropdown from "./profileDropdown";
 
@@ -102,7 +101,7 @@ export default function Header({ }) {
                     ) : null} */}
 
 
-                <AssistantTrigger />
+                {/* <AssistantTrigger /> */}
                 <NotificationDropdown />
                 <Separator orientation="vertical" className="!h-7" />
                 <FeedbackModel />

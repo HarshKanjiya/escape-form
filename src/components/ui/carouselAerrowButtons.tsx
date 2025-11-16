@@ -7,6 +7,7 @@ import React, {
     useState
 } from 'react'
 import { Button } from './button'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 
 type UsePrevNextButtonsType = {
     prevBtnDisabled: boolean
@@ -75,25 +76,33 @@ export const PrevButton: React.FC<PropType> = (props) => {
     if (isVertical) {
         return (
             <div className='flex justify-between items-center gap-3 w-40'>
-                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
-                    Ctrl <MoveUp size={14} />
-                </pre>
-                <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>
-                    <span>Prev</span>
-                    <ChevronUp />
-                </Button>
+                <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild>
+                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>
+                            <span>Prev</span>
+                            <ChevronUp />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side='left'>
+                        Ctrl + Up
+                    </TooltipContent>
+                </Tooltip>
             </div>)
     }
 
     return (
         <div className='flex flex-col items-end gap-3'>
-            <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-l-xl">
-                <ChevronLeft />
-                <span>Prev</span>
-            </Button>
-            <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
-                <MoveLeft size={14} /> Ctrl
-            </pre>
+            <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-l-xl">
+                        <ChevronLeft />
+                        <span>Prev</span>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side='bottom'>
+                    Ctrl + Left
+                </TooltipContent>
+            </Tooltip>
         </div>
     )
 }
@@ -118,25 +127,33 @@ export const NextButton: React.FC<PropType> = (props) => {
     if (isVertical) {
         return (
             <div className='flex justify-between items-center gap-3 w-40'>
-                <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-2">
-                    Ctrl <MoveDown size={14} />
-                </pre>
-                <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-b-xl !w-24'>
-                    <span>Next</span>
-                    <ChevronDown />
-                </Button>
+                <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild>
+                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-b-xl !w-24'>
+                            <span>Next</span>
+                            <ChevronDown />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side='left'>
+                        Ctrl + Down
+                    </TooltipContent>
+                </Tooltip>
             </div>)
     }
 
     return (
         <div className='flex flex-col items-start gap-3'>
-            <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-xl">
-                <span>Next</span>
-                <ChevronRight />
-            </Button>
-            <pre className="text-xs text-muted-foreground/60 font-mono whitespace-nowrap flex items-center gap-1">
-                Ctrl <MoveRight size={14} />
-            </pre>
+            <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-xl">
+                        <span>Next</span>
+                        <ChevronRight />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side='bottom'>
+                    Ctrl + Right
+                </TooltipContent>
+            </Tooltip>
         </div>
     )
 }

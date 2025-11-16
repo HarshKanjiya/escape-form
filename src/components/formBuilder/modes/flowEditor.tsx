@@ -119,8 +119,6 @@ export default function FlowEditor() {
         };
     }, [isDragging, lastPointerPos]);
 
-    const gridTransform = `translate(${viewport.x % (FLOW_CONFIG.gridSize * viewport.zoom)}, ${viewport.y % (FLOW_CONFIG.gridSize * viewport.zoom)}) scale(${viewport.zoom})`;
-
     return (
         <div className="relative flex-1 h-full w-full">
             <div
@@ -176,7 +174,6 @@ export default function FlowEditor() {
                         </div>
                     </div>
                 </div>
-
             </div >
             {/* Zoom Controls */}
             <div className="absolute bottom-4 left-4 flex gap-2 z-[999]" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>

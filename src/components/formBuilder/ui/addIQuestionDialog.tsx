@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from 
 import { Input } from "../../ui/input";
 import QuestionIcon from "./questionIcon";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface IAddItemDialogProps {
     children?: React.ReactNode;
@@ -197,15 +198,17 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 {children ? (
                     children
                 ) : (
-                    <Button variant={'secondary'} size={'sm'}>
-                        <Plus className="mr-2" />
-                        <span>Add Item</span>
-                        <KbdGroup>
-                            <Kbd>Ctrl</Kbd>
-                            <span>+</span>
-                            <Kbd>I</Kbd>
-                        </KbdGroup>
-                    </Button>
+                    <Tooltip delayDuration={300}>
+                        <TooltipTrigger asChild>
+                            <Button variant={'secondary'}>
+                                <Plus className="mr-1" />
+                                <span>Add Field</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            Add a new question field (Ctrl + I)
+                        </TooltipContent>
+                    </Tooltip>
                 )}
             </DialogTrigger>
             <DialogContent className="w-full sm:min-w-[80vw] min-h-[70vh] lg:min-w-[70vw] xl:min-w-[60vw] p-0 overflow-hidden flex flex-col gap-0 max-h-[85vh]">
@@ -353,6 +356,6 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                     <Button type='button' onClick={save} disabled={!selectedField}>Add</Button>
                 </DialogFooter>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     )
 }

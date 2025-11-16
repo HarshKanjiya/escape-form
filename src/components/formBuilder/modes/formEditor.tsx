@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { NextButton, PrevButton, usePrevNextButtons } from "@/components/ui/carouselAerrowButtons";
 import { DotButtonNav, useDotButton } from "@/components/ui/carouselDotButtons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -8,11 +9,10 @@ import { eWorkflowDirection } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
-import { Braces, SeparatorHorizontal } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Braces, SeparatorHorizontalIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import AddQuestionDialog from "../ui/addIQuestionDialog";
 import QuestionCard from "../ui/questionCard";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function FormEditor() {
 
@@ -98,7 +98,7 @@ export default function FormEditor() {
                                 transition={{ type: "tween", duration: 0.15 }}
                                 style={{ display: 'inline-block' }}
                             >
-                                <SeparatorHorizontal />
+                                <SeparatorHorizontalIcon />
                             </motion.span>
                         </Button>
                     </TooltipTrigger>
