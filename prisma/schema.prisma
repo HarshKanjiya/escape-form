@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../node_modules/prisma/client"
 }
 
 datasource db {
@@ -38,6 +38,12 @@ enum TransactionType {
   GIFT
 }
 
+enum AnalyticsEventType {
+  FORM_OPENED
+  FORM_STARTED
+  FORM_SUBMITTED
+}
+
 // #region CORE MODELS
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
@@ -50,10 +56,11 @@ model Team {
   // createdBy String?   @db.VarChar
 
   // Relations
-  plan     Plan?     @relation(fields: [planId], references: [id], onDelete: SetNull)
-  projects Project[]
-  forms    Form[]
-  wallet   Wallet?
+  plan         Plan?         @relation(fields: [planId], references: [id], onDelete: SetNull)
+  projects     Project[]
+  forms        Form[]
+  transactions Transaction[]
+  // wallet   Wallet?
 
   @@map("teams")
 }
@@ -82,52 +89,50 @@ model Form {
   projectId           String      @db.Uuid
   theme               String?     @db.Text
   logoUrl             String?     @db.Text
-  welcomeScreen       Json?       @db.JsonB
-  thankYouScreen      Json?       @db.JsonB
-  multipleSubmissions Boolean?    @db.Boolean
   maxResponses        Int?
-  type                FormType?
   openAt              DateTime?   @db.Timestamptz
   closeAt             DateTime?   @db.Timestamptz
-  passwordProtected   Boolean?
-  passwordHash        String?     @db.Text
+  type                FormType?
   status              FormStatus?
-  requireConsent      Boolean?
-  analyticsEnabled    Boolean?
+  passwordHash        String?     @db.Text
   uniqueSubdomain     String?     @db.Text
   customDomain        String?     @db.Text
+  welcomeScreen       Json?       @db.JsonB
+  thankYouScreen      Json?       @db.JsonB
   config              Json[]      @db.JsonB
-  allowAnonymous      Boolean?
+  requireConsent      Boolean?    @db.Boolean
+  allowAnonymous      Boolean?    @db.Boolean
+  multipleSubmissions Boolean?    @default(false) @db.Boolean
+  passwordProtected   Boolean?    @default(false) @db.Boolean
+  analyticsEnabled    Boolean?    @default(true) @db.Boolean
+  valid               Boolean     @default(true) @db.Boolean
   createdBy           String      @db.Text
   createdAt           DateTime?   @db.Timestamptz
   updatedAt           DateTime?   @db.Timestamptz
-  valid               Boolean     @default(true) @db.Boolean
 
   // Relations
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  team      Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  responses Response[]
+  project         Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  team            Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  responses       Response[]
+  analyticsEvents AnalyticsEvent[]
 
   @@map("forms")
 }
 
 model Response {
-  id           String          @id @default(uuid()) @db.Uuid
-  formId       String          @db.Uuid
-  userId       String?         @db.Text
-  responseData Json            @db.JsonB
-  status       ResponseStatus?
-  startedAt    DateTime?       @db.Timestamptz
-  submittedAt  DateTime?       @db.Timestamptz
-  updatedAt    DateTime?       @db.Timestamptz
-  partialSave  Boolean?        @db.Boolean
-  files        Json?           @db.JsonB
-  notified     Boolean?
-  ipAddress    String?         @db.Text
-  userAgent    String?         @db.Text
-  referrerUrl  String?         @db.Text
-  tags         String[]
-  valid        Boolean         @default(true) @db.Boolean
+  id          String          @id @default(uuid()) @db.Uuid
+  formId      String          @db.Uuid
+  userId      String?         @db.Text
+  data        Json            @default("{}") @db.JsonB
+  metaData    Json?           @default("{}") @db.JsonB
+  tags        String[]
+  status      ResponseStatus?
+  partialSave Boolean?        @db.Boolean
+  notified    Boolean?        @db.Boolean
+  valid       Boolean         @default(true) @db.Boolean
+  startedAt   DateTime?       @db.Timestamptz
+  submittedAt DateTime?       @db.Timestamptz
+  updatedAt   DateTime?       @db.Timestamptz
 
   // Relations
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
@@ -135,38 +140,53 @@ model Response {
   @@map("responses")
 }
 
+model AnalyticsEvent {
+  id          String              @id @default(cuid()) @db.VarChar(30)
+  formId      String              @db.Uuid
+  eventType   AnalyticsEventType?
+  createdAt   DateTime            @default(now()) @db.Timestamptz
+  submittedAt DateTime?
+
+  // Relations
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@map("analytics_events")
+}
+
 // #endregion
 
 // #region WALLET, TRANSACTION, PLAN, FEATURE MODELS
 
-model Wallet {
-  id                     String    @id @default(cuid()) @db.VarChar(30)
-  teamId                 String    @unique @db.Uuid
-  balance                Float     @default(0) @db.DoublePrecision
-  nonTransferableBalance Float     @default(0) @db.DoublePrecision
-  currency               String    @default("INR") @db.VarChar(3)
-  currencyRate           Float     @default(1) @db.DoublePrecision
-  createdAt              DateTime  @default(now()) @db.Timestamptz
-  updatedAt              DateTime? @updatedAt @db.Timestamptz
+// model Wallet {
+//   id                     String    @id @default(cuid()) @db.VarChar(30)
+//   teamId                 String    @unique @db.Uuid
+//   balance                Float     @default(0) @db.DoublePrecision
+//   nonTransferableBalance Float     @default(0) @db.DoublePrecision
+//   currency               String    @default("INR") @db.VarChar(3)
+//   currencyRate           Float     @default(1) @db.DoublePrecision
+//   createdAt              DateTime  @default(now()) @db.Timestamptz
+//   updatedAt              DateTime? @updatedAt @db.Timestamptz
 
-  // Relations
-  transactions Transaction[]
-  team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+//   // Relations
+//   transactions Transaction[]
+//   team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
-  @@map("wallets")
-}
+//   @@map("wallets")
+// }
 
 model Transaction {
   id          String          @id @default(cuid()) @db.VarChar(30)
-  walletId    String          @db.VarChar(30)
   type        TransactionType
   amount      Float           @db.DoublePrecision
   description String?         @db.Text
   createdAt   DateTime        @default(now()) @db.Timestamptz
   createdBy   String?         @db.VarChar
+  teamId      String          @db.Uuid
+  // walletId    String          @db.VarChar(30)
 
   // Relations
-  wallet Wallet @relation(fields: [walletId], references: [id])
+  // wallet Wallet @relation(fields: [walletId], references: [id])
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
