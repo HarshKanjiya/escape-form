@@ -15,7 +15,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
 
-    let condition: Record<string, any> = { teamId: teamId };
+    let condition: Record<string, Object> = { teamId: teamId };
     if (search) {
         condition = {
             AND: {

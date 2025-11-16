@@ -22,18 +22,19 @@ export const metadata: Metadata = {
 }
 
 interface AnalyticsPageProps {
-    params: {
+    params: Promise<{
         teamId: string;
         projectId: string;
         formId: string;
-    };
+    }>;
 }
 
 export default async function Page({ params }: AnalyticsPageProps) {
 
-    const formId = params.formId;
-    const projectId = params.projectId;
-    const teamId = params.teamId;
+    const paramsObj = await params;
+    const formId = paramsObj?.formId;
+    const projectId = paramsObj?.projectId;
+    const teamId = paramsObj?.teamId;
 
     if (!formId || !projectId || !teamId) {
         redirect(ERROR_ROUTES.NOT_FOUND);

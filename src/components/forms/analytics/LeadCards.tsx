@@ -47,7 +47,7 @@ export default function LeadCards() {
                             <TablePropertiesIcon className="h-12 w-12 rounded-xl p-2.5 border-2 border-white/20 bg-gradient-to-br from-white/10 via-white/20 to-white/5 text-white/60" />
                         </div>
                         <div>
-                            <p className="text-sm mb-3">Today's Responses</p>
+                            <p className="text-sm mb-3">Today&apos;s Responses</p>
                             <div className="flex items-end gap-3 ">
                                 <h2 className="text-5xl font-bold font-mono text-white tracking-tight">3</h2>
                             </div>

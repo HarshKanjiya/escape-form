@@ -110,7 +110,7 @@ export default function TeamsDropdown() {
                                 searchTerm ?
                                     <div className="flex flex-col gap-1">
                                         <span className="text-muted-foreground">No teams found with</span>
-                                        <span className="font-medium text-lg text-accent-foreground break-all"> "{searchTerm}"</span>
+                                        <span className="font-medium text-lg text-accent-foreground break-all"> &quot;{searchTerm}&quot;</span>
                                     </div>
                                     :
                                     "You are not part of any teams yet"

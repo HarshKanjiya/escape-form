@@ -2,7 +2,7 @@ import { objToQueryString } from "@/lib/utils";
 
 export const apiConstants = {
     team: {
-        getTeams: (data: Record<string, any> = {}) => getUrlWithParams(`teams`, data),
+        getTeams: (data: Record<string, string | number> = {}) => getUrlWithParams(`teams`, data),
         getAllTeams: () => `teams/all`,
         getUserTeams: () => `teams/byUserId`,
         createTeam: () => 'teams',
@@ -10,7 +10,7 @@ export const apiConstants = {
         deleteTeam: (id: string) => `teams/${id}`
     },
     project: {
-        getProjects: (data: Record<string, any>) => getUrlWithParams(`projects`, data),
+        getProjects: (data: Record<string, string | number>) => getUrlWithParams(`projects`, data),
         getProjectById: (id: string) => `projects/${id}`,
         createProject: () => 'projects',
         updateProject: (id: string) => `projects/${id}`,

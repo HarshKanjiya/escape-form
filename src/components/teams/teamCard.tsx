@@ -49,7 +49,7 @@ export function TeamCard({ team }: TeamCardProps) {
                     <div className="text-sm text-muted-foreground flex items-center justify-between w-full border-t pt-4">
                         <div className="flex items-center gap-2">
                             <Folders className="w-4 h-4 inline-block" />
-                            {/* @ts-ignore */}
+                            {/* @ts-expect-error */}
                             <span>{team?._count?.projects || 0} Projects</span>
                         </div>
                         <div className="flex items-center gap-2">

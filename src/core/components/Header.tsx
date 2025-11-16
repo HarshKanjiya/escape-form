@@ -1,7 +1,9 @@
 "use client";
 
-import { CreditIcon } from "@/components/shared/creditIcon";
+import { FeedbackModel } from "@/components/shared/feedBack";
+import TeamsDropdown from "@/components/teams/TeamsDropdown";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes.constants";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { ChevronRightIcon, CircleFadingArrowUpIcon } from "lucide-react";
@@ -12,9 +14,6 @@ import { useEffect, useState } from "react";
 import AssistantTrigger from "./assistantTrigger";
 import NotificationDropdown from "./notificationDropdown";
 import ProfileDropdown from "./profileDropdown";
-import TeamsDropdown from "@/components/teams/TeamsDropdown";
-import { FeedbackModel } from "@/components/shared/feedBack";
-import { Separator } from "@/components/ui/separator";
 
 const paths = [
     'analytics',

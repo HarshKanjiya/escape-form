@@ -65,7 +65,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             type: FormType.REACH_OUT,
             multipleSubmissions: body.multipleSubmissions || false,
             thankYouScreen: body.thankYouScreen || {},
-            config: (Array.isArray(body.config) ? body.config.filter((v) => v !== null) : []) as any,
+            config: (Array.isArray(body.config) ? body.config.filter((v) => v !== null) : []),
             welcomeScreen: body.welcomeScreen || {},
             customDomain: null,
             uniqueSubdomain: null,

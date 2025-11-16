@@ -5,7 +5,6 @@ import { eFormPageType, eQuestionType, eViewMode, eViewScreenMode } from '@/enum
 import { Form, FormStatus, FormType } from '@/generated/prisma';
 import api from '@/lib/axios';
 import { ActionResponse } from '@/types/common';
-// import { Form, FormUpdate } from '@/types/db';
 import { IThankYouScreen, IWelcomeScreen, IQuestion, IWorkflowConnection } from '@/types/form';
 import { create } from 'zustand';
 

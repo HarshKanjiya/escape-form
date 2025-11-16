@@ -32,7 +32,7 @@ const MemoRenderWebsiteField = memo(RenderWebsiteField);
 
 interface Props {
     question: IQuestion;
-    formData: { [key: string]: any };
+    formData: { [key: string]: string | number | boolean | string[] };
     handleFieldChange: (questionId: string, value: string | number | boolean | string[]) => void;
 }
 
@@ -66,7 +66,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
             return (
                 <MemoRenderCheckBoxField
                     question={question}
-                    value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
+                    value={typeof formData[question.id] === 'string' ? formData[question.id] as string[] : []}
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );

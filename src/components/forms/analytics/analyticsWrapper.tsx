@@ -2,19 +2,19 @@
 
 import FormOverview from "@/components/forms/analytics/overview";
 import FormResponses from "@/components/forms/analytics/responses";
-import { AnimatePresence, motion } from "framer-motion";
 import FormSecurity from "@/components/forms/analytics/security";
 import FormSettings from "@/components/forms/analytics/settings";
 import { IconCard } from "@/components/shared/iconCard";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { Form } from "@/generated/prisma";
+import { motion } from "framer-motion";
 import { ArchiveIcon, ChartAreaIcon, MoreVerticalIcon, PencilRulerIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AnalyticsWrapperProps {
     formDetails: Form;

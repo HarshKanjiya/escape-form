@@ -12,7 +12,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
     const search = request.nextUrl.searchParams.get('search') || '';
 
-    let where: Record<string, any> = { ownerId: user.id };
+    let where: Record<string, Object> = { ownerId: user.id };
     if (search) {
         where = {
             ownerId: user.id,

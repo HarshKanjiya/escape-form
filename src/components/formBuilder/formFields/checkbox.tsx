@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { IQuestion } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { CornerDownRight, Cross, GripVertical, Trash } from "lucide-react";
+import { CornerDownRight, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {

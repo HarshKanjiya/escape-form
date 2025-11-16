@@ -150,7 +150,7 @@ export default function CreateTeam() {
             <div className="mt-6 rounded-lg bg-muted/50 p-4">
                 <h3 className="text-sm font-medium mb-2">What happens next?</h3>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Your team will be created and you'll be added as the owner</li>
+                    <li>• Your team will be created and you&apos;ll be added as the owner</li>
                     <li>• You can invite members to join your team</li>
                     <li>• Team members can collaborate on forms and projects</li>
                     <li>• You can manage team settings and permissions</li>

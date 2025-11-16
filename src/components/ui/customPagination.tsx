@@ -31,7 +31,7 @@ const CustomPagination = ({ page, limit, totalItems, loading, onChange }: Custom
         const halfVisible = Math.floor(maxVisible / 2);
 
         let startPage = Math.max(1, page - halfVisible);
-        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        const endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
         // Adjust if we're near the end
         if (endPage - startPage + 1 < maxVisible) {

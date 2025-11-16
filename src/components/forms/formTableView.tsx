@@ -89,7 +89,7 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {/* @ts-ignore */}
+                                        {/* @ts-expect-error */}
                                         {form._count?.responses || 0}
                                     </TableCell>
                                     <TableCell className="tracking-widest">{formatDate(form.updatedAt!)}</TableCell>
