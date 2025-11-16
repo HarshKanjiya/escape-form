@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { TablePropertiesIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -21,11 +21,11 @@ const chartData = [
 const chartConfig = {
     desktop: {
         label: "Unfinished",
-        color: "var(--primary-800)",
+        color: "var(--color-indigo-300)",
     },
     mobile: {
         label: "Completed",
-        color: "var(--primary-500)",
+        color: "var(--color-indigo-600)",
     },
 } satisfies ChartConfig
 
@@ -122,12 +122,12 @@ export default function LeadCards() {
                 <CardContent className="p-0">
                     <div className="flex items-center justify-end border-b">
                         <div className="px-4 py-3 flex items-baseline justify-center gap-2 border-l">
-                            <div className="bg-primary-800 rounded-full h-4 w-4" />
+                            <div className="bg-indigo-300 rounded-full h-4 w-4" />
                             <p className="text-muted-foreground">Unfinished</p>
                             <p className="font-mono text-accent-foreground text-2xl">15</p>
                         </div>
                         <div className="px-4 py-3 flex items-baseline justify-center gap-2 border-l ">
-                            <div className="bg-primary-500 rounded-full h-4 w-4" />
+                            <div className="bg-indigo-600 rounded-full h-4 w-4" />
                             <p className="text-muted-foreground">Completed</p>
                             <p className="font-mono text-accent-foreground text-2xl">12</p>
                         </div>
@@ -155,13 +155,13 @@ export default function LeadCards() {
                                     dataKey="Unfinished"
                                     stackId="a"
                                     fill="var(--color-desktop)"
-                                    radius={[0, 0, 4, 4]}
+                                    radius={[4, 4, 4, 4]}
                                 />
                                 <Bar
                                     dataKey="Completed"
                                     stackId="b"
                                     fill="var(--color-mobile)"
-                                    radius={[4, 4, 0, 0]}
+                                    radius={[4, 4, 4, 4]}
                                 />
                             </BarChart>
                         </ChartContainer>

@@ -2,6 +2,7 @@
 
 import FormOverview from "@/components/forms/analytics/overview";
 import FormResponses from "@/components/forms/analytics/responses";
+import { AnimatePresence, motion } from "framer-motion";
 import FormSecurity from "@/components/forms/analytics/security";
 import FormSettings from "@/components/forms/analytics/settings";
 import { IconCard } from "@/components/shared/iconCard";
@@ -13,6 +14,7 @@ import { Form } from "@/generated/prisma";
 import { ArchiveIcon, ChartAreaIcon, MoreVerticalIcon, PencilRulerIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AnalyticsWrapperProps {
     formDetails: Form;
@@ -75,29 +77,77 @@ export default function AnalyticsWrapper({ formDetails }: AnalyticsWrapperProps)
                         <TabsTrigger value="overview" className=" h-full flex-1 text-center !shadow-none">
                             Overview
                         </TabsTrigger>
-                        <TabsTrigger value="responses" className=" h-full flex-1 text-center !shadow-none">
-                            Responses
+                        <TabsTrigger value="submissions" className=" h-full flex-1 text-center !shadow-none">
+                            Submissions
                         </TabsTrigger>
                         <TabsTrigger value="security" className=" h-full flex-1 text-center !shadow-none">
                             Security
+                        </TabsTrigger>
+                        <TabsTrigger value="connect" className=" h-full flex-1 text-center !shadow-none">
+                            Connect
                         </TabsTrigger>
                         <TabsTrigger value="settings" className=" h-full flex-1 text-center !shadow-none">
                             Settings
                         </TabsTrigger>
                     </TabsList>
                 </div>
-                <TabsContent value="overview" className="px-0 py-4">
-                    <FormOverview />
-                </TabsContent>
-                <TabsContent value="responses" className="px-0 py-4">
-                    <FormResponses />
-                </TabsContent>
-                <TabsContent value="security" className="px-0 py-4">
-                    <FormSecurity />
-                </TabsContent>
-                <TabsContent value="settings" className="px-0 py-4">
-                    <FormSettings />
-                </TabsContent>
+                <ScrollArea className="h-[calc(100vh-300px)] pr-4">
+                    <TabsContent value="overview" className="px-0 py-4">
+                        <motion.div
+                            key="overview-tab"
+                            initial={{ opacity: 0, }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <FormOverview />
+                        </motion.div>
+                    </TabsContent>
+                    <TabsContent value="submissions" className="px-0 py-4">
+                        <motion.div
+                            key="submissions-tab"
+                            initial={{ opacity: 0, }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <FormResponses />
+                        </motion.div>
+                    </TabsContent>
+                    <TabsContent value="security" className="px-0 py-4">
+                        <motion.div
+                            key="security-tab"
+                            initial={{ opacity: 0, }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <FormSecurity />
+                        </motion.div>
+                    </TabsContent>
+                    <TabsContent value="connect" className="px-0 py-4">
+                        <motion.div
+                            key="connect-tab"
+                            initial={{ opacity: 0, }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <FormSecurity />
+                        </motion.div>
+                    </TabsContent>
+                    <TabsContent value="settings" className="px-0 py-4">
+                        <motion.div
+                            key="settings-tab"
+                            initial={{ opacity: 0, }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <FormSettings />
+                        </motion.div>
+                    </TabsContent>
+                </ScrollArea>
             </Tabs>
         </div >
     );

@@ -9,6 +9,7 @@ import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import QuestionIcon from "./questionIcon";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
 
 interface IAddItemDialogProps {
     children?: React.ReactNode;
@@ -197,7 +198,13 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                     children
                 ) : (
                     <Button variant={'secondary'} size={'sm'}>
-                        <Plus className="mr-2" /> Add Item
+                        <Plus className="mr-2" />
+                        <span>Add Item</span>
+                        <KbdGroup>
+                            <Kbd>Ctrl</Kbd>
+                            <span>+</span>
+                            <Kbd>I</Kbd>
+                        </KbdGroup>
                     </Button>
                 )}
             </DialogTrigger>
