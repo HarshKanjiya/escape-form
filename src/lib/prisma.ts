@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma } from '../generated/prisma';
+import { PrismaClient, Prisma } from '../../node_modules/prisma/client';
+export { FormStatus, ResponseStatus } from '../../node_modules/prisma/client';
 
 declare global {
   var __prisma: PrismaClient | undefined;
@@ -39,7 +40,7 @@ export type FormWithProject = Prisma.FormGetPayload<{
 }>;
 
 // Export enums for use in components
-export { FormStatus, ResponseStatus } from '../generated/prisma';
+
 
 // Default export for compatibility
 export default prisma;

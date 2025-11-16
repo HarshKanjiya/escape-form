@@ -141,7 +141,7 @@ model Response {
 }
 
 model AnalyticsEvent {
-  id          String              @id @default(cuid()) @db.VarChar(30)
+  id          String              @id @default(uuid()) @db.Uuid
   formId      String              @db.Uuid
   eventType   AnalyticsEventType?
   createdAt   DateTime            @default(now()) @db.Timestamptz
@@ -158,7 +158,7 @@ model AnalyticsEvent {
 // #region WALLET, TRANSACTION, PLAN, FEATURE MODELS
 
 // model Wallet {
-//   id                     String    @id @default(cuid()) @db.VarChar(30)
+//   id                     String    @id @default(uuid()) @db.Uuid
 //   teamId                 String    @unique @db.Uuid
 //   balance                Float     @default(0) @db.DoublePrecision
 //   nonTransferableBalance Float     @default(0) @db.DoublePrecision
@@ -175,7 +175,7 @@ model AnalyticsEvent {
 // }
 
 model Transaction {
-  id          String          @id @default(cuid()) @db.VarChar(30)
+  id          String          @id @default(uuid()) @db.Uuid
   type        TransactionType
   amount      Float           @db.DoublePrecision
   description String?         @db.Text
@@ -227,7 +227,7 @@ model Feature {
 // #endregion
 
 model User {
-  id             String  @id @default(cuid()) @db.VarChar(30)
+  id             String  @id @default(uuid()) @db.Uuid
   userName       String  @db.Text
   email          String  @unique @db.Text
   phoneNumber    String? @db.Text

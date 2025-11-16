@@ -46,31 +46,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         data: {
             name: body.name.trim(),
             ownerId: user!.id,
-            wallet: {
-                create: {
-                    balance: 50,
-                    currency: 'INR',
-                    currencyRate: 1,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                }
-            }
         },
-        include: { wallet: true }
     });
     if (!newTeam) return createActionError(createErrorMessage('team'));
-
-    if (newTeam?.wallet?.id) {
-        await prisma.transaction.create({
-            data: {
-                walletId: newTeam.wallet.id,
-                amount: 100,
-                type: 'GIFT',
-                description: 'Little bonus for creating a new team 🎉',
-                createdAt: new Date(),
-            }
-        });
-    }
-
     return createSuccessResponse(newTeam, createSuccessMessage('Team'), HttpStatus.CREATED);
 });

@@ -7,7 +7,7 @@ import api from '@/lib/axios';
 import { isValidUUID } from '@/lib/utils';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { ActionResponse } from '@/types/common';
-import { redirect, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
 export default function HydrateTeams({ children, teams }: Props) {
     const { isLoading, activeTeam, activeForm, activeProject, setTeams, setActiveTeam, setActiveProject, setActiveForm } = useGlobalStore((state) => state);
     const params = useParams();
+    const router = useRouter();
     const [teamId, setTeamId] = useState<string | null>(params.teamId as string || null);
     const [projectId, setProjectId] = useState<string | null>(params.projectId as string || null);
     const [formId, setFormId] = useState<string | null>(params.formId as string || null);
@@ -25,7 +26,7 @@ export default function HydrateTeams({ children, teams }: Props) {
     useEffect(() => {
         if (!teams?.length) {
             setTeams([]);
-            redirect(ROUTES.team.create());
+            router.replace(ROUTES.team.create());
         }
         setTeams(teams ?? []);
     }, []);
@@ -45,7 +46,6 @@ export default function HydrateTeams({ children, teams }: Props) {
     }, [params]);
 
     useEffect(() => {
-
         if (!teamId) {
             setActiveTeam(null);
             return;
@@ -55,9 +55,9 @@ export default function HydrateTeams({ children, teams }: Props) {
         if (team) {
             setActiveTeam(team);
         } else if (teams?.length) {
-            redirect(teams[0].id);
+            router.replace(teams[0].id);
         } else {
-            redirect(ROUTES.team.create());
+            router.replace(ROUTES.team.create());
         }
     }, [teamId]);
 

@@ -7,14 +7,13 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiConstants } from "@/constants/api.constants";
-import { eFormType } from "@/enums/form";
-import { Form as FormType } from "@/generated/prisma";
+import { FormType, Form as IForm } from "@/generated/prisma";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from 'framer-motion';
-import { BarChart3, Check, CheckCircle, CheckCircle2, ChevronLeft, ChevronRight, Code, ExternalLink, FileText, Link2, Palette, Users } from "lucide-react";
+import { BarChart3, Check, CheckCircle, ChevronLeft, ChevronRight, ExternalLink, FileText, Link2, Palette, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from 'react';
 import { useForm, type UseFormReturn } from "react-hook-form";
@@ -136,7 +135,7 @@ const templates: FormTemplate[] = [
 const formSchema = z.object({
     name: z.string().min(1, "Form name is required").min(3, "Form name must be at least 3 characters"),
     description: z.string().optional(),
-    type: z.enum(eFormType).nullable(),
+    type: z.enum(FormType).nullable(),
     template: z.string().nullable(),
 })
 
@@ -268,8 +267,8 @@ function DetailsStep({ form }: DetailsStepProps) {
 }
 
 interface FormTypeStepProps {
-    selectedType: eFormType | null;
-    onTypeSelect: (type: eFormType) => void;
+    selectedType: FormType | null;
+    onTypeSelect: (type: FormType) => void;
 }
 
 function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
@@ -285,11 +284,11 @@ function FormTypeStep({ selectedType, onTypeSelect }: FormTypeStepProps) {
                 <Card
                     className={cn(
                         "group relative transition-all py-0 duration-200 cursor-pointer bg-secondary/50 backdrop-blur-2xl overflow-hidden rounded-xl hover:bg-secondary/70 hover:border-primary/40 border-2 shadow-none max-w-[370px] h-[270px]",
-                        selectedType === eFormType.reachOut
+                        selectedType === FormType.REACH_OUT
                             ? "ring-2 ring-primary scale-100"
                             : "scale-100"
                     )}
-                    onClick={() => onTypeSelect(eFormType.reachOut)}
+                    onClick={() => onTypeSelect(FormType.REACH_OUT)}
                 >
                     <CardContent className="p-4">
                         <div className="flex items-center space-x-3 mb-3">
@@ -612,12 +611,10 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
     );
 }
 
-// Remove the duplicate DetailsStepProps interface since we already defined it above
-
 export function FormCreationStepper() {
     const [currentStep, setCurrentStep] = useState(1);
     const [prevStep, setPrevStep] = useState(1);
-    const [selectedType, setSelectedType] = useState<eFormType | null>(null);
+    const [selectedType, setSelectedType] = useState<FormType | null>(FormType.REACH_OUT);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const { projectId } = useParams<{ projectId: string }>();
     const router = useRouter();
@@ -629,7 +626,7 @@ export function FormCreationStepper() {
         defaultValues: {
             name: "",
             description: "",
-            type: null,
+            type: FormType.REACH_OUT,
             template: null,
         },
     });
@@ -656,7 +653,7 @@ export function FormCreationStepper() {
         }
     };
 
-    const handleTypeSelect = (type: eFormType) => {
+    const handleTypeSelect = (type: FormType) => {
         setSelectedType(type);
         form.setValue('type', type);
     };
@@ -685,16 +682,14 @@ export function FormCreationStepper() {
     };
 
     const handleSubmit = async (data: FormValues) => {
-        // Combine form data with additional selections
-
         const finalData = {
             projectId: projectId,
             name: data.name || "",
             description: data.description || "",
-            type: selectedType || eFormType.reachOut,
+            type: selectedType || FormType.REACH_OUT,
         };
         try {
-            const response = await api.post<ActionResponse<FormType>>(apiConstants.form.createForm(), finalData);
+            const response = await api.post<ActionResponse<IForm>>(apiConstants.form.createForm(), finalData);
             if (!response.data?.success) {
                 toast.error(response.data?.message || "Failed to create form");
                 return;

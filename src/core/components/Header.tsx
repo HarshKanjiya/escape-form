@@ -92,7 +92,7 @@ export default function Header({ }) {
                         </Link>
                     ) : null
                 }
-                {
+                {/* {
                     activeTeam ? (
                         <Link href={`/${activeTeam?.id}/wallet`} >
                             <Button variant='outline' className="flex shadow-none items-center justify-center gap-2 rounded-full">
@@ -100,7 +100,7 @@ export default function Header({ }) {
                                 133.54
                             </Button>
                         </Link>
-                    ) : null}
+                    ) : null} */}
 
 
                 <AssistantTrigger />

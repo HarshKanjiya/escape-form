@@ -1,4 +1,4 @@
-import { createSuccessMessage, getSuccessMessage, MESSAGE } from '@/constants/messages';
+import { createErrorMessage, createSuccessMessage, getSuccessMessage, MESSAGE } from '@/constants/messages';
 import { createActionError, createActionSuccess, createNotFoundResponse, createSuccessResponse, createValidationErrorResponse, HttpStatus, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
 import { getPaginationParams, parseRequestBody, validateAuth } from '@/lib/helper';
 import { prisma } from '@/lib/prisma';
@@ -81,7 +81,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             updatedAt: new Date(),
         }
     });
-
+    if (!newProject) return createActionError(createErrorMessage('project'));
     return createSuccessResponse(newProject, createSuccessMessage('Project'), HttpStatus.CREATED);
 });
 

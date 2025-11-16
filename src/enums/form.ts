@@ -38,14 +38,3 @@ export enum eQuestionType {
     // barChoiceRating = "bar_choice_rating",
     // imageChoiceRating = "image_choice_rating",
 }
-
-export enum eFormType {
-    reachOut = "reach-out",
-    embedded = "embedded"
-}
-
-export enum eFormStatus {
-    draft = "draft",
-    published = "published",
-    archived = "archived"
-}

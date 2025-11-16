@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { BellIcon, MegaphoneOffIcon, MoreVerticalIcon } from "lucide-react";
+import { BellIcon, ExternalLinkIcon, MegaphoneOffIcon, MoreVerticalIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NoNewNotifications = () => {
     return (
-        <div className="p-4 text-center text-sm text-muted-foreground py-8">
+        <div className="p-4 text-center text-sm text-muted-foreground pt-20">
             <MegaphoneOffIcon className="mx-auto mb-2 w-6 h-6 opacity-50" />
             <p>No new notifications</p>
         </div>
@@ -45,10 +45,10 @@ const NotificationDropdown = () => {
                     </Button>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-auto sm:w-80" align="end">
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <DropdownMenuContent className="w-auto sm:w-80 h-[400px]" align="end">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-1">
                     <DropdownMenuLabel className="p-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                             <TabsList className="w-full bg-accent flex items-center justify-between">
                                 {tabs.map((tab) => (
                                     <TabsTrigger key={tab} className="flex-1 text-center" value={tab}>
@@ -74,6 +74,9 @@ const NotificationDropdown = () => {
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+                            <Button variant='ghost'>
+                                <ExternalLinkIcon className="w-4 h-4" />
+                            </Button>
                         </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />

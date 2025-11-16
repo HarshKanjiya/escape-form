@@ -90,7 +90,7 @@ export default function AddProject({ onSuccess }: Props = {}) {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Project Name*</FormLabel>
+                                        <FormLabel className="required">Project Name</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter project name"
