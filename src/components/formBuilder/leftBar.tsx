@@ -5,9 +5,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
-import { FileText, Menu, PenLine, SidebarIcon, X } from 'lucide-react';
+import { FileText, Menu, SidebarIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
 export default function LeftBar() {
