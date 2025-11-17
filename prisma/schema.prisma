@@ -44,6 +44,41 @@ enum AnalyticsEventType {
   FORM_SUBMITTED
 }
 
+enum QuestionType {
+  USER_DETAIL
+  USER_ADDRESS
+
+  TEXT_SHORT
+  TEXT_LONG
+
+  FILE_ANY
+  FILE_IMAGE_OR_VIDEO
+
+  CHOICE_SINGLE
+  CHOICE_MULTIPLE
+  CHOICE_PICTURE
+  CHOICE_CHECKBOX
+  CHOICE_BOOL
+  CHOICE_DROPDOWN
+
+  INFO_EMAIL
+  INFO_PHONE
+  INFO_URL
+
+  SCREEN_WELCOME
+  SCREEN_END
+  SCREEN_STATEMENT
+
+  RATING_ZERO_TO_TEN
+  RATING_STAR
+  RATING_RANK
+
+  LEAGAL
+  REDIRECT_TO_URL
+  NUMBER
+  DATE
+}
+
 // #region CORE MODELS
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
@@ -62,6 +97,7 @@ model Team {
   transactions Transaction[]
   // wallet   Wallet?
 
+  @@index([ownerId])
   @@map("teams")
 }
 
@@ -78,6 +114,7 @@ model Project {
   team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   forms Form[]
 
+  @@index([teamId])
   @@map("projects")
 }
 
@@ -94,12 +131,8 @@ model Form {
   closeAt             DateTime?   @db.Timestamptz
   type                FormType?
   status              FormStatus?
-  passwordHash        String?     @db.Text
   uniqueSubdomain     String?     @db.Text
   customDomain        String?     @db.Text
-  welcomeScreen       Json?       @db.JsonB
-  thankYouScreen      Json?       @db.JsonB
-  config              Json[]      @db.JsonB
   requireConsent      Boolean?    @db.Boolean
   allowAnonymous      Boolean?    @db.Boolean
   multipleSubmissions Boolean?    @default(false) @db.Boolean
@@ -115,8 +148,77 @@ model Form {
   team            Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
   responses       Response[]
   analyticsEvents AnalyticsEvent[]
+  questions       Question[]
+  edges           Edge[]
+  activePasswords ActivePassword[]
 
+  @@index([projectId])
+  @@index([teamId])
   @@map("forms")
+}
+
+model ActivePassword {
+  id        String   @id @default(uuid()) @db.Uuid
+  formId    String   @db.Uuid
+  isValid   Boolean  @default(true) @db.Boolean
+  expireAt  DateTime @db.Timestamptz
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  // relation
+  form       Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  questionId String? @db.Uuid
+
+  @@index([formId])
+  @@map("active_passwords")
+}
+
+model QuestionOption {
+  id         String @id @default(uuid()) @db.Uuid
+  questionId String @db.Uuid
+  label      String
+  value      String
+  sortOrder  Int    @default(0)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
+model Question {
+  id          String       @id @default(uuid()) @db.Uuid
+  formId      String       @db.Uuid
+  title       String
+  placeholder String       @default("")
+  description String       @default("")
+  required    Boolean      @default(false)
+  type        QuestionType
+  metadata    Json         @default("{}") @db.JsonB
+
+  // relation
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  outgoingEdges Edge[]           @relation("SourceEdges")
+  incomingEdges Edge[]           @relation("TargetEdges")
+  options       QuestionOption[]
+
+  @@index([formId])
+  @@map("questions")
+}
+
+model Edge {
+  id           String @id @default(uuid()) @db.Uuid
+  formId       String @db.Uuid
+  sourceNodeId String @db.Uuid
+  targetNodeId String @db.Uuid
+  condition    Json?  @default("{}") @db.JsonB
+
+  // relation
+  form       Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  sourceNode Question @relation("SourceEdges", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode Question @relation("TargetEdges", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("edges")
 }
 
 model Response {
@@ -137,6 +239,7 @@ model Response {
   // Relations
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
 
+  @@index([formId])
   @@map("responses")
 }
 
@@ -150,6 +253,7 @@ model AnalyticsEvent {
   // Relations
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
 
+  @@index([formId])
   @@map("analytics_events")
 }
 
@@ -188,6 +292,7 @@ model Transaction {
   // wallet Wallet @relation(fields: [walletId], references: [id])
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
+  @@index([teamId])
   @@map("transactions")
 }
 
