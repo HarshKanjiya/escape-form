@@ -21,6 +21,11 @@ enum FormType {
   EMBEDDED
 }
 
+enum FormPageType {
+  SINGLE
+  STEPPER
+}
+
 enum ResponseStatus {
   STARTED
   COMPLETED
@@ -79,6 +84,16 @@ enum QuestionType {
   DATE
 }
 
+enum CouponDiscountType {
+  FLAT
+  PERCENT
+}
+
+enum CouponType {
+  GENERAL
+  PLAN_BASED
+}
+
 // #region CORE MODELS
 model Team {
   id        String    @id @default(uuid()) @db.Uuid
@@ -119,29 +134,30 @@ model Project {
 }
 
 model Form {
-  id                  String      @id @default(uuid()) @db.Uuid
-  name                String      @db.Text
-  description         String?     @db.Text
-  teamId              String      @db.Uuid
-  projectId           String      @db.Uuid
-  theme               String?     @db.Text
-  logoUrl             String?     @db.Text
+  id                  String       @id @default(uuid()) @db.Uuid
+  name                String       @db.Text
+  description         String?      @db.Text
+  teamId              String       @db.Uuid
+  projectId           String       @db.Uuid
+  theme               String?      @db.Text
+  logoUrl             String?      @db.Text
   maxResponses        Int?
-  openAt              DateTime?   @db.Timestamptz
-  closeAt             DateTime?   @db.Timestamptz
-  type                FormType?
+  openAt              DateTime?    @db.Timestamptz
+  closeAt             DateTime?    @db.Timestamptz
+  type                FormType     @default(REACH_OUT)
+  formPageType        FormPageType @default(STEPPER)
   status              FormStatus?
-  uniqueSubdomain     String?     @db.Text
-  customDomain        String?     @db.Text
-  requireConsent      Boolean?    @db.Boolean
-  allowAnonymous      Boolean?    @db.Boolean
-  multipleSubmissions Boolean?    @default(false) @db.Boolean
-  passwordProtected   Boolean?    @default(false) @db.Boolean
-  analyticsEnabled    Boolean?    @default(true) @db.Boolean
-  valid               Boolean     @default(true) @db.Boolean
-  createdBy           String      @db.Text
-  createdAt           DateTime?   @db.Timestamptz
-  updatedAt           DateTime?   @db.Timestamptz
+  uniqueSubdomain     String?      @db.Text
+  customDomain        String?      @db.Text
+  requireConsent      Boolean?     @db.Boolean
+  allowAnonymous      Boolean?     @db.Boolean
+  multipleSubmissions Boolean?     @default(false) @db.Boolean
+  passwordProtected   Boolean?     @default(false) @db.Boolean
+  analyticsEnabled    Boolean?     @default(true) @db.Boolean
+  valid               Boolean      @default(true) @db.Boolean
+  createdBy           String       @db.Text
+  createdAt           DateTime?    @db.Timestamptz
+  updatedAt           DateTime?    @db.Timestamptz
 
   // Relations
   project         Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -193,6 +209,8 @@ model Question {
   required    Boolean      @default(false)
   type        QuestionType
   metadata    Json         @default("{}") @db.JsonB
+  posX        Int
+  posY        Int
 
   // relation
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
@@ -309,6 +327,7 @@ model Plan {
   // Relations
   features Feature[]
   teams    Team[]
+  coupons  Coupon[]
 
   @@map("plans")
 }
@@ -327,6 +346,20 @@ model Feature {
   plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
 
   @@map("features")
+}
+
+model Coupon {
+  id           String             @id @default(uuid()) @db.Uuid
+  type         CouponType         @default(GENERAL)
+  discountType CouponDiscountType @default(FLAT)
+  planId       String?            @db.Uuid
+  amount       Float?
+  useLeft      Int                @default(0)
+
+  // Relations
+  plan Plan? @relation(fields: [planId], references: [id])
+
+  @@map("coupons")
 }
 
 // #endregion

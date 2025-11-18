@@ -22,6 +22,12 @@ export const apiConstants = {
         createForm: () => 'forms',
         updateForm: (id: string) => `forms/${id}`,
         deleteForm: (id: string) => `forms/${id}`
+    },
+    quesiton: {
+        getQuestions: (formId: string) => `forms/${formId}/questions`,
+        createQuestions: (formId: string) => `forms/${formId}/questions`,
+        updateQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
+        deleteQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
     }
 
 };

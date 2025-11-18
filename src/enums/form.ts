@@ -4,11 +4,6 @@ export enum eViewScreenMode {
     Mobile = 'mobile',
 }
 
-export enum eFormPageType {
-    SinglePage = 'single_page',
-    MultiStep = 'multi_step',
-}
-
 export enum eViewMode {
     Builder = 'builder',
     Workflow = 'workflow',
@@ -20,21 +15,21 @@ export enum eWorkflowDirection {
     Vertical = 'vertical'
 };
 
-export enum eQuestionType {
-    shortText = "short_text",
-    longText = "long_text",
-    number = "number",
-    date = "date",
-    file = "file",
-    detail = "detail",
-    radio = "radio",
-    checkbox = "checkbox",
-    // dropdown = "dropdown",
-    email = "email",
-    phone = "phone",
-    address = "address",
-    website = "website",
-    starRating = "star_rating",
-    // barChoiceRating = "bar_choice_rating",
-    // imageChoiceRating = "image_choice_rating",
-}
+// export enum eQuestionType {
+//     shortText = "short_text",
+//     longText = "long_text",
+//     number = "number",
+//     date = "date",
+//     file = "file",
+//     detail = "detail",
+//     radio = "radio",
+//     checkbox = "checkbox",
+//     // dropdown = "dropdown",
+//     email = "email",
+//     phone = "phone",
+//     address = "address",
+//     website = "website",
+//     starRating = "star_rating",
+//     // barChoiceRating = "bar_choice_rating",
+//     // imageChoiceRating = "image_choice_rating",
+// }

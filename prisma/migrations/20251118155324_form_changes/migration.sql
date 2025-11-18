@@ -13,6 +13,15 @@ CREATE TYPE "TransactionType" AS ENUM ('CREDIT', 'DEBIT', 'TRANSFER', 'RESPONSE'
 -- CreateEnum
 CREATE TYPE "AnalyticsEventType" AS ENUM ('FORM_OPENED', 'FORM_STARTED', 'FORM_SUBMITTED');
 
+-- CreateEnum
+CREATE TYPE "QuestionType" AS ENUM ('USER_DETAIL', 'USER_ADDRESS', 'TEXT_SHORT', 'TEXT_LONG', 'FILE_ANY', 'FILE_IMAGE_OR_VIDEO', 'CHOICE_SINGLE', 'CHOICE_MULTIPLE', 'CHOICE_PICTURE', 'CHOICE_CHECKBOX', 'CHOICE_BOOL', 'CHOICE_DROPDOWN', 'INFO_EMAIL', 'INFO_PHONE', 'INFO_URL', 'SCREEN_WELCOME', 'SCREEN_END', 'SCREEN_STATEMENT', 'RATING_ZERO_TO_TEN', 'RATING_STAR', 'RATING_RANK', 'LEAGAL', 'REDIRECT_TO_URL', 'NUMBER', 'DATE');
+
+-- CreateEnum
+CREATE TYPE "CouponDiscountType" AS ENUM ('FLAT', 'PERCENT');
+
+-- CreateEnum
+CREATE TYPE "CouponType" AS ENUM ('GENERAL', 'PLAN_BASED');
+
 -- CreateTable
 CREATE TABLE "teams" (
     "id" UUID NOT NULL,
@@ -53,12 +62,8 @@ CREATE TABLE "forms" (
     "closeAt" TIMESTAMPTZ,
     "type" "FormType",
     "status" "FormStatus",
-    "passwordHash" TEXT,
     "uniqueSubdomain" TEXT,
     "customDomain" TEXT,
-    "welcomeScreen" JSONB,
-    "thankYouScreen" JSONB,
-    "config" JSONB[],
     "requireConsent" BOOLEAN,
     "allowAnonymous" BOOLEAN,
     "multipleSubmissions" BOOLEAN DEFAULT false,
@@ -70,6 +75,54 @@ CREATE TABLE "forms" (
     "updatedAt" TIMESTAMPTZ,
 
     CONSTRAINT "forms_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "active_passwords" (
+    "id" UUID NOT NULL,
+    "formId" UUID NOT NULL,
+    "isValid" BOOLEAN NOT NULL DEFAULT true,
+    "expireAt" TIMESTAMPTZ NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "questionId" UUID,
+
+    CONSTRAINT "active_passwords_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "QuestionOption" (
+    "id" UUID NOT NULL,
+    "questionId" UUID NOT NULL,
+    "label" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "QuestionOption_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "questions" (
+    "id" UUID NOT NULL,
+    "formId" UUID NOT NULL,
+    "title" TEXT NOT NULL,
+    "placeholder" TEXT NOT NULL DEFAULT '',
+    "description" TEXT NOT NULL DEFAULT '',
+    "required" BOOLEAN NOT NULL DEFAULT false,
+    "type" "QuestionType" NOT NULL,
+    "metadata" JSONB NOT NULL DEFAULT '{}',
+
+    CONSTRAINT "questions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "edges" (
+    "id" UUID NOT NULL,
+    "formId" UUID NOT NULL,
+    "sourceNodeId" UUID NOT NULL,
+    "targetNodeId" UUID NOT NULL,
+    "condition" JSONB DEFAULT '{}',
+
+    CONSTRAINT "edges_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -93,7 +146,7 @@ CREATE TABLE "responses" (
 
 -- CreateTable
 CREATE TABLE "analytics_events" (
-    "id" VARCHAR(30) NOT NULL,
+    "id" UUID NOT NULL,
     "formId" UUID NOT NULL,
     "eventType" "AnalyticsEventType",
     "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -104,7 +157,7 @@ CREATE TABLE "analytics_events" (
 
 -- CreateTable
 CREATE TABLE "transactions" (
-    "id" VARCHAR(30) NOT NULL,
+    "id" UUID NOT NULL,
     "type" "TransactionType" NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
     "description" TEXT,
@@ -144,8 +197,20 @@ CREATE TABLE "features" (
 );
 
 -- CreateTable
+CREATE TABLE "coupons" (
+    "id" UUID NOT NULL,
+    "type" "CouponType" NOT NULL DEFAULT 'GENERAL',
+    "discountType" "CouponDiscountType" NOT NULL DEFAULT 'FLAT',
+    "planId" UUID,
+    "amount" DOUBLE PRECISION,
+    "useLeft" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "coupons_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "users" (
-    "id" VARCHAR(30) NOT NULL,
+    "id" UUID NOT NULL,
     "userName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phoneNumber" TEXT,
@@ -159,6 +224,39 @@ CREATE TABLE "users" (
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE INDEX "teams_ownerId_idx" ON "teams"("ownerId");
+
+-- CreateIndex
+CREATE INDEX "projects_teamId_idx" ON "projects"("teamId");
+
+-- CreateIndex
+CREATE INDEX "forms_projectId_idx" ON "forms"("projectId");
+
+-- CreateIndex
+CREATE INDEX "forms_teamId_idx" ON "forms"("teamId");
+
+-- CreateIndex
+CREATE INDEX "active_passwords_formId_idx" ON "active_passwords"("formId");
+
+-- CreateIndex
+CREATE INDEX "QuestionOption_questionId_idx" ON "QuestionOption"("questionId");
+
+-- CreateIndex
+CREATE INDEX "questions_formId_idx" ON "questions"("formId");
+
+-- CreateIndex
+CREATE INDEX "edges_formId_idx" ON "edges"("formId");
+
+-- CreateIndex
+CREATE INDEX "responses_formId_idx" ON "responses"("formId");
+
+-- CreateIndex
+CREATE INDEX "analytics_events_formId_idx" ON "analytics_events"("formId");
+
+-- CreateIndex
+CREATE INDEX "transactions_teamId_idx" ON "transactions"("teamId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -179,6 +277,24 @@ ALTER TABLE "forms" ADD CONSTRAINT "forms_projectId_fkey" FOREIGN KEY ("projectI
 ALTER TABLE "forms" ADD CONSTRAINT "forms_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "active_passwords" ADD CONSTRAINT "active_passwords_formId_fkey" FOREIGN KEY ("formId") REFERENCES "forms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QuestionOption" ADD CONSTRAINT "QuestionOption_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "questions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "questions" ADD CONSTRAINT "questions_formId_fkey" FOREIGN KEY ("formId") REFERENCES "forms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "edges" ADD CONSTRAINT "edges_formId_fkey" FOREIGN KEY ("formId") REFERENCES "forms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "edges" ADD CONSTRAINT "edges_sourceNodeId_fkey" FOREIGN KEY ("sourceNodeId") REFERENCES "questions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "edges" ADD CONSTRAINT "edges_targetNodeId_fkey" FOREIGN KEY ("targetNodeId") REFERENCES "questions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "responses" ADD CONSTRAINT "responses_formId_fkey" FOREIGN KEY ("formId") REFERENCES "forms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -189,3 +305,6 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_teamId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "features" ADD CONSTRAINT "features_planId_fkey" FOREIGN KEY ("planId") REFERENCES "plans"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "coupons" ADD CONSTRAINT "coupons_planId_fkey" FOREIGN KEY ("planId") REFERENCES "plans"("id") ON DELETE SET NULL ON UPDATE CASCADE;

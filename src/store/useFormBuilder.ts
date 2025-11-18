@@ -1,11 +1,13 @@
 'use client'
 
 import { apiConstants } from '@/constants/api.constants';
-import { eFormPageType, eQuestionType, eViewMode, eViewScreenMode } from '@/enums/form';
-import { Form, FormStatus, FormType } from '@/generated/prisma';
+import { createErrorMessage, deleteErrorMessage, updateErrorMessage } from '@/constants/messages';
+import { eViewMode, eViewScreenMode } from '@/enums/form';
+import { Edge, Form, FormStatus, FormType, QuestionOption, QuestionType } from '@/generated/prisma';
 import api from '@/lib/axios';
+import { showError } from '@/lib/utils';
 import { ActionResponse } from '@/types/common';
-import { IThankYouScreen, IWelcomeScreen, IQuestion, IWorkflowConnection } from '@/types/form';
+import { IQuestionMetadata, IWorkflowConnection, Question } from '@/types/form';
 import { create } from 'zustand';
 
 const defaultFormSettings: Partial<Form> = {
@@ -13,17 +15,6 @@ const defaultFormSettings: Partial<Form> = {
     description: null,
     projectId: '',
     logoUrl: null,
-    thankYouScreen: {
-        enabled: true,
-        title: 'Thank you!',
-        description: 'Your response has been recorded.',
-    },
-    welcomeScreen: {
-        enabled: true,
-        title: 'Welcome to our form',
-        description: 'Thank you for taking the time to fill out this form.',
-        buttonText: 'Start',
-    },
     requireConsent: false,
     theme: null,
     uniqueSubdomain: null,
@@ -33,7 +24,6 @@ const defaultFormSettings: Partial<Form> = {
     closeAt: null,
     openAt: null,
     allowAnonymous: true,
-    config: [],
     status: FormStatus.DRAFT,
     multipleSubmissions: true,
     maxResponses: null,
@@ -42,235 +32,214 @@ const defaultFormSettings: Partial<Form> = {
 
 
 interface IFormBuilderStore {
-    // CONFIG
-    id?: string;
-    name: string;
-    description?: string;
-    projectId: string;
-    logoUrl?: string;
-    uniqueSubdomain?: string;
-    customDomain?: string;
-    analyticsEnabled: boolean;
-    allowAnonymous: boolean;
-    multipleSubmissions: boolean;
-    passwordProtected: boolean;
-    requireConsent: boolean;
-    closeAt?: Date;
-    openAt?: Date;
-    type: FormType;
-    status: FormStatus;
-    theme?: unknown;
-    createdAt?: Date;
-    updatedAt?: Date;
-    createdBy?: string;
-
-    // APP
-    maxResponses: number;
-
-    // FORM
-    welcomeScreen?: IWelcomeScreen | null;
-    thankYouScreen?: IThankYouScreen | null;
-    config: unknown;
+    formId: string | null;
+    dataSource: Partial<Form>;
+    questions: Question[];
+    edges: Edge[];
 
     // STATE
     selectedQuestionId: string | null;
-    selectedQuestion: IQuestion | null;
-    questions: IQuestion[];
+    selectedQuestion: Question | null;
     viewMode: eViewMode,
-    dataSource: Partial<Form>,
-    connections: IWorkflowConnection[];
-    isSaving: boolean;
-    isLoading: boolean;
     viewScreenMode: eViewScreenMode;
-    formPageType: eFormPageType;
 
-    initForm: (form: Form) => void;
-    addQuestions: (questions: eQuestionType[]) => void;
-    updateQuestion: (id: string, question: Partial<IQuestion>) => void;
-    changeQuestionSequence: (oldIndex: number, newIndex: number) => void;
-    moveQuestion: (id: string, position: { x: number; y: number }) => void;
-    deleteQuestion: (questionId: string) => void;
-    updateForm: (form: Partial<Form>) => void;
-    addConnection: (connection: IWorkflowConnection) => void;
-    removeConnection: (connectionId: string) => void;
-    setViewScreenMode: (mode: eViewScreenMode) => void;
-    setViewMode: (mode: eViewMode) => void;
-    setSelectedQuestionId: (id: string | null) => void;
+    savingCount: number;
+    isLoading: boolean;
+
+    // Core methods
+    initForm: (form: Form, questions: Question[]) => void;
+    updateForm: (form: Partial<Form>) => Promise<void>;
+
+    // Question methods
+    createQuestions: (questions: QuestionType[]) => Promise<void>;
+    updateQuestion: (questionId: string, question: Partial<Question>) => Promise<void>;
+    deleteQuestion: (questionId: string) => Promise<void>;
+
+    // Flow methods
+    addEdge: (edge: Edge) => Promise<void>;
+    updateEdge: (edgeId: string, edge: Partial<Edge>) => Promise<void>;
+    removeEdge: (edgeId: string) => Promise<void>;
+
+    // State Methods
     setIsLoading: (loading: boolean) => void;
-    setIsSaving: (loading: boolean) => void;
-
+    // addSavingCount: () => void;
+    // removeSavingCount: () => void;
+    setViewMode: (mode: eViewMode) => void;
+    setViewScreenMode: (mode: eViewScreenMode) => void;
+    setSelectedQuestionId: (id: string | null) => void;
 }
 
 export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
-    id: '',
-    name: '',
-    description: '',
-    projectId: '',
-    logoUrl: '',
-    uniqueSubdomain: '',
-    customDomain: '',
-    analyticsEnabled: false,
-    allowAnonymous: false,
-    multipleSubmissions: false,
-    passwordProtected: false,
-    requireConsent: false,
-    closeAt: undefined,
-    openAt: undefined,
-    type: FormType.REACH_OUT,
-    status: FormStatus.DRAFT,
-    theme: undefined,
-    createdAt: undefined,
-    updatedAt: undefined,
-    createdBy: undefined,
-    maxResponses: 0,
-    welcomeScreen: undefined,
-    thankYouScreen: undefined,
-    config: {},
-    isSaving: false,
+    formId: null,
+    dataSouce: {},
+    questions: [],
+    edges: [],
+
+    savingCount: 0,
     isLoading: false,
 
     selectedQuestionId: null,
     selectedQuestion: null,
-    questions: [],
-    viewMode: eViewMode.Builder,
+
     dataSource: defaultFormSettings,
     connections: [],
+    viewMode: eViewMode.Builder,
     viewScreenMode: eViewScreenMode.Desktop,
-    formPageType: eFormPageType.MultiStep,
 
-    initForm: (form: Form) => {
 
+    // #region Core methods
+    initForm: (form: Form, questions: Question[]) => {
         const formData: Partial<IFormBuilderStore> = {
-            id: form.id,
-            name: form.name,
-            description: form.description || undefined,
-            projectId: form.projectId,
-            logoUrl: form.logoUrl || undefined,
-            uniqueSubdomain: form.uniqueSubdomain || undefined,
-            customDomain: form.customDomain || undefined,
-            analyticsEnabled: !!form.analyticsEnabled,
-            allowAnonymous: !!form.allowAnonymous,
-            multipleSubmissions: !!form.multipleSubmissions,
-            passwordProtected: !!form.passwordProtected,
-            requireConsent: !!form.requireConsent,
-            closeAt: form.closeAt ? new Date(form.closeAt) : undefined,
-            openAt: form.openAt ? new Date(form.openAt) : undefined,
-            type: form.type as FormType,
-            status: form.status as FormStatus,
-            theme: form.theme || undefined,
-            createdAt: form.createdAt!,
-            updatedAt: form.updatedAt!,
-            createdBy: form.createdBy,
-            maxResponses: form.maxResponses || 0,
-            welcomeScreen: form.welcomeScreen ? form.welcomeScreen as unknown as IWelcomeScreen : null,
-            thankYouScreen: form.thankYouScreen ? form.thankYouScreen as unknown as IThankYouScreen : null,
-            config: form.config || [],
-            dataSource: {
-                id: form.id,
-                name: form.name,
-                description: form.description,
-                projectId: form.projectId,
-                logoUrl: form.logoUrl,
-                thankYouScreen: form.thankYouScreen,
-                welcomeScreen: form.welcomeScreen,
-                requireConsent: form.requireConsent,
-                theme: form.theme,
-                uniqueSubdomain: form.uniqueSubdomain,
-                customDomain: form.customDomain,
-                analyticsEnabled: form.analyticsEnabled,
-                type: form.type,
-                closeAt: form.closeAt,
-                openAt: form.openAt,
-                allowAnonymous: form.allowAnonymous,
-                config: form.config || [],
-                status: form.status,
-                multipleSubmissions: form.multipleSubmissions,
-                maxResponses: form.maxResponses,
-                passwordProtected: form.passwordProtected,
-            },
+            formId: form.id,
+            dataSource: form
         }
 
-        if (Array.isArray(form.config) && form.config.length) {
-            const config = form.config as unknown as IQuestion[];
-            formData.questions = config;
-            formData.selectedQuestionId = config[0].id;
-            formData.selectedQuestion = config[0] ?? null;
+        if (questions.length) {
+            formData.questions = questions;
+            formData.selectedQuestionId = questions[0].id;
+            formData.selectedQuestion = questions[0];
+        } else {
+            formData.questions = [];
+            formData.selectedQuestionId = null;
+            formData.selectedQuestion = null;
         }
 
         set({ ...formData });
     },
 
-    addQuestions: (newQuestions: eQuestionType[]) => {
-        const { questions } = get();
-        const exeLen = questions?.length || 0;
-
-        const newQues: IQuestion[] = [];
-        newQuestions.forEach((type, index) => {
-            const newQuestion: IQuestion = prepareNewQuestionObject(type, exeLen, index);
-            newQues.push(newQuestion);
-        })
-        const newQuestionsList = [...questions, ...newQues];
-
-        const lastQue = newQuestionsList[newQuestionsList.length - 1];
-        set({ questions: newQuestionsList, selectedQuestionId: lastQue.id, selectedQuestion: lastQue });
-        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
+    updateForm: async (form: Partial<Form>) => {
     },
+    // #endregion
 
-    updateQuestion: (id: string, question: Partial<IQuestion>) => {
-        console.log('POSITION [ called ]', question);
-        const { questions, selectedQuestionId, selectedQuestion } = get();
-        const updatedQuestions = questions.map(q => q.id === id ? { ...q, ...question } : q);
-        const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
-        if (id === selectedQuestionId) changes['selectedQuestion'] = { ...selectedQuestion, ...question } as IQuestion;
-        set(changes);
-        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
-    },
+    // #region Question methods
+    createQuestions: async (newQuestionTypes: QuestionType[]) => {
+        const { questions, formId } = get();
 
-    changeQuestionSequence: (oldIndex: number, newIndex: number) => {
-        const { questions } = get();
-        const updatedQuestions = [...questions];
-        const [movedQuestion] = updatedQuestions.splice(oldIndex, 1);
-        updatedQuestions.splice(newIndex, 0, movedQuestion);
-        set({ questions: updatedQuestions });
-    },
-
-    moveQuestion: (id: string, position: { x: number; y: number }) => {
-        const { questions } = get();
-        const updatedQuestions = questions.map(q => q.id === id ? { ...q, position } : q);
-        set({ questions: updatedQuestions });
-    },
-
-    deleteQuestion: (questionId: string) => {
-        const { questions, selectedQuestionId } = get();
-        const updatedQuestions = questions.filter(q => q.id !== questionId);
-        const changes: Partial<IFormBuilderStore> = { questions: updatedQuestions };
-        if (questionId === selectedQuestionId) {
-            if (questions?.length) {
-                changes['selectedQuestion'] = questions[0];
-                changes['selectedQuestionId'] = questions[0].id;
-            }
-            else changes['selectedQuestion'] = changes['selectedQuestionId'] = null;
+        if (!formId) {
+            console.log("createQuestions :: FORM ID NOT FOUND!!")
+            return
         }
-        set(changes);
-        updateFormDetails(get().id!, get().questions!, get().setIsSaving);
+
+        const queLen = questions?.length || 0;
+
+        const _newQues: Partial<Question>[] = [];
+        newQuestionTypes.forEach((queType, ind) => {
+            _newQues.push(prepareNewQuestionObject(formId, queType, queLen, ind))
+        })
+        try {
+            set((state) => ({ savingCount: state.savingCount + 1 }))
+            const response = await api.post<ActionResponse<Question[]>>(apiConstants.quesiton.createQuestions(formId), { data: _newQues });
+            if (!response?.data?.success) {
+                showError(response.data.message || createErrorMessage('question(s)'));
+                return;
+            }
+            const newQues = response?.data?.data || [];
+            if (!newQues.length) return;
+
+            set({
+                questions: [...questions, ...newQues],
+                selectedQuestion: newQues[newQues.length - 1],
+                selectedQuestionId: newQues[newQues.length - 1].id,
+            })
+        }
+        catch (err: unknown) {
+            console.log('Err While creating Questions :>> ', err);
+            showError(createErrorMessage('question(s)'));
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
     },
 
-    updateForm: (form: Partial<Form>) => {
-        const { dataSource } = get();
-        set({ dataSource: { ...dataSource, ...form } });
+    updateQuestion: async (questionId: string, question: Partial<Question>) => {
+        const { questions: previousQuestions, formId } = get();
+
+        if (!formId) {
+            console.log("updateQuestion :: FORM ID NOT FOUND!!")
+            return;
+        }
+
+        set((state) => ({
+            questions: state.questions.map((q) => {
+                if (q?.id !== questionId) return q;
+
+                if (question.metadata) {
+                    return {
+                        ...q, ...question,
+                        metadata: {
+                            ...(q.metadata),
+                            ...(question.metadata)
+                        }
+                    }
+                }
+                return { ...q, ...question }
+            }),
+            savingCount: state.savingCount + 1,
+        }));
+
+        try {
+            const response = await api.patch<ActionResponse<Question[]>>(apiConstants.quesiton.updateQuestions(formId, questionId), question);
+            if (!response?.data?.success) {
+                showError(response.data.message || updateErrorMessage('question'));
+                set({ questions: previousQuestions });
+                return;
+            }
+        }
+        catch (err: unknown) {
+            console.log('Err While updating Question :>> ', err);
+            showError(createErrorMessage('question(s)'));
+            set({ questions: previousQuestions });
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
     },
 
-    addConnection: (connection: IWorkflowConnection) => {
-        const { connections } = get();
-        set({ connections: [...connections, connection] });
-    },
+    deleteQuestion: async (questionId: string) => {
+        const { questions: previousQuestions, formId } = get();
 
-    removeConnection: (connectionId: string) => {
-        const { connections } = get();
-        const updatedConnections = connections.filter(c => c.id !== connectionId);
-        set({ connections: updatedConnections });
-    },
+        if (!formId) {
+            console.log("updateQuestion :: FORM ID NOT FOUND!!")
+            return;
+        }
 
+        set((state) => ({
+            questions: state.questions.filter((q) => q?.id !== questionId),
+            savingCount: state.savingCount + 1,
+        }));
+
+        try {
+            const response = await api.delete<ActionResponse<Question[]>>(apiConstants.quesiton.deleteQuestions(formId, questionId));
+            if (!response?.data?.success) {
+                showError(response.data.message || deleteErrorMessage('question'));
+                set({ questions: previousQuestions });
+                return;
+            }
+        }
+        catch (err: unknown) {
+            console.log('Err While deleting Question :>> ', err);
+            showError(createErrorMessage('question(s)'));
+            set({ questions: previousQuestions });
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+    // #endregion
+
+    // #region Flow methods
+    addEdge: async (connection: Edge) => {
+
+    },
+    updateEdge: async (edgeId: string, edge: Partial<Edge>) => {
+
+    },
+    removeEdge: async (connectionId: string) => {
+
+    },
+    // #endregion
+
+    // #region State Methods
     setViewMode: (mode: eViewMode) => {
         set({ viewMode: mode });
     },
@@ -291,14 +260,40 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ isLoading: loading });
     },
 
-    setIsSaving: (loading: boolean) => {
-        set({ isSaving: loading });
-    },
+    // setIsSaving: (loading: boolean) => {
+    //     set({ isSaving: loading });
+    // },
+    // #endregion
+
+    // updateQuestion: (id: string, question: Partial<Question>) => {
+
+    // },
+
+    // deleteQuestion: (questionId: string) => {
+
+    // },
+
+    // updateForm: (form: Partial<Form>) => {
+    //     const { dataSource } = get();
+    //     set({ dataSource: { ...dataSource, ...form } });
+    // },
+
+    // addConnection: (connection: IWorkflowConnection) => {
+    //     const { connections } = get();
+    //     set({ connections: [...connections, connection] });
+    // },
+
+    // removeConnection: (connectionId: string) => {
+    //     const { connections } = get();
+    //     const updatedConnections = connections.filter(c => c.id !== connectionId);
+    //     set({ connections: updatedConnections });
+    // },
+
 
 }))
 
 
-const updateFormDetails = async (id: string, config: IQuestion[], setSaving: (isSaving: boolean) => void): Promise<boolean> => {
+const updateFormDetails = async (id: string, config: Question[], setSaving: (isSaving: boolean) => void): Promise<boolean> => {
     setSaving(true);
     const dto = { id, config };
     try {
@@ -317,37 +312,67 @@ const updateFormDetails = async (id: string, config: IQuestion[], setSaving: (is
 }
 
 
-const prepareNewQuestionObject = (type: eQuestionType, exeLen: number, index: number): IQuestion => {
-    const baseObject: IQuestion = {
-        id: `question-${Date.now()}`,
+const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: number, index: number): Partial<Question> => {
+    const baseObject: Partial<Question> = {
         type,
-        question: `New ${type.replace('_', ' ')} question (Click to edit)`,
+        title: `New ${type.replace('_', ' ')} question(Click to edit)`,
         placeholder: `Enter your answer`,
+        description: '',
+        formId,
         required: false,
-        options: type === eQuestionType.checkbox || type === eQuestionType.radio ? ['Option 1', 'Option 2'] : undefined,
-        position: { x: (exeLen + index) * 400, y: 200 },
+        posX: (exeLen + index) * 400,
+        posY: 200
     };
+    const options: Partial<QuestionOption>[] = [];
+    const metadata: IQuestionMetadata = {}
 
     switch (type) {
-        case eQuestionType.shortText:
-        case eQuestionType.longText:
-        case eQuestionType.number:
-            baseObject.validation = { min: undefined, max: undefined };
-            break;
-        case eQuestionType.checkbox:
-        case eQuestionType.radio:
-            // case eQuestionType.dropdown:
-            baseObject.options = ['Option 1', 'Option 2'];
-            baseObject.validation = { randomize: false };
+        case QuestionType.USER_DETAIL:
+            metadata.detailBtnText = 'Continue'
             break;
 
-        case eQuestionType.phone:
-            baseObject.validation = { allowAnyCountry: true };
+        case QuestionType.USER_ADDRESS:
+            metadata.address = true;
+            metadata.address2 = true;
+            metadata.city = true;
+            metadata.state = true;
+            metadata.country = true;
+            metadata.zip = true;
+            metadata.postalCode = true;
             break;
-        case eQuestionType.detail:
-            baseObject.validation = { detailBtnText: 'Continue' };
-            baseObject.question = 'Click to add details...';
+
+        case QuestionType.FILE_ANY:
+            metadata.anyFileType = true;
             break;
+
+        case QuestionType.FILE_IMAGE_OR_VIDEO:
+            metadata.anyFileType = false;
+            metadata.allowedFileTypes = ['image', 'video'];
+            break;
+
+        case QuestionType.CHOICE_SINGLE:
+        case QuestionType.CHOICE_MULTIPLE:
+        case QuestionType.CHOICE_CHECKBOX:
+        case QuestionType.CHOICE_DROPDOWN:
+            options.push({ label: 'Option 1', value: 'option-1', sortOrder: 0 })
+            options.push({ label: 'Option 2', value: 'option-2', sortOrder: 1 })
+            metadata.randomize = false;
+            break;
+
+        case QuestionType.CHOICE_BOOL:
+            options.push({ label: 'Yes', value: '1', sortOrder: 0 })
+            options.push({ label: 'No', value: '0', sortOrder: 1 })
+            metadata.randomize = false;
+            break;
+
+        case QuestionType.INFO_PHONE:
+            metadata.allowAnyCountry = true
+            break;
+
+        case QuestionType.RATING_STAR:
+            metadata.starCount = 5
+            break;
+
         default:
             break;
     }
