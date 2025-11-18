@@ -48,7 +48,7 @@ interface IFormBuilderStore {
 
     // Core methods
     initForm: (form: Form, questions: Question[]) => void;
-    updateForm: (form: Partial<Form>) => Promise<void>;
+    // updateForm: (form: Partial<Form>) => Promise<void>;
 
     // Question methods
     createQuestions: (questions: QuestionType[]) => Promise<void>;
@@ -107,8 +107,29 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ ...formData });
     },
 
-    updateForm: async (form: Partial<Form>) => {
-    },
+    // updateForm: async (form: Partial<Form>) => {
+    //     const { formId } = get();
+
+    //     if (!formId) {
+    //         console.log("updateQuestion :: FORM ID NOT FOUND!!")
+    //         return;
+    //     }
+
+    //     try {
+    //         const response = await api.patch<ActionResponse<Question[]>>(apiConstants.form.updateForm(formId), form);
+    //         if (!response?.data?.success) {
+    //             showError(response.data.message || updateErrorMessage('question'));
+    //             return;
+    //         }
+    //     }
+    //     catch (err: unknown) {
+    //         console.log('Err While updating Question :>> ', err);
+    //         showError(createErrorMessage('question(s)'));
+    //     }
+    //     finally {
+    //         set((state) => ({ savingCount: state.savingCount - 1 }))
+    //     }
+    // },
     // #endregion
 
     // #region Question methods
@@ -264,53 +285,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     //     set({ isSaving: loading });
     // },
     // #endregion
-
-    // updateQuestion: (id: string, question: Partial<Question>) => {
-
-    // },
-
-    // deleteQuestion: (questionId: string) => {
-
-    // },
-
-    // updateForm: (form: Partial<Form>) => {
-    //     const { dataSource } = get();
-    //     set({ dataSource: { ...dataSource, ...form } });
-    // },
-
-    // addConnection: (connection: IWorkflowConnection) => {
-    //     const { connections } = get();
-    //     set({ connections: [...connections, connection] });
-    // },
-
-    // removeConnection: (connectionId: string) => {
-    //     const { connections } = get();
-    //     const updatedConnections = connections.filter(c => c.id !== connectionId);
-    //     set({ connections: updatedConnections });
-    // },
-
-
 }))
-
-
-const updateFormDetails = async (id: string, config: Question[], setSaving: (isSaving: boolean) => void): Promise<boolean> => {
-    setSaving(true);
-    const dto = { id, config };
-    try {
-        const response = await api.put<ActionResponse>(apiConstants.form.updateForm(id), dto);
-        if (!response.data.success) {
-            console.error('Error updating form details:', response.data.message);
-            return false;
-        }
-        return true;
-    } catch (error) {
-        console.error('Error updating form details:', error);
-        return false;
-    } finally {
-        setSaving(false);
-    }
-}
-
 
 const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: number, index: number): Partial<Question> => {
     const baseObject: Partial<Question> = {
