@@ -1,6 +1,5 @@
 'use client'
 
-import { eQuestionType } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "framer-motion";
 import { AddressFieldConfig } from "../formFields/config/address";
@@ -17,6 +16,7 @@ import { RadioFieldConfig } from "../formFields/config/radio";
 import { ShortTextFieldConfig } from "../formFields/config/shortText";
 import { StarRatingFieldConfig } from "../formFields/config/starRating";
 import { WebsiteFieldConfig } from "../formFields/config/website";
+import { QuestionType } from "@/generated/prisma";
 
 export default function QuestionConfigCard() {
     const { selectedQuestion } = useFormBuilder();
@@ -36,7 +36,7 @@ export default function QuestionConfigCard() {
         const uniqueKey = `${selectedQuestion?.type}-${selectedQuestion?.id}`;
 
         switch (selectedQuestion?.type) {
-            case eQuestionType.shortText:
+            case QuestionType.TEXT_SHORT:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -50,7 +50,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.longText:
+            case QuestionType.TEXT_LONG:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -64,7 +64,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.number:
+            case QuestionType.NUMBER:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -78,7 +78,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.date:
+            case QuestionType.DATE:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -92,7 +92,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.detail:
+            case QuestionType.USER_DETAIL:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -106,7 +106,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.file:
+            case QuestionType.FILE_ANY:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -120,7 +120,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.radio:
+            case QuestionType.CHOICE_SINGLE:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -134,7 +134,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.checkbox:
+            case QuestionType.CHOICE_CHECKBOX:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -148,7 +148,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            // case eQuestionType.dropdown:
+            // case QuestionType.dropdown:
             //     return (
             //         <motion.div
             //             key={uniqueKey}
@@ -162,7 +162,7 @@ export default function QuestionConfigCard() {
             //         </motion.div>
             //     );
 
-            case eQuestionType.email:
+            case QuestionType.INFO_EMAIL:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -176,7 +176,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.phone:
+            case QuestionType.INFO_PHONE:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -190,7 +190,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.address:
+            case QuestionType.USER_ADDRESS:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -204,7 +204,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.website:
+            case QuestionType.INFO_URL:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -218,7 +218,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            case eQuestionType.starRating:
+            case QuestionType.RATING_STAR:
                 return (
                     <motion.div
                         key={uniqueKey}
@@ -232,7 +232,7 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            // case eQuestionType.barChoiceRating:
+            // case QuestionType.barChoiceRating:
             //     return (
             //         <motion.div
             //             key={uniqueKey}
@@ -246,7 +246,7 @@ export default function QuestionConfigCard() {
             //         </motion.div>
             // );
 
-            // case eQuestionType.imageChoiceRating:
+            // case QuestionType.imageChoiceRating:
             //     return (
             //         <motion.div
             //             key={uniqueKey}
@@ -271,7 +271,7 @@ export default function QuestionConfigCard() {
                         transition={transition}
                         className="p-4 border border-dashed border-muted-foreground/25 rounded-lg text-center"
                     >
-                        <h2 className="question-card__title">{selectedQuestion?.question}</h2>
+                        <h2 className="question-card__title">{selectedQuestion?.title}</h2>
                         <p className="question-card__description">{selectedQuestion?.description}</p>
                         <p className="text-sm text-muted-foreground mt-2">
                             Question type &quot;{selectedQuestion?.type}&quot; is not yet supported.

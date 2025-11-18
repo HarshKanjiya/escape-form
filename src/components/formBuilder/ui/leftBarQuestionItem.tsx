@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { TrashIcon } from "lucide-react";
 import QuestionIcon from "./questionIcon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export default function LeftBarQuestionItem({ isExpanded, question }: { isExpanded: boolean, question: IQuestion }) {
+export default function LeftBarQuestionItem({ isExpanded, question }: { isExpanded: boolean, question: Question }) {
     const { selectedQuestionId, setSelectedQuestionId, deleteQuestion } = useFormBuilder();
     return (
         <>
@@ -24,7 +24,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                 <QuestionIcon questionType={question.type} />
                             </div>
                             <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden', isExpanded ? 'visible' : 'hidden')}>
-                                {question.question}
+                                {question.title}
                             </div>
                         </div>
                         {
@@ -53,7 +53,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                         <QuestionIcon questionType={question.type} />
                                     </div>
                                     <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden', isExpanded ? 'visible' : 'hidden')}>
-                                        {question.question}
+                                        {question.title}
                                     </div>
                                 </div>
                                 {
@@ -71,7 +71,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                             </li>
                         </TooltipTrigger>
                         <TooltipContent side="right">
-                            {!isExpanded ? question.question : ''}
+                            {!isExpanded ? question.title : ''}
                         </TooltipContent>
                     </Tooltip>
             }

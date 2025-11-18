@@ -1,5 +1,4 @@
-import { eQuestionType } from "@/enums/form";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { AddressField } from "../formFields/address";
 import { CheckboxField } from "../formFields/checkbox";
 import { DateField } from "../formFields/date";
@@ -14,9 +13,10 @@ import { ShortTextField } from "../formFields/shortText";
 import { StarRatingField } from "../formFields/starRating";
 import { WebsiteField } from "../formFields/website";
 import { DetailField } from "../formFields/detail";
+import { QuestionType } from "@/generated/prisma";
 
 interface IProps {
-    question: IQuestion | null;
+    question: Question | null;
     index: number;
 }
 
@@ -27,82 +27,82 @@ export default function QuestionCard({ question, index }: IProps) {
         );
     }
     switch (question.type) {
-        case eQuestionType.shortText:
+        case QuestionType.TEXT_SHORT:
             return (
                 <ShortTextField question={question} index={index} />
             );
 
-        case eQuestionType.longText:
+        case QuestionType.TEXT_LONG:
             return (
                 <LongTextField question={question} index={index} />
             );
 
-        case eQuestionType.number:
+        case QuestionType.NUMBER:
             return (
                 <NumberField question={question} index={index} />
             );
 
-        case eQuestionType.detail:
+        case QuestionType.USER_DETAIL:
             return (
                 <DetailField question={question} index={index} />
             );
 
-        case eQuestionType.date:
+        case QuestionType.DATE:
             return (
                 <DateField question={question} index={index} />
             );
 
-        case eQuestionType.file:
+        case QuestionType.FILE_ANY:
             return (
                 <FileUploadField question={question} index={index} />
             );
 
-        case eQuestionType.radio:
+        case QuestionType.CHOICE_SINGLE:
             return (
                 <RadioField question={question} index={index} />
             );
 
-        case eQuestionType.checkbox:
+        case QuestionType.CHOICE_CHECKBOX:
             return (
                 <CheckboxField question={question} index={index} />
             );
 
-        // case eQuestionType.dropdown:
+        // case QuestionType.dropdown:
         //     return (
         //         <DropdownField question={question} index={index} />
         //     );
 
-        case eQuestionType.email:
+        case QuestionType.INFO_EMAIL:
             return (
                 <EmailField question={question} index={index} />
             );
 
-        case eQuestionType.phone:
+        case QuestionType.INFO_PHONE:
             return (
                 <PhoneField question={question} index={index} />
             );
 
-        case eQuestionType.address:
+        case QuestionType.USER_ADDRESS:
             return (
                 <AddressField question={question} index={index} />
             );
 
-        case eQuestionType.website:
+        case QuestionType.INFO_URL:
             return (
                 <WebsiteField question={question} index={index} />
             );
 
-        case eQuestionType.starRating:
+        case QuestionType.RATING_STAR:
             return (
                 <StarRatingField question={question} index={index} />
             );
 
-        // case eQuestionType.barChoiceRating:
+        // case QuestionType.barChoiceRating:
         //     return (
         //         <BarChoiceRatingField question={question} index={index} />
         //     );
 
-        // case eQuestionType.imageChoiceRating:
+        // case QuestionType.imageChoiceRating:
         //     return (
         //         <ImageChoiceRatingField question={question} index={index} />
         //     );
@@ -110,7 +110,7 @@ export default function QuestionCard({ question, index }: IProps) {
         default:
             return (
                 <div className="p-4 border border-dashed border-muted-foreground/25 rounded-lg text-center">
-                    <h2 className="question-card__title">{question?.question}</h2>
+                    <h2 className="question-card__title">{question?.title}</h2>
                     <p className="question-card__description">{question?.description}</p>
                     <p className="text-sm text-muted-foreground mt-2">
                         Question type &quot;{question.type}&quot; is not yet supported.

@@ -1,6 +1,5 @@
 "use client";
 
-import { eQuestionType } from "@/enums/form";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Check, Plus, Search } from "lucide-react";
@@ -11,6 +10,7 @@ import { Input } from "../../ui/input";
 import QuestionIcon from "./questionIcon";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { QuestionType } from "@/generated/prisma";
 
 interface IAddItemDialogProps {
     children?: React.ReactNode;
@@ -18,8 +18,8 @@ interface IAddItemDialogProps {
 
 interface IItemProps {
     field: IField;
-    selectedField: eQuestionType | null;
-    setSelectedField: (id: eQuestionType) => void;
+    selectedField: QuestionType | null;
+    setSelectedField: (id: QuestionType) => void;
     onAdd: () => void;
 }
 
@@ -86,7 +86,7 @@ interface IFieldSet {
 
 interface IField {
     label: string;
-    id: eQuestionType;
+    id: QuestionType;
     accent: string; // accent color utility for icon background
     keywords?: string[]; // for search discoverability
 }
@@ -97,68 +97,89 @@ const fields: IFieldSet[] = [
         title: 'Common',
         description: 'Basic input primitives',
         items: [
-            { id: eQuestionType.shortText, label: 'Short Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'single line'] },
-            { id: eQuestionType.longText, label: 'Long Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'paragraph'] },
-            { id: eQuestionType.number, label: 'Number', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['numeric', 'integer'] },
-            { id: eQuestionType.date, label: 'Date', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['calendar', 'time'] },
-            { id: eQuestionType.file, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
-            { id: eQuestionType.detail, label: 'Detail Block', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['content', 'static'] },
+            { id: QuestionType.TEXT_SHORT, label: 'Short Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'single line'] },
+            { id: QuestionType.TEXT_LONG, label: 'Long Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'paragraph'] },
+            { id: QuestionType.NUMBER, label: 'Number', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['numeric', 'integer'] },
+            { id: QuestionType.DATE, label: 'Date', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['calendar', 'time'] },
+            { id: QuestionType.FILE_ANY, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
+            { id: QuestionType.USER_DETAIL, label: 'Detail Block', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['content', 'static'] },
         ]
     },
     {
         title: 'Choice Based',
         description: 'Select one or many options',
         items: [
-            { id: eQuestionType.radio, label: 'Single Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['radio', 'single'] },
-            { id: eQuestionType.checkbox, label: 'Multiple Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['multi', 'checkbox'] },
-            // { id: eQuestionType.dropdown, label: 'Dropdown', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
+            { id: QuestionType.CHOICE_SINGLE, label: 'Single Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['radio', 'single'] },
+            { id: QuestionType.CHOICE_MULTIPLE, label: 'Multiple Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['multi', 'checkbox'] },
+            { id: QuestionType.CHOICE_DROPDOWN, label: 'Dropdown', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
+            { id: QuestionType.CHOICE_BOOL, label: 'Yes/No', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
+            { id: QuestionType.CHOICE_CHECKBOX, label: 'Checkbox', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
         ]
     },
     {
         title: 'Contact Info',
         description: 'Collect respondent contact details',
         items: [
-            { id: eQuestionType.email, label: 'Email', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'mail'] },
-            { id: eQuestionType.phone, label: 'Phone', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'tel'] },
-            { id: eQuestionType.address, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
-            { id: eQuestionType.website, label: 'Website', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['url'] },
+            { id: QuestionType.INFO_EMAIL, label: 'Email', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'mail'] },
+            { id: QuestionType.INFO_PHONE, label: 'Phone', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'tel'] },
+            { id: QuestionType.USER_ADDRESS, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
+            { id: QuestionType.INFO_URL, label: 'Website', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['url'] },
         ]
     },
     {
         title: 'Rating',
         description: 'Measure sentiment or preference',
         items: [
-            { id: eQuestionType.starRating, label: 'Star Rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'stars'] },
-            // { id: eQuestionType.barChoiceRating, label: 'Choice Rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'scale'] },
-            // { id: eQuestionType.imageChoiceRating, label: 'Picture Choice', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['image', 'choice'] },
+            { id: QuestionType.RATING_STAR, label: 'Star Rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'stars'] },
+            { id: QuestionType.RATING_ZERO_TO_TEN, label: 'Rating Board', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['rating', 'scale'] },
+            { id: QuestionType.RATING_RANK, label: 'Rank rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['image', 'choice'] },
         ]
     },
 ];
 
 // Extra descriptions for preview panel
-const fieldDescriptions: Record<eQuestionType, string> = {
-    [eQuestionType.shortText]: 'Single line input suitable for names, short answers, tags.',
-    [eQuestionType.longText]: 'Multi-line text area for extended responses and feedback.',
-    [eQuestionType.number]: 'Numeric input with optional validation constraints.',
-    [eQuestionType.date]: 'Date picker for selecting a specific date.',
-    [eQuestionType.file]: 'Upload field to collect documents or images.',
-    [eQuestionType.detail]: 'A static content block to show instructions or context.',
-    [eQuestionType.radio]: 'Let respondents choose exactly one option.',
-    [eQuestionType.checkbox]: 'Allow multiple selections from a list of options.',
-    [eQuestionType.email]: 'Email address field with validation.',
-    [eQuestionType.phone]: 'International phone number input with validation.',
-    [eQuestionType.address]: 'Structured address entry (street, city, etc.).',
-    [eQuestionType.website]: 'Website / URL field with protocol validation.',
-    [eQuestionType.starRating]: 'Collect a quick 1–5 star satisfaction rating.',
-    // [eQuestionType.barChoiceRating]: 'Horizontal choice scale to compare options.',
-    // [eQuestionType.imageChoiceRating]: 'Selectable picture choices for visual surveys.',
+const fieldDescriptions: Record<QuestionType, string> = {
+
+    [QuestionType.USER_DETAIL]: 'A static content block to show instructions or context.',
+    [QuestionType.USER_ADDRESS]: 'Structured address entry (street, city, etc.).',
+
+    [QuestionType.TEXT_SHORT]: 'Single line input suitable for names, short answers, tags.',
+    [QuestionType.TEXT_LONG]: 'Multi-line text area for extended responses and feedback.',
+
+    [QuestionType.NUMBER]: 'Numeric input with optional validation constraints.',
+    [QuestionType.DATE]: 'Date picker for selecting a specific date.',
+
+    [QuestionType.FILE_ANY]: 'Upload field to collect documents or images.',
+
+    [QuestionType.CHOICE_SINGLE]: 'Let respondents choose exactly one option.',
+    [QuestionType.CHOICE_CHECKBOX]: 'Allow multiple selections from a list of options.',
+
+    [QuestionType.INFO_EMAIL]: 'Email address field with validation.',
+    [QuestionType.INFO_PHONE]: 'International phone number input with validation.',
+    [QuestionType.INFO_URL]: 'Website / URL field with protocol validation.',
+
+    [QuestionType.RATING_STAR]: 'Collect a quick 1–5 star satisfaction rating.',
+    // pending
+
+    [QuestionType.CHOICE_BOOL]: 'Pending',
+    [QuestionType.CHOICE_DROPDOWN]: 'Pending',
+    [QuestionType.CHOICE_MULTIPLE]: 'Pending',
+    [QuestionType.CHOICE_PICTURE]: 'Pending',
+    [QuestionType.FILE_IMAGE_OR_VIDEO]: 'Pending',
+    [QuestionType.SCREEN_WELCOME]: 'Pending',
+    [QuestionType.SCREEN_END]: 'Pending',
+    [QuestionType.SCREEN_STATEMENT]: 'Pending',
+    [QuestionType.RATING_RANK]: 'Pending',
+    [QuestionType.RATING_ZERO_TO_TEN]: 'Pending',
+    [QuestionType.LEAGAL]: 'Pending',
+    [QuestionType.REDIRECT_TO_URL]: 'Pending'
 };
 
 
 export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
-    const { addQuestions } = useFormBuilder();
+    const { createQuestions } = useFormBuilder();
 
-    const [selectedField, setSelectedField] = useState<eQuestionType | null>(null);
+    const [selectedField, setSelectedField] = useState<QuestionType | null>(null);
     const [open, setOpen] = useState(false);
 
     const [query, setQuery] = useState("");
@@ -179,7 +200,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
 
     const save = useCallback(() => {
         if (selectedField) {
-            addQuestions([selectedField]);
+            createQuestions([selectedField]);
             setSelectedField(null);
             setOpen(false);
             setQuery("");

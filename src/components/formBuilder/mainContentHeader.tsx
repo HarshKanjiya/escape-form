@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
 
 export default function MainContentHeader() {
-    const { viewMode, viewScreenMode, isSaving, status, setViewMode, setViewScreenMode } = useFormBuilder()
+    const { viewMode, viewScreenMode, savingCount, dataSource, setViewMode, setViewScreenMode } = useFormBuilder()
 
     return (
         <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent-bg">
@@ -82,7 +82,7 @@ export default function MainContentHeader() {
             </div>
             <div className="flex items-center gap-3">
                 {
-                    isSaving &&
+                    savingCount > 0 &&
                     <span className="animate-pulse flex items-center gap-3 mr-5 text-muted-foreground/50">
                         <RefreshCcw className="animate-spin ml-1" size={14} />
                         <span className="italic text-sm">Saving...</span>
@@ -91,7 +91,7 @@ export default function MainContentHeader() {
 
                 <div className="flex items-center gap-2">
                     {
-                        status == FormStatus.DRAFT ?
+                        dataSource.status == FormStatus.DRAFT ?
                             <Button>
                                 <Rocket className="mr-1" size={14} />
                                 Publish
@@ -99,7 +99,7 @@ export default function MainContentHeader() {
                             : null
                     }
                     {
-                        status == FormStatus.ARCHIVED ?
+                        dataSource.status == FormStatus.ARCHIVED ?
                             <Button>
                                 <ArchiveRestore className="mr-1" size={14} />
                                 Restore

@@ -1,29 +1,29 @@
 "use client";
 
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { SplitIcon } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import QuestionIcon from "../ui/questionIcon";
 
 
 export const FlowNode = ({ node, x, y, zoom, positionChange }: {
-    node: IQuestion, x: number, y: number, zoom: number, positionChange: (id: any, position: { x: number, y: number }) => void
+    node: Question, x: number, y: number, zoom: number, positionChange: (id: any, position: { x: number, y: number }) => void
 }) => {
 
     const elementRef = useRef<HTMLDivElement>(null);
-    const pos = useRef({ x: node.position.x, y: node.position.y });
+    const pos = useRef({ x: node.posX, y: node.posY });
 
     const dragStartMouse = useRef({ x: 0, y: 0 });
     const dragStartElem = useRef({ x: 0, y: 0 });
 
     useEffect(() => {
-        pos.current = { x: node.position.x, y: node.position.y };
+        pos.current = { x: node.posX, y: node.posY };
 
         if (elementRef.current) {
             elementRef.current.style.transform =
                 `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`;
         }
-    }, [node.position.x, node.position.y, zoom]);
+    }, [node.posX, node.posY, zoom]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (e.button === 0) {
@@ -88,7 +88,7 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: {
                 <QuestionIcon questionType={node.type} className="text-white" />
             </div>
             <p className="line-clamp-1 overflow-ellipsis overflow-hidden">
-                {node.question}
+                {node.title}
             </p>
             <p className="italic text-sm text-muted-foreground line-clamp-2 overflow-ellipsis overflow-hidden">
                 {
@@ -103,7 +103,7 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: {
     );
 }
 
-export const FlowNodeWrapper = ({ nodes, x, y, zoom }: { nodes: IQuestion[], x: number, y: number, zoom: number }) => {
+export const FlowNodeWrapper = ({ nodes, x, y, zoom }: { nodes: Question[], x: number, y: number, zoom: number }) => {
 
     const positionChange = (id: any, position: any) => {
         console.log('Node drag finished :>> ', id, position);

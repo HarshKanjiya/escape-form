@@ -2,7 +2,8 @@
 
 import RenderMultiStepForm from "@/components/formRendering/multiStepForm";
 import RenderSinglePageForm from "@/components/formRendering/singlePageForm";
-import { eFormPageType, eViewScreenMode } from "@/enums/form";
+import { eViewScreenMode } from "@/enums/form";
+import { FormPageType } from "@/generated/prisma";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { motion, AnimatePresence } from "framer-motion";
 import { BatteryFull, SignalIcon, WifiIcon } from "lucide-react";
@@ -21,7 +22,7 @@ const mobileVariants = {
 }
 
 export default function FormPreview() {
-    const { questions, viewScreenMode, formPageType } = useFormBuilder()
+    const { questions, viewScreenMode, dataSource } = useFormBuilder()
 
 
     return (
@@ -41,7 +42,7 @@ export default function FormPreview() {
                         className="w-full px-3 py-2"
                     >
                         {
-                            formPageType === eFormPageType.SinglePage ?
+                            dataSource.formPageType === FormPageType.SINGLE ?
                                 <RenderSinglePageForm questions={questions} /> :
                                 <RenderMultiStepForm questions={questions || []} />
                         }
@@ -72,7 +73,7 @@ export default function FormPreview() {
                                 </div>
                                 <div className="h-[641px] overflow-auto bg-accent-bg rounded">
                                     {
-                                        formPageType === eFormPageType.SinglePage ?
+                                        dataSource.formPageType === FormPageType.SINGLE ?
                                             <RenderSinglePageForm questions={questions} /> :
                                             <RenderMultiStepForm questions={questions || []} />
                                     }

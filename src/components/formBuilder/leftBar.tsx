@@ -11,7 +11,7 @@ import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
 export default function LeftBar() {
 
-    const { questions, name: formName, status } = useFormBuilder();
+    const { questions, dataSource } = useFormBuilder();
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -133,7 +133,7 @@ export default function LeftBar() {
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                         <div className='w-full h-full flex flex-col gap-2'>
                             <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b h-[53px]'>
-                                <span className={cn('text-md overflow-ellipsis line-clamp-1', isExpanded ? 'visible' : 'hidden')}>{formName}</span>
+                                <span className={cn('text-md overflow-ellipsis line-clamp-1', isExpanded ? 'visible' : 'hidden')}>{dataSource.name}</span>
                                 {/* <div className='flex items-center gap-2'>
                                     <Tooltip delayDuration={100}>
                                         <TooltipTrigger asChild>

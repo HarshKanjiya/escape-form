@@ -12,8 +12,13 @@ import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { ActionResponse } from "@/types/common";
+import { Question } from "@/types/form";
 import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
+
+type formWithQuestions = Form & {
+    questions?: Question[]
+}
 
 export default function FormBuilderWrapper() {
 
@@ -28,14 +33,19 @@ export default function FormBuilderWrapper() {
         const getForm = async () => {
             try {
                 setIsLoading(true);
-                const response = await api.get<ActionResponse<Form>>(apiConstants.form.getFormById(formId));
+                const response = await api.get<ActionResponse<formWithQuestions>>(apiConstants.form.getFormById(formId));
 
-                if (!response.data.success) {
+                const form = response.data.data;
+                if (!response.data.success || !form) {
                     showError(response.data.message || getErrorMessage("form"));
                     setIsLoading(false);
                     return;
                 }
-                if (response.data.data) initForm(response.data.data);
+
+                const questions = form?.questions || [];
+                delete form.questions
+
+                if (response.data.data) initForm(response.data.data, questions);
             } catch (error) {
                 console.error('Error fetching form:', error);
                 showError(getErrorMessage("form"));

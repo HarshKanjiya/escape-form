@@ -1,9 +1,9 @@
-import { eQuestionType } from "@/enums/form";
+import { QuestionType } from "@/generated/prisma";
 import { Upload, ChevronDown, Star } from "lucide-react";
 
-const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
+const DemoQuestion = ({ questionType }: { questionType: QuestionType }) => {
     switch (questionType) {
-        case eQuestionType.shortText:
+        case QuestionType.TEXT_SHORT:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -37,7 +37,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.longText:
+        case QuestionType.TEXT_LONG:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -61,7 +61,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.number:
+        case QuestionType.NUMBER:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -92,7 +92,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.date:
+        case QuestionType.DATE:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -149,7 +149,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.file:
+        case QuestionType.FILE_ANY:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -175,12 +175,12 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.detail:
+        case QuestionType.USER_DETAIL:
             return (
                 <div className="text-sm italic opacity-60">Detail block preview coming soon.</div>
             );
 
-        case eQuestionType.radio:
+        case QuestionType.CHOICE_SINGLE:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -208,7 +208,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.checkbox:
+        case QuestionType.CHOICE_CHECKBOX:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -241,7 +241,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.email:
+        case QuestionType.INFO_EMAIL:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -263,7 +263,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.phone:
+        case QuestionType.INFO_PHONE:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -293,7 +293,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.address:
+        case QuestionType.USER_ADDRESS:
             return (
                 <div className="p-8 w-full max-w-3xl mx-auto">
                     <div className="space-y-6">
@@ -333,7 +333,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.website:
+        case QuestionType.INFO_URL:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -357,7 +357,7 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                 </div>
             );
 
-        case eQuestionType.starRating:
+        case QuestionType.RATING_STAR:
             return (
                 <div className="p-8 w-full max-w-2xl mx-auto">
                     <div className="space-y-6">
@@ -375,8 +375,8 @@ const DemoQuestion = ({ questionType }: { questionType: eQuestionType }) => {
                                 <button key={star} className="group transition-transform hover:scale-110 focus:outline-none focus:scale-110" disabled>
                                     <Star
                                         className={`w-10 h-10 transition-colors ${star <= 4
-                                                ? 'text-yellow-400 fill-yellow-400'
-                                                : 'text-muted-foreground hover:text-yellow-400 group-hover:fill-yellow-400'
+                                            ? 'text-yellow-400 fill-yellow-400'
+                                            : 'text-muted-foreground hover:text-yellow-400 group-hover:fill-yellow-400'
                                             }`}
                                     />
                                 </button>
