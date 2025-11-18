@@ -14,9 +14,16 @@ export const GET = withErrorHandler(async (request: NextRequest, { params }: { p
     const { formId } = await params;
     if (!formId || !isValidUUID(formId)) return createActionError('formId is required')
 
-    const form = await prisma.form.findFirst({
+    const form = await prisma.form.findUnique({
         where: { id: formId },
-        orderBy: { createdAt: 'desc' },
+        include: {
+            questions: {
+                orderBy: {
+                    sortOrder: "asc"
+                }
+            },
+            edges: true
+        }
     })
 
     return createActionSuccess(form, getSuccessMessage('Form'));
@@ -47,10 +54,8 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: { p
             requireConsent: body.requireConsent ?? existingForm.requireConsent,
             maxResponses: body.maxResponses ?? existingForm.maxResponses,
             type: body.type ?? existingForm.type,
+            formPageType: body.formPageType ?? existingForm.formPageType,
             multipleSubmissions: body.multipleSubmissions ?? existingForm.multipleSubmissions,
-            thankYouScreen: body.thankYouScreen ?? (existingForm.thankYouScreen) as object,
-            config: body.config === undefined ? existingForm.config : (body.config) as object,
-            welcomeScreen: body.welcomeScreen ?? (existingForm.welcomeScreen) as object,
             customDomain: body.customDomain ?? existingForm.customDomain,
             uniqueSubdomain: body.uniqueSubdomain ?? existingForm.uniqueSubdomain,
             passwordProtected: body.passwordProtected ?? existingForm.passwordProtected,
