@@ -18,10 +18,11 @@ export const metadata: Metadata = {
     }
 }
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({ params }: { params: Promise<{ teamId: string }> }) {
+    const { teamId } = await params;
     return (
         <div className="container mx-auto px-4 py-6 sm:pt-12">
-            <ProjectList />
+            <ProjectList teamId={teamId} />
         </div>
     );
 };

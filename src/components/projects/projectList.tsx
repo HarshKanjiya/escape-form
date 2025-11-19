@@ -12,7 +12,6 @@ import { showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { debounce } from "lodash";
 import { FoldersIcon, LayoutGrid, List, Search, X } from "lucide-react";
-import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { IconCard } from "../shared/iconCard";
 import CustomPagination from "../ui/customPagination";
@@ -25,17 +24,14 @@ import ProjectGridView from "./projectGridView";
 import ProjectTableView from "./projectTableView";
 
 interface ProjectListProps {
-    projects?: Project[];
+    teamId: string;
 }
 
-export function ProjectList({ projects: initialProjects }: ProjectListProps) {
+export function ProjectList({ teamId }: ProjectListProps) {
     const [searchQuery, setSearchQuery] = useState("");
-    const [projects, setProjects] = useState<Project[]>(initialProjects || []);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
     const [loading, setLoading] = useState(false);
-
-    const params = useParams();
-    const teamId = params.teamId as string;
 
     const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
