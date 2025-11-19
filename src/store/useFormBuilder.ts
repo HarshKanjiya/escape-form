@@ -257,10 +257,6 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     setIsLoading: (loading: boolean) => {
         set({ isLoading: loading });
     },
-
-    // setIsSaving: (loading: boolean) => {
-    //     set({ isSaving: loading });
-    // },
     // #endregion
 }))
 

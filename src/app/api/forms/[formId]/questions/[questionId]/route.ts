@@ -18,7 +18,6 @@ export const PATCH = withErrorHandler(async (request: NextRequest, { params }: {
 
     const question = await prisma.question.findUnique({ where: { id: questionId } });
     if (!question) return createActionError(getErrorMessage('Question'));
-
     let metadata = {
         ...Object(question.metadata),
     }
