@@ -1,4 +1,4 @@
-// import { IQuestion } from "@/types/form";
+// import { Question } from "@/types/form";
 
 
 // interface IProps {

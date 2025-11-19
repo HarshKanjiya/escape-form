@@ -3,11 +3,11 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { useState } from "react";
 
 interface Props {
-    question: IQuestion;
+    question: Question;
     value?: string;
     onChange?: (value: string) => void;
 }
@@ -33,7 +33,7 @@ export default function RenderRadioField({ question, value, onChange }: Props) {
                         question.required && "after:content-['*'] after:text-destructive after:ml-1"
                     )}
                 >
-                    {question.question}
+                    {question.title}
                 </Label>
 
                 {question.description && (
@@ -56,13 +56,13 @@ export default function RenderRadioField({ question, value, onChange }: Props) {
                                 // className="flex items-center space-x-3 p-3 rounded-lg border border-border/40 hover:border-border/60 hover:bg-accent/5 transition-colors"
                                 className={cn(
                                     "flex items-center space-x-3 p-3 rounded-lg border transition-all duration-200",
-                                    answer === option
+                                    answer === option.value
                                         ? "border-primary/50 bg-primary/5"
                                         : "border-border/40 hover:border-border/60 hover:bg-accent/5"
                                 )}
                             >
                                 <RadioGroupItem
-                                    value={option}
+                                    value={option.value}
                                     id={`${question.id}-${index}`}
                                     className="shrink-0"
                                 />
@@ -70,7 +70,7 @@ export default function RenderRadioField({ question, value, onChange }: Props) {
                                     htmlFor={`${question.id}-${index}`}
                                     className="text-sm font-medium text-foreground cursor-pointer flex-1 leading-relaxed"
                                 >
-                                    {option}
+                                    {option.label}
                                 </Label>
                             </div>
                         ))}
@@ -95,7 +95,7 @@ export default function RenderRadioField({ question, value, onChange }: Props) {
             )}
 
             {/* Validation hints */}
-            {question.validation && (
+            {question.metadata && (
                 <div className="text-xs text-muted-foreground space-y-1 pt-2">
                     {question.required && (
                         <p className="flex items-center gap-1">
@@ -103,10 +103,10 @@ export default function RenderRadioField({ question, value, onChange }: Props) {
                             This field is required
                         </p>
                     )}
-                    {question.validation.min && typeof question.validation.min === 'number' && (
-                        <p>Minimum {question.validation.min} selection required</p>
+                    {question.metadata.min && typeof question.metadata.min === 'number' && (
+                        <p>Minimum {question.metadata.min} selection required</p>
                     )}
-                    {question.validation.pattern && (
+                    {question.metadata.pattern && (
                         <p>Please select a valid option</p>
                     )}
                 </div>

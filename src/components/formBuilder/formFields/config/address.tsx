@@ -13,14 +13,21 @@ export function AddressFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [add, setAdd] = useState<IAddress>(selectedQuestion?.validation?.add || {});
+    const [add, setAdd] = useState<IAddress>({
+        address: selectedQuestion?.metadata?.address || false,
+        address2: selectedQuestion?.metadata?.address2 || false,
+        city: selectedQuestion?.metadata?.city || false,
+        state: selectedQuestion?.metadata?.state || false,
+        country: selectedQuestion?.metadata?.country || false,
+        zip: selectedQuestion?.metadata?.zip || false,
+    });
 
     useEffect(() => {
         if (required != selectedQuestion?.required) updateQuestion(selectedQuestion?.id || '', { required });
     }, [required]);
 
     useEffect(() => {
-        if (add != selectedQuestion?.validation?.add) updateQuestion(selectedQuestion?.id || '', { validation: { add } });
+        updateQuestion(selectedQuestion?.id || '', { metadata: { ...selectedQuestion?.metadata, ...add } });
     }, [add]);
 
     return (

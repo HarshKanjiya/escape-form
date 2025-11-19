@@ -12,28 +12,28 @@ export function PhoneFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [anyCountry, setAnyCountry] = useState(selectedQuestion?.validation?.allowAnyCountry || false);
-    const [countries, setCountry] = useState<string[]>(selectedQuestion?.validation?.allowedCountries || []);
+    const [anyCountry, setAnyCountry] = useState(selectedQuestion?.metadata?.allowAnyCountry || false);
+    const [countries, setCountry] = useState<string[]>(selectedQuestion?.metadata?.allowedCountries || []);
 
     useEffect(() => {
         if (required != selectedQuestion?.required) updateQuestion(selectedQuestion?.id || '', { required });
     }, [required]);
 
     useEffect(() => {
-        if (anyCountry != selectedQuestion?.validation?.allowAnyCountry) {
+        if (anyCountry != selectedQuestion?.metadata?.allowAnyCountry) {
             if (anyCountry) {
-                updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: true, allowedCountries: [] } });
+                updateQuestion(selectedQuestion?.id || '', { metadata: { allowAnyCountry: true, allowedCountries: [] } });
                 setCountry([]);
             }
             else {
-                updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: false, allowedCountries: countries } });
+                updateQuestion(selectedQuestion?.id || '', { metadata: { allowAnyCountry: false, allowedCountries: countries } });
             }
         }
     }, [anyCountry]);
 
     useEffect(() => {
-        if (countries.length && countries != selectedQuestion?.validation?.allowedCountries) {
-            updateQuestion(selectedQuestion?.id || '', { validation: { allowAnyCountry: false, allowedCountries: countries } });
+        if (countries.length && countries != selectedQuestion?.metadata?.allowedCountries) {
+            updateQuestion(selectedQuestion?.id || '', { metadata: { allowAnyCountry: false, allowedCountries: countries } });
         }
     }, [countries]);
 

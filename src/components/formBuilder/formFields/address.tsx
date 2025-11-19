@@ -4,13 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 
 interface IProps {
-    question: IQuestion,
+    question: Question,
     index: number
 }
 
@@ -19,7 +19,7 @@ export function AddressField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
-    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempQuestion, setTempQuestion] = useState(question.title);
     const [tempDescription, setTempDescription] = useState(question.description || '');
 
     const questionInputRef = useRef<HTMLInputElement>(null);
@@ -41,8 +41,8 @@ export function AddressField({ question, index }: IProps) {
     }, [isEditingDescription]);
 
     const handleQuestionSave = () => {
-        if (tempQuestion.trim() !== question.question) {
-            updateQuestion(question.id, { question: tempQuestion.trim() });
+        if (tempQuestion.trim() !== question.title) {
+            updateQuestion(question.id, { title: tempQuestion.trim() });
         }
         setIsEditingQuestion(false);
     };
@@ -55,7 +55,7 @@ export function AddressField({ question, index }: IProps) {
     };
 
     const handleQuestionCancel = () => {
-        setTempQuestion(question.question);
+        setTempQuestion(question.title);
         setIsEditingQuestion(false);
     };
 
@@ -92,11 +92,11 @@ export function AddressField({ question, index }: IProps) {
                             onClick={() => setIsEditingQuestion(true)}
                             className={cn(
                                 "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
-                                !question.question && "text-muted-foreground"
+                                !question.title && "text-muted-foreground"
                             )}
                         >
                             <span className="flex items-center gap-2">
-                                <span>{question.question || "Click to add question..."}</span>
+                                <span>{question.title || "Click to add question..."}</span>
                                 <AnimatePresence mode="wait">
                                     {question.required && (
                                         <motion.span
@@ -149,7 +149,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>Address</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.address && (
+                            {question.metadata?.address && (
                                 <motion.span
                                     key={`add-address-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}
@@ -168,7 +168,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>Address 2</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.address2 && (
+                            {question.metadata?.address2 && (
                                 <motion.span
                                     key={`add-address2-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}
@@ -187,7 +187,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>City</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.city && (
+                            {question.metadata?.city && (
                                 <motion.span
                                     key={`add-city-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}
@@ -206,7 +206,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>State</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.state && (
+                            {question.metadata?.state && (
                                 <motion.span
                                     key={`add-state-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}
@@ -225,7 +225,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>Country</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.country && (
+                            {question.metadata?.country && (
                                 <motion.span
                                     key={`add-country-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}
@@ -244,7 +244,7 @@ export function AddressField({ question, index }: IProps) {
                 <div>
                     <p className="text-lg px-1 space-x-2"><span>Zip</span>
                         <AnimatePresence mode="wait">
-                            {question.validation?.add?.zip && (
+                            {question.metadata?.zip && (
                                 <motion.span
                                     key={`add-zip-required-star ${question.id}`}
                                     initial={{ opacity: 0 }}

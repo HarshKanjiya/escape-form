@@ -1,48 +1,8 @@
-
-// export interface IQuestion {
-//     id: string;
-//     type: eQuestionType;
-//     question: string;
-//     placeholder?: string;
-//     description?: string;
-//     required: boolean;
-//     options?: string[];
-//     validation?: {
-//         min?: number | Date | undefined;
-//         max?: number | Date | undefined;
-//         pattern?: string;
-//         maxSizeMB?: number;                     // for file upload field 
-//         randomize?: boolean;                    // for multiple choice, checkbox, dropdown
-//         anyFileType?: boolean;                  // for file upload field
-//         allowedFileTypes?: string[];            // MIME types
-//         allowAnyCountry?: boolean;              // for phone number field
-//         allowedCountries?: string[];            // ISO country codes
-//         add?: IAddress;                         // for address field
-//         starCount?: number;                     // for star rating field
-//         detailBtnText?: string;                 // for detail field
-//         userConsentText?: string;               // for consent field
-//         userConsentRequired?: boolean;          // for consent field
-//     };
-//     logic?: {
-//         conditions: Array<{
-//             field: string;
-//             operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains';
-//             value: string | number;
-//             action: 'show' | 'hide' | 'jump_to';
-//             target?: string;
-//         }>;
-//     };
-//     position: {
-//         x: number;
-//         y: number;
-//     };
-//     customCss?: string;
-// }
-
-import { Question as PrismaQuestion } from "@/generated/prisma";
+import { Question as PrismaQuestion, QuestionOption } from "@/generated/prisma";
 
 export type Question = Omit<PrismaQuestion, 'metadata'> & {
     metadata?: IQuestionMetadata,
+    options?: QuestionOption[];
 }
 
 export interface IQuestionMetadata {

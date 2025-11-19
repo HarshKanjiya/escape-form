@@ -3,23 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
-import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
-    question: IQuestion,
+    question: Question,
     index: number
 }
 
 export function DetailField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
-    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempQuestion, setTempQuestion] = useState(question.title);
 
     const questionInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,14 +30,14 @@ export function DetailField({ question, index }: IProps) {
     }, [isEditingQuestion]);
 
     const handleQuestionSave = () => {
-        if (tempQuestion.trim() !== question.question) {
-            updateQuestion(question.id, { question: tempQuestion.trim() });
+        if (tempQuestion.trim() !== question.title) {
+            updateQuestion(question.id, { title: tempQuestion.trim() });
         }
         setIsEditingQuestion(false);
     };
 
     const handleQuestionCancel = () => {
-        setTempQuestion(question.question);
+        setTempQuestion(question.title);
         setIsEditingQuestion(false);
     };
 
@@ -71,11 +69,11 @@ export function DetailField({ question, index }: IProps) {
                             onClick={() => setIsEditingQuestion(true)}
                             className={cn(
                                 "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
-                                !question.question && "text-muted-foreground"
+                                !question.title && "text-muted-foreground"
                             )}
                         >
                             <span className="flex items-center gap-2">
-                                <span>{question.question || "Click to add question..."}</span>
+                                <span>{question.title || "Click to add question..."}</span>
                                 <AnimatePresence mode="wait">
                                     {question.required && (
                                         <motion.span
@@ -96,16 +94,16 @@ export function DetailField({ question, index }: IProps) {
                 </div>
 
                 {
-                    question.validation?.userConsentRequired && (
+                    question.metadata?.userConsentRequired && (
                         <div className="space-x-2">
                             <Checkbox disabled />
-                            <span className="text-sm text-muted-foreground">{question.validation?.userConsentText || 'User consent text'}</span>
+                            <span className="text-sm text-muted-foreground">{question.metadata?.userConsentText || 'User consent text'}</span>
                         </div>
                     )
                 }
 
-                <Button size={'lg'} disabled={!question.validation?.userConsentRequired} >
-                    {question.validation?.detailBtnText}
+                <Button size={'lg'} disabled={!question.metadata?.userConsentRequired} >
+                    {question.metadata?.detailBtnText}
                 </Button>
             </div>
         </div>

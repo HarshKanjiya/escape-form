@@ -1,12 +1,12 @@
 "use client";
 
-import { eQuestionType } from "@/enums/form";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { useState } from "react";
 import RenderShortQuestion from "./fields/shortQuestion";
+import { QuestionType } from "@/generated/prisma";
 
 interface Props {
-    questions?: IQuestion[];
+    questions?: Question[];
 }
 
 export default function RenderSinglePageForm({ questions }: Props) {
@@ -28,17 +28,17 @@ export default function RenderSinglePageForm({ questions }: Props) {
         }
     };
 
-    const renderField = (question: IQuestion) => {
+    const renderField = (question: Question) => {
         switch (question.type) {
-            case eQuestionType.shortText:
+            case QuestionType.TEXT_SHORT:
                 return (
                     <RenderShortQuestion
                         key={question.id}
                         question={question}
                         value={typeof formData[question.id] === 'string' ? formData[question.id] as string : ""}
                         onChange={(value) => handleFieldChange(question.id, value)}
-                        // error={errors[question.id]}
-                        // className="mb-6"
+                    // error={errors[question.id]}
+                    // className="mb-6"
                     />
                 );
             // Add other field types here as needed
@@ -49,7 +49,7 @@ export default function RenderSinglePageForm({ questions }: Props) {
                             Field type &quot;{question.type}&quot; not yet implemented
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Question: {question.question}
+                            Question: {question.title}
                         </p>
                     </div>
                 );

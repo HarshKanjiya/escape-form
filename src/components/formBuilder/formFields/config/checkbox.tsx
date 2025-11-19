@@ -14,7 +14,7 @@ export function CheckboxFieldFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [randomize, setRandomize] = useState(selectedQuestion?.validation?.randomize || false);
+    const [randomize, setRandomize] = useState(selectedQuestion?.metadata?.randomize || false);
 
     useEffect(() => {
         if (required != selectedQuestion?.required) updateQuestion(selectedQuestion?.id || '', { required });
@@ -22,7 +22,7 @@ export function CheckboxFieldFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        updateQuestion(selectedQuestion?.id || '', { validation: { randomize } });
+        updateQuestion(selectedQuestion?.id || '', { metadata: { ...selectedQuestion?.metadata, randomize } });
     }, [randomize]);
 
     const onRequireChange = (value: boolean) => {

@@ -3,11 +3,11 @@
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { useState, useEffect } from "react";
 
 interface Props {
-    question: IQuestion;
+    question: Question;
     value?: string[];
     onChange?: (value: string[]) => void;
 }
@@ -46,7 +46,7 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
                         question.required && "after:content-['*'] after:text-destructive after:ml-1"
                     )}
                 >
-                    {question.question}
+                    {question.title}
                 </Label>
 
                 {question.description && (
@@ -60,7 +60,7 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
                 {question?.options && question?.options?.length > 0 ? (
                     <div className="space-y-3">
                         {question.options.map((option, index) => {
-                            const isChecked = selectedOptions.includes(option);
+                            const isChecked = selectedOptions.includes(option.value);
                             return (
                                 <div
                                     key={index}
@@ -75,7 +75,7 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
                                         id={`${question.id}-${index}`}
                                         checked={isChecked}
                                         onCheckedChange={(checked) =>
-                                            handleOptionChange(option, checked === true)
+                                            handleOptionChange(option.value, checked === true)
                                         }
                                         className="shrink-0"
                                     />
@@ -83,7 +83,7 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
                                         htmlFor={`${question.id}-${index}`}
                                         className="text-sm font-medium text-foreground cursor-pointer flex-1 leading-relaxed"
                                     >
-                                        {option}
+                                        {option.label}
                                     </Label>
                                 </div>
                             );
@@ -100,9 +100,9 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
             {selectedOptions.length > 0 && (
                 <div className="text-xs text-primary bg-primary/10 px-3 py-2 rounded-md border border-primary/20">
                     {selectedOptions.length} option{selectedOptions.length !== 1 ? 's' : ''} selected
-                    {question.validation?.max && typeof question.validation.max === 'number' && (
+                    {question.metadata?.max && typeof question.metadata.max === 'number' && (
                         <span className="ml-2 text-muted-foreground">
-                            (max: {question.validation.max})
+                            (max: {question.metadata.max})
                         </span>
                     )}
                 </div>
@@ -121,7 +121,7 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
             )}
 
             {/* Validation hints */}
-            {question.validation && (
+            {question.metadata && (
                 <div className="text-xs text-muted-foreground space-y-1 pt-2">
                     {question.required && (
                         <p className="flex items-center gap-1">
@@ -129,11 +129,11 @@ export default function RenderCheckBoxField({ question, value, onChange }: Props
                             At least one option must be selected
                         </p>
                     )}
-                    {question.validation.min && typeof question.validation.min === 'number' && (
-                        <p>Minimum {question.validation.min} selection{question.validation.min !== 1 ? 's' : ''} required</p>
+                    {question.metadata.min && typeof question.metadata.min === 'number' && (
+                        <p>Minimum {question.metadata.min} selection{question.metadata.min !== 1 ? 's' : ''} required</p>
                     )}
-                    {question.validation.max && typeof question.validation.max === 'number' && (
-                        <p>Maximum {question.validation.max} selection{question.validation.max !== 1 ? 's' : ''} allowed</p>
+                    {question.metadata.max && typeof question.metadata.max === 'number' && (
+                        <p>Maximum {question.metadata.max} selection{question.metadata.max !== 1 ? 's' : ''} allowed</p>
                     )}
                 </div>
             )}

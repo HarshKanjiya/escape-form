@@ -17,12 +17,12 @@ export function FileUploadFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState<boolean>(!!selectedQuestion?.required);
-    const [isMaxSize, setIsMaxSize] = useState<boolean>(!!selectedQuestion?.validation?.maxSizeMB);
-    const [isAnyType, setIsAnyType] = useState<boolean>(selectedQuestion?.validation?.anyFileType ?? true);
+    const [isMaxSize, setIsMaxSize] = useState<boolean>(!!selectedQuestion?.metadata?.maxSizeMB);
+    const [isAnyType, setIsAnyType] = useState<boolean>(selectedQuestion?.metadata?.anyFileType ?? true);
 
     // values
-    const [maxSizeMB, setMaxSizeMB] = useState<number | undefined>(selectedQuestion?.validation?.maxSizeMB || 10);
-    const [allowedFileTypes, setAllowedFileTypes] = useState<string[]>(selectedQuestion?.validation?.allowedFileTypes || []);
+    const [maxSizeMB, setMaxSizeMB] = useState<number | undefined>(selectedQuestion?.metadata?.maxSizeMB || 10);
+    const [allowedFileTypes, setAllowedFileTypes] = useState<string[]>(selectedQuestion?.metadata?.allowedFileTypes || []);
 
     const sizeRef = useRef<HTMLInputElement>(null);
     const typeRef = useRef<HTMLButtonElement>(null);
@@ -33,8 +33,8 @@ export function FileUploadFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!isMaxSize && selectedQuestion?.validation?.maxSizeMB && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, maxSizeMB: undefined } });
+        if (!isMaxSize && selectedQuestion?.metadata?.maxSizeMB && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, maxSizeMB: undefined } });
             setMaxSizeMB(undefined);
         } else if (isMaxSize && sizeRef.current) {
             sizeRef.current?.focus();
@@ -44,8 +44,8 @@ export function FileUploadFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!isAnyType && selectedQuestion?.validation?.anyFileType && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, anyFileType: false, allowedFileTypes: [] } });
+        if (!isAnyType && selectedQuestion?.metadata?.anyFileType && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, anyFileType: false, allowedFileTypes: [] } });
             setAllowedFileTypes([]);
         } else if (!isAnyType && typeRef.current) typeRef.current?.focus();
 
@@ -54,14 +54,14 @@ export function FileUploadFieldConfig() {
     useEffect(() => {
         if (!touched) return;
         if (allowedFileTypes.length != 0) {
-            if (selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, allowedFileTypes } });
+            if (selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, allowedFileTypes } });
         }
 
     }, [allowedFileTypes]);
 
     const onFieldBlur = () => {
         setTouched(true);
-        if (selectedQuestion?.validation?.maxSizeMB != maxSizeMB && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, maxSizeMB: isMaxSize ? maxSizeMB : undefined } });
+        if (selectedQuestion?.metadata?.maxSizeMB != maxSizeMB && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, maxSizeMB: isMaxSize ? maxSizeMB : undefined } });
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

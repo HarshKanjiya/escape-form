@@ -16,12 +16,12 @@ export function LongTextFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [minLenValidation, setMinLenValidation] = useState<boolean>(!!selectedQuestion?.validation?.min);
-    const [maxLenValidation, setMaxLenValidation] = useState<boolean>(!!selectedQuestion?.validation?.max);
+    const [minLenMetadata, setMinLenMetadata] = useState<boolean>(!!selectedQuestion?.metadata?.min);
+    const [maxLenMetadata, setMaxLenMetadata] = useState<boolean>(!!selectedQuestion?.metadata?.max);
 
     // values
-    const [minLength, setMinLength] = useState<number>(Number(selectedQuestion?.validation?.min) || 0);
-    const [maxLength, setMaxLength] = useState<number>(Number(selectedQuestion?.validation?.max) || 0);
+    const [minLength, setMinLength] = useState<number>(Number(selectedQuestion?.metadata?.min) || 0);
+    const [maxLength, setMaxLength] = useState<number>(Number(selectedQuestion?.metadata?.max) || 0);
 
     const minLenRef = useRef<HTMLInputElement>(null);
     const maxLenRef = useRef<HTMLInputElement>(null);
@@ -32,37 +32,37 @@ export function LongTextFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!minLenValidation && selectedQuestion?.validation?.min && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: undefined } });
+        if (!minLenMetadata && selectedQuestion?.metadata?.min && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, min: undefined } });
             setMinLength(0);
         }
-        else if (minLenValidation && minLenRef.current) {
+        else if (minLenMetadata && minLenRef.current) {
             minLenRef.current?.focus();
             minLenRef.current?.select();
         }
-    }, [minLenValidation]);
+    }, [minLenMetadata]);
 
     useEffect(() => {
         if (!touched) return;
-        if (!maxLenValidation && selectedQuestion?.validation?.max && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: undefined } });
+        if (!maxLenMetadata && selectedQuestion?.metadata?.max && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, max: undefined } });
             setMaxLength(0);
         }
-        else if (maxLenValidation && maxLenRef.current) {
+        else if (maxLenMetadata && maxLenRef.current) {
             maxLenRef.current?.focus();
             maxLenRef.current?.select();
 
         }
-    }, [maxLenValidation]);
+    }, [maxLenMetadata]);
 
     const onFieldBlur = (fieldName: 'min' | 'max') => {
         setTouched(true);
         switch (fieldName) {
             case 'min':
-                if (selectedQuestion?.validation?.min != minLength && minLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: minLenValidation ? minLength : undefined } });
+                if (selectedQuestion?.metadata?.min != minLength && minLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, min: minLenMetadata ? minLength : undefined } });
                 break;
             case 'max':
-                if (selectedQuestion?.validation?.max != maxLength && maxLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: maxLenValidation ? maxLength : undefined } });
+                if (selectedQuestion?.metadata?.max != maxLength && maxLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, max: maxLenMetadata ? maxLength : undefined } });
                 break;
         }
     }
@@ -87,12 +87,12 @@ export function LongTextFieldConfig() {
 
     const onMinToggleChange = (value: boolean) => {
         setTouched(true);
-        setMinLenValidation(value);
+        setMinLenMetadata(value);
     }
 
     const onMaxToggleChange = (value: boolean) => {
         setTouched(true);
-        setMaxLenValidation(value);
+        setMaxLenMetadata(value);
     }
 
 
@@ -113,11 +113,11 @@ export function LongTextFieldConfig() {
                         </TooltipContent>
                     </Tooltip>
                 </Label>
-                <Switch id="short-text-min-max" checked={minLenValidation} onCheckedChange={onMinToggleChange} />
+                <Switch id="short-text-min-max" checked={minLenMetadata} onCheckedChange={onMinToggleChange} />
             </div>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    minLenValidation &&
+                    minLenMetadata &&
                     <motion.div
                         layout
                         key={'min-length-div'}
@@ -132,12 +132,12 @@ export function LongTextFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minLenValidation && selectedQuestion?.validation?.max) &&
+                    (minLenMetadata && selectedQuestion?.metadata?.max) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.validation?.max)}</motion.small>
+                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.metadata?.max)}</motion.small>
                 }
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
@@ -151,11 +151,11 @@ export function LongTextFieldConfig() {
                         </TooltipContent>
                     </Tooltip>
                 </Label>
-                <Switch id="short-text-max" checked={maxLenValidation} onCheckedChange={onMaxToggleChange} />
+                <Switch id="short-text-max" checked={maxLenMetadata} onCheckedChange={onMaxToggleChange} />
             </div>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    maxLenValidation &&
+                    maxLenMetadata &&
                     <motion.div
                         layout
                         key={'max-length-div'}
@@ -170,12 +170,12 @@ export function LongTextFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minLenValidation && selectedQuestion?.validation?.min) &&
+                    (minLenMetadata && selectedQuestion?.metadata?.min) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.validation?.min)} - 999999</motion.small>
+                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.metadata?.min)} - 999999</motion.small>
                 }
             </AnimatePresence>
         </div >

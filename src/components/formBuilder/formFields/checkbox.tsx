@@ -3,15 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { QuestionOption } from "@/generated/prisma";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { CornerDownRight, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
-    question: IQuestion,
+    question: Question,
     index: number
 }
 
@@ -20,14 +21,14 @@ export function CheckboxField({ question, index }: IProps) {
     const { updateQuestion } = useFormBuilder();
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
-    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempQuestion, setTempQuestion] = useState(question.title);
     const [tempDescription, setTempDescription] = useState(question.description || '');
 
     const questionInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
 
     // Option state and handlers - moved to top level
-    const [options, setOptions] = useState<string[]>(question.options && question.options.length > 0 ? question.options : [""]);
+    const [options, setOptions] = useState<QuestionOption[]>(question.options && question.options.length > 0 ? question.options : []);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     // Stable IDs for smooth Framer Motion enter/exit and layout animations
     const optionIdsRef = useRef<string[]>([]);
@@ -50,7 +51,7 @@ export function CheckboxField({ question, index }: IProps) {
 
     // Options useEffect hooks
     useEffect(() => {
-        setOptions(question.options && question.options.length > 0 ? question.options : [""]);
+        setOptions(question.options && question.options.length > 0 ? question.options : []);
     }, [question.options]);
 
     // Ensure IDs array length matches options and keep IDs stable per index
@@ -66,8 +67,8 @@ export function CheckboxField({ question, index }: IProps) {
     }, [options.length]);
 
     const handleQuestionSave = () => {
-        if (tempQuestion.trim() !== question.question) {
-            updateQuestion(question.id, { question: tempQuestion.trim() });
+        if (tempQuestion.trim() !== question.title) {
+            updateQuestion(question.id, { title: tempQuestion.trim() });
         }
         setIsEditingQuestion(false);
     };
@@ -80,7 +81,7 @@ export function CheckboxField({ question, index }: IProps) {
     };
 
     const handleQuestionCancel = () => {
-        setTempQuestion(question.question);
+        setTempQuestion(question.title);
         setIsEditingQuestion(false);
     };
 
@@ -92,7 +93,7 @@ export function CheckboxField({ question, index }: IProps) {
     // Option handlers
     const handleOptionChange = (idx: number, value: string) => {
         const newOptions = [...options];
-        newOptions[idx] = value;
+        newOptions[idx].label = value;
         setOptions(newOptions);
     };
 
@@ -101,33 +102,33 @@ export function CheckboxField({ question, index }: IProps) {
     };
 
     const handleAddOption = () => {
-        setOptions(prev => {
-            // Create a stable id for the new option before render
-            optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
-            const updated = [...prev, ""];
-            setTimeout(() => {
-                inputRefs.current[updated.length - 1]?.focus();
-            }, 0);
-            return updated;
-        });
+        // setOptions(prev => {
+        //     // Create a stable id for the new option before render
+        //     optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
+        //     const updated = [...prev, { label: "", value: "" }];
+        //     setTimeout(() => {
+        //         inputRefs.current[updated.length - 1]?.focus();
+        //     }, 0);
+        //     return updated;
+        // });
     };
 
     const handleRemoveOption = (idx: number) => {
-        const newOptions = options.filter((_, i) => i !== idx);
-        const ensured = newOptions.length > 0 ? newOptions : [""];
-        // Remove corresponding ID to keep others stable
-        optionIdsRef.current.splice(idx, 1);
-        // If we ensured an empty placeholder (i.e., list became empty), also add a new id
-        if (ensured.length > newOptions.length) {
-            optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
-        }
-        setOptions(ensured);
-        updateQuestion(question.id, { options: ensured });
-        // Manage focus to a sensible input after deletion
-        setTimeout(() => {
-            const targetIndex = Math.min(idx, ensured.length - 1);
-            inputRefs.current[targetIndex]?.focus();
-        }, 0);
+        // const newOptions = options.filter((_, i) => i !== idx);
+        // const ensured = newOptions.length > 0 ? newOptions : [{ label: "", value: "" }];
+        // // Remove corresponding ID to keep others stable
+        // optionIdsRef.current.splice(idx, 1);
+        // // If we ensured an empty placeholder (i.e., list became empty), also add a new id
+        // if (ensured.length > newOptions.length) {
+        //     optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
+        // }
+        // setOptions(ensured);
+        // updateQuestion(question.id, { options: ensured });
+        // // Manage focus to a sensible input after deletion
+        // setTimeout(() => {
+        //     const targetIndex = Math.min(idx, ensured.length - 1);
+        //     inputRefs.current[targetIndex]?.focus();
+        // }, 0);
     };
 
     return (
@@ -158,11 +159,11 @@ export function CheckboxField({ question, index }: IProps) {
                             onClick={() => setIsEditingQuestion(true)}
                             className={cn(
                                 "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
-                                !question.question && "text-muted-foreground"
+                                !question.title && "text-muted-foreground"
                             )}
                         >
                             <span className="flex items-center gap-2">
-                                <span>{question.question || "Click to add question..."}</span>
+                                <span>{question.title || "Click to add question..."}</span>
                                 <AnimatePresence mode="wait">
                                     {question.required && (
                                         <motion.span
@@ -251,7 +252,7 @@ export function CheckboxField({ question, index }: IProps) {
                                     <Input
                                         className="flex-1"
                                         placeholder={`Option ${i + 1}`}
-                                        value={option}
+                                        value={option.label}
                                         ref={el => { inputRefs.current[i] = el; }}
                                         onChange={e => handleOptionChange(i, e.target.value)}
                                         onBlur={handleOptionBlur}

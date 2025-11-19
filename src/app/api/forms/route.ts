@@ -64,9 +64,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             maxResponses: body.maxResponses || null,
             type: FormType.REACH_OUT,
             multipleSubmissions: body.multipleSubmissions || false,
-            thankYouScreen: body.thankYouScreen || {},
-            config: (Array.isArray(body.config) ? body.config.filter((v) => v !== null) : []),
-            welcomeScreen: body.welcomeScreen || {},
+            
             customDomain: null,
             uniqueSubdomain: null,
             passwordProtected: body.passwordProtected || false,

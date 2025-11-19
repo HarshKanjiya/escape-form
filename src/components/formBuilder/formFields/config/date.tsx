@@ -15,12 +15,12 @@ export function DateFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [minDateValidation, setMinDateValidation] = useState<boolean>(!!selectedQuestion?.validation?.min);
-    const [maxDateValidation, setMaxDateValidation] = useState<boolean>(!!selectedQuestion?.validation?.max);
+    const [minDateValidation, setMinDateValidation] = useState<boolean>(!!selectedQuestion?.metadata?.min);
+    const [maxDateValidation, setMaxDateValidation] = useState<boolean>(!!selectedQuestion?.metadata?.max);
 
     // values
-    const [minDate, setMinDate] = useState<Date | null>(selectedQuestion?.validation?.min !== undefined ? new Date(selectedQuestion.validation.min) : null);
-    const [maxDate, setMaxDate] = useState<Date | null>(selectedQuestion?.validation?.max !== undefined ? new Date(selectedQuestion.validation.max) : null);
+    const [minDate, setMinDate] = useState<Date | null>(selectedQuestion?.metadata?.min !== undefined ? new Date(selectedQuestion.metadata.min) : null);
+    const [maxDate, setMaxDate] = useState<Date | null>(selectedQuestion?.metadata?.max !== undefined ? new Date(selectedQuestion.metadata.max) : null);
 
     const minDateRef = useRef<HTMLButtonElement>(null);
     const maxDateRef = useRef<HTMLButtonElement>(null);
@@ -31,8 +31,8 @@ export function DateFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!minDateValidation && selectedQuestion?.validation?.min && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: undefined } });
+        if (!minDateValidation && selectedQuestion?.metadata?.min && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, min: undefined } });
             setMinDate(null);
         }
         else if (minDateValidation && minDateRef.current) {
@@ -42,8 +42,8 @@ export function DateFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!maxDateValidation && selectedQuestion?.validation?.max && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: undefined } });
+        if (!maxDateValidation && selectedQuestion?.metadata?.max && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, max: undefined } });
             setMaxDate(null);
         }
         else if (maxDateValidation && maxDateRef.current) {
@@ -93,12 +93,12 @@ export function DateFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minDateValidation && selectedQuestion?.validation?.max) &&
+                    (minDateValidation && selectedQuestion?.metadata?.max) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.validation?.max)}</motion.small>
+                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.metadata?.max)}</motion.small>
                 }
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
@@ -121,12 +121,12 @@ export function DateFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minDateValidation && selectedQuestion?.validation?.min) &&
+                    (minDateValidation && selectedQuestion?.metadata?.min) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.validation?.min)} - 999999</motion.small>
+                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.metadata?.min)} - 999999</motion.small>
                 }
             </AnimatePresence>
 

@@ -13,22 +13,22 @@ export function DetailConfig() {
     const [touched, setTouched] = useState(false);
 
     // values
-    const [userConsentRequired, setUserConsentRequired] = useState(selectedQuestion?.validation?.userConsentRequired || false);
-    const [userConsentText, setUserConsentText] = useState(selectedQuestion?.validation?.userConsentText || '');
-    const [text, setText] = useState<string>(selectedQuestion?.validation?.detailBtnText || '');
+    const [userConsentRequired, setUserConsentRequired] = useState(selectedQuestion?.metadata?.userConsentRequired || false);
+    const [userConsentText, setUserConsentText] = useState(selectedQuestion?.metadata?.userConsentText || '');
+    const [text, setText] = useState<string>(selectedQuestion?.metadata?.detailBtnText || '');
 
     const consentRef = useRef<HTMLInputElement>(null);
 
 
     // useEffect(() => {
-    //     if (selectedQuestion?.id && userConsentRequired != selectedQuestion?.validation?.userConsentRequired) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, userConsentRequired, userConsentText: undefined } });
+    //     if (selectedQuestion?.id && userConsentRequired != selectedQuestion?.metadata?.userConsentRequired) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.metadata, userConsentRequired, userConsentText: undefined } });
     // }, [userConsentRequired]);
 
 
     useEffect(() => {
         if (!touched || !selectedQuestion?.id) return;
         if (!userConsentRequired) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, userConsentText: undefined, userConsentRequired: false } });
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, userConsentText: undefined, userConsentRequired: false } });
             setUserConsentText('');
         }
         else if (userConsentRequired && consentRef.current) {
@@ -42,19 +42,19 @@ export function DetailConfig() {
 
         switch (field) {
             case 'btntext':
-                if (!selectedQuestion || text == selectedQuestion?.validation?.detailBtnText) return;
+                if (!selectedQuestion || text == selectedQuestion?.metadata?.detailBtnText) return;
                 updateQuestion(selectedQuestion!.id, {
-                    validation: {
-                        ...selectedQuestion?.validation,
+                    metadata: {
+                        ...selectedQuestion?.metadata,
                         detailBtnText: text || undefined
                     }
                 });
                 break;
             case 'consent':
-                if (!selectedQuestion || userConsentText == selectedQuestion?.validation?.userConsentText) return;
+                if (!selectedQuestion || userConsentText == selectedQuestion?.metadata?.userConsentText) return;
                 updateQuestion(selectedQuestion!.id, {
-                    validation: {
-                        ...selectedQuestion?.validation,
+                    metadata: {
+                        ...selectedQuestion?.metadata,
                         userConsentText: userConsentText || undefined
                     }
                 });

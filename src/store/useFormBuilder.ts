@@ -7,7 +7,7 @@ import { Edge, Form, FormStatus, FormType, QuestionOption, QuestionType } from '
 import api from '@/lib/axios';
 import { showError } from '@/lib/utils';
 import { ActionResponse } from '@/types/common';
-import { IQuestionMetadata, IWorkflowConnection, Question } from '@/types/form';
+import { IQuestionMetadata, Question } from '@/types/form';
 import { create } from 'zustand';
 
 const defaultFormSettings: Partial<Form> = {

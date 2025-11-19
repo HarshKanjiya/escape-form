@@ -21,14 +21,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import RenderField from "./fields/renderField";
 
 interface Props {
-    questions: IQuestion[];
+    questions: Question[];
 }
 
 const slideVariants = {

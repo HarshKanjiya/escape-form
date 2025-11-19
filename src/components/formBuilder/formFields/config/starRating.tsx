@@ -13,7 +13,7 @@ export function StarRatingFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [starCount, setStarCount] = useState(selectedQuestion?.validation?.starCount || 5);
+    const [starCount, setStarCount] = useState(selectedQuestion?.metadata?.starCount || 5);
     const [tempStarCount, setTempStarCount] = useState(starCount);
 
 
@@ -22,7 +22,7 @@ export function StarRatingFieldConfig() {
     }, [required]);
 
     useEffect(() => {
-        if (starCount != selectedQuestion?.validation?.starCount) updateQuestion(selectedQuestion?.id || '', { validation: { ...selectedQuestion?.validation, starCount } });
+        if (starCount != selectedQuestion?.metadata?.starCount) updateQuestion(selectedQuestion?.id || '', { metadata: { ...selectedQuestion?.metadata, starCount } });
     }, [starCount]);
 
 
@@ -35,7 +35,7 @@ export function StarRatingFieldConfig() {
     const onFieldBlur = () => {
         if (tempStarCount < 3) setTempStarCount(3);
         setStarCount(tempStarCount);
-        updateQuestion(selectedQuestion?.id || '', { validation: { ...selectedQuestion?.validation, starCount: tempStarCount } });
+        updateQuestion(selectedQuestion?.id || '', { metadata: { ...selectedQuestion?.metadata, starCount: tempStarCount } });
     }
 
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {

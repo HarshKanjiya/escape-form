@@ -2,11 +2,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
-    question: IQuestion,
+    question: Question,
     index: number
 }
 
@@ -15,7 +15,7 @@ export function LongTextField({ question, index }: IProps) {
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
-    const [tempQuestion, setTempQuestion] = useState(question.question);
+    const [tempQuestion, setTempQuestion] = useState(question.title);
     const [tempDescription, setTempDescription] = useState(question.description || '');
     const [tempPlaceholder, setTempPlaceholder] = useState(question.placeholder || '');
 
@@ -46,8 +46,8 @@ export function LongTextField({ question, index }: IProps) {
     }, [isEditingPlaceholder]);
 
     const handleQuestionSave = () => {
-        if (tempQuestion.trim() !== question.question) {
-            updateQuestion(question.id, { question: tempQuestion.trim() });
+        if (tempQuestion.trim() !== question.title) {
+            updateQuestion(question.id, { title: tempQuestion.trim() });
         }
         setIsEditingQuestion(false);
     };
@@ -67,7 +67,7 @@ export function LongTextField({ question, index }: IProps) {
     };
 
     const handleQuestionCancel = () => {
-        setTempQuestion(question.question);
+        setTempQuestion(question.title);
         setIsEditingQuestion(false);
     };
 
@@ -109,11 +109,11 @@ export function LongTextField({ question, index }: IProps) {
                             onClick={() => setIsEditingQuestion(true)}
                             className={cn(
                                 "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
-                                !question.question && "text-muted-foreground"
+                                !question.title && "text-muted-foreground"
                             )}
                         >
                             <span className="flex items-center gap-2">
-                                <span>{question.question || "Click to add question..."}</span>
+                                <span>{question.title || "Click to add question..."}</span>
                                 {question.required && <span className="text-destructive">*</span>}
                             </span>
                         </div>

@@ -1,9 +1,9 @@
 'use client';
 
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 
 interface Props {
-    question: IQuestion;
+    question: Question;
     value?: string;
     onChange?: (value: string) => void;
 }

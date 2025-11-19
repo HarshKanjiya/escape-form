@@ -1,5 +1,4 @@
-import { eQuestionType } from "@/enums/form";
-import { IQuestion } from "@/types/form";
+import { Question } from "@/types/form";
 
 import { memo } from "react";
 import RenderAddressField from "./address";
@@ -15,6 +14,7 @@ import RenderRadioField from "./radio";
 import RenderShortQuestion from "./shortQuestion";
 import RenderStarRatingField from "./starRating";
 import RenderWebsiteField from "./website";
+import { QuestionType } from "@/generated/prisma";
 
 const MemoRenderShortQuestion = memo(RenderShortQuestion);
 const MemoRenderLongQuestion = memo(RenderLongQuestion);
@@ -31,14 +31,14 @@ const MemoRenderStarRatingField = memo(RenderStarRatingField);
 const MemoRenderWebsiteField = memo(RenderWebsiteField);
 
 interface Props {
-    question: IQuestion;
+    question: Question;
     formData: { [key: string]: string | number | boolean | string[] };
     handleFieldChange: (questionId: string, value: string | number | boolean | string[]) => void;
 }
 
 export default function RenderField({ question, formData, handleFieldChange }: Props) {
     switch (question.type) {
-        case eQuestionType.shortText:
+        case QuestionType.TEXT_SHORT:
             return (
                 <MemoRenderShortQuestion
                     question={question}
@@ -46,7 +46,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.longText:
+        case QuestionType.TEXT_LONG:
             return (
                 <MemoRenderLongQuestion
                     question={question}
@@ -54,7 +54,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.address:
+        case QuestionType.USER_ADDRESS:
             return (
                 <MemoRenderAddressField
                     question={question}
@@ -62,7 +62,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.checkbox:
+        case QuestionType.CHOICE_CHECKBOX:
             return (
                 <MemoRenderCheckBoxField
                     question={question}
@@ -70,7 +70,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.date:
+        case QuestionType.DATE:
             return (
                 <MemoRenderDateField
                     question={question}
@@ -78,7 +78,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.detail:
+        case QuestionType.USER_DETAIL:
             return (
                 <MemoRenderDetailField
                     question={question}
@@ -86,7 +86,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.email:
+        case QuestionType.INFO_EMAIL:
             return (
                 <MemoRenderEmailField
                     question={question}
@@ -94,7 +94,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.file:
+        case QuestionType.FILE_ANY:
             return (
                 <MemoRenderFileField
                     question={question}
@@ -102,7 +102,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.number:
+        case QuestionType.NUMBER:
             return (
                 <MemoRenderNumberField
                     question={question}
@@ -110,7 +110,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.phone:
+        case QuestionType.INFO_PHONE:
             return (
                 <MemoRenderPhoneField
                     question={question}
@@ -118,7 +118,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.radio:
+        case QuestionType.CHOICE_SINGLE:
             return (
                 <MemoRenderRadioField
                     question={question}
@@ -126,7 +126,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.starRating:
+        case QuestionType.RATING_STAR:
             return (
                 <MemoRenderStarRatingField
                     question={question}
@@ -134,7 +134,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                     onChange={(value) => handleFieldChange(question.id, value)}
                 />
             );
-        case eQuestionType.website:
+        case QuestionType.INFO_URL:
             return (
                 <MemoRenderWebsiteField
                     question={question}
@@ -149,7 +149,7 @@ export default function RenderField({ question, formData, handleFieldChange }: P
                         Field type &quot;{question.type}&quot; not yet implemented
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                        Question: {question.question}
+                        Question: {question.title}
                     </p>
                 </div>
             );

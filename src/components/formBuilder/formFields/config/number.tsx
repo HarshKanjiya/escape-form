@@ -16,12 +16,12 @@ export function NumberFieldConfig() {
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);
-    const [minLenValidation, setMinLenValidation] = useState<boolean>(!!selectedQuestion?.validation?.min);
-    const [maxLenValidation, setMaxLenValidation] = useState<boolean>(!!selectedQuestion?.validation?.max);
+    const [minLenValidation, setMinLenValidation] = useState<boolean>(!!selectedQuestion?.metadata?.min);
+    const [maxLenValidation, setMaxLenValidation] = useState<boolean>(!!selectedQuestion?.metadata?.max);
 
     // values
-    const [minLength, setMinLength] = useState<number>(Number(selectedQuestion?.validation?.min) || 0);
-    const [maxLength, setMaxLength] = useState<number>(Number(selectedQuestion?.validation?.max) || 0);
+    const [minLength, setMinLength] = useState<number>(Number(selectedQuestion?.metadata?.min) || 0);
+    const [maxLength, setMaxLength] = useState<number>(Number(selectedQuestion?.metadata?.max) || 0);
 
     const minLenRef = useRef<HTMLInputElement>(null);
     const maxLenRef = useRef<HTMLInputElement>(null);
@@ -32,8 +32,8 @@ export function NumberFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!minLenValidation && selectedQuestion?.validation?.min && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: undefined } });
+        if (!minLenValidation && selectedQuestion?.metadata?.min && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, min: undefined } });
             setMinLength(0);
         }
         else if (minLenValidation && minLenRef.current) {
@@ -44,8 +44,8 @@ export function NumberFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        if (!maxLenValidation && selectedQuestion?.validation?.max && selectedQuestion?.id) {
-            updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: undefined } });
+        if (!maxLenValidation && selectedQuestion?.metadata?.max && selectedQuestion?.id) {
+            updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, max: undefined } });
             setMaxLength(0);
         }
         else if (maxLenValidation && maxLenRef.current) {
@@ -59,10 +59,10 @@ export function NumberFieldConfig() {
         setTouched(true);
         switch (fieldName) {
             case 'min':
-                if (selectedQuestion?.validation?.min != minLength && minLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, min: minLenValidation ? minLength : undefined } });
+                if (selectedQuestion?.metadata?.min != minLength && minLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, min: minLenValidation ? minLength : undefined } });
                 break;
             case 'max':
-                if (selectedQuestion?.validation?.max != maxLength && maxLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { validation: { ...selectedQuestion?.validation, max: maxLenValidation ? maxLength : undefined } });
+                if (selectedQuestion?.metadata?.max != maxLength && maxLength && selectedQuestion?.id) updateQuestion(selectedQuestion?.id, { metadata: { ...selectedQuestion?.metadata, max: maxLenValidation ? maxLength : undefined } });
                 break;
         }
     }
@@ -132,12 +132,12 @@ export function NumberFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minLenValidation && selectedQuestion?.validation?.max) &&
+                    (minLenValidation && selectedQuestion?.metadata?.max) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.validation?.max)}</motion.small>
+                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.metadata?.max)}</motion.small>
                 }
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
@@ -170,12 +170,12 @@ export function NumberFieldConfig() {
             </AnimatePresence>
             <AnimatePresence mode="wait" initial={false}>
                 {
-                    (minLenValidation && selectedQuestion?.validation?.min) &&
+                    (minLenValidation && selectedQuestion?.metadata?.min) &&
                     <motion.small
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.validation?.min)} - 999999</motion.small>
+                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.metadata?.min)} - 999999</motion.small>
                 }
             </AnimatePresence>
         </div >
