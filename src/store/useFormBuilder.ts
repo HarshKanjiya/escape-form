@@ -51,7 +51,7 @@ interface IFormBuilderStore {
     // updateForm: (form: Partial<Form>) => Promise<void>;
 
     // Question methods
-    createQuestions: (questions: QuestionType[]) => Promise<void>;
+    createQuestions: (questions: QuestionType[]) => Promise<boolean>;
     updateQuestion: (questionId: string, question: Partial<Question>) => Promise<void>;
     deleteQuestion: (questionId: string) => Promise<void>;
 
@@ -107,38 +107,13 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ ...formData });
     },
 
-    // updateForm: async (form: Partial<Form>) => {
-    //     const { formId } = get();
-
-    //     if (!formId) {
-    //         console.log("updateQuestion :: FORM ID NOT FOUND!!")
-    //         return;
-    //     }
-
-    //     try {
-    //         const response = await api.patch<ActionResponse<Question[]>>(apiConstants.form.updateForm(formId), form);
-    //         if (!response?.data?.success) {
-    //             showError(response.data.message || updateErrorMessage('question'));
-    //             return;
-    //         }
-    //     }
-    //     catch (err: unknown) {
-    //         console.log('Err While updating Question :>> ', err);
-    //         showError(createErrorMessage('question(s)'));
-    //     }
-    //     finally {
-    //         set((state) => ({ savingCount: state.savingCount - 1 }))
-    //     }
-    // },
-    // #endregion
-
     // #region Question methods
     createQuestions: async (newQuestionTypes: QuestionType[]) => {
         const { questions, formId } = get();
 
         if (!formId) {
             console.log("createQuestions :: FORM ID NOT FOUND!!")
-            return
+            return false
         }
 
         const queLen = questions?.length || 0;
@@ -152,20 +127,22 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             const response = await api.post<ActionResponse<Question[]>>(apiConstants.quesiton.createQuestions(formId), { data: _newQues });
             if (!response?.data?.success) {
                 showError(response.data.message || createErrorMessage('question(s)'));
-                return;
+                return false;
             }
             const newQues = response?.data?.data || [];
-            if (!newQues.length) return;
+            if (!newQues.length) return false;
 
             set({
                 questions: [...questions, ...newQues],
                 selectedQuestion: newQues[newQues.length - 1],
                 selectedQuestionId: newQues[newQues.length - 1].id,
             })
+            return true;
         }
         catch (err: unknown) {
             console.log('Err While creating Questions :>> ', err);
             showError(createErrorMessage('question(s)'));
+            return false;
         }
         finally {
             set((state) => ({ savingCount: state.savingCount - 1 }))
@@ -290,7 +267,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: number, index: number): Partial<Question> => {
     const baseObject: Partial<Question> = {
         type,
-        title: `New ${type.replace('_', ' ')} question(Click to edit)`,
+        title: `New ${type.replace('_', ' ').toLocaleLowerCase()} question (Click to edit)`,
         placeholder: `Enter your answer`,
         description: '',
         formId,

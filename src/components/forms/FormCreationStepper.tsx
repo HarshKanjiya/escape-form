@@ -20,6 +20,7 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ROUTES } from "@/constants/routes.constants";
 
 interface FormTemplate {
     id: string;
@@ -690,11 +691,13 @@ export function FormCreationStepper() {
         };
         try {
             const response = await api.post<ActionResponse<IForm>>(apiConstants.form.createForm(), finalData);
-            if (!response.data?.success) {
+            const form = response.data?.data;
+            if (!response.data?.success || !form) {
                 toast.error(response.data?.message || "Failed to create form");
                 return;
             }
-            router.push(`/${response.data?.data?.id}/edit`)
+            router.push(ROUTES.form.edit(form.teamId, form.projectId, form.id))
+
         }
         catch (err) {
             console.error("Error creating form:", err);
