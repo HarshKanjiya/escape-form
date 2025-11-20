@@ -42,7 +42,7 @@ api.interceptors.response.use(
             switch (status) {
                 case 401:
                     console.error('Unauthorized - redirecting to login');
-                    window.location.href = '/login';
+                    // window.location.href = '/login';
                     break;
                 case 403:
                     console.error('Forbidden - insufficient permissions');

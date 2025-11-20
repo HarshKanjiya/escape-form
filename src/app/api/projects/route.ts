@@ -2,6 +2,7 @@ import { createErrorMessage, createSuccessMessage, getSuccessMessage, MESSAGE } 
 import { createNotFoundResponse, createValidationErrorResponse, getAuthErrorResponse, getErrorResponse, getSuccessResponse, HttpStatus, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
 import { getPaginationParams, parseRequestBody, validateAuth } from '@/lib/helper';
 import { prisma } from '@/lib/prisma';
+import { isValidUUID } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -11,7 +12,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const teamId = request.nextUrl.searchParams.get('teamId') || '';
     const search = request.nextUrl.searchParams.get('search') || '';
-    if (!teamId) return createValidationErrorResponse({ teamId: ['teamId is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
+    if (!teamId || !isValidUUID(teamId)) return createValidationErrorResponse({ teamId: ['teamId is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
 
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
 

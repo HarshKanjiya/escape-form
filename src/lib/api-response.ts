@@ -27,10 +27,6 @@ export enum ErrorType {
     INTERNAL_ERROR = 'INTERNAL_ERROR',
 }
 
-const headers = {
-    'content-type': 'application/json'
-}
-
 /**
  * Create a success response
  */
@@ -44,7 +40,7 @@ export function getSuccessResponse<T>(
         data,
         message,
         totalItems
-    }, { headers, status: HttpStatus.OK });
+    }, { status: HttpStatus.OK });
 }
 
 /**
@@ -73,7 +69,7 @@ export function getErrorResponse(
         isWarning,
         data: errors,
         totalItems: 0
-    }, { headers, status });
+    }, { status });
 }
 
 /**
