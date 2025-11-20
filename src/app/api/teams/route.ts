@@ -1,5 +1,5 @@
 import { createErrorMessage, createSuccessMessage, getSuccessMessage, MESSAGE } from '@/constants/messages';
-import { createActionError, createActionSuccess, createSuccessResponse, createValidationErrorResponse, HttpStatus, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
+import { createValidationErrorResponse, getAuthErrorResponse, getErrorResponse, getSuccessResponse, HttpStatus, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
 import { getPaginationParams, parseRequestBody, validateAuth } from '@/lib/helper';
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
@@ -7,7 +7,7 @@ import { NextRequest } from 'next/server';
 export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const { limit, offset, orderBy, orderDirection } = getPaginationParams(request);
     const search = request.nextUrl.searchParams.get('search') || '';
@@ -30,13 +30,13 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         skip: offset,
     })
 
-    return createActionSuccess(teams, getSuccessMessage('Teams'));
+    return getSuccessResponse(teams, getSuccessMessage('Teams'));
 });
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const body = await parseRequestBody<{ name: string }>(request);
     const validationErrors = validateRequiredFields(body, ['name']);
@@ -48,6 +48,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             ownerId: user!.id,
         },
     });
-    if (!newTeam) return createActionError(createErrorMessage('team'));
-    return createSuccessResponse(newTeam, createSuccessMessage('Team'), HttpStatus.CREATED);
+    if (!newTeam) return getErrorResponse(createErrorMessage('team'));
+    return getSuccessResponse(newTeam, createSuccessMessage('Team'), HttpStatus.CREATED);
 });

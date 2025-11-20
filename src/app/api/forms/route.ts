@@ -1,6 +1,6 @@
 import { getSuccessMessage, MESSAGE } from "@/constants/messages";
 import { Form, FormStatus, FormType } from "@/generated/prisma";
-import { createActionError, createActionSuccess, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
+import { getErrorResponse, getSuccessResponse, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { getPaginationParams, parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
@@ -8,11 +8,11 @@ import { NextRequest } from "next/server";
 export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
+    if (error) return getErrorResponse(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const { limit, offset } = getPaginationParams(request);
     const projectId = request.nextUrl.searchParams.get('projectId') || '';
-    if (!projectId) return createActionError('projectId is required')
+    if (!projectId) return getErrorResponse('projectId is required')
 
     const forms = await prisma.form.findMany({
         where: { projectId: projectId },
@@ -28,7 +28,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         }
     })
 
-    return createActionSuccess(forms, getSuccessMessage('Forms'));
+    return getSuccessResponse(forms, getSuccessMessage('Forms'));
 
 })
 
@@ -36,7 +36,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 export const POST = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
+    if (error) return getErrorResponse(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const body: Partial<Form> = await parseRequestBody(request);
     const validationErrors = validateRequiredFields(body,
@@ -47,7 +47,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     const project = await prisma.project.findUnique({
         where: { id: body.projectId! },
     });
-    if (!project) return createActionError('Project not found');
+    if (!project) return getErrorResponse('Project not found');
 
     const form = await prisma.form.create({
         data: {
@@ -64,7 +64,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             maxResponses: body.maxResponses || null,
             type: FormType.REACH_OUT,
             multipleSubmissions: body.multipleSubmissions || false,
-            
+
             customDomain: null,
             uniqueSubdomain: null,
             passwordProtected: body.passwordProtected || false,
@@ -75,5 +75,5 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             createdBy: user!.id,
         }
     })
-    return createActionSuccess(form, getSuccessMessage('Form created successfully'));
+    return getSuccessResponse(form, getSuccessMessage('Form created successfully'));
 });

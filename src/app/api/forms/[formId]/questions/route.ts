@@ -1,36 +1,42 @@
-import { getErrorMessage, getSuccessMessage, MESSAGE } from '@/constants/messages';
+import { getErrorMessage, getSuccessMessage } from '@/constants/messages';
 import { Question } from '@/generated/prisma';
-import { createActionError, createActionSuccess, withErrorHandler } from '@/lib/api-response';
+import { getAuthErrorResponse, getErrorResponse, getSuccessResponse, withErrorHandler } from '@/lib/api-response';
 import { parseRequestBody, validateAuth } from '@/lib/helper';
 import prisma from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
-export const GET = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ formId: string }> }) => {
+type RouteParams = {
+    params: Promise<{
+        formId: string;
+    }>
+};
+
+
+export const GET = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const { formId } = await params;
-    if (!formId) return createActionError(getErrorMessage('Form ID'));
+    if (!formId) return getErrorResponse(getErrorMessage('Form ID'));
 
     const questions = await prisma.question.findMany({
         where: { formId: formId },
         orderBy: { sortOrder: 'asc' },
     })
 
-    return createActionSuccess(questions, getSuccessMessage('Questions'));
+    return getSuccessResponse(questions, getSuccessMessage('Questions'));
 });
 
-export const POST = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ formId: string }> }) => {
-
+export const POST = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const body = await parseRequestBody<{ data: Partial<Question>[] }>(request);
-    if (!body?.data?.length) return createActionError(getErrorMessage('Questions'));
+    if (!body?.data?.length) return getErrorResponse(getErrorMessage('Questions'));
 
     const { formId } = await params;
-    if (!formId) return createActionError(getErrorMessage('Form ID'));
+    if (!formId) return getErrorResponse(getErrorMessage('Form ID'));
 
     const questions = await prisma.question.createManyAndReturn({
         data: body.data.map((question) => ({
@@ -47,5 +53,5 @@ export const POST = withErrorHandler(async (request: NextRequest, { params }: { 
         })),
     })
 
-    return createActionSuccess(questions, getSuccessMessage('Questions'));
+    return getSuccessResponse(questions, getSuccessMessage('Questions'));
 });

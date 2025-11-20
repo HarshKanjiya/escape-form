@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FlowNodeWrapper } from "./flowNode";
-import { useFormBuilder } from "@/store/useFormBuilder";
+import { FlowNode } from "./flowNode";
 
 // Configuration
 const FLOW_CONFIG = {
@@ -127,7 +127,7 @@ export default function FlowEditor() {
                 className="flex-1 relative w-full h-full overflow-hidden select-none"
                 onMouseDown={handleMouseDown}
                 onWheel={handleWheel}
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            // style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             >
                 <div
                     ref={viewportRef}
@@ -136,7 +136,11 @@ export default function FlowEditor() {
                         transformOrigin: '0 0',
                     }}
                 >
-                    <FlowNodeWrapper nodes={questions} x={0} y={0} zoom={viewport.zoom} />
+                    {
+                        questions.map((node) => (
+                            <FlowNode key={node.id} node={node} x={node.posX} y={node.posY} zoom={viewport.zoom} />
+                        ))
+                    }
                 </div>
             </div >
 

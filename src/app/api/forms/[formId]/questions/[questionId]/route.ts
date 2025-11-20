@@ -1,23 +1,30 @@
-import { createSuccessMessage, deleteErrorMessage, deleteSuccessMessage, getErrorMessage, getSuccessMessage, MESSAGE, updateErrorMessage, updateSuccessMessage } from '@/constants/messages';
-import { createActionError, createActionSuccess, withErrorHandler } from '@/lib/api-response';
+import { deleteErrorMessage, deleteSuccessMessage, getErrorMessage, updateErrorMessage, updateSuccessMessage } from '@/constants/messages';
+import { getAuthErrorResponse, getErrorResponse, getSuccessResponse, withErrorHandler } from '@/lib/api-response';
 import { parseRequestBody, validateAuth } from '@/lib/helper';
 import prisma from '@/lib/prisma';
 import { Question } from '@/types/form';
 import { NextRequest } from 'next/server';
 
-export const PATCH = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ questionId: string }> }) => {
+type RouteParams = {
+    params: Promise<{
+        questionId: string;
+        formId: string;
+    }>
+};
 
+export const PATCH = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const { questionId } = await params;
-    if (!questionId) return createActionError(getErrorMessage('Question ID'));
+    if (!questionId) return getErrorResponse(getErrorMessage('Question ID'));
 
     const body = await parseRequestBody<Partial<Question>>(request);
-    if (!Object.keys(body).length) return createSuccessMessage(updateSuccessMessage('Questions'));
+    if (!Object.keys(body).length) return getErrorResponse(updateSuccessMessage('Questions'));
 
     const question = await prisma.question.findUnique({ where: { id: questionId } });
-    if (!question) return createActionError(getErrorMessage('Question'));
+    if (!question) return getErrorResponse(getErrorMessage('Question'));
+
     let metadata = {
         ...Object(question.metadata),
     }
@@ -38,24 +45,24 @@ export const PATCH = withErrorHandler(async (request: NextRequest, { params }: {
         }
     })
 
-    if (!res) return createActionError(updateErrorMessage('Question'));
+    if (!res) return getErrorResponse(updateErrorMessage('Question'));
 
-    return createActionSuccess(res, updateSuccessMessage('Question'));
+    return getSuccessResponse(res, updateSuccessMessage('Question'));
 });
 
-export const DELETE = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ questionId: string }> }) => {
+export const DELETE = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const { questionId } = await params;
-    if (!questionId) return createActionError(getErrorMessage('Question ID'));
+    if (!questionId) return getErrorResponse(getErrorMessage('Question ID'));
 
     const question = await prisma.question.findUnique({ where: { id: questionId } });
-    if (!question) return createActionError(getErrorMessage('Question'));
+    if (!question) return getErrorResponse(getErrorMessage('Question'));
 
     const res = await prisma.question.delete({ where: { id: questionId } });
-    if (!res) return createActionError(deleteErrorMessage('Question'));
+    if (!res) return getErrorResponse(deleteErrorMessage('Question'));
 
-    return createActionSuccess(res, deleteSuccessMessage('Question'));
+    return getSuccessResponse(res, deleteSuccessMessage('Question'));
 });

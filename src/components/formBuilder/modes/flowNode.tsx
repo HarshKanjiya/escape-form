@@ -4,11 +4,15 @@ import { Question } from "@/types/form";
 import { SplitIcon } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import QuestionIcon from "../ui/questionIcon";
+import { useFormBuilder } from "@/store/useFormBuilder";
+import api from "@/lib/axios";
+import { showError } from "@/lib/utils";
+import { updateErrorMessage } from "@/constants/messages";
 
 
-export const FlowNode = ({ node, x, y, zoom, positionChange }: {
-    node: Question, x: number, y: number, zoom: number, positionChange: (id: any, position: { x: number, y: number }) => void
-}) => {
+export const FlowNode = ({ node, x, y, zoom }: { node: Question, x: number, y: number, zoom: number }) => {
+
+    const { updateQuestion } = useFormBuilder();
 
     const elementRef = useRef<HTMLDivElement>(null);
     const pos = useRef({ x: node.posX, y: node.posY });
@@ -24,6 +28,15 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: {
                 `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`;
         }
     }, [node.posX, node.posY, zoom]);
+
+
+    const positionChange = useCallback(async () => {
+        const success = await updateQuestion(node.id, { posX: pos.current.x, posY: pos.current.y });
+        if (!success) {
+            pos.current = { x: node.posX, y: node.posY };
+            showError(updateErrorMessage('position'));
+        }
+    }, [node.id, updateQuestion])
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (e.button === 0) {
@@ -59,7 +72,7 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: {
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('mouseup', handleMouseUp);
         document.body.style.cursor = 'default';
-        positionChange(node.id, pos.current);
+        positionChange();
 
         if (elementRef.current) {
             elementRef.current.style.zIndex = 'auto'
@@ -101,21 +114,4 @@ export const FlowNode = ({ node, x, y, zoom, positionChange }: {
             </p>
         </div>
     );
-}
-
-export const FlowNodeWrapper = ({ nodes, x, y, zoom }: { nodes: Question[], x: number, y: number, zoom: number }) => {
-
-    const positionChange = (id: any, position: any) => {
-        console.log('Node drag finished :>> ', id, position);
-    }
-
-    return (
-        <>
-            {
-                nodes.map((node) => (
-                    <FlowNode key={node.id} node={node} x={x} y={y} zoom={zoom} positionChange={positionChange} />
-                ))
-            }
-        </>
-    )
 }

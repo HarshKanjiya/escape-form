@@ -1,5 +1,5 @@
 import { getSuccessMessage, MESSAGE } from "@/constants/messages";
-import { createActionError, createActionSuccess, withErrorHandler } from "@/lib/api-response";
+import { getErrorResponse, getSuccessResponse, withErrorHandler } from "@/lib/api-response";
 import { validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
 import { isValidUUID } from "@/lib/utils";
@@ -8,17 +8,17 @@ import { NextRequest } from "next/server";
 export const GET = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ projectId: string }> }) => {
 
     const { error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED)
+    if (error) return getErrorResponse(MESSAGE.AUTHENTICATION_REQUIRED)
 
     const { projectId } = await params;
-    if (!projectId || !isValidUUID(projectId)) return createActionError('projectId is required');
+    if (!projectId || !isValidUUID(projectId)) return getErrorResponse('projectId is required');
 
     const project = await prisma.project.findFirst({
         where: { id: projectId },
         orderBy: { createdAt: 'desc' },
     })
 
-    return createActionSuccess(project, getSuccessMessage('Project'));
+    return getSuccessResponse(project, getSuccessMessage('Project'));
 
 })
 

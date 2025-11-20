@@ -1,5 +1,5 @@
 import { deleteErrorMessage, deleteSuccessMessage, MESSAGE, updateSuccessMessage } from '@/constants/messages';
-import { createActionError, createSuccessResponse, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
+import { createValidationErrorResponse, getAuthErrorResponse, getErrorResponse, getSuccessResponse, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
 import { parseRequestBody, validateAuth } from '@/lib/helper';
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
@@ -7,7 +7,7 @@ import { NextRequest } from 'next/server';
 export const PATCH = withErrorHandler(async (request: NextRequest, { params }: { params: Promise<{ teamId: string }> }) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const body = await parseRequestBody<{ name: string, ownerId?: string }>(request);
     const validationErrors = validateRequiredFields(body, ['name']);
@@ -22,7 +22,7 @@ export const PATCH = withErrorHandler(async (request: NextRequest, { params }: {
     const team = await prisma.team.findFirst({
         where: { id: teamId, ownerId: user!.id },
     });
-    if (!team) return createActionError(MESSAGE.TEAM_NOT_FOUND_OR_ACCESS_DENIED);
+    if (!team) return getErrorResponse(MESSAGE.TEAM_NOT_FOUND_OR_ACCESS_DENIED);
 
     const updatedTeam = await prisma.team.update({
         where: { id: teamId },
@@ -31,22 +31,22 @@ export const PATCH = withErrorHandler(async (request: NextRequest, { params }: {
             ownerId: ownerId || team.ownerId,
         },
     });
-    return createSuccessResponse(updatedTeam, updateSuccessMessage('Team'));
+    return getSuccessResponse(updatedTeam, updateSuccessMessage('Team'));
 });
 
 export const DELETE = withErrorHandler(async (request: NextRequest) => {
 
     const { user, error } = await validateAuth()
-    if (error) return createActionError(MESSAGE.AUTHENTICATION_REQUIRED);
+    if (error) return getAuthErrorResponse();
 
     const teamId = request.nextUrl.pathname.split('/').pop() || null;
     if (!teamId) return createValidationErrorResponse({ id: ['Team Id is required'] }, MESSAGE.MISSING_FIELDS_MESSAGE);
 
     const team = await prisma.team.findFirst({ where: { id: teamId, ownerId: user!.id } });
-    if (!team) return createActionError(MESSAGE.TEAM_NOT_FOUND_OR_ACCESS_DENIED);
+    if (!team) return getErrorResponse(MESSAGE.TEAM_NOT_FOUND_OR_ACCESS_DENIED);
 
     const res = await prisma.team.delete({ where: { id: teamId } });
-    if (!res) return createActionError(deleteErrorMessage('Team'));
+    if (!res) return getErrorResponse(deleteErrorMessage('Team'));
 
-    return createSuccessResponse(null, deleteSuccessMessage('Team'));
+    return getSuccessResponse(null, deleteSuccessMessage('Team'));
 });

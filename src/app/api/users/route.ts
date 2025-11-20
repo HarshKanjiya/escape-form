@@ -1,7 +1,7 @@
 import { getSuccessMessage } from '@/constants/messages';
-import { createActionSuccess, withErrorHandler } from '@/lib/api-response';
+import { getSuccessResponse, withErrorHandler } from '@/lib/api-response';
 
 export const GET = withErrorHandler(async () => {
 
-    return createActionSuccess([], getSuccessMessage('user'));
+    return getSuccessResponse([], getSuccessMessage('user'));
 });

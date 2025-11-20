@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
-import { createAuthErrorResponse } from './api-response';
+import { getAuthErrorResponse } from './api-response';
 
 /**
  * Extract and validate user authentication
@@ -9,7 +9,7 @@ export async function validateAuth() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { user: null, error: createAuthErrorResponse() };
+    return { user: null, error: getAuthErrorResponse() };
   }
 
   return { user: { id: userId }, error: null };

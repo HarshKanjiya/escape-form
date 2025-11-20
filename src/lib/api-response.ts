@@ -1,3 +1,4 @@
+import { MESSAGE } from '@/constants/messages';
 import { ActionResponse } from '@/types/common';
 import { NextResponse } from 'next/server';
 
@@ -31,39 +32,48 @@ const headers = {
 }
 
 /**
- * Create a successful API response
+ * Create a success response
  */
-export function createSuccessResponse<T>(
+export function getSuccessResponse<T>(
     data: T,
-    message: string = 'Success',
-    status: HttpStatus = HttpStatus.OK,
+    message?: string,
+    totalItems?: number
 ): NextResponse<ActionResponse<T>> {
-    const response: ActionResponse<T> = {
+    return NextResponse.json({
         success: true,
-        message,
         data,
-    };
-
-    return NextResponse.json(response, { status, headers });
+        message,
+        totalItems
+    }, { headers, status: HttpStatus.OK });
 }
 
 /**
- * Create an error API response
+ * Create an error response for server actions
  */
-export function createErrorResponse(
+export function getErrorResponse(
     message: string,
-    status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
-    error?: string,
-    errors?: Record<string, string[]>,
+    {
+        isWarning,
+        errors,
+        status
+    }: {
+        isWarning?: boolean
+        errors?: Record<string, string[] | string[]>
+        status?: HttpStatus
+    } = {
+            isWarning: false,
+            errors: {},
+            status: HttpStatus.BAD_REQUEST
+        }
 ): NextResponse<ActionResponse> {
-    const response: ActionResponse = {
+    return NextResponse.json({
         success: false,
         message,
-        isError: true,
+        isError: !isWarning,
+        isWarning,
         data: errors,
-    };
-
-    return NextResponse.json(response, { status, headers });
+        totalItems: 0
+    }, { headers, status });
 }
 
 /**
@@ -73,24 +83,28 @@ export function createValidationErrorResponse(
     errors: Record<string, string[]>,
     message: string = 'Validation failed'
 ): NextResponse<ActionResponse> {
-    return createErrorResponse(
+    return getErrorResponse(
         message,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        ErrorType.VALIDATION_ERROR,
-        errors
+        {
+            errors,
+            status: HttpStatus.UNPROCESSABLE_ENTITY
+        }
     );
 }
 
 /**
  * Create an authentication error response
  */
-export function createAuthErrorResponse(
-    message: string = 'Authentication required'
-): NextResponse<ActionResponse> {
-    return createErrorResponse(
-        message,
-        HttpStatus.UNAUTHORIZED,
-        ErrorType.AUTHENTICATION_ERROR
+export function getAuthErrorResponse(): NextResponse<ActionResponse> {
+    return getErrorResponse(
+        MESSAGE.AUTHENTICATION_REQUIRED,
+        {
+            status: HttpStatus.UNAUTHORIZED,
+            isWarning: true,
+            errors: {
+                message: [MESSAGE.AUTHENTICATION_REQUIRED]
+            }
+        }
     );
 }
 
@@ -100,10 +114,15 @@ export function createAuthErrorResponse(
 export function createForbiddenResponse(
     message: string = 'Insufficient permissions'
 ): NextResponse<ActionResponse> {
-    return createErrorResponse(
+    return getErrorResponse(
         message,
-        HttpStatus.FORBIDDEN,
-        ErrorType.AUTHORIZATION_ERROR
+        {
+            status: HttpStatus.FORBIDDEN,
+            isWarning: true,
+            errors: {
+                message: [message]
+            }
+        }
     );
 }
 
@@ -113,10 +132,15 @@ export function createForbiddenResponse(
 export function createNotFoundResponse(
     message: string = 'Resource not found'
 ): NextResponse<ActionResponse> {
-    return createErrorResponse(
+    return getErrorResponse(
         message,
-        HttpStatus.NOT_FOUND,
-        ErrorType.NOT_FOUND_ERROR
+        {
+            status: HttpStatus.NOT_FOUND,
+            isWarning: true,
+            errors: {
+                message: [message]
+            }
+        }
     );
 }
 
@@ -126,10 +150,15 @@ export function createNotFoundResponse(
 export function createConflictResponse(
     message: string = 'Resource already exists'
 ): NextResponse<ActionResponse> {
-    return createErrorResponse(
+    return getErrorResponse(
         message,
-        HttpStatus.CONFLICT,
-        ErrorType.CONFLICT_ERROR
+        {
+            status: HttpStatus.CONFLICT,
+            isWarning: true,
+            errors: {
+                message: [message]
+            }
+        }
     );
 }
 
@@ -139,10 +168,15 @@ export function createConflictResponse(
 export function createDatabaseErrorResponse(
     message: string = 'Database operation failed'
 ): NextResponse<ActionResponse> {
-    return createErrorResponse(
+    return getErrorResponse(
         message,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        ErrorType.DATABASE_ERROR
+        {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            isWarning: true,
+            errors: {
+                message: [message]
+            }
+        }
     );
 }
 
@@ -205,11 +239,7 @@ export function createPaginatedResponse<T>(
         },
     };
 
-    return createSuccessResponse(
-        responseData,
-        message,
-        HttpStatus.OK
-    );
+    return getSuccessResponse(responseData, message);
 }
 
 /**
@@ -228,54 +258,6 @@ export function validateRequiredFields(
     });
 
     return Object.keys(errors).length > 0 ? errors : null;
-}
-
-// Helper functions for Server Actions (return ActionResponse directly, not NextResponse)
-
-/**
- * Create a success response for server actions
- */
-export function createActionSuccess<T>(
-    data: T,
-    message?: string,
-    totalItems?: number
-): NextResponse<ActionResponse<T>> {
-    return NextResponse.json({
-        success: true,
-        data,
-        message,
-        totalItems
-    });
-}
-
-/**
- * Create an error response for server actions
- */
-export function createActionError(
-    message: string,
-    isWarning: boolean = false
-): NextResponse<ActionResponse> {
-    return NextResponse.json({
-        success: false,
-        message,
-        isError: !isWarning,
-        isWarning,
-    },
-        { headers }
-    );
-}
-
-/**
- * Create a validation error response for server actions
- */
-export function createActionValidationError(
-    message: string = 'Validation failed'
-): NextResponse<ActionResponse> {
-    return NextResponse.json({
-        success: false,
-        message,
-        isError: true,
-    });
 }
 
 /**
@@ -304,11 +286,7 @@ export function withErrorHandler<T extends unknown[], R>(
             }
 
             // Generic internal server error
-            return createErrorResponse(
-                'An unexpected error occurred',
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                ErrorType.INTERNAL_ERROR
-            );
+            return getErrorResponse('An unexpected error occurred');
         }
     };
 }

@@ -52,7 +52,7 @@ interface IFormBuilderStore {
 
     // Question methods
     createQuestions: (questions: QuestionType[]) => Promise<boolean>;
-    updateQuestion: (questionId: string, question: Partial<Question>) => Promise<void>;
+    updateQuestion: (questionId: string, question: Partial<Question>) => Promise<boolean>;
     deleteQuestion: (questionId: string) => Promise<void>;
 
     // Flow methods
@@ -154,7 +154,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
         if (!formId) {
             console.log("updateQuestion :: FORM ID NOT FOUND!!")
-            return;
+            return false;
         }
 
         set((state) => ({
@@ -180,13 +180,15 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             if (!response?.data?.success) {
                 showError(response.data.message || updateErrorMessage('question'));
                 set({ questions: previousQuestions });
-                return;
+                return false;
             }
+            return true;
         }
         catch (err: unknown) {
             console.log('Err While updating Question :>> ', err);
             showError(createErrorMessage('question(s)'));
             set({ questions: previousQuestions });
+            return false;
         }
         finally {
             set((state) => ({ savingCount: state.savingCount - 1 }))
