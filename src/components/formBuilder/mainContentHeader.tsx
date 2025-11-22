@@ -3,7 +3,7 @@
 import { eViewMode, eViewScreenMode } from "@/enums/form";
 import { FormStatus } from "@/generated/prisma";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Archive, ArchiveRestore, Laptop, PencilRuler, Play, RefreshCcw, Rocket, Smartphone, TrendingUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";

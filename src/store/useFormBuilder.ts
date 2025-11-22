@@ -248,7 +248,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     deleteQuestion: async (questionId: string) => {
-        const { questions: previousQuestions, formId } = get();
+        const { questions: previousQuestions, formId, selectedQuestionId } = get();
 
         if (!formId) {
             console.log("updateQuestion :: FORM ID NOT FOUND!!")
@@ -266,6 +266,12 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
                 showError(response.data.message || deleteErrorMessage('question'));
                 set({ questions: previousQuestions });
                 return;
+            }
+            if (questionId == selectedQuestionId) {
+                set({
+                    selectedQuestionId: null,
+                    selectedQuestion: null
+                })
             }
         }
         catch (err: unknown) {

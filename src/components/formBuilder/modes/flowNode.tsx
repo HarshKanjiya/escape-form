@@ -5,11 +5,23 @@ import { cn, showError } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { SplitIcon } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QuestionIcon from "../ui/questionIcon";
+import { AnimatePresence, motion } from "motion/react"
 
-
-export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
+export const FlowNode = ({
+    node,
+    zoom,
+    isMakingNewEdgeFrom,
+    onEdgeStartMouseDown,
+    onEdgeEndMouseDown
+}: {
+    node: Question,
+    zoom: number,
+    isMakingNewEdgeFrom: string | null,
+    onEdgeStartMouseDown?: (id: string) => void,
+    onEdgeEndMouseDown?: (id: string) => void
+}) => {
 
     const { changePosition, selectedQuestionId } = useFormBuilder();
 
@@ -18,6 +30,7 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
 
     const dragStartMouse = useRef({ x: 0, y: 0 });
     const dragStartElem = useRef({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         pos.current = { x: node.posX, y: node.posY };
@@ -44,6 +57,7 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
 
             dragStartMouse.current = { x: e.clientX, y: e.clientY };
             dragStartElem.current = { x: pos.current.x, y: pos.current.y };
+            setIsDragging(true);
 
             window.addEventListener('mousemove', handleMouseMove);
             window.addEventListener('mouseup', handleMouseUp);
@@ -71,6 +85,7 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('mouseup', handleMouseUp);
         document.body.style.cursor = 'default';
+        setIsDragging(false);
         positionChange();
 
         if (elementRef.current) {
@@ -78,12 +93,25 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
         }
     }, [node.id, positionChange, handleMouseMove]);
 
+    const onEdgeInit = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onEdgeStartMouseDown?.(node.id);
+    }
+
+    const onEdgeEnd = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onEdgeEndMouseDown?.(node.id);
+    }
+
     return (
         <div
             ref={elementRef}
             className={cn(
                 "absolute inset-0 bg-background border-2 rounded-xl p-4 pointer-events-auto flex flex-col gap-2 items-start justify-start",
-                selectedQuestionId === node.id ? "z-50 border-primary-400" : "border-border"
+                selectedQuestionId === node.id ? "z-50 border-primary-400" : "border-border",
+                isDragging ? "z-50 shadow-lg" : "shadow-none"
             )}
             style={{
                 transform: `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`,
@@ -94,7 +122,25 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
             }}
             onMouseDown={handleMouseDown}
         >
-            <div className="absolute top-1/2 -translate-y-1/2 -right-8 cursor-crosshair">
+            <AnimatePresence>
+                {
+                    isMakingNewEdgeFrom && isMakingNewEdgeFrom !== node.id &&
+                    <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 -left-10 cursor-crosshair h-full w-8 bg-accent rounded-lg animate-pulse"
+                        onMouseUp={(e) => onEdgeEnd(e)}
+                        key={`edge-dropzone ${node.id}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <div className="rounded-full bg-primary-400">
+                        </div>
+                    </motion.div>
+                }
+            </AnimatePresence>
+            <div className="absolute top-1/2 -translate-y-1/2 -right-8 cursor-crosshair"
+                onMouseDown={(e) => onEdgeInit(e)}
+            >
                 <div className="rounded-full bg-primary-400">
                     <SplitIcon className="rotate-90 h-6 w-6 p-1.5 text-white" />
                 </div>
@@ -114,6 +160,6 @@ export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
                         : '...'
                 }
             </p>
-        </div>
+        </div >
     );
 }

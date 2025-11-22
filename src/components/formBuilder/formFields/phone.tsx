@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 

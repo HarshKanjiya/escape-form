@@ -34,6 +34,7 @@ export default function FlowEditor() {
     const lastPointerPos = useRef({ x: 0, y: 0 });
 
     const [isDragging, setIsDragging] = useState(false);
+    const [isMakingNewEdgeFrom, setIsMakingNewEdgeFrom] = useState<string | null>(null);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         // Only drag if clicking the background and left click
@@ -43,6 +44,11 @@ export default function FlowEditor() {
         e.preventDefault();
         setIsDragging(true);
         lastPointerPos.current = { x: e.clientX, y: e.clientY };
+        document.body.style.cursor = 'grabbing';
+    }, []);
+
+    const handleMouseUp = useCallback(() => {
+        document.body.style.cursor = 'default';
     }, []);
 
     const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -120,14 +126,22 @@ export default function FlowEditor() {
     }, [viewport]);
     // #endregion
 
+    const onEdgeStartMouseDown = (id: string) => {
+        setIsMakingNewEdgeFrom(id);
+    }
+
+    const onEdgeEndMouseDown = (id: string) => {
+        setIsMakingNewEdgeFrom(null);
+    }
+
     return (
         <div className="relative flex-1 h-full w-full">
             <div
                 ref={containerRef}
                 className="flex-1 relative w-full h-full overflow-hidden select-none"
                 onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
                 onWheel={handleWheel}
-            // style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             >
                 <div
                     ref={viewportRef}
@@ -138,7 +152,14 @@ export default function FlowEditor() {
                 >
                     {
                         questions.map((node) => (
-                            <FlowNode key={node.id} node={node} zoom={viewport.zoom} />
+                            <FlowNode
+                                key={node.id}
+                                node={node}
+                                zoom={viewport.zoom}
+                                isMakingNewEdgeFrom={isMakingNewEdgeFrom}
+                                onEdgeStartMouseDown={onEdgeStartMouseDown}
+                                onEdgeEndMouseDown={onEdgeEndMouseDown}
+                            />
                         ))
                     }
                 </div>

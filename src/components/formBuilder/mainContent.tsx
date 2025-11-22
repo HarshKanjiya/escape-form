@@ -2,7 +2,7 @@
 
 import { eViewMode } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import MainContentHeader from "./mainContentHeader";
 import FlowEditor from "./modes/flowEditor";
 import FormEditor from "./modes/formEditor";

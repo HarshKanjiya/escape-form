@@ -5,7 +5,7 @@ import RenderSinglePageForm from "@/components/formRendering/singlePageForm";
 import { eViewScreenMode } from "@/enums/form";
 import { FormPageType } from "@/generated/prisma";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { BatteryFull, SignalIcon, WifiIcon } from "lucide-react";
 
 // Animation variants

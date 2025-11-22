@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { Form } from "@/generated/prisma";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArchiveIcon, ChartAreaIcon, MoreVerticalIcon, PencilRulerIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";

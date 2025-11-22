@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { MessageCircleQuestionMark, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";

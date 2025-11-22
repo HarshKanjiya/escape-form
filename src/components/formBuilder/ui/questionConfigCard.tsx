@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { AddressFieldConfig } from "../formFields/config/address";
 import { CheckboxFieldFieldConfig } from "../formFields/config/checkbox";
 import { DateFieldConfig } from "../formFields/config/date";

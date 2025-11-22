@@ -3,7 +3,7 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { CountryMultiSelect } from "../../ui/countryDropdown";
 
