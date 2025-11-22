@@ -3,10 +3,11 @@
 import { apiConstants } from '@/constants/api.constants';
 import { ROUTES } from '@/constants/routes.constants';
 import { Form, Project, Team } from '@/generated/prisma';
-import api from '@/lib/axios';
+import api, { registerTokenProvider } from '@/lib/axios';
 import { isValidUUID } from '@/lib/utils';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { ActionResponse } from '@/types/common';
+import { useAuth } from '@clerk/nextjs';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -22,6 +23,12 @@ export default function HydrateTeams({ children, teams }: Props) {
     const [teamId, setTeamId] = useState<string | null>(params.teamId as string || null);
     const [projectId, setProjectId] = useState<string | null>(params.projectId as string || null);
     const [formId, setFormId] = useState<string | null>(params.formId as string || null);
+
+    const { getToken } = useAuth();
+
+    useEffect(() => {
+        registerTokenProvider(getToken);
+    }, [getToken]);
 
     useEffect(() => {
         if (!teams?.length) {

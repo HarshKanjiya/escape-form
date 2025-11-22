@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { deleteErrorMessage, deleteSuccessMessage, getErrorMessage, updateErrorMessage, updateSuccessMessage } from '@/constants/messages';
 import { getAuthErrorResponse, getErrorResponse, getSuccessResponse, withErrorHandler } from '@/lib/api-response';
 import { parseRequestBody, validateAuth } from '@/lib/helper';
