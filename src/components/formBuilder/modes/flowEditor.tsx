@@ -138,7 +138,7 @@ export default function FlowEditor() {
                 >
                     {
                         questions.map((node) => (
-                            <FlowNode key={node.id} node={node} x={node.posX} y={node.posY} zoom={viewport.zoom} />
+                            <FlowNode key={node.id} node={node} zoom={viewport.zoom} />
                         ))
                     }
                 </div>

@@ -53,6 +53,7 @@ interface IFormBuilderStore {
     // Question methods
     createQuestions: (questions: QuestionType[]) => Promise<boolean>;
     updateQuestion: (questionId: string, question: Partial<Question>) => Promise<boolean>;
+    changePosition: (questionId: string, position: { x: number, y: number }) => Promise<boolean>;
     deleteQuestion: (questionId: string) => Promise<void>;
 
     // Flow methods
@@ -177,6 +178,57 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
         try {
             const response = await api.patch<ActionResponse<Question[]>>(apiConstants.quesiton.updateQuestions(formId, questionId), question);
+            if (!response?.data?.success) {
+                showError(response.data.message || updateErrorMessage('question'));
+                set({ questions: previousQuestions });
+                return false;
+            }
+            return true;
+        }
+        catch (err: unknown) {
+            console.log('Err While updating Question :>> ', err);
+            showError(createErrorMessage('question(s)'));
+            set({ questions: previousQuestions });
+            return false;
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+    changePosition: async (questionId: string, position: { x: number, y: number }) => {
+        const { questions: previousQuestions, formId } = get();
+
+        if (!formId) {
+            console.log("updateQuestion :: FORM ID NOT FOUND!!")
+            return false;
+        }
+
+        const question = previousQuestions.find((q) => q.id === questionId);
+        if (!question) {
+            console.log("updateQuestion :: QUESTION NOT FOUND!!")
+            return false;
+        }
+
+        set({
+            selectedQuestionId: question.id,
+            selectedQuestion: question
+        })
+
+        if (question.posX === position.x && question.posY === position.y) {
+            return true;
+        }
+
+        set((state) => ({
+            questions: state.questions.map((q) => {
+                if (q?.id !== questionId) return q;
+
+                return { ...q, posX: position.x, posY: position.y }
+            }),
+            savingCount: state.savingCount + 1,
+        }));
+
+        try {
+            const response = await api.patch<ActionResponse<Question[]>>(apiConstants.quesiton.updateQuestions(formId, questionId), { posX: position.x, posY: position.y });
             if (!response?.data?.success) {
                 showError(response.data.message || updateErrorMessage('question'));
                 set({ questions: previousQuestions });

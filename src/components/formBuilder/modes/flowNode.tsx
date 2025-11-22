@@ -1,18 +1,17 @@
 "use client";
 
+import { updateErrorMessage } from "@/constants/messages";
+import { cn, showError } from "@/lib/utils";
+import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { SplitIcon } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import QuestionIcon from "../ui/questionIcon";
-import { useFormBuilder } from "@/store/useFormBuilder";
-import api from "@/lib/axios";
-import { showError } from "@/lib/utils";
-import { updateErrorMessage } from "@/constants/messages";
 
 
-export const FlowNode = ({ node, x, y, zoom }: { node: Question, x: number, y: number, zoom: number }) => {
+export const FlowNode = ({ node, zoom }: { node: Question, zoom: number }) => {
 
-    const { updateQuestion } = useFormBuilder();
+    const { changePosition, selectedQuestionId } = useFormBuilder();
 
     const elementRef = useRef<HTMLDivElement>(null);
     const pos = useRef({ x: node.posX, y: node.posY });
@@ -31,12 +30,12 @@ export const FlowNode = ({ node, x, y, zoom }: { node: Question, x: number, y: n
 
 
     const positionChange = useCallback(async () => {
-        const success = await updateQuestion(node.id, { posX: pos.current.x, posY: pos.current.y });
+        const success = await changePosition(node.id, { x: pos.current.x, y: pos.current.y });
         if (!success) {
             pos.current = { x: node.posX, y: node.posY };
             showError(updateErrorMessage('position'));
         }
-    }, [node.id, updateQuestion])
+    }, [node.id, changePosition])
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (e.button === 0) {
@@ -82,7 +81,10 @@ export const FlowNode = ({ node, x, y, zoom }: { node: Question, x: number, y: n
     return (
         <div
             ref={elementRef}
-            className="absolute inset-0 bg-background border-2 border-border rounded-xl p-4 shadow-sm pointer-events-auto flex flex-col gap-2 items-start justify-start"
+            className={cn(
+                "absolute inset-0 bg-background border-2 rounded-xl p-4 pointer-events-auto flex flex-col gap-2 items-start justify-start",
+                selectedQuestionId === node.id ? "z-50 border-primary-400" : "border-border"
+            )}
             style={{
                 transform: `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`,
                 transformOrigin: '0 0',
