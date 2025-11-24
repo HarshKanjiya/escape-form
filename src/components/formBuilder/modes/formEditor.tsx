@@ -8,8 +8,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { eWorkflowDirection } from "@/enums/form";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion } from "motion/react";
 import { Braces, SeparatorHorizontalIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import AddQuestionDialog from "../ui/addIQuestionDialog";
 import QuestionCard from "../ui/questionCard";

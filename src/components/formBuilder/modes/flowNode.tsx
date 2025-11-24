@@ -19,13 +19,14 @@ export const FlowNode = ({
     node: Question,
     zoom: number,
     isMakingNewEdgeFrom: string | null,
-    onEdgeStartMouseDown?: (id: string) => void,
+    onEdgeStartMouseDown?: (id: string, { x, y }: { x: number, y: number }) => void,
     onEdgeEndMouseDown?: (id: string) => void
 }) => {
 
     const { changePosition, selectedQuestionId } = useFormBuilder();
 
     const elementRef = useRef<HTMLDivElement>(null);
+    const edgeStartRef = useRef<HTMLDivElement>(null);
     const pos = useRef({ x: node.posX, y: node.posY });
 
     const dragStartMouse = useRef({ x: 0, y: 0 });
@@ -96,7 +97,12 @@ export const FlowNode = ({
     const onEdgeInit = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        onEdgeStartMouseDown?.(node.id);
+        if (!edgeStartRef.current) return;
+        const centerX =
+            edgeStartRef.current.getBoundingClientRect().left + Math.abs(edgeStartRef.current.getBoundingClientRect().right - edgeStartRef.current.getBoundingClientRect().left) / 2;
+        const centerY =
+            edgeStartRef.current.getBoundingClientRect().top + Math.abs(edgeStartRef.current.getBoundingClientRect().bottom - edgeStartRef.current.getBoundingClientRect().top) / 2;
+        onEdgeStartMouseDown?.(node.id, { x: centerX, y: centerY });
     }
 
     const onEdgeEnd = (e: React.MouseEvent) => {
@@ -127,7 +133,7 @@ export const FlowNode = ({
                     isMakingNewEdgeFrom && isMakingNewEdgeFrom !== node.id &&
                     <motion.div
                         className="absolute top-1/2 -translate-y-1/2 -left-10 cursor-crosshair h-full w-8 bg-accent rounded-lg animate-pulse"
-                        onMouseUp={(e) => onEdgeEnd(e)}
+                        onMouseUp={onEdgeEnd}
                         key={`edge-dropzone ${node.id}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -140,6 +146,7 @@ export const FlowNode = ({
             </AnimatePresence>
             <div className="absolute top-1/2 -translate-y-1/2 -right-8 cursor-crosshair"
                 onMouseDown={(e) => onEdgeInit(e)}
+                ref={edgeStartRef}
             >
                 <div className="rounded-full bg-primary-400">
                     <SplitIcon className="rotate-90 h-6 w-6 p-1.5 text-white" />

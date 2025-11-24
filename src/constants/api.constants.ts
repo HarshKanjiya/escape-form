@@ -28,6 +28,11 @@ export const apiConstants = {
         createQuestions: (formId: string) => `forms/${formId}/questions`,
         updateQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
         deleteQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
+    },
+    edge: {
+        addEdge: (formId: string) => `forms/${formId}/edges`,
+        updateEdge: (formId: string, edgeId: string) => `forms/${formId}/edges/${edgeId}`,
+        deleteEdge: (formId: string, edgeId: string) => `forms/${formId}/edges/${edgeId}`,
     }
 
 };

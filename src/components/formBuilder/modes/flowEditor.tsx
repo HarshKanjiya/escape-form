@@ -6,6 +6,8 @@ import { useFormBuilder } from "@/store/useFormBuilder";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlowNode } from "./flowNode";
+import FlowEdge from "./flowEdge";
+import NewFlowEdge from "./newFlowEdge";
 
 // Configuration
 const FLOW_CONFIG = {
@@ -23,8 +25,27 @@ interface ViewportState {
 }
 
 export default function FlowEditor() {
-    const { questions } = useFormBuilder();
+    const { questions, edges, addEdge } = useFormBuilder();
 
+    const [edgesWithPositions, setEdgesWithPositions] = useState<any[]>([]);
+
+    useEffect(() => {
+        const edgesWithPositions = edges.map(edge => {
+            const startNode = questions.find(q => q.id === edge.sourceNodeId);
+            const endNode = questions.find(q => q.id === edge.targetNodeId);
+            if (!startNode || !endNode) return edge;
+            return {
+                ...edge,
+                position: {
+                    x0: startNode.posX,
+                    y0: startNode.posY,
+                    x1: endNode.posX,
+                    y1: endNode.posY,
+                }
+            };
+        });
+        setEdgesWithPositions(edgesWithPositions);
+    }, [edges])
 
     // #region mouse control
     const [viewport, setViewport] = useState<ViewportState>({ x: 0, y: 0, zoom: FLOW_CONFIG.defaultZoom });
@@ -32,6 +53,8 @@ export default function FlowEditor() {
     const viewportRef = useRef<HTMLDivElement>(null);
     const currentViewport = useRef<ViewportState>(viewport);
     const lastPointerPos = useRef({ x: 0, y: 0 });
+    const [newEdgeStart, setNewEdgeStart] = useState({ x: 0, y: 0 })
+    const [newEdgeEnd, setNewEdgeEnd] = useState({ x: 0, y: 0 })
 
     const [isDragging, setIsDragging] = useState(false);
     const [isMakingNewEdgeFrom, setIsMakingNewEdgeFrom] = useState<string | null>(null);
@@ -126,12 +149,51 @@ export default function FlowEditor() {
     }, [viewport]);
     // #endregion
 
-    const onEdgeStartMouseDown = (id: string) => {
+    const onMouseMoveForNewEdge = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const container = containerRef.current;
+        if (!container) return;
+
+        const rect = container.getBoundingClientRect();
+        const { x: vpX, y: vpY, zoom } = currentViewport.current;
+
+        const worldX = (e.clientX - rect.left - vpX) / zoom;
+        const worldY = (e.clientY - rect.top - vpY) / zoom;
+
+        setNewEdgeEnd({ x: worldX, y: worldY });
+    }, []);
+
+    const cleanupNewEdge = useCallback(() => {
+        window.removeEventListener('mousemove', onMouseMoveForNewEdge);
+        window.removeEventListener('mouseup', cleanupNewEdge);
+        setIsMakingNewEdgeFrom(null);
+    }, [onMouseMoveForNewEdge]);
+
+    const onEdgeStartMouseDown = (id: string, { x, y }: { x: number, y: number }) => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const rect = container.getBoundingClientRect();
+        const { x: vpX, y: vpY, zoom } = currentViewport.current;
+
+        // x, y passed here are from getBoundingClientRect (screen space)
+        // Convert to world space
+        const worldX = (x - rect.left - vpX) / zoom;
+        const worldY = (y - rect.top - vpY) / zoom;
+
+        window.addEventListener('mousemove', onMouseMoveForNewEdge);
+        window.addEventListener('mouseup', cleanupNewEdge);
+        setNewEdgeStart({ x: worldX, y: worldY });
+        setNewEdgeEnd({ x: worldX, y: worldY });
         setIsMakingNewEdgeFrom(id);
     }
 
-    const onEdgeEndMouseDown = (id: string) => {
-        setIsMakingNewEdgeFrom(null);
+    const onEdgeEndMouseDown = (targetId: string) => {
+        if (!isMakingNewEdgeFrom) return;
+        addEdge(isMakingNewEdgeFrom, targetId);
+        cleanupNewEdge();
     }
 
     return (
@@ -161,6 +223,23 @@ export default function FlowEditor() {
                                 onEdgeEndMouseDown={onEdgeEndMouseDown}
                             />
                         ))
+                    }
+                    {
+                        edgesWithPositions.map((edge) => (
+                            <FlowEdge
+                                key={edge.id}
+                                edge={edge}
+                                position={edge.position}
+                            />
+                        ))
+                    }
+                    {
+                        isMakingNewEdgeFrom && (
+                            <NewFlowEdge
+                                start={newEdgeStart}
+                                end={newEdgeEnd}
+                            />
+                        )
                     }
                 </div>
             </div >

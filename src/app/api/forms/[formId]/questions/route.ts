@@ -11,7 +11,6 @@ type RouteParams = {
     }>
 };
 
-
 export const GET = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
 
     const { error } = await validateAuth()

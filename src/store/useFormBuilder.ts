@@ -40,6 +40,8 @@ interface IFormBuilderStore {
     // STATE
     selectedQuestionId: string | null;
     selectedQuestion: Question | null;
+    selectedEdgeId: string | null;
+    selectedEdge: Edge | null;
     viewMode: eViewMode,
     viewScreenMode: eViewScreenMode;
 
@@ -57,7 +59,7 @@ interface IFormBuilderStore {
     deleteQuestion: (questionId: string) => Promise<void>;
 
     // Flow methods
-    addEdge: (edge: Edge) => Promise<void>;
+    addEdge: (sourceId: string, targetId: string) => Promise<void>;
     updateEdge: (edgeId: string, edge: Partial<Edge>) => Promise<void>;
     removeEdge: (edgeId: string) => Promise<void>;
 
@@ -68,6 +70,7 @@ interface IFormBuilderStore {
     setViewMode: (mode: eViewMode) => void;
     setViewScreenMode: (mode: eViewScreenMode) => void;
     setSelectedQuestionId: (id: string | null) => void;
+    setSelectedEdgeId: (id: string | null) => void;
 }
 
 export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
@@ -81,7 +84,8 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
     selectedQuestionId: null,
     selectedQuestion: null,
-
+    selectedEdgeId: null,
+    selectedEdge: null,
     dataSource: defaultFormSettings,
     connections: [],
     viewMode: eViewMode.Builder,
@@ -286,14 +290,82 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     // #endregion
 
     // #region Flow methods
-    addEdge: async (connection: Edge) => {
+    addEdge: async (sourceId: string, targetId: string) => {
+        const { edges: previousEdges, formId } = get();
 
+        if (!formId) {
+            console.log("createQuestions :: FORM ID NOT FOUND!!")
+            return
+        }
+
+        try {
+            set((state) => ({ savingCount: state.savingCount + 1 }))
+            const response = await api.post<ActionResponse<Edge>>(apiConstants.edge.addEdge(formId), { sourceNodeId: sourceId, targetNodeId: targetId });
+            if (!response?.data?.success) {
+                showError(response.data.message || createErrorMessage('edge'));
+                set({ edges: previousEdges });
+                return;
+            }
+            const edge = response.data.data;
+            if (edge) {
+                set({
+                    edges: [...previousEdges, edge],
+                    selectedEdge: edge,
+                    selectedEdgeId: edge.id,
+                })
+            }
+        } catch (err: unknown) {
+            console.log('Err While adding Edge :>> ', err);
+            showError(createErrorMessage('edge'));
+            set({ edges: previousEdges });
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
     },
     updateEdge: async (edgeId: string, edge: Partial<Edge>) => {
+        const { edges: previousEdges, formId } = get();
 
+        if (!formId) {
+            console.log("updateEdge :: FORM ID NOT FOUND!!")
+            return
+        }
+
+        set({ edges: [...previousEdges] })
+        // try {
+        //     set((state) => ({ savingCount: state.savingCount + 1 }))
+        //     const response = await api.patch<ActionResponse<Edge[]>>(apiConstants.edge.updateEdge(formId, edgeId), edge);
+        //     if (!response?.data?.success) {
+        //         showError(response.data.message || updateErrorMessage('edge'));
+        //         set({ edges: previousEdges });
+        //         return;
+        //     }
+        //     const edge = response.data.data;
+        //     set({
+        //         edges: [...previousEdges, edge],
+        //         selectedEdge: edge,
+        //         selectedEdgeId: edge.id,
+        //     })
+        // } catch (err: unknown) {
+        //     console.log('Err While updating Edge :>> ', err);
+        //     showError(updateErrorMessage('edge'));
+        //     set({ edges: previousEdges });
+        // }
+        // finally {
+        //     set((state) => ({ savingCount: state.savingCount - 1 }))
+        // }
     },
     removeEdge: async (connectionId: string) => {
 
+    },
+
+    setSelectedEdgeId: (id: string | null) => {
+        const { edges } = get();
+        const edge = edges.find(e => e.id === id) || null;
+        set({
+            selectedEdgeId: edge ? id : null,
+            selectedEdge: edge
+        });
     },
     // #endregion
 
