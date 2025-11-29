@@ -5,8 +5,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
-import { FileText, Menu, SidebarIcon, X } from 'lucide-react';
+import { BoltIcon, FileText, Menu, SidebarIcon, X } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
 export default function LeftBar() {
@@ -133,17 +135,19 @@ export default function LeftBar() {
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                         <div className='w-full h-full flex flex-col gap-2'>
                             <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b h-[53px]'>
-                                <span className={cn('text-md overflow-ellipsis line-clamp-1', isExpanded ? 'visible' : 'hidden')}>{dataSource.name}</span>
-                                {/* <div className='flex items-center gap-2'>
-                                    <Tooltip delayDuration={100}>
+                                <span className='text-md overflow-ellipsis line-clamp-1'>{dataSource.name}</span>
+                                <div className='flex items-center gap-2'>
+                                    <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button size={'icon'} variant={'ghost'}>
-                                                <PenLine className="w-4 h-4" />
-                                            </Button>
+                                            <Link href={`analytics?tab=settings`}>
+                                                <Button size={'icon'} variant={'ghost'}>
+                                                    <BoltIcon className="w-4 h-4" />
+                                                </Button>
+                                            </Link>
                                         </TooltipTrigger>
-                                        <TooltipContent>Edit Form Name</TooltipContent>
+                                        <TooltipContent>Settings</TooltipContent>
                                     </Tooltip>
-                                </div> */}
+                                </div>
                             </div>
                             <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-1'>
                                 {questions.length > 0 ? (

@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 export default function LeftBarQuestionItem({ isExpanded, question }: { isExpanded: boolean, question: Question }) {
     const { selectedQuestionId, setSelectedQuestionId, deleteQuestion } = useFormBuilder();
     return (
-        <>
+        <div className="w-full flex-1">
             {
                 isExpanded ?
                     <li
@@ -23,7 +23,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                             <div className={cn('p-2 rounded-sm', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
                                 <QuestionIcon questionType={question.type} />
                             </div>
-                            <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden', isExpanded ? 'visible' : 'hidden')}>
+                            <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden')}>
                                 {question.title}
                             </div>
                         </div>
@@ -41,7 +41,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                         }
                     </li>
                     :
-                    <Tooltip delayDuration={100}>
+                    <Tooltip >
                         <TooltipTrigger>
                             <li
                                 className={cn('flex gap-2 items-center py-1.5 px-1.5 justify-center select-none bg-white shadow-none dark:bg-accent transition-all duration-200 group border-2 border-accent rounded-md',
@@ -51,9 +51,6 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                 <div className="flex gap-2 items-center flex-1">
                                     <div className={cn('p-2 rounded-sm', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
                                         <QuestionIcon questionType={question.type} />
-                                    </div>
-                                    <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden', isExpanded ? 'visible' : 'hidden')}>
-                                        {question.title}
                                     </div>
                                 </div>
                                 {
@@ -75,6 +72,6 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                         </TooltipContent>
                     </Tooltip>
             }
-        </>
+        </div>
     );
 }

@@ -27,14 +27,18 @@ interface AnalyticsPageProps {
         projectId: string;
         formId: string;
     }>;
+    searchParams: Promise<{
+        tab?: string;
+    }>
 }
 
-export default async function Page({ params }: AnalyticsPageProps) {
+export default async function Page({ params, searchParams }: AnalyticsPageProps) {
 
     const paramsObj = await params;
     const formId = paramsObj?.formId;
     const projectId = paramsObj?.projectId;
     const teamId = paramsObj?.teamId;
+    const tab = (await searchParams)?.tab;
 
     if (!formId || !projectId || !teamId) {
         redirect(ERROR_ROUTES.NOT_FOUND);
@@ -49,6 +53,6 @@ export default async function Page({ params }: AnalyticsPageProps) {
     }
 
     return (
-        <AnalyticsWrapper formDetails={formDetails} />
+        <AnalyticsWrapper formDetails={formDetails} tab={tab} />
     );
 }

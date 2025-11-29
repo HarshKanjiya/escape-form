@@ -335,3 +335,30 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 700 !important;
   }
 }
+
+
+.animate-rocket-in-air {
+  animation: rocket-in-air 5s ease-in-out infinite;
+}
+
+@keyframes rocket-in-air {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(5px, -5px);
+  }
+
+  50% {
+    transform: translate(0, -5px);
+  }
+
+  75% {
+    transform: translate(5px, 0px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}

@@ -58,7 +58,7 @@ export function StarRatingFieldConfig() {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="short-text-min-max">Star Count
-                    <Tooltip delayDuration={100}>
+                    <Tooltip >
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>

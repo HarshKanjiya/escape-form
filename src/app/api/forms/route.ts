@@ -3,6 +3,7 @@ import { Form, FormStatus, FormType } from "@/generated/prisma";
 import { getErrorResponse, getSuccessResponse, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { getPaginationParams, parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
+import { getRandomString } from "@/lib/utils";
 import { NextRequest } from "next/server";
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -49,6 +50,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     });
     if (!project) return getErrorResponse('Project not found');
 
+    let uniqueSubdomain = getRandomString(8);
+
     const form = await prisma.form.create({
         data: {
             name: body.name!.trim(),
@@ -66,7 +69,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             multipleSubmissions: body.multipleSubmissions || false,
 
             customDomain: null,
-            uniqueSubdomain: null,
+            uniqueSubdomain: uniqueSubdomain,
             passwordProtected: body.passwordProtected || false,
             openAt: body.openAt || null,
             closeAt: body.closeAt || null,

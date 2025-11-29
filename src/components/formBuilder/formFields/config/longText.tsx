@@ -104,7 +104,7 @@ export function LongTextFieldConfig() {
             </div>
             <div className="flex items-center justify-between py-3">
                 <Label htmlFor="short-text-min-max">Minimum Length
-                    <Tooltip delayDuration={100}>
+                    <Tooltip>
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>
@@ -142,7 +142,7 @@ export function LongTextFieldConfig() {
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
                 <Label htmlFor="short-text-max">Maximum Length
-                    <Tooltip delayDuration={100}>
+                    <Tooltip >
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>

@@ -50,6 +50,7 @@ interface IFormBuilderStore {
 
     // Core methods
     initForm: (form: Form, questions: Question[]) => void;
+    changeStatus: (status: FormStatus) => Promise<boolean>;
     // updateForm: (form: Partial<Form>) => Promise<void>;
 
     // Question methods
@@ -111,6 +112,40 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
         set({ ...formData });
     },
+
+    changeStatus: async (status: FormStatus) => {
+        const { formId } = get();
+
+        if (!formId) {
+            console.log("changeArchiveStatus :: FORM ID NOT FOUND!!")
+            return false
+        }
+
+        try {
+            set((state) => ({ savingCount: state.savingCount + 1 }))
+            const response = await api.post<ActionResponse<Form>>(apiConstants.form.changeStatus(formId), {
+                action: status
+            });
+            if (!response?.data?.success) {
+                showError(response.data.message || updateErrorMessage('form'));
+                return false;
+            }
+            set({
+                dataSource: response.data.data,
+            })
+            return true;
+        }
+        catch (err: unknown) {
+            console.log('Err While changing Status :>> ', err);
+            showError("Failed to Change form status");
+            return false;
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+
+
 
     // #region Question methods
     createQuestions: async (newQuestionTypes: QuestionType[]) => {

@@ -90,7 +90,7 @@ export default function FormEditor() {
     return (
         <div className="h-full w-full flex flex-col items-center">
             <div className="flex items-center justify-end w-full p-2">
-                <Tooltip delayDuration={100}>
+                <Tooltip >
                     <TooltipTrigger asChild>
                         <Button variant={'secondary'} size={'icon'} onClick={() => setDirection(direction === eWorkflowDirection.Horizontal ? eWorkflowDirection.Vertical : eWorkflowDirection.Horizontal)}>
                             <motion.span

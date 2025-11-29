@@ -23,7 +23,9 @@ export const showToast = (message: string, description?: string, type: 'success'
     duration: 3000,
     action: true,
     cancel: true,
-    position: 'bottom-right'
+    position: 'bottom-right',
+    invert: true,
+    richColors: true,
   });
 }
 
@@ -114,3 +116,14 @@ export function formatFileSize(bytes: number): string {
 
 //   return result;
 // }
+
+
+export const getRandomString = (len: number) => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  let randomString = '';
+  for (let i = 0; i < len; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters.charAt(randomIndex);
+  }
+  return randomString;
+}

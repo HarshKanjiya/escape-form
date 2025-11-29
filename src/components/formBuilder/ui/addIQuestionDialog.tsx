@@ -231,7 +231,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 {children ? (
                     children
                 ) : (
-                    <Tooltip delayDuration={300}>
+                    <Tooltip>
                         <TooltipTrigger asChild>
                             <Button variant={'secondary'} onClick={() => setOpen(true)}>
                                 <Plus className="mr-1" />

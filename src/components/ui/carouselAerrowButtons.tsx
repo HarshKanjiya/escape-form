@@ -76,7 +76,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
     if (isVertical) {
         return (
             <div className='flex justify-between items-center gap-3 w-40'>
-                <Tooltip delayDuration={300}>
+                <Tooltip>
                     <TooltipTrigger asChild>
                         <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>
                             <span>Prev</span>
@@ -92,7 +92,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
 
     return (
         <div className='flex flex-col items-end gap-3'>
-            <Tooltip delayDuration={300}>
+            <Tooltip>
                 <TooltipTrigger asChild>
                     <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-l-xl">
                         <ChevronLeft />
@@ -127,7 +127,7 @@ export const NextButton: React.FC<PropType> = (props) => {
     if (isVertical) {
         return (
             <div className='flex justify-between items-center gap-3 w-40'>
-                <Tooltip delayDuration={300}>
+                <Tooltip>
                     <TooltipTrigger asChild>
                         <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-b-xl !w-24'>
                             <span>Next</span>
@@ -143,7 +143,7 @@ export const NextButton: React.FC<PropType> = (props) => {
 
     return (
         <div className='flex flex-col items-start gap-3'>
-            <Tooltip delayDuration={300}>
+            <Tooltip>
                 <TooltipTrigger asChild>
                     <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-xl">
                         <span>Next</span>

@@ -38,7 +38,7 @@ export function CheckboxFieldFieldConfig() {
             </div>
             <div className="flex items-center justify-between">
                 <Label htmlFor="short-text-randomize">Randomize
-                    <Tooltip delayDuration={100}>
+                    <Tooltip >
                         <TooltipTrigger tabIndex={-1}>
                             <Info size={12} />
                         </TooltipTrigger>

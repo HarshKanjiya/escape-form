@@ -11,16 +11,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { Form } from "@/generated/prisma";
-import { motion } from "motion/react";
 import { ArchiveIcon, ChartAreaIcon, MoreVerticalIcon, PencilRulerIcon, Trash2 } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
+import { useState } from "react";
 
 interface AnalyticsWrapperProps {
     formDetails: Form;
+    tab?: string;
 }
 
-export default function AnalyticsWrapper({ formDetails }: AnalyticsWrapperProps) {
+export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperProps) {
+    const [activeTab, setActiveTab] = useState(tab || 'overview');
     const params = useParams();
     const teamId = params.teamId as string;
     const projectId = params.projectId as string;
@@ -29,6 +32,11 @@ export default function AnalyticsWrapper({ formDetails }: AnalyticsWrapperProps)
     if (!teamId || !projectId || !formId) {
         redirect(ERROR_ROUTES.NOT_FOUND);
     }
+
+    // useEffect(() => {
+    //     if (tab)     
+
+    // }, [tab])
 
     return (
         <div className="container mx-auto px-4 py-6">
@@ -71,7 +79,7 @@ export default function AnalyticsWrapper({ formDetails }: AnalyticsWrapperProps)
                 </div>
             </div>
 
-            <Tabs defaultValue="overview" className="w-full">
+            <Tabs className="w-full" value={activeTab} onValueChange={setActiveTab}>
                 <div className="border-b  p-2 sm:pb-3 px-0 pt-0">
                     <TabsList className="bg-accent h-11 flex items-center justify-between w-full py-1 px-1">
                         <TabsTrigger value="overview" className=" h-full flex-1 text-center !shadow-none">
