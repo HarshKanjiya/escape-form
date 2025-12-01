@@ -91,9 +91,9 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                         <TabsTrigger value="security" className=" h-full flex-1 text-center !shadow-none">
                             Security
                         </TabsTrigger>
-                        <TabsTrigger value="connect" className=" h-full flex-1 text-center !shadow-none">
+                        {/* <TabsTrigger value="connect" className=" h-full flex-1 text-center !shadow-none">
                             Connect
-                        </TabsTrigger>
+                        </TabsTrigger> */}
                         <TabsTrigger value="settings" className=" h-full flex-1 text-center !shadow-none">
                             Settings
                         </TabsTrigger>
@@ -133,7 +133,7 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                             <FormSecurity />
                         </motion.div>
                     </TabsContent>
-                    <TabsContent value="connect" className="px-0 py-4">
+                    {/* <TabsContent value="connect" className="px-0 py-4">
                         <motion.div
                             key="connect-tab"
                             initial={{ opacity: 0, }}
@@ -141,9 +141,9 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <FormSecurity />
+                            <FormConnect />
                         </motion.div>
-                    </TabsContent>
+                    </TabsContent> */}
                     <TabsContent value="settings" className="px-0 py-4">
                         <motion.div
                             key="settings-tab"

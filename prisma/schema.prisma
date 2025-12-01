@@ -211,7 +211,7 @@ model Question {
   metadata    Json         @default("{}") @db.JsonB
   posX        Int
   posY        Int
-  sortOrder   Int?          @default(0)
+  sortOrder   Int?         @default(0)
 
   // relation
   form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
