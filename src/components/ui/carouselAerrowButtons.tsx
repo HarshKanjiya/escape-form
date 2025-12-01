@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { Button } from './button'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+import { TooltipArrow } from '@radix-ui/react-tooltip'
 
 type UsePrevNextButtonsType = {
     prevBtnDisabled: boolean
@@ -84,6 +85,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side='left'>
+                        <TooltipArrow />
                         Ctrl + Up
                     </TooltipContent>
                 </Tooltip>
@@ -100,6 +102,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent side='bottom'>
+                    <TooltipArrow />
                     Ctrl + Left
                 </TooltipContent>
             </Tooltip>
@@ -135,6 +138,7 @@ export const NextButton: React.FC<PropType> = (props) => {
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side='left'>
+                        <TooltipArrow />
                         Ctrl + Down
                     </TooltipContent>
                 </Tooltip>
@@ -151,6 +155,7 @@ export const NextButton: React.FC<PropType> = (props) => {
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent side='bottom'>
+                    <TooltipArrow />
                     Ctrl + Right
                 </TooltipContent>
             </Tooltip>

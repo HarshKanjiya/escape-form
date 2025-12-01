@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addIQuestionDialog";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export default function MainContentHeader() {
     const { viewMode, viewScreenMode, savingCount, dataSource, setViewMode, setViewScreenMode, changeStatus } = useFormBuilder();
@@ -70,6 +71,7 @@ export default function MainContentHeader() {
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
+                                    <TooltipArrow />
                                     Form Editor
                                 </TooltipContent>
                             </Tooltip>
@@ -162,6 +164,7 @@ export default function MainContentHeader() {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
+                                        <TooltipArrow />
                                         Archive
                                     </TooltipContent>
                                 </Tooltip>
@@ -199,6 +202,7 @@ export default function MainContentHeader() {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
+                                        <TooltipArrow />
                                         Copy
                                     </TooltipContent>
                                 </Tooltip>
@@ -210,6 +214,7 @@ export default function MainContentHeader() {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
+                                        <TooltipArrow />
                                         Open in new tab
                                     </TooltipContent>
                                 </Tooltip>

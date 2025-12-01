@@ -51,19 +51,19 @@ export function FormCard({ form, projectId, teamId }: FormCardProps) {
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem asChild>
                                     <Link href={ROUTES.form.analytics(teamId, projectId, form.id as string)} className="flex items-center gap-4 justify-start group">
-                                        <EyeIcon className="w-4 h-4 group-hover:text-white" />
+                                        <EyeIcon className="w-4 h-4" />
                                         Analytics
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <Link href={ROUTES.form.edit(teamId, projectId, form.id as string)} className="flex items-center gap-4 justify-start group">
-                                        <PencilRulerIcon className="w-4 h-4 group-hover:text-white" />
+                                        <PencilRulerIcon className="w-4 h-4" />
                                         Edit form
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <div className="text-destructive flex items-center gap-4 justify-start group">
-                                        <Trash2Icon className="text-destructive w-4 h-4 group-hover:text-white" />
+                                        <Trash2Icon className="text-destructive w-4 h-4" />
                                         <span>Delete</span>
                                     </div>
                                 </DropdownMenuItem>

@@ -48,7 +48,7 @@ export default function Header({ }) {
                     {
                         activeProject && activeTeam ? (
                             <>
-                                <Link href={ROUTES.project.list(activeTeam.id)}>
+                                <Link href={ROUTES.project.list(activeTeam.id, activeProject.id)}>
                                     <Button variant='ghost' className="flex items-center gap-1 shadow-none">
                                         <span className="capitalize">{activeProject.name}</span>
                                     </Button>

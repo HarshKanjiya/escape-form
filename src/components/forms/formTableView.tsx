@@ -8,6 +8,8 @@ import { EyeIcon, PencilRulerIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 import Image from "next/image";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 
 function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<Form>[]; teamId: string; loading: boolean, projectId: string }) {
@@ -15,7 +17,7 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
         <div className="border rounded-lg">
             <Table>
                 <TableHeader>
-                    <TableRow>
+                    <TableRow className="bg-background">
                         <TableHead className="!max-w-18 !w-16">&nbsp;</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Description</TableHead>
@@ -26,7 +28,7 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                         <TableHead className="w-[100px] text-center">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="!p-3">
                     {
                         loading ?
                             Array.from({ length: 5 }).map((_, index) => (
@@ -95,18 +97,42 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                     <TableCell className="tracking-widest">{formatDate(form.updatedAt!)}</TableCell>
                                     <TableCell className="flex gap-3 p-2">
                                         <Link href={ROUTES.form.analytics(teamId, projectId, form.id as string)}>
-                                            <Button size="icon" variant="outline">
-                                                <EyeIcon className="h-4 w-4" />
-                                            </Button>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button size="icon" variant="outline">
+                                                        <EyeIcon className="h-4 w-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent >
+                                                    <TooltipArrow />
+                                                    View Analytics
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </Link>
                                         <Link href={ROUTES.form.edit(teamId, projectId, form.id as string)}>
-                                            <Button size="icon" variant="outline">
-                                                <PencilRulerIcon className="h-4 w-4" />
-                                            </Button>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button size="icon" variant="outline">
+                                                        <PencilRulerIcon className="h-4 w-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <TooltipArrow />
+                                                    Edit Form
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </Link>
-                                        <Button size="icon" variant="destructive">
-                                            <Trash2Icon className="h-4 w-4" />
-                                        </Button>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button size="icon" variant="destructive">
+                                                    <Trash2Icon className="h-4 w-4" />
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <TooltipArrow />
+                                                Delete Form
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             ))

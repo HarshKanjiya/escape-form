@@ -13,10 +13,10 @@ export const ROUTES = {
         analytics: (teamId: string, projectId: string, formId: string) => `/${teamId}/${projectId}/forms/${formId}/analytics`,
     },
     project: {
-        list: (teamId: string) => `/${teamId}`
+        list: (teamId: string, projectId: string) => `/${teamId}/${projectId}`
     },
     team: {
         create: () => `/teams/create`,
-    },  
+    },
     home: () => `/`,
 }

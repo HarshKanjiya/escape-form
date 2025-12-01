@@ -8,6 +8,7 @@ import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "motion/react";
 import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export function LongTextFieldConfig() {
 
@@ -109,6 +110,7 @@ export function LongTextFieldConfig() {
                             <Info size={12} />
                         </TooltipTrigger>
                         <TooltipContent>
+                            <TooltipArrow />
                             0 - 999999
                         </TooltipContent>
                     </Tooltip>

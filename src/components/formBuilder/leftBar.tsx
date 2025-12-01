@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
+import { TooltipArrow } from '@radix-ui/react-tooltip';
 
 export default function LeftBar() {
 
@@ -145,7 +146,10 @@ export default function LeftBar() {
                                                 </Button>
                                             </Link>
                                         </TooltipTrigger>
-                                        <TooltipContent>Settings</TooltipContent>
+                                        <TooltipContent>
+                                            <TooltipArrow />
+                                            Settings
+                                        </TooltipContent>
                                     </Tooltip>
                                 </div>
                             </div>

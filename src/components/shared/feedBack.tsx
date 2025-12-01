@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 import { MessageSquare, Paperclip, X as XIcon } from "lucide-react";
 import * as React from "react";
 
@@ -123,7 +124,10 @@ export function FeedbackModel({
                                                     <XIcon className="size-4" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Discard attachment(s)</TooltipContent>
+                                            <TooltipContent>
+                                                <TooltipArrow />
+                                                Discard attachment(s)
+                                            </TooltipContent>
                                         </Tooltip>
                                     )}
                                     <input
@@ -146,7 +150,10 @@ export function FeedbackModel({
                                                 <Paperclip className="size-4" />
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>Attach files</TooltipContent>
+                                        <TooltipContent>
+                                            <TooltipArrow />
+                                            Attach files
+                                        </TooltipContent>
                                     </Tooltip>
                                 </div>
                             </div>
