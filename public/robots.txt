@@ -1,0 +1,15 @@
+User-agent: *
+
+# Allowed routes
+Allow: /sign-in
+Allow: /sign-up
+Allow: /teams
+Allow: /teams/create
+
+# Disallowed routes
+Disallow: /api/
+Disallow: /*/:teamId
+Disallow: /401
+Disallow: /404
+Disallow: /405
+Disallow: /500

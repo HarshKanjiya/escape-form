@@ -76,7 +76,7 @@ export default function MainContentHeader() {
                                 </TooltipContent>
                             </Tooltip>
                             <Separator orientation="vertical" className="!h-[36px] mx-0" />
-                            {/* <Tooltip >
+                            <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Button className="rounded-none" variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
                                         <TrendingUpDown />
@@ -85,7 +85,7 @@ export default function MainContentHeader() {
                                 <TooltipContent>
                                     Work Flow
                                 </TooltipContent>
-                            </Tooltip> */}
+                            </Tooltip>
                             <Separator orientation="vertical" className="!h-[36px] mx-0" />
                             <Tooltip >
                                 <TooltipTrigger asChild>

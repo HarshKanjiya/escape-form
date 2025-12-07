@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes.constants";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { ChevronRightIcon, CircleFadingArrowUpIcon } from "lucide-react";
+import { BellIcon, ChevronRightIcon, CircleFadingArrowUpIcon, SparklesIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -103,6 +103,9 @@ export default function Header({ }) {
 
                 {/* <AssistantTrigger /> */}
                 <NotificationDropdown />
+                <Button variant='outline' size='icon' className="shadow-none">
+                    <SparklesIcon className="w-4 h-4" />
+                </Button>
                 <Separator orientation="vertical" className="!h-7" />
                 <FeedbackModel />
                 <ProfileDropdown />

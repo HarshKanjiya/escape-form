@@ -5,20 +5,7 @@ import { Wallet } from "lucide-react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Wallet - Escape Form",
-    description: "Manage your credits and transfer funds with ease.",
-    applicationName: "Escape Form",
-    keywords: "escape form, esc form, esc form sign in, escape form sign in, form builder, online forms, form management, data collection, surveys, team collaboration",
-    creator: "Escape Form",
-    authors: [{ name: "Escape Form", url: "https://escform.com" }],
-    publisher: "Escape Form",
-    openGraph: {
-        title: "Wallet - Escape Form",
-        description: "Manage your credits and transfer funds with ease.",
-        url: "https://dashboard.escform.com/wallet",
-        siteName: "Escape Form",
-        type: "website",
-    }
+    title: "Wallet"
 }
 
 export default function WalletPage() {
