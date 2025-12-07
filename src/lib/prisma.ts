@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from '../../node_modules/prisma/client';
-export { FormStatus, ResponseStatus } from '../../node_modules/prisma/client';
+import { Prisma, PrismaClient } from "@prisma/client";
+
 
 declare global {
   var __prisma: PrismaClient | undefined;

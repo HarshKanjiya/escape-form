@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
-import { Team } from "@/generated/prisma";
+import { Team } from "@prisma/client";
 import api from "@/lib/axios";
 import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";

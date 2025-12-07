@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { LIST_VIEW_TYPE } from "@/enums/common";
-import { Team } from "@/generated/prisma";
+import { Team } from "@prisma/client";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { showError } from "@/lib/utils";

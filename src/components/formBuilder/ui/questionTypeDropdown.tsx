@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Book, Calendar, CaseSensitive, CircleDot, FileText, Hash, Link2, Mail, MapPin, Phone, SquareCheckBig, Star } from "lucide-react";
 import { useCallback } from "react";

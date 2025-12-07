@@ -3,7 +3,7 @@
 import { Question } from "@/types/form";
 import { useState } from "react";
 import RenderShortQuestion from "./fields/shortQuestion";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 
 interface Props {
     questions?: Question[];

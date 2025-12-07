@@ -1,4 +1,4 @@
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 import { Upload, ChevronDown, Star } from "lucide-react";
 
 const DemoQuestion = ({ questionType }: { questionType: QuestionType }) => {

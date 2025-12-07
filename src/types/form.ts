@@ -1,4 +1,4 @@
-import { Question as PrismaQuestion, QuestionOption } from "@/generated/prisma";
+import { Question as PrismaQuestion, QuestionOption } from "@prisma/client";
 
 export type Question = Omit<PrismaQuestion, 'metadata'> & {
     metadata?: IQuestionMetadata,

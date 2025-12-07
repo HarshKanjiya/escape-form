@@ -1,5 +1,9 @@
 import { ProjectList } from "@/components/projects/projectList";
 
+export const metadata = {
+    title: "Projects"
+};
+
 export default async function ProjectsPage({ params }: { params: Promise<{ teamId: string }> }) {
     const { teamId } = await params;
     return (

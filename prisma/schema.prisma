@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/prisma/client"
 }
 
 datasource db {
@@ -8,7 +7,239 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums for USER-DEFINED types
+model Team {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String?       @db.VarChar
+  ownerId      String?       @db.VarChar
+  planId       String?       @db.Uuid
+  valid        Boolean       @default(true)
+  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime?     @updatedAt @db.Timestamp(6)
+  forms        Form[]
+  projects     Project[]
+  plan         Plan?         @relation(fields: [planId], references: [id])
+  transactions Transaction[]
+
+  @@index([ownerId])
+  @@map("teams")
+}
+
+model Project {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  teamId      String    @db.Uuid
+  valid       Boolean   @default(true)
+  createdAt   DateTime? @db.Timestamptz(6)
+  updatedAt   DateTime? @db.Timestamptz(6)
+  forms       Form[]
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@map("projects")
+}
+
+model Form {
+  id                  String           @id @default(uuid()) @db.Uuid
+  name                String
+  description         String?
+  teamId              String           @db.Uuid
+  projectId           String           @db.Uuid
+  theme               String?
+  logoUrl             String?
+  maxResponses        Int?
+  openAt              DateTime?        @db.Timestamptz(6)
+  closeAt             DateTime?        @db.Timestamptz(6)
+  type                FormType         @default(REACH_OUT)
+  status              FormStatus?
+  uniqueSubdomain     String?
+  customDomain        String?
+  requireConsent      Boolean?
+  allowAnonymous      Boolean?
+  multipleSubmissions Boolean?         @default(false)
+  passwordProtected   Boolean?         @default(false)
+  analyticsEnabled    Boolean?         @default(true)
+  valid               Boolean          @default(true)
+  createdBy           String
+  createdAt           DateTime?        @db.Timestamptz(6)
+  updatedAt           DateTime?        @db.Timestamptz(6)
+  formPageType        FormPageType     @default(STEPPER)
+  activePasswords     ActivePassword[]
+  analyticsEvents     AnalyticsEvent[]
+  edges               Edge[]
+  project             Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  team                Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  questions           Question[]
+  responses           Response[]
+
+  @@index([projectId])
+  @@index([teamId])
+  @@map("forms")
+}
+
+model ActivePassword {
+  id         String   @id @default(uuid()) @db.Uuid
+  formId     String   @db.Uuid
+  isValid    Boolean  @default(true)
+  expireAt   DateTime @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  questionId String?  @db.Uuid
+  form       Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("active_passwords")
+}
+
+model QuestionOption {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @db.Uuid
+  label      String
+  value      String
+  sortOrder  Int      @default(0)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
+model Question {
+  id            String           @id @default(uuid()) @db.Uuid
+  formId        String           @db.Uuid
+  title         String
+  placeholder   String           @default("")
+  description   String           @default("")
+  required      Boolean          @default(false)
+  type          QuestionType
+  metadata      Json             @default("{}")
+  posX          Int
+  posY          Int
+  sortOrder     Int?             @default(0)
+  options       QuestionOption[]
+  outgoingEdges Edge[]           @relation("SourceEdges")
+  incomingEdges Edge[]           @relation("TargetEdges")
+  form          Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("questions")
+}
+
+model Edge {
+  id           String   @id @default(uuid()) @db.Uuid
+  formId       String   @db.Uuid
+  sourceNodeId String   @db.Uuid
+  targetNodeId String   @db.Uuid
+  condition    Json?    @default("{}")
+  form         Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  sourceNode   Question @relation("SourceEdges", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode   Question @relation("TargetEdges", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("edges")
+}
+
+model Response {
+  id          String          @id @default(uuid()) @db.Uuid
+  formId      String          @db.Uuid
+  userId      String?
+  data        Json            @default("{}")
+  metaData    Json?           @default("{}")
+  tags        String[]
+  status      ResponseStatus?
+  partialSave Boolean?
+  notified    Boolean?
+  valid       Boolean         @default(true)
+  startedAt   DateTime?       @db.Timestamptz(6)
+  submittedAt DateTime?       @db.Timestamptz(6)
+  updatedAt   DateTime?       @db.Timestamptz(6)
+  form        Form            @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("responses")
+}
+
+model AnalyticsEvent {
+  id          String              @id @default(uuid()) @db.Uuid
+  formId      String              @db.Uuid
+  eventType   AnalyticsEventType?
+  createdAt   DateTime            @default(now()) @db.Timestamptz(6)
+  submittedAt DateTime?
+  form        Form                @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@map("analytics_events")
+}
+
+model Transaction {
+  id          String          @id @default(uuid()) @db.Uuid
+  type        TransactionType
+  amount      Float
+  description String?
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+  createdBy   String?         @db.VarChar
+  teamId      String          @db.Uuid
+  team        Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@map("transactions")
+}
+
+model Plan {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  price       Float
+  currency    String    @default("INR") @db.VarChar(3)
+  valid       Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime? @updatedAt @db.Timestamptz(6)
+  coupons     Coupon[]
+  features    Feature[]
+  teams       Team[]
+
+  @@map("plans")
+}
+
+model Feature {
+  id          String    @id @default(uuid()) @db.Uuid
+  planId      String    @db.Uuid
+  key         String
+  name        String?
+  description String?
+  valid       Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime? @updatedAt @db.Timestamptz(6)
+  plan        Plan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("features")
+}
+
+model Coupon {
+  id           String             @id @default(uuid()) @db.Uuid
+  type         CouponType         @default(GENERAL)
+  discountType CouponDiscountType @default(FLAT)
+  planId       String?            @db.Uuid
+  amount       Float?
+  useLeft      Int                @default(0)
+  plan         Plan?              @relation(fields: [planId], references: [id])
+
+  @@map("coupons")
+}
+
+model User {
+  id             String   @id @default(uuid()) @db.Uuid
+  userName       String
+  email          String   @unique
+  phoneNumber    String?
+  googleId       String?  @unique
+  profilePicture String?
+  firstName      String?
+  lastName       String?
+  emailVerified  Boolean  @default(false)
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(6)
+
+  @@map("users")
+}
+
 enum FormStatus {
   DRAFT
   PUBLISHED
@@ -52,32 +283,25 @@ enum AnalyticsEventType {
 enum QuestionType {
   USER_DETAIL
   USER_ADDRESS
-
   TEXT_SHORT
   TEXT_LONG
-
   FILE_ANY
   FILE_IMAGE_OR_VIDEO
-
   CHOICE_SINGLE
   CHOICE_MULTIPLE
   CHOICE_PICTURE
   CHOICE_CHECKBOX
   CHOICE_BOOL
   CHOICE_DROPDOWN
-
   INFO_EMAIL
   INFO_PHONE
   INFO_URL
-
   SCREEN_WELCOME
   SCREEN_END
   SCREEN_STATEMENT
-
   RATING_ZERO_TO_TEN
   RATING_STAR
   RATING_RANK
-
   LEAGAL
   REDIRECT_TO_URL
   NUMBER
@@ -92,292 +316,4 @@ enum CouponDiscountType {
 enum CouponType {
   GENERAL
   PLAN_BASED
-}
-
-// #region CORE MODELS
-model Team {
-  id        String    @id @default(uuid()) @db.Uuid
-  name      String?   @db.VarChar
-  ownerId   String?   @db.VarChar
-  planId    String?   @db.Uuid
-  valid     Boolean   @default(true) @db.Boolean
-  createdAt DateTime  @default(now()) @db.Timestamptz
-  updatedAt DateTime? @updatedAt @db.Timestamp
-  // createdBy String?   @db.VarChar
-
-  // Relations
-  plan         Plan?         @relation(fields: [planId], references: [id], onDelete: SetNull)
-  projects     Project[]
-  forms        Form[]
-  transactions Transaction[]
-  // wallet   Wallet?
-
-  @@index([ownerId])
-  @@map("teams")
-}
-
-model Project {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String    @db.Text
-  description String?   @db.Text
-  teamId      String    @db.Uuid
-  valid       Boolean   @default(true) @db.Boolean
-  createdAt   DateTime? @db.Timestamptz
-  updatedAt   DateTime? @db.Timestamptz
-
-  // Relations
-  team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  forms Form[]
-
-  @@index([teamId])
-  @@map("projects")
-}
-
-model Form {
-  id                  String       @id @default(uuid()) @db.Uuid
-  name                String       @db.Text
-  description         String?      @db.Text
-  teamId              String       @db.Uuid
-  projectId           String       @db.Uuid
-  theme               String?      @db.Text
-  logoUrl             String?      @db.Text
-  maxResponses        Int?
-  openAt              DateTime?    @db.Timestamptz
-  closeAt             DateTime?    @db.Timestamptz
-  type                FormType     @default(REACH_OUT)
-  formPageType        FormPageType @default(STEPPER)
-  status              FormStatus?
-  uniqueSubdomain     String?      @db.Text
-  customDomain        String?      @db.Text
-  requireConsent      Boolean?     @db.Boolean
-  allowAnonymous      Boolean?     @db.Boolean
-  multipleSubmissions Boolean?     @default(false) @db.Boolean
-  passwordProtected   Boolean?     @default(false) @db.Boolean
-  analyticsEnabled    Boolean?     @default(true) @db.Boolean
-  valid               Boolean      @default(true) @db.Boolean
-  createdBy           String       @db.Text
-  createdAt           DateTime?    @db.Timestamptz
-  updatedAt           DateTime?    @db.Timestamptz
-
-  // Relations
-  project         Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  team            Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  responses       Response[]
-  analyticsEvents AnalyticsEvent[]
-  questions       Question[]
-  edges           Edge[]
-  activePasswords ActivePassword[]
-
-  @@index([projectId])
-  @@index([teamId])
-  @@map("forms")
-}
-
-model ActivePassword {
-  id        String   @id @default(uuid()) @db.Uuid
-  formId    String   @db.Uuid
-  isValid   Boolean  @default(true) @db.Boolean
-  expireAt  DateTime @db.Timestamptz
-  createdAt DateTime @default(now()) @db.Timestamptz
-
-  // relation
-  form       Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
-  questionId String? @db.Uuid
-
-  @@index([formId])
-  @@map("active_passwords")
-}
-
-model QuestionOption {
-  id         String @id @default(uuid()) @db.Uuid
-  questionId String @db.Uuid
-  label      String
-  value      String
-  sortOrder  Int    @default(0)
-
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  @@index([questionId])
-}
-
-model Question {
-  id          String       @id @default(uuid()) @db.Uuid
-  formId      String       @db.Uuid
-  title       String
-  placeholder String       @default("")
-  description String       @default("")
-  required    Boolean      @default(false)
-  type        QuestionType
-  metadata    Json         @default("{}") @db.JsonB
-  posX        Int
-  posY        Int
-  sortOrder   Int?         @default(0)
-
-  // relation
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  outgoingEdges Edge[]           @relation("SourceEdges")
-  incomingEdges Edge[]           @relation("TargetEdges")
-  options       QuestionOption[]
-
-  @@index([formId])
-  @@map("questions")
-}
-
-model Edge {
-  id           String @id @default(uuid()) @db.Uuid
-  formId       String @db.Uuid
-  sourceNodeId String @db.Uuid
-  targetNodeId String @db.Uuid
-  condition    Json?  @default("{}") @db.JsonB
-
-  // relation
-  form       Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
-  sourceNode Question @relation("SourceEdges", fields: [sourceNodeId], references: [id], onDelete: Cascade)
-  targetNode Question @relation("TargetEdges", fields: [targetNodeId], references: [id], onDelete: Cascade)
-
-  @@index([formId])
-  @@map("edges")
-}
-
-model Response {
-  id          String          @id @default(uuid()) @db.Uuid
-  formId      String          @db.Uuid
-  userId      String?         @db.Text
-  data        Json            @default("{}") @db.JsonB
-  metaData    Json?           @default("{}") @db.JsonB
-  tags        String[]
-  status      ResponseStatus?
-  partialSave Boolean?        @db.Boolean
-  notified    Boolean?        @db.Boolean
-  valid       Boolean         @default(true) @db.Boolean
-  startedAt   DateTime?       @db.Timestamptz
-  submittedAt DateTime?       @db.Timestamptz
-  updatedAt   DateTime?       @db.Timestamptz
-
-  // Relations
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  @@index([formId])
-  @@map("responses")
-}
-
-model AnalyticsEvent {
-  id          String              @id @default(uuid()) @db.Uuid
-  formId      String              @db.Uuid
-  eventType   AnalyticsEventType?
-  createdAt   DateTime            @default(now()) @db.Timestamptz
-  submittedAt DateTime?
-
-  // Relations
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  @@index([formId])
-  @@map("analytics_events")
-}
-
-// #endregion
-
-// #region WALLET, TRANSACTION, PLAN, FEATURE MODELS
-
-// model Wallet {
-//   id                     String    @id @default(uuid()) @db.Uuid
-//   teamId                 String    @unique @db.Uuid
-//   balance                Float     @default(0) @db.DoublePrecision
-//   nonTransferableBalance Float     @default(0) @db.DoublePrecision
-//   currency               String    @default("INR") @db.VarChar(3)
-//   currencyRate           Float     @default(1) @db.DoublePrecision
-//   createdAt              DateTime  @default(now()) @db.Timestamptz
-//   updatedAt              DateTime? @updatedAt @db.Timestamptz
-
-//   // Relations
-//   transactions Transaction[]
-//   team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-//   @@map("wallets")
-// }
-
-model Transaction {
-  id          String          @id @default(uuid()) @db.Uuid
-  type        TransactionType
-  amount      Float           @db.DoublePrecision
-  description String?         @db.Text
-  createdAt   DateTime        @default(now()) @db.Timestamptz
-  createdBy   String?         @db.VarChar
-  teamId      String          @db.Uuid
-  // walletId    String          @db.VarChar(30)
-
-  // Relations
-  // wallet Wallet @relation(fields: [walletId], references: [id])
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@index([teamId])
-  @@map("transactions")
-}
-
-model Plan {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String    @db.Text
-  description String?   @db.Text
-  price       Float     @db.DoublePrecision
-  currency    String    @default("INR") @db.VarChar(3)
-  valid       Boolean   @default(true) @db.Boolean
-  createdAt   DateTime  @default(now()) @db.Timestamptz
-  updatedAt   DateTime? @updatedAt @db.Timestamptz
-
-  // Relations
-  features Feature[]
-  teams    Team[]
-  coupons  Coupon[]
-
-  @@map("plans")
-}
-
-model Feature {
-  id          String    @id @default(uuid()) @db.Uuid
-  planId      String    @db.Uuid
-  key         String    @db.Text
-  name        String?   @db.Text
-  description String?   @db.Text
-  valid       Boolean   @default(true) @db.Boolean
-  createdAt   DateTime  @default(now()) @db.Timestamptz
-  updatedAt   DateTime? @updatedAt @db.Timestamptz
-
-  // Relations
-  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
-
-  @@map("features")
-}
-
-model Coupon {
-  id           String             @id @default(uuid()) @db.Uuid
-  type         CouponType         @default(GENERAL)
-  discountType CouponDiscountType @default(FLAT)
-  planId       String?            @db.Uuid
-  amount       Float?
-  useLeft      Int                @default(0)
-
-  // Relations
-  plan Plan? @relation(fields: [planId], references: [id])
-
-  @@map("coupons")
-}
-
-// #endregion
-
-model User {
-  id             String  @id @default(uuid()) @db.Uuid
-  userName       String  @db.Text
-  email          String  @unique @db.Text
-  phoneNumber    String? @db.Text
-  googleId       String? @unique @db.Text
-  profilePicture String? @db.Text
-  firstName      String? @db.Text
-  lastName       String? @db.Text
-  emailVerified  Boolean @default(false)
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  @@map("users")
 }

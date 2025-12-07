@@ -7,7 +7,7 @@ import RightBar from "@/components/formBuilder/rightBar";
 import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage } from "@/constants/messages";
 import { ERROR_ROUTES } from "@/constants/routes.constants";
-import { Form } from "@/generated/prisma";
+import { Form } from "@prisma/client";
 import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";

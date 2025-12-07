@@ -3,7 +3,7 @@
 import { apiConstants } from '@/constants/api.constants';
 import { createErrorMessage, deleteErrorMessage, updateErrorMessage } from '@/constants/messages';
 import { eViewMode, eViewScreenMode } from '@/enums/form';
-import { Edge, Form, FormStatus, FormType, QuestionOption, QuestionType } from '@/generated/prisma';
+import { Edge, Form, FormStatus, FormType, QuestionOption, QuestionType } from '@prisma/client';
 import api from '@/lib/axios';
 import { showError } from '@/lib/utils';
 import { ActionResponse } from '@/types/common';

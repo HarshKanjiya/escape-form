@@ -13,7 +13,7 @@ import { ShortTextField } from "../formFields/shortText";
 import { StarRatingField } from "../formFields/starRating";
 import { WebsiteField } from "../formFields/website";
 import { DetailField } from "../formFields/detail";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 
 interface IProps {
     question: Question | null;

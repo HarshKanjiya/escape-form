@@ -1,4 +1,4 @@
-import { Team } from "@/generated/prisma";
+import { Team } from "@prisma/client";
 import { Skeleton } from "../ui/skeleton";
 import { TeamCard } from "./teamCard";
 

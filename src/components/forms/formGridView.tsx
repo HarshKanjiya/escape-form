@@ -1,4 +1,4 @@
-import { Form } from "@/generated/prisma";
+import { Form } from "@prisma/client";
 import { Skeleton } from "../ui/skeleton";
 import { FormCard } from "./formCard";
 

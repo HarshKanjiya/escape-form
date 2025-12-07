@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes.constants";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { BellIcon, ChevronRightIcon, CircleFadingArrowUpIcon, SparklesIcon } from "lucide-react";
+import { ChevronRightIcon, CircleFadingArrowUpIcon, SparklesIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,11 +36,11 @@ export default function Header({ }) {
             <div className="flex items-center gap-6">
                 <Link href={teams.length ? `/${teams[0].id}` : "/teams"} className="flex items-center gap-2">
                     <Image
-                        src="/logo-light.png"
+                        src="/logo-light.svg"
                         alt="Logo"
-                        width={32}
-                        height={32}
-                        className=""
+                        width={36}
+                        height={36}
+                        className="rounded-4xl corner-squircle overflow-hidden border-2 border-muted"
                     />
                 </Link>
                 <TeamsDropdown />
@@ -72,7 +72,7 @@ export default function Header({ }) {
                         spPath ? (
                             <>
                                 <ChevronRightIcon className="!h-4 !w-4 text-muted-foreground/30" />
-                                <span className="capitalize">{spPath}</span>
+                                <span className="capitalize px-4">{spPath}</span>
                             </>
                         ) : null
                     }

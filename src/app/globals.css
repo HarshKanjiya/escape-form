@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "../../public/carousel.css";
 
+@plugin "@tailwindcss/typography";
+@plugin "@toolwind/corner-shape";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

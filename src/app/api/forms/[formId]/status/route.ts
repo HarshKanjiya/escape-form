@@ -1,5 +1,5 @@
 import { getSuccessMessage, MESSAGE } from "@/constants/messages";
-import { FormStatus } from "@/generated/prisma";
+import { FormStatus } from "@prisma/client";
 import { getErrorResponse, getSuccessResponse, withErrorHandler } from "@/lib/api-response";
 import { parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";

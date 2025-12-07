@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Team } from "@/generated/prisma";
+import { Team } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { Eye, Settings, Trash2 } from "lucide-react";
 import Link from "next/link";

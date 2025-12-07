@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Response } from '@/generated/prisma';
+import { Response } from '@prisma/client';
 import { useState } from 'react';
 
 

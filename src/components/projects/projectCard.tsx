@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Project } from "@/generated/prisma";
+import { Project } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { DatabaseIcon, MoreHorizontal } from "lucide-react";

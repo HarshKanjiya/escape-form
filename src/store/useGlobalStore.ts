@@ -1,6 +1,6 @@
 'use client'
 
-import { Form, Project, Team } from '@/generated/prisma'
+import { Form, Project, Team } from '@prisma/client'
 import { create } from 'zustand'
 
 interface GlobalStore {

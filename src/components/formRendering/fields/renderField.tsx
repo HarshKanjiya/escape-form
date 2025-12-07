@@ -14,7 +14,7 @@ import RenderRadioField from "./radio";
 import RenderShortQuestion from "./shortQuestion";
 import RenderStarRatingField from "./starRating";
 import RenderWebsiteField from "./website";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 
 const MemoRenderShortQuestion = memo(RenderShortQuestion);
 const MemoRenderLongQuestion = memo(RenderLongQuestion);

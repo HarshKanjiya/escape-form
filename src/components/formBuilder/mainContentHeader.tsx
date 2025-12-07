@@ -1,7 +1,7 @@
 "use client";
 
 import { eViewMode, eViewScreenMode } from "@/enums/form";
-import { FormStatus } from "@/generated/prisma";
+import { FormStatus } from "@prisma/client";
 import { showSuccess } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Archive, ArchiveRestore, CopyIcon, ExternalLinkIcon, Laptop, PencilRuler, Play, RefreshCcw, Rocket, RocketIcon, Smartphone, TrendingUpDown, UndoDotIcon } from "lucide-react";

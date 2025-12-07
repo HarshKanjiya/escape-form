@@ -1,5 +1,5 @@
 import { getErrorMessage, getSuccessMessage, MESSAGE } from '@/constants/messages';
-import { Edge } from '@/generated/prisma';
+import { Edge } from '@prisma/client';
 import { createValidationErrorResponse, getAuthErrorResponse, getErrorResponse, getSuccessResponse, validateRequiredFields, withErrorHandler } from '@/lib/api-response';
 import { parseRequestBody, validateAuth } from '@/lib/helper';
 import prisma from '@/lib/prisma';

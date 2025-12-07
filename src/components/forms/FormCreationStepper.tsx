@@ -7,7 +7,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiConstants } from "@/constants/api.constants";
-import { FormType, Form as IForm } from "@/generated/prisma";
+import { FormType, Form as IForm } from "@prisma/client";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";

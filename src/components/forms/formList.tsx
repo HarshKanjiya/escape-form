@@ -6,7 +6,7 @@ import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { LIST_VIEW_TYPE } from "@/enums/common";
-import { Form } from "@/generated/prisma";
+import { Form } from "@prisma/client";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";

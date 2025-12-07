@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ROUTES } from "@/constants/routes.constants";
-import { Form, FormStatus, FormType } from "@/generated/prisma";
+import { Form, FormStatus, FormType } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { EyeIcon, PencilRulerIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";

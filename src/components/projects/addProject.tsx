@@ -14,7 +14,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import api from "@/lib/axios";
 import { ActionResponse } from "@/types/common";
-import { Project } from "@/generated/prisma";
+import { Project } from "@prisma/client";
 import { apiConstants } from "@/constants/api.constants";
 import { createErrorMessage } from "@/constants/messages";
 

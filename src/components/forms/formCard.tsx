@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/constants/routes.constants";
-import { Form, FormStatus, FormType } from "@/generated/prisma";
+import { Form, FormStatus, FormType } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { EyeIcon, MoreHorizontal, PencilRulerIcon, SaveAllIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
@@ -25,8 +25,8 @@ export function FormCard({ form, projectId, teamId }: FormCardProps) {
                 <CardContent className="p-0 flex flex-col items-center justify-between h-34">
                     <div className="flex items-start space-x-4 w-full">
                         <div className="flex items-center justify-start w-full gap-4 sm:gap-6">
-                            <div>
-                                <Image src={form.logoUrl || "/logo-light.png"} alt="Form Logo" width={48} height={48} className="rounded-md" />
+                            <div className="rounded-4xl corner-squircle overflow-hidden border-2 border-muted">
+                                <Image src={form.logoUrl || "/logo-light.svg"} alt="Form Logo" width={48} height={48} />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-foreground line-clamp-1 mb-1">

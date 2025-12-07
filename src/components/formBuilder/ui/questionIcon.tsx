@@ -1,4 +1,4 @@
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 import { Book, Calendar, CaseSensitive, CircleDot, FileText, Hash, Link2, LucideIcon, Mail, MapPin, Phone, SquareCheckBig, Star, Trash2 } from "lucide-react";
 
 const iconMapping: Record<QuestionType, LucideIcon> = {

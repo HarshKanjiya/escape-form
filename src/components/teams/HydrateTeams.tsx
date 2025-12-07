@@ -2,7 +2,7 @@
 
 import { apiConstants } from '@/constants/api.constants';
 import { ROUTES } from '@/constants/routes.constants';
-import { Form, Project, Team } from '@/generated/prisma';
+import { Form, Project, Team } from '@prisma/client';
 import api, { registerTokenProvider } from '@/lib/axios';
 import { isValidUUID } from '@/lib/utils';
 import { useGlobalStore } from '@/store/useGlobalStore';

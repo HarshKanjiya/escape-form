@@ -1,7 +1,7 @@
 "use client";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Check, Plus, Search } from "lucide-react";

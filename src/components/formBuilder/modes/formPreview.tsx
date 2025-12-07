@@ -3,7 +3,7 @@
 import RenderMultiStepForm from "@/components/formRendering/multiStepForm";
 import RenderSinglePageForm from "@/components/formRendering/singlePageForm";
 import { eViewScreenMode } from "@/enums/form";
-import { FormPageType } from "@/generated/prisma";
+import { FormPageType } from "@prisma/client";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { motion, AnimatePresence } from "motion/react";
 import { BatteryFull, SignalIcon, WifiIcon } from "lucide-react";

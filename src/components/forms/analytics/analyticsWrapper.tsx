@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
-import { Form } from "@/generated/prisma";
+import { Form } from "@prisma/client";
 import { ArchiveIcon, ChartAreaIcon, MoreVerticalIcon, PencilRulerIcon, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";

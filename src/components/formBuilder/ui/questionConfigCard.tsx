@@ -16,7 +16,7 @@ import { RadioFieldConfig } from "../formFields/config/radio";
 import { ShortTextFieldConfig } from "../formFields/config/shortText";
 import { StarRatingFieldConfig } from "../formFields/config/starRating";
 import { WebsiteFieldConfig } from "../formFields/config/website";
-import { QuestionType } from "@/generated/prisma";
+import { QuestionType } from "@prisma/client";
 
 export default function QuestionConfigCard() {
     const { selectedQuestion } = useFormBuilder();

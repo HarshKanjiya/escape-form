@@ -1,7 +1,7 @@
 "use client";
 
 import { apiConstants } from "@/constants/api.constants";
-import { Team } from "@/generated/prisma";
+import { Team } from "@prisma/client";
 import api from "@/lib/axios";
 import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
