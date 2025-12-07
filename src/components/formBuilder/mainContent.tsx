@@ -7,6 +7,7 @@ import MainContentHeader from "./mainContentHeader";
 import FlowEditor from "./modes/flowEditor";
 import FormEditor from "./modes/formEditor";
 import FormPreview from "./modes/formPreview";
+import { ReactFlowProvider } from "@xyflow/react";
 
 export default function MainContent() {
     const { viewMode } = useFormBuilder()
@@ -40,7 +41,9 @@ export default function MainContent() {
                                     layout
                                     className="w-full h-full"
                                 >
-                                    <FlowEditor />
+                                    <ReactFlowProvider>
+                                        <FlowEditor />
+                                    </ReactFlowProvider>
                                 </motion.div>
                             ) : null}
                             {viewMode === eViewMode.Preview ? (

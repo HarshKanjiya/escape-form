@@ -1,172 +1,96 @@
 "use client";
 
-import { updateErrorMessage } from "@/constants/messages";
-import { cn, showError } from "@/lib/utils";
-import { useFormBuilder } from "@/store/useFormBuilder";
-import { Question } from "@/types/form";
-import { SplitIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import type { ComponentProps } from "react";
 import QuestionIcon from "../ui/questionIcon";
-import { AnimatePresence, motion } from "motion/react"
 
-export const FlowNode = ({
-    node,
-    zoom,
-    isMakingNewEdgeFrom,
-    onEdgeStartMouseDown,
-    onEdgeEndMouseDown
-}: {
-    node: Question,
-    zoom: number,
-    isMakingNewEdgeFrom: string | null,
-    onEdgeStartMouseDown?: (id: string, { x, y }: { x: number, y: number }) => void,
-    onEdgeEndMouseDown?: (id: string) => void
-}) => {
-
-    const { changePosition, selectedQuestionId } = useFormBuilder();
-
-    const elementRef = useRef<HTMLDivElement>(null);
-    const edgeStartRef = useRef<HTMLDivElement>(null);
-    const pos = useRef({ x: node.posX, y: node.posY });
-
-    const dragStartMouse = useRef({ x: 0, y: 0 });
-    const dragStartElem = useRef({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-
-    useEffect(() => {
-        pos.current = { x: node.posX, y: node.posY };
-
-        if (elementRef.current) {
-            elementRef.current.style.transform =
-                `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`;
-        }
-    }, [node.posX, node.posY, zoom]);
-
-
-    const positionChange = useCallback(async () => {
-        const success = await changePosition(node.id, { x: pos.current.x, y: pos.current.y });
-        if (!success) {
-            pos.current = { x: node.posX, y: node.posY };
-            showError(updateErrorMessage('position'));
-        }
-    }, [node.id, changePosition])
-
-    const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        if (e.button === 0) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            dragStartMouse.current = { x: e.clientX, y: e.clientY };
-            dragStartElem.current = { x: pos.current.x, y: pos.current.y };
-            setIsDragging(true);
-
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
-            document.body.style.cursor = 'grabbing';
-        }
-    }, [zoom]);
-
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-        const dx = e.clientX - dragStartMouse.current.x;
-        const dy = e.clientY - dragStartMouse.current.y;
-
-        const newX = dragStartElem.current.x + (dx / zoom);
-        const newY = dragStartElem.current.y + (dy / zoom);
-
-        pos.current = { x: newX, y: newY };
-
-        if (elementRef.current) {
-            elementRef.current.style.zIndex = '99999';
-            elementRef.current.style.transform =
-                `translate3d(${newX}px, ${newY}px, 0) scale(${zoom})`;
-        }
-    }, [zoom]);
-
-    const handleMouseUp = useCallback(() => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-        document.body.style.cursor = 'default';
-        setIsDragging(false);
-        positionChange();
-
-        if (elementRef.current) {
-            elementRef.current.style.zIndex = 'auto'
-        }
-    }, [node.id, positionChange, handleMouseMove]);
-
-    const onEdgeInit = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!edgeStartRef.current) return;
-        const centerX =
-            edgeStartRef.current.getBoundingClientRect().left + Math.abs(edgeStartRef.current.getBoundingClientRect().right - edgeStartRef.current.getBoundingClientRect().left) / 2;
-        const centerY =
-            edgeStartRef.current.getBoundingClientRect().top + Math.abs(edgeStartRef.current.getBoundingClientRect().bottom - edgeStartRef.current.getBoundingClientRect().top) / 2;
-        onEdgeStartMouseDown?.(node.id, { x: centerX, y: centerY });
-    }
-
-    const onEdgeEnd = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onEdgeEndMouseDown?.(node.id);
-    }
+export const FlowNode = ({ data }: { data: any }) => {
 
     return (
+        <BaseNode className="w-52">
+            <BaseNodeHeader>
+                <QuestionIcon questionType={data.type} size={24} className="rounded-md text-base ring-2 ring-offset-2 ring-muted-foreground/20 ring-offset-background" />
+                <BaseNodeHeaderTitle>{data.title}</BaseNodeHeaderTitle>
+            </BaseNodeHeader>
+            <BaseNodeContent>
+                <p className="line-clamp-2 text-ellipsis text-muted-foreground text-xs">
+                    {data.description || "No description ..."}
+                </p>
+            </BaseNodeContent>
+            {/* <BaseNodeFooter>
+                <h4 className="text-md self-start font-bold">Footer</h4>
+            </BaseNodeFooter> */}
+        </BaseNode>
+    );
+}
+
+
+export function BaseNode({ className, ...props }: ComponentProps<"div">) {
+    return (
         <div
-            ref={elementRef}
             className={cn(
-                "absolute inset-0 bg-background border-2 rounded-xl p-4 pointer-events-auto flex flex-col gap-2 items-start justify-start",
-                selectedQuestionId === node.id ? "z-50 border-primary-400" : "border-border",
-                isDragging ? "z-50 shadow-lg" : "shadow-none"
+                "text-card-foreground bg-muted relative rounded-md border p-0.5",
+                "hover:ring-1",
+                "[.react-flow\\_\\_node.selected_&]:border-muted-foreground",
+                "[.react-flow\\_\\_node.selected_&]:shadow-lg",
+                className,
             )}
-            style={{
-                transform: `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) scale(${zoom})`,
-                transformOrigin: '0 0',
-                width: '200px',
-                height: '130px',
-                userSelect: "none"
-            }}
-            onMouseDown={handleMouseDown}
-        >
-            <AnimatePresence>
-                {
-                    isMakingNewEdgeFrom && isMakingNewEdgeFrom !== node.id &&
-                    <motion.div
-                        className="absolute top-1/2 -translate-y-1/2 -left-10 cursor-crosshair h-full w-8 bg-accent rounded-lg animate-pulse"
-                        onMouseUp={onEdgeEnd}
-                        key={`edge-dropzone ${node.id}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
-                        <div className="rounded-full bg-primary-400">
-                        </div>
-                    </motion.div>
-                }
-            </AnimatePresence>
-            <div className="absolute top-1/2 -translate-y-1/2 -right-8 cursor-crosshair"
-                onMouseDown={(e) => onEdgeInit(e)}
-                ref={edgeStartRef}
-            >
-                <div className="rounded-full bg-primary-400">
-                    <SplitIcon className="rotate-90 h-6 w-6 p-1.5 text-white" />
-                </div>
-            </div>
-            <div className="p-2 bg-primary-400 dark:bg-primary-300 rounded-lg">
-                <QuestionIcon questionType={node.type} className="text-white" />
-            </div>
-            <p className="line-clamp-1 overflow-ellipsis overflow-hidden">
-                {node.title}
-            </p>
-            <p className="italic text-sm text-muted-foreground line-clamp-2 overflow-ellipsis overflow-hidden">
-                {
-                    node.description?.length ?
-                        <span>
-                            {node.description}
-                        </span>
-                        : '...'
-                }
-            </p>
-        </div >
+            tabIndex={0}
+            {...props}
+        />
+    );
+}
+
+export function BaseNodeHeader({
+    className,
+    ...props
+}: ComponentProps<"header">) {
+    return (
+        <header
+            {...props}
+            className={cn(
+                "flex flex-row items-center justify-between gap-4 px-2 py-2",
+                className,
+            )}
+        />
+    );
+}
+
+export function BaseNodeHeaderTitle({
+    className,
+    ...props
+}: ComponentProps<"h3">) {
+    return (
+        <h3
+            data-slot="base-node-title"
+            className={cn("user-select-none flex-1 text-base line-clamp-1 text-ellipsis", className)}
+            {...props}
+        />
+    );
+}
+
+export function BaseNodeContent({
+    className,
+    ...props
+}: ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="base-node-content"
+            className={cn("flex flex-col gap-y-2 p-3 bg-card rounded-lg border border-muted-foreground/10", className)}
+            {...props}
+        />
+    );
+}
+
+export function BaseNodeFooter({ className, ...props }: ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="base-node-footer"
+            className={cn(
+                "flex flex-col items-center gap-y-2 border-t px-3 pt-2 pb-3",
+                className,
+            )}
+            {...props}
+        />
     );
 }
