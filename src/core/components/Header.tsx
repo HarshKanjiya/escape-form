@@ -59,7 +59,7 @@ export default function Header({ }) {
                     {
                         activeForm && activeTeam && activeProject ? (
                             <>
-                                <ChevronRightIcon className="!h-4 !w-4 text-muted-foreground/30" />
+                                <ChevronRightIcon className="h-4! w-4! text-muted-foreground/30" />
                                 <Link href={ROUTES.form.analytics(activeTeam.id, activeProject.id, activeForm.id)}>
                                     <Button variant='ghost' className="flex items-center gap-1 shadow-none">
                                         <span className="capitalize">{activeForm.name}</span>
@@ -71,7 +71,7 @@ export default function Header({ }) {
                     {
                         spPath ? (
                             <>
-                                <ChevronRightIcon className="!h-4 !w-4 text-muted-foreground/30" />
+                                <ChevronRightIcon className="h-4! w-4! text-muted-foreground/30" />
                                 <span className="capitalize px-4">{spPath}</span>
                             </>
                         ) : null
@@ -83,8 +83,8 @@ export default function Header({ }) {
                 {
                     true ? (
                         <Link href={`/${activeTeam?.id}/upgrade`} >
-                            <Button variant='ghost' className="flex shadow-none items-center justify-center gap-2 rounded-full text-primary border-primary/30 border hover:bg-primary-100 hover:text-primary-500">
-                                <CircleFadingArrowUpIcon className="!h-5 !w-5" />
+                            <Button variant='ghost' className="flex shadow-none items-center justify-center gap-2 rounded-full text-primary-600 border-primary/20 border hover:bg-primary-400 hover:text-primary-500">
+                                <CircleFadingArrowUpIcon className="h-5! w-5!" />
                                 Upgrade
                             </Button>
                         </Link>
@@ -94,7 +94,7 @@ export default function Header({ }) {
                     activeTeam ? (
                         <Link href={`/${activeTeam?.id}/wallet`} >
                             <Button variant='outline' className="flex shadow-none items-center justify-center gap-2 rounded-full">
-                                <CreditIcon className="!h-5 !w-5 text-muted-foreground" />
+                                <CreditIcon className="h-5! w-5! text-muted-foreground" />
                                 133.54
                             </Button>
                         </Link>
@@ -106,7 +106,7 @@ export default function Header({ }) {
                 <Button variant='outline' size='icon' className="shadow-none">
                     <SparklesIcon className="w-4 h-4" />
                 </Button>
-                <Separator orientation="vertical" className="!h-7" />
+                <Separator orientation="vertical" className="h-7!" />
                 <FeedbackModel />
                 <ProfileDropdown />
             </div>

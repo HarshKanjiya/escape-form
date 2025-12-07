@@ -159,8 +159,9 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         const queLen = questions?.length || 0;
 
         const _newQues: Partial<Question>[] = [];
+        const largestSortOrder = questions.reduce((max, ques) => ques.sortOrder && ques.sortOrder > max ? ques.sortOrder : max, 0);
         newQuestionTypes.forEach((queType, ind) => {
-            _newQues.push(prepareNewQuestionObject(formId, queType, queLen, ind))
+            _newQues.push(prepareNewQuestionObject(formId, queType, queLen, ind, largestSortOrder + 1 + ind));
         })
         try {
             set((state) => ({ savingCount: state.savingCount + 1 }))
@@ -427,7 +428,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     // #endregion
 }))
 
-const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: number, index: number): Partial<Question> => {
+const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: number, index: number, sortOrder: number): Partial<Question> => {
     const baseObject: Partial<Question> = {
         type,
         title: `New ${type.replace('_', ' ').toLocaleLowerCase()} question (Click to edit)`,
@@ -436,7 +437,8 @@ const prepareNewQuestionObject = (formId: string, type: QuestionType, exeLen: nu
         formId,
         required: false,
         posX: (exeLen + index) * 400,
-        posY: 200
+        posY: 200,
+        sortOrder
     };
     const options: Partial<QuestionOption>[] = [];
     const metadata: IQuestionMetadata = {}
