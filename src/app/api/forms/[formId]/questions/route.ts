@@ -51,6 +51,35 @@ export const POST = withErrorHandler(async (request: NextRequest, { params }: Ro
             metadata: question.metadata || {},
         })),
     })
+    if (body.data[0].sortOrder) {
+        const prevLastQuestion = await prisma.question.findFirst({
+            where: { formId: formId, sortOrder: body.data[0].sortOrder - 1 },
+        });
+        await prisma.edge.create({
+            data: {
+                formId: formId,
+                sourceNodeId: prevLastQuestion!.id,
+                targetNodeId: questions[0].id,
+            },
+        })
+    }
+    if (questions.length > 1) {
+        questions.slice(1).forEach(async (question, index) => {
+            if (!question.sortOrder) return;
+            const prevQuestion = questions[index];
+            await prisma.edge.create({
+                data: {
+                    formId: formId,
+                    sourceNodeId: prevQuestion.id,
+                    targetNodeId: question.id,
+                },
+            })
+        });
+    }
+
+    // const prevQuestions = await prisma.question.findMany({
+    //     where: { formId: formId, sortOrder: question.sortOrder - 1 },
+    // });
 
     return getSuccessResponse(questions, getSuccessMessage('Questions'));
 });

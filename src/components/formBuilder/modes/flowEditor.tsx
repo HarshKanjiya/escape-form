@@ -28,7 +28,7 @@ const initialEdges = [{ id: 'n1-n2', source: 'n1', target: 'n2' }];
 const proOptions = { hideAttribution: true };
 
 export default function FlowEditor() {
-    const { questions, edges: savedEdges, addEdge: createNewEdge, changePosition } = useFormBuilder();
+    const { questions, edges: savedEdges, addEdge: createNewEdge, changePosition, removeEdge } = useFormBuilder();
     const [nodes, setNodes, baseOnNodesChange] = useNodesState<any>([]);
     const [edges, setEdges, baseOnEdgesChange] = useEdgesState(initialEdges);
 
@@ -46,7 +46,7 @@ export default function FlowEditor() {
             return;
         }
         if (type == "edge:change" && payload.type === 'remove') {
-            //  TODO
+            removeEdge(payload.id);
             return;
         }
 

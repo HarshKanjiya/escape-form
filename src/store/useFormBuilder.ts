@@ -402,7 +402,32 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         // }
     },
     removeEdge: async (connectionId: string) => {
+        const { edges: previousEdges, formId, selectedEdgeId } = get();
 
+        if (!formId) {
+            console.log("removeEdge :: FORM ID NOT FOUND!!")
+            return
+        }
+
+        set((state) => ({
+            edges: state.edges.filter((e) => e?.id !== connectionId),
+            savingCount: state.savingCount + 1,
+        }));
+        try {
+            const response = await api.delete<ActionResponse<Edge>>(apiConstants.edge.deleteEdge(formId, connectionId));
+            if (!response?.data?.success) {
+                showError(response.data.message || deleteErrorMessage('edge'));
+                set({ edges: previousEdges });
+                return;
+            }
+        } catch (err: unknown) {
+            console.log('Err While deleting Edge :>> ', err);
+            showError(deleteErrorMessage('edge'));
+            set({ edges: previousEdges });
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
     },
 
     setSelectedEdgeId: (id: string | null) => {
