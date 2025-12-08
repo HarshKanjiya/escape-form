@@ -49,7 +49,7 @@ interface IFormBuilderStore {
     isLoading: boolean;
 
     // Core methods
-    initForm: (form: Form, questions: Question[]) => void;
+    initForm: (form: Form, questions: Question[], edges: Edge[]) => void;
     changeStatus: (status: FormStatus) => Promise<boolean>;
     // updateForm: (form: Partial<Form>) => Promise<void>;
 
@@ -94,7 +94,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
 
     // #region Core methods
-    initForm: (form: Form, questions: Question[]) => {
+    initForm: (form: Form, questions: Question[], edges: Edge[]) => {
         const formData: Partial<IFormBuilderStore> = {
             formId: form.id,
             dataSource: form
@@ -108,6 +108,16 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             formData.questions = [];
             formData.selectedQuestionId = null;
             formData.selectedQuestion = null;
+        }
+
+        if (edges.length) {
+            formData.edges = edges;
+            formData.selectedEdgeId = edges[0].id;
+            formData.selectedEdge = edges[0];
+        } else {
+            formData.edges = [];
+            formData.selectedEdgeId = null;
+            formData.selectedEdge = null;
         }
 
         set({ ...formData });

@@ -1,14 +1,16 @@
 "use client";
 
-import { Background, BackgroundVariant, ReactFlow, addEdge, applyEdgeChanges, applyNodeChanges, useReactFlow, EdgeTypes, useEdgesState, useNodesState, useNodesState } from '@xyflow/react';
+import { Background, BackgroundVariant, ReactFlow, addEdge, applyEdgeChanges, applyNodeChanges, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import '@xyflow/react/dist/style.css';
-import { MinusIcon, PlusIcon, RotateCcwIcon } from 'lucide-react';
-import { FlowNode } from './flowNode';
 import { useFormBuilder } from '@/store/useFormBuilder';
+import '@xyflow/react/dist/style.css';
+import { ClockPlus, MinusIcon, PlusIcon, RotateCcwIcon } from 'lucide-react';
+import { FlowNode } from './flowNode';
+
+const nodeTypes = { card: FlowNode };
 
 // Configuration
 const FLOW_CONFIG = {
@@ -19,10 +21,6 @@ const FLOW_CONFIG = {
     gridSize: 34,
 } as const;
 
-const nodeTypes = {
-    card: FlowNode,
-};
-
 const nodeOrigin = [0.5, 0];
 
 const initialEdges = [{ id: 'n1-n2', source: 'n1', target: 'n2' }];
@@ -30,17 +28,49 @@ const initialEdges = [{ id: 'n1-n2', source: 'n1', target: 'n2' }];
 const proOptions = { hideAttribution: true };
 
 export default function FlowEditor() {
-    const { questions, edges: savedEdges, addEdge: createNewEdge } = useFormBuilder();
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const { questions, edges: savedEdges, addEdge: createNewEdge, changePosition } = useFormBuilder();
+    const [nodes, setNodes, baseOnNodesChange] = useNodesState<any>([]);
+    const [edges, setEdges, baseOnEdgesChange] = useEdgesState(initialEdges);
 
     const { getViewport, setViewport, fitView } = useReactFlow();
     const [zoom, setZoom] = useState(1);
 
+    const logGraphEvent = useCallback((type: 'node:change' | 'edge:change' | 'edge:connect', payload: any) => {
+        console.log('[GraphEvent]', { type, payload });
+        if (type == "node:change" && payload.type === 'position:end') {
+            changePosition(payload.id, payload.position);
+            return;
+        }
+        if (type == "edge:connect") {
+            createNewEdge(payload.source, payload.target);
+            return;
+        }
+        if (type == "edge:change" && payload.type === 'remove') {
+            //  TODO
+            return;
+        }
+
+    }, []);
+
     useEffect(() => {
-        const nodes = questions.map((q) => ({ id: q.id, type: 'card', position: { x: q.posX, y: q.posY }, data: q }));
+        const nodes = questions.map((q) => ({
+            id: String(q.id),
+            type: 'card',
+            position: { x: q.posX, y: q.posY },
+            data: q,
+        }));
         setNodes(nodes);
-    }, [])
+    }, [questions])
+
+    useEffect(() => {
+        const edges = savedEdges.map((q) => ({
+            id: String(q.id),
+            source: String(q.sourceNodeId),
+            target: String(q.targetNodeId),
+            data: q,
+        }));
+        setEdges(edges);
+    }, [savedEdges])
 
     const handleZoomChange = (num: number) => {
         const z = Math.min(FLOW_CONFIG.maxZoom, Math.max(FLOW_CONFIG.minZoom, num));
@@ -49,17 +79,26 @@ export default function FlowEditor() {
         setViewport({ x: viewport.x, y: viewport.y, zoom: z });
     };
 
-    // const onNodesChange = useCallback(
-    //     (changes: any) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    //     [],
-    // );
-    // const onEdgesChange = useCallback(
-    //     (changes: any) => setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    //     [],
-    // );
+    const handleNodesChange = useCallback(
+        (changes: any) => {
+            setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
+        },
+        []
+    );
+    const handleEdgesChange = useCallback(
+        (changes: any) => {
+            logGraphEvent('edge:change', changes);
+            setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot));
+        },
+        [logGraphEvent]
+    );
+
     const onConnect = useCallback(
-        (params: any) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-        [],
+        (params: any) => {
+            logGraphEvent('edge:connect', params);
+            setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot));
+        },
+        [logGraphEvent]
     );
 
     const onMove = useCallback(
@@ -80,9 +119,16 @@ export default function FlowEditor() {
                 nodeTypes={nodeTypes}
                 nodes={nodes}
                 edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
+                onNodesChange={(changes) => { baseOnNodesChange(changes); handleNodesChange(changes); }}
+                onEdgesChange={(changes) => { baseOnEdgesChange(changes); handleEdgesChange(changes); }}
                 onConnect={onConnect}
+                onNodeDragStop={(_, node) => {
+                    logGraphEvent('node:change', {
+                        type: 'position:end',
+                        id: node.id,
+                        position: node.position,
+                    });
+                }}
                 fitViewOptions={{ padding: 2 }}
                 onMove={(_, v) => onMove(v)}
             >

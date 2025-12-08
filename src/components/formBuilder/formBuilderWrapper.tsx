@@ -16,8 +16,9 @@ import { Question } from "@/types/form";
 import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
 
-type formWithQuestions = Form & {
+type formWithQuestionsAndEdges = Form & {
     questions?: Question[]
+    edges?: any[]
 }
 
 export default function FormBuilderWrapper() {
@@ -33,7 +34,7 @@ export default function FormBuilderWrapper() {
         const getForm = async () => {
             try {
                 setIsLoading(true);
-                const response = await api.get<ActionResponse<formWithQuestions>>(apiConstants.form.getFormById(formId));
+                const response = await api.get<ActionResponse<formWithQuestionsAndEdges>>(apiConstants.form.getFormById(formId));
 
                 const form = response.data.data;
                 if (!response.data.success || !form) {
@@ -43,9 +44,11 @@ export default function FormBuilderWrapper() {
                 }
 
                 const questions = form?.questions || [];
+                const edges = form?.edges || [];
                 delete form.questions
+                delete form.edges
 
-                if (response.data.data) initForm(response.data.data, questions);
+                if (response.data.data) initForm(response.data.data, questions, edges);
             } catch (error) {
                 console.error('Error fetching form:', error);
                 showError(getErrorMessage("form"));
