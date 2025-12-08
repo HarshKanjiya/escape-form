@@ -6,11 +6,11 @@ import { apiConstants } from "@/constants/api.constants";
 import { getErrorMessage, MESSAGE } from "@/constants/messages";
 import { ERROR_ROUTES, ROUTES } from "@/constants/routes.constants";
 import { LIST_VIEW_TYPE } from "@/enums/common";
-import { Form } from "@prisma/client";
 import { usePagination } from "@/hooks/usePagination";
 import api from "@/lib/axios";
 import { isValidUUID, showError } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
+import { Form } from "@prisma/client";
 import { debounce } from "lodash";
 import { LayersIcon, LayoutGrid, List, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
@@ -134,10 +134,10 @@ export function FormList() {
                             placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5 !bg-muted shadow-none border-accent"
+                            className="pl-10 pr-20 bg-background! dark:bg-muted! border border-muted"
                         />
                         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                            <KbdGroup>
+                            <KbdGroup className="text-muted-foreground">
                                 <Kbd>Ctrl</Kbd>
                                 <span>+</span>
                                 <Kbd>K</Kbd>

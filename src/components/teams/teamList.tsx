@@ -126,10 +126,10 @@ export function TeamList() {
                             placeholder="Search projects"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-20 py-5 !bg-muted shadow-none border-accent"
+                            className="pl-10 pr-20 bg-background! dark:bg-muted! border border-muted"
                         />
                         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                            <KbdGroup>
+                            <KbdGroup className="text-muted-foreground">
                                 <Kbd>Ctrl</Kbd>
                                 <span>+</span>
                                 <Kbd>K</Kbd>

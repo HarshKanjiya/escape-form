@@ -82,19 +82,19 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
             <Tabs className="w-full" value={activeTab} onValueChange={setActiveTab}>
                 <div className="border-b  p-2 sm:pb-3 px-0 pt-0">
                     <TabsList className="bg-accent h-11 flex items-center justify-between w-full py-1 px-1">
-                        <TabsTrigger value="overview" className=" h-full flex-1 text-center !shadow-none">
+                        <TabsTrigger value="overview" className=" h-full flex-1 text-center shadow-none!">
                             Overview
                         </TabsTrigger>
-                        <TabsTrigger value="submissions" className=" h-full flex-1 text-center !shadow-none">
+                        <TabsTrigger value="submissions" className=" h-full flex-1 text-center shadow-none!">
                             Submissions
                         </TabsTrigger>
-                        <TabsTrigger value="security" className=" h-full flex-1 text-center !shadow-none">
+                        <TabsTrigger value="security" className=" h-full flex-1 text-center shadow-none!">
                             Security
                         </TabsTrigger>
-                        {/* <TabsTrigger value="connect" className=" h-full flex-1 text-center !shadow-none">
+                        {/* <TabsTrigger value="connect" className=" h-full flex-1 text-center shadow-none!">
                             Connect
                         </TabsTrigger> */}
-                        <TabsTrigger value="settings" className=" h-full flex-1 text-center !shadow-none">
+                        <TabsTrigger value="settings" className=" h-full flex-1 text-center shadow-none!">
                             Settings
                         </TabsTrigger>
                     </TabsList>

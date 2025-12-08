@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { CustomCard, CustomCardContent, CustomCardFooter, CustomCardHeader, CustomCardTitle } from "@/components/ui/custom-card";
 import { TablePropertiesIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -33,9 +34,8 @@ const chartConfig = {
 export default function LeadCards() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-
             <div className="col-span-3 flex flex-col gap-6">
-                <Card className="col-span-3 !px-0 !py-4 relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-300 via-primary-400 to-primary-800 text-white shadow-[inset_0_3px_7px_rgba(255,255,255,0.1),inset_0_-3px_6px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.30),inset_0_-8px_12px_rgba(0,0,0,0.12),0_6px_14px_-8px_rgba(0,0,0,0.18)] border border-white/30 dark:border-white/15 backdrop-blur-sm border-none">
+                <Card className="col-span-3 px-0! py-4! relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-300 via-primary-400 to-primary-800 text-white shadow-[inset_0_3px_7px_rgba(255,255,255,0.1),inset_0_-3px_6px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.30),inset_0_-8px_12px_rgba(0,0,0,0.12),0_6px_14px_-8px_rgba(0,0,0,0.18)] border border-white/30 dark:border-white/15 backdrop-blur-sm border-none">
                     <div
                         className="absolute inset-0 mix-blend-hard-light opacity-[0.35]"
                         style={{
@@ -61,113 +61,121 @@ export default function LeadCards() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="flex-1 shadow-none !p-0">
-                    <CardContent className="p-0 h-full">
-                        <div className="flex flex-col gap-2 h-full">
-                            <div className="flex-1 px-4 pb-3 pt-4 flex flex-col justify-center items-start">
-                                <p className="text-sm mb-3">Average Completion Time</p>
-                                <div className="flex items-end gap-3 ">
-                                    <h2 className="text-5xl font-bold font-mono text-white tracking-tight">29 sec</h2>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-start border-t px-4 py-3">
-                                <p>
-                                    <span className="text-muted-foreground">Min</span>
-                                    <span className="font-mono">34 sec</span>
-                                </p>
-                                <p>
-                                    <span className="text-muted-foreground">Max</span>
-                                    <span className="font-mono">34 sec</span>
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                <CustomCard>
+                    <CustomCardHeader>
+                        <CustomCardTitle>
+                            Average Completion Time
+                        </CustomCardTitle>
+                    </CustomCardHeader>
+                    <CustomCardContent>
+                        <h2 className="text-4xl py-5 font-bold font-mono text-white tracking-tight">29 sec</h2>
+                    </CustomCardContent>
+                    <CustomCardFooter>
+                        <p>
+                            <span className="text-muted-foreground">Min</span>
+                            <span className="font-mono">34 sec</span>
+                        </p>
+                        <p>
+                            <span className="text-muted-foreground">Max</span>
+                            <span className="font-mono">34 sec</span>
+                        </p>
+                    </CustomCardFooter>
+                </CustomCard>
             </div>
             <div className="col-span-3 flex flex-col gap-6">
-                <Card className="flex-1 shadow-none">
-                    <CardContent>
-                        <div>
-                            <p className="text-sm mb-3">Form Opened</p>
-                            <div className="flex items-end gap-3 ">
-                                <h2 className="text-5xl font-bold font-mono text-white tracking-tight">235</h2>
-                                <p className="text-muted-foreground">Times</p>
-                            </div>
+                <CustomCard className="flex-1">
+                    <CustomCardHeader>
+                        <CustomCardTitle>
+                            Form Opened
+                        </CustomCardTitle>
+                    </CustomCardHeader>
+                    <CustomCardContent>
+                        <div className="flex items-end gap-3 ">
+                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">235</h2>
+                            <p className="text-muted-foreground">Times</p>
                         </div>
-                    </CardContent>
-                </Card>
-                <Card className="flex-1 shadow-none">
-                    <CardContent>
-                        <div>
-                            <p className="text-sm mb-3">Form Submitted</p>
-                            <div className="flex items-end gap-3 ">
-                                <h2 className="text-5xl font-bold font-mono text-white tracking-tight">45</h2>
-                                <p className="text-muted-foreground">Times</p>
-                            </div>
+                    </CustomCardContent>
+                </CustomCard>
+                <CustomCard className="flex-1">
+                    <CustomCardHeader>
+                        <CustomCardTitle>
+                            Form Submitted
+                        </CustomCardTitle>
+                    </CustomCardHeader>
+                    <CustomCardContent>
+                        <div className="flex items-end gap-3 ">
+                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">45</h2>
+                            <p className="text-muted-foreground">Times</p>
                         </div>
-                    </CardContent>
-                </Card>
-                <Card className="flex-1 shadow-none">
-                    <CardContent>
-                        <div>
-                            <p className="text-sm mb-3">Completion Ration</p>
-                            <div className="flex items-end gap-3 ">
-                                <h2 className="text-5xl font-bold font-mono text-white tracking-tight">80%</h2>
-                            </div>
+                    </CustomCardContent>
+                </CustomCard>
+                <CustomCard className="flex-1">
+                    <CustomCardHeader>
+                        <CustomCardTitle>
+                            Completion Ration
+                        </CustomCardTitle>
+                    </CustomCardHeader>
+                    <CustomCardContent>
+                        <div className="flex items-end gap-3 ">
+                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">80%</h2>
                         </div>
-                    </CardContent>
-                </Card>
+                    </CustomCardContent>
+                </CustomCard>
             </div>
-            <Card className="col-span-6 shadow-none !p-0">
-                <CardContent className="p-0">
-                    <div className="flex items-center justify-end border-b">
-                        <div className="px-4 py-3 flex items-baseline justify-center gap-2 border-l">
-                            <div className="bg-indigo-300 rounded-full h-4 w-4" />
+            <CustomCard className="col-span-6">
+                <CustomCardHeader>
+                    <div className="flex items-center justify-start text-base">
+                        <div className="px-2 flex items-center justify-center gap-2">
+                            <div className="bg-indigo-300 rounded-full h-3 w-3" />
                             <p className="text-muted-foreground">Unfinished</p>
-                            <p className="font-mono text-accent-foreground text-2xl">15</p>
+                            <p className="text-accent-foreground">15</p>
                         </div>
-                        <div className="px-4 py-3 flex items-baseline justify-center gap-2 border-l ">
-                            <div className="bg-indigo-600 rounded-full h-4 w-4" />
+                        <div className="px-2 flex items-center justify-center gap-2 ">
+                            <div className="bg-indigo-600 rounded-full h-3 w-3" />
                             <p className="text-muted-foreground">Completed</p>
-                            <p className="font-mono text-accent-foreground text-2xl">12</p>
+                            <p className="text-accent-foreground">12</p>
                         </div>
                     </div>
-                    <div className="px-0 pb-3 pr-4">
-                        <ChartContainer config={chartConfig}>
-                            <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis
-                                    dataKey="month"
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.slice(0, 3)}
-                                />
-                                <YAxis
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    ticks={[50, 100, 150, 200, 250, 300, 350, 400, 450]}
-                                    domain={[0, 500]}
-                                />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Bar
-                                    dataKey="Unfinished"
-                                    stackId="a"
-                                    fill="var(--color-desktop)"
-                                    radius={[4, 4, 4, 4]}
-                                />
-                                <Bar
-                                    dataKey="Completed"
-                                    stackId="b"
-                                    fill="var(--color-mobile)"
-                                    radius={[4, 4, 4, 4]}
-                                />
-                            </BarChart>
-                        </ChartContainer>
+                </CustomCardHeader>
+                <div className="p-[3px]">
+                    <div className="p-4 border flex-1 h-full bg-background dark:bg-accent dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-xl">
+                        <div className="px-0 pb-3 pr-4">
+                            <ChartContainer config={chartConfig}>
+                                <BarChart accessibilityLayer data={chartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis
+                                        dataKey="month"
+                                        tickLine={false}
+                                        tickMargin={10}
+                                        axisLine={false}
+                                        tickFormatter={(value) => value.slice(0, 3)}
+                                    />
+                                    <YAxis
+                                        tickLine={false}
+                                        tickMargin={10}
+                                        axisLine={false}
+                                        ticks={[50, 100, 150, 200, 250, 300, 350, 400, 450]}
+                                        domain={[0, 500]}
+                                    />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar
+                                        dataKey="Unfinished"
+                                        stackId="a"
+                                        fill="var(--color-desktop)"
+                                        radius={[4, 4, 4, 4]}
+                                    />
+                                    <Bar
+                                        dataKey="Completed"
+                                        stackId="b"
+                                        fill="var(--color-mobile)"
+                                        radius={[4, 4, 4, 4]}
+                                    />
+                                </BarChart>
+                            </ChartContainer>
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </CustomCard>
         </div>
     );
 }
