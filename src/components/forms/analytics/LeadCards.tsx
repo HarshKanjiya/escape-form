@@ -68,16 +68,16 @@ export default function LeadCards() {
                         </CustomCardTitle>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <h2 className="text-4xl py-5 font-bold font-mono text-white tracking-tight">29 sec</h2>
+                        <h2 className="text-4xl py-5 font-bold font-mono tracking-tight">29 sec</h2>
                     </CustomCardContent>
-                    <CustomCardFooter>
-                        <p>
-                            <span className="text-muted-foreground">Min</span>
-                            <span className="font-mono">34 sec</span>
+                    <CustomCardFooter className="justify-start gap-4">
+                        <p className="space-x-2">
+                            <span className="text-muted-foreground">Min:</span>
+                            <span>34 sec</span>
                         </p>
-                        <p>
-                            <span className="text-muted-foreground">Max</span>
-                            <span className="font-mono">34 sec</span>
+                        <p className="space-x-2">
+                            <span className="text-muted-foreground">Max:</span>
+                            <span>34 sec</span>
                         </p>
                     </CustomCardFooter>
                 </CustomCard>
@@ -90,9 +90,9 @@ export default function LeadCards() {
                         </CustomCardTitle>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <div className="flex items-end gap-3 ">
-                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">235</h2>
-                            <p className="text-muted-foreground">Times</p>
+                        <div className="flex items-end gap-3 relative">
+                            <h2 className="text-5xl font-bold font-mono tracking-tight">235</h2>
+                            <p className="text-muted-foreground absolute text-sm bottom-1 -right-12">Times</p>
                         </div>
                     </CustomCardContent>
                 </CustomCard>
@@ -103,9 +103,9 @@ export default function LeadCards() {
                         </CustomCardTitle>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <div className="flex items-end gap-3 ">
-                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">45</h2>
-                            <p className="text-muted-foreground">Times</p>
+                        <div className="flex items-end gap-3 relative">
+                            <h2 className="text-5xl font-bold font-mono tracking-tight">45</h2>
+                            <p className="text-muted-foreground absolute text-sm bottom-1 -right-12">Times</p>
                         </div>
                     </CustomCardContent>
                 </CustomCard>
@@ -117,22 +117,22 @@ export default function LeadCards() {
                     </CustomCardHeader>
                     <CustomCardContent>
                         <div className="flex items-end gap-3 ">
-                            <h2 className="text-5xl font-bold font-mono text-white tracking-tight">80%</h2>
+                            <h2 className="text-5xl font-bold font-mono tracking-tight">80%</h2>
                         </div>
                     </CustomCardContent>
                 </CustomCard>
             </div>
             <CustomCard className="col-span-6">
                 <CustomCardHeader>
-                    <div className="flex items-center justify-start text-base">
-                        <div className="px-2 flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-start gap-4">
+                        <div className="flex items-center justify-center gap-2">
                             <div className="bg-indigo-300 rounded-full h-3 w-3" />
-                            <p className="text-muted-foreground">Unfinished</p>
+                            <p>Unfinished</p>
                             <p className="text-accent-foreground">15</p>
                         </div>
-                        <div className="px-2 flex items-center justify-center gap-2 ">
+                        <div className="flex items-center justify-center gap-2 ">
                             <div className="bg-indigo-600 rounded-full h-3 w-3" />
-                            <p className="text-muted-foreground">Completed</p>
+                            <p>Completed</p>
                             <p className="text-accent-foreground">12</p>
                         </div>
                     </div>
