@@ -14,88 +14,88 @@ import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<Form>[]; teamId: string; loading: boolean, projectId: string }) {
     return (
-        <div className="border rounded-lg">
-            <Table>
-                <TableHeader>
-                    <TableRow className="bg-background">
-                        <TableHead className="!max-w-18 !w-16">&nbsp;</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Responses</TableHead>
-                        <TableHead className="w-[120px] text-center">Last Updated</TableHead>
-                        <TableHead className="w-[100px] text-center">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className="!p-3">
-                    {
-                        loading ?
-                            Array.from({ length: 5 }).map((_, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="h-6" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                            :
-                            forms.map((form) => (
-                                <TableRow key={form.id}>
-                                    <TableCell className="w-18">
-                                        <div className="flex items-center justify-center">
-                                            <Image src={form.logoUrl || "/logo-light.png"} alt="Form Logo" width={32} height={32} className="rounded-md" />
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="font-medium">{form.name}</div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="max-w-[300px] truncate">
-                                            {form.description || "No description"}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant='outline'>
-                                            {form.type == FormType.REACH_OUT ? 'Reach Out' : 'Embedded'}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant='outline'>
-                                            {
-                                                form.status == FormStatus.DRAFT ? 'Draft' :
-                                                    form.status == FormStatus.PUBLISHED ? 'Published' :
-                                                        form.status == FormStatus.ARCHIVED ? 'Archived' :
-                                                            form.status == FormStatus.CLOSED ? 'Archived' : 'Unknown'
-                                            }
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        {/* @ts-expect-error _count not added in generated type*/}
-                                        {form._count?.responses || 0}
-                                    </TableCell>
-                                    <TableCell className="tracking-widest">{formatDate(form.updatedAt!)}</TableCell>
-                                    <TableCell className="flex gap-3 p-2">
+        <Table>
+            <TableHeader>
+                <TableRow className="bg-background">
+                    <TableHead className="!max-w-18 !w-16">&nbsp;</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Responses</TableHead>
+                    <TableHead className="w-[120px] text-center">Last Updated</TableHead>
+                    <TableHead className="w-[100px] text-center">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody className="!p-3">
+                {
+                    loading ?
+                        Array.from({ length: 5 }).map((_, index) => (
+                            <TableRow key={index}>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6" />
+                                </TableCell>
+                            </TableRow>
+                        ))
+                        :
+                        forms.map((form) => (
+                            <TableRow key={form.id}>
+                                <TableCell className="w-18">
+                                    <div className="flex items-center justify-center">
+                                        <Image src={form.logoUrl || "/logo-light.png"} alt="Form Logo" width={32} height={32} className="rounded-md" />
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="font-medium">{form.name}</div>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="max-w-[300px] truncate">
+                                        {form.description || "No description"}
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <Badge variant='outline'>
+                                        {form.type == FormType.REACH_OUT ? 'Reach Out' : 'Embedded'}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    <Badge variant='outline'>
+                                        {
+                                            form.status == FormStatus.DRAFT ? 'Draft' :
+                                                form.status == FormStatus.PUBLISHED ? 'Published' :
+                                                    form.status == FormStatus.ARCHIVED ? 'Archived' :
+                                                        form.status == FormStatus.CLOSED ? 'Archived' : 'Unknown'
+                                        }
+                                    </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    {/* @ts-expect-error _count not added in generated type*/}
+                                    {form._count?.responses || 0}
+                                </TableCell>
+                                <TableCell className="tracking-widest">{formatDate(form.updatedAt!)}</TableCell>
+                                <TableCell className="pr-2">
+                                    <div className="flex gap-2">
                                         <Link href={ROUTES.form.analytics(teamId, projectId, form.id as string)}>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -133,14 +133,14 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                                 Delete Form
                                             </TooltipContent>
                                         </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
 
-                    }
-                </TableBody>
-            </Table>
-        </div >
+                }
+            </TableBody>
+        </Table>
     );
 }
 

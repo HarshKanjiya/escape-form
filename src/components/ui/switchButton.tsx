@@ -54,10 +54,10 @@ const SwitchButton = React.forwardRef<HTMLDivElement, SwitchButtonProps>(
       }
 
       setSelectedIds(newSelectedIds)
-      
+
       // Call the option's onClick if provided
       option.onClick?.()
-      
+
       // Call the selection change callback
       if (!allowMultiple && newSelectedIds.size > 0) {
         onSelectionChange?.(Array.from(newSelectedIds)[0])
@@ -79,14 +79,14 @@ const SwitchButton = React.forwardRef<HTMLDivElement, SwitchButtonProps>(
       <div
         ref={ref}
         className={cn(
-          "inline-flex items-center rounded-md bg-muted p-1",
+          "inline-flex items-center rounded-md bg-muted dark:bg-background p-1 gap-1",
           className
         )}
         {...props}
       >
         {options.map((option) => {
           const isSelected = selectedIds.has(option.id)
-          
+
           return (
             <button
               key={option.id}
@@ -99,7 +99,7 @@ const SwitchButton = React.forwardRef<HTMLDivElement, SwitchButtonProps>(
                 "disabled:pointer-events-none disabled:opacity-50",
                 getSizeClasses(),
                 isSelected
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "bg-background dark:bg-muted text-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-muted-foreground/10 hover:text-foreground"
               )}
             >

@@ -105,42 +105,40 @@ const PreviewResponses = () => {
                     View All
                 </Button>
             </div>
-            <div className='border rounded-lg'>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>User</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Tags</TableHead>
-                            <TableHead>Started</TableHead>
-                            <TableHead>Submitted</TableHead>
-                            <TableHead>Data</TableHead>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Tags</TableHead>
+                        <TableHead>Started</TableHead>
+                        <TableHead>Submitted</TableHead>
+                        <TableHead>Data</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {responses.map((resp) => (
+                        <TableRow key={resp.id}>
+                            <TableCell>{resp.userId ?? <span className="italic text-gray-400">Anonymous</span>}</TableCell>
+                            <TableCell>
+                                <span className={resp.status === "COMPLETED" ? "text-green-600 dark:text-green-400 font-semibold" : "text-yellow-600 dark:text-yellow-400 font-semibold"}>
+                                    {resp.status}
+                                </span>
+                            </TableCell>
+                            <TableCell>
+                                {resp.tags.length ? resp.tags.map(tag => (
+                                    <span key={tag} className="inline-block bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-200 rounded px-2 py-0.5 text-xs mr-1">{tag}</span>
+                                )) : <span className="text-gray-400">-</span>}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap text-xs">{resp.startedAt ? new Date(resp.startedAt).toLocaleTimeString() : '-'}</TableCell>
+                            <TableCell className="whitespace-nowrap text-xs">{resp.submittedAt ? new Date(resp.submittedAt).toLocaleTimeString() : '-'}</TableCell>
+                            <TableCell>
+                                <pre className="text-xs max-w-[200px] whitespace-pre-wrap wrap-break-word bg-muted/40 rounded p-1 overflow-x-auto">{JSON.stringify(resp.data, null, 0)}</pre>
+                            </TableCell>
                         </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {responses.map((resp) => (
-                            <TableRow key={resp.id}>
-                                <TableCell>{resp.userId ?? <span className="italic text-gray-400">Anonymous</span>}</TableCell>
-                                <TableCell>
-                                    <span className={resp.status === "COMPLETED" ? "text-green-600 dark:text-green-400 font-semibold" : "text-yellow-600 dark:text-yellow-400 font-semibold"}>
-                                        {resp.status}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    {resp.tags.length ? resp.tags.map(tag => (
-                                        <span key={tag} className="inline-block bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-200 rounded px-2 py-0.5 text-xs mr-1">{tag}</span>
-                                    )) : <span className="text-gray-400">-</span>}
-                                </TableCell>
-                                <TableCell className="whitespace-nowrap text-xs">{resp.startedAt ? new Date(resp.startedAt).toLocaleTimeString() : '-'}</TableCell>
-                                <TableCell className="whitespace-nowrap text-xs">{resp.submittedAt ? new Date(resp.submittedAt).toLocaleTimeString() : '-'}</TableCell>
-                                <TableCell>
-                                    <pre className="text-xs max-w-[200px] whitespace-pre-wrap break-words bg-muted/40 rounded p-1 overflow-x-auto">{JSON.stringify(resp.data, null, 0)}</pre>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+                    ))}
+                </TableBody>
+            </Table>
         </div>
     )
 }
