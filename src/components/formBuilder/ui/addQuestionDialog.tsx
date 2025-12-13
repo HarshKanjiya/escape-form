@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { QuestionType } from "@prisma/client";
-import { Check, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
@@ -51,8 +51,8 @@ const FieldItem = memo(function FieldItem({ field: { id, label, accent }, select
             onClick={() => setSelectedField(id)}
             onDoubleClick={onAdd}
             className={cn(
-                "group relative flex items-center gap-3 rounded-xl border p-2.5 text-sm outline-none cursor-pointer select-none transition-colors bg-background dark:bg-foreground/5",
-                "hover:bg-muted/60 hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/40",
+                "group relative flex items-center gap-3 rounded-lg border p-2 text-sm outline-none cursor-pointer select-none transition-all bg-background dark:bg-foreground/5",
+                "hover:border-primary focus-visible:ring-2 focus-visible:ring-primary/40 outline-none",
                 isSelected && "border-primary/50 bg-primary/10 dark:bg-primary/15"
             )}
         >
@@ -60,8 +60,6 @@ const FieldItem = memo(function FieldItem({ field: { id, label, accent }, select
                 className={cn(
                     "flex size-8 items-center justify-center rounded-md border transition-colors",
                     accent,
-                    "group-hover:brightness-110",
-                    isSelected && "ring-1 ring-primary/60 border-primary/50"
                 )}
             >
                 <QuestionIcon questionType={id} size={18} />
@@ -69,9 +67,6 @@ const FieldItem = memo(function FieldItem({ field: { id, label, accent }, select
             <div className="flex flex-col min-w-0">
                 <span className="font-medium leading-tight truncate">{label}</span>
             </div>
-            {isSelected && (
-                <Check className="absolute right-2 top-2 size-4 text-primary" />
-            )}
             <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-transparent group-hover:ring-border/40" />
         </div>
     );
@@ -249,9 +244,9 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                     <span>Add New Field</span>
                 </DialogTitle>
                 <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent-bg transition-opacity duration-150">
-                    <div className="md:w-[58%] lg:w-[60%] xl:w-[65%] flex flex-col border-r min-h-0">
+                    <div className="w-full flex flex-col min-h-0">
                         {/* Search & filters */}
-                        <div className="p-4 pb-2 flex items-center gap-3 border-b bg-background">
+                        <div className="p-4 flex items-center gap-4 border-b bg-background">
                             <div className="relative flex-1">
                                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                 <Input
@@ -295,7 +290,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                                             <p className="text-xs text-muted-foreground hidden md:block max-w-[45%] truncate">{set.description}</p>
                                         </div>
                                         {set.items.length ? (
-                                            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
+                                            <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-5">
                                                 {set.items.map(field => (
                                                     <FieldItem
                                                         key={field.id}
@@ -319,7 +314,7 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                                                 <p className="text-xs text-muted-foreground max-w-[50%] truncate">{set.description}</p>
                                             </div>
                                             {set.items.length ? (
-                                                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
+                                                <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-5">
                                                     {set.items.map(field => (
                                                         <FieldItem
                                                             key={field.id}
@@ -345,41 +340,43 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                             )}
                         </div>
                     </div>
-                    {/* Preview panel */}
-                    <div className="hidden md:flex flex-col flex-1 min-h-0 bg-background transition-opacity duration-150">
-                        {/* <div className="p-4 border-b">
-                            <h3 className="text-sm font-semibold tracking-wide">Preview</h3>
-                            <p className="text-xs text-muted-foreground mt-1">Get a quick sense of how the field behaves before inserting it.</p>
-                        </div> */}
-                        <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center text-center will-change-transform will-change-opacity">
-                            {selectedField ? (
-                                // <DemoQuestion questionType={selectedField} />
-                                <div className="max-w-sm w-full flex flex-col items-center gap-4">
-                                    <div className="rounded-xl border bg-muted/30 p-6 w-full relative">
-                                        <div className="relative flex flex-col gap-4 items-center">
-                                            <div className="size-14 rounded-lg flex items-center justify-center border bg-primary/10 text-primary">
-                                                <QuestionIcon questionType={selectedField} size={30} />
-                                            </div>
-                                            <h4 className="text-base font-semibold tracking-tight">{allVisibleItems.find(i => i.id === selectedField)?.label}</h4>
-                                            <p className="text-xs text-muted-foreground leading-relaxed">{fieldDescriptions[selectedField]}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2 w-full">
-                                        <Button className="flex-1" onClick={save} disabled={!selectedField}>Add Field</Button>
-                                        <Button variant="outline" className="flex-1" onClick={() => setSelectedField(null)} disabled={!selectedField}>Clear</Button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center gap-4 max-w-xs">
-                                    <div className="size-14 rounded-xl border bg-muted/40 flex items-center justify-center text-muted-foreground">
-                                        <Search className="size-6" />
-                                    </div>
-                                    <p className="text-sm font-medium">Select a field type</p>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">Browse categories or use search to quickly locate the field you need.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    {
+                        //         {/* Preview panel */ }
+                        //         < div className="hidden md:flex flex-col flex-1 min-h-0 bg-background transition-opacity duration-150">
+                        //     {/* <div className="p-4 border-b">
+                        //             <h3 className="text-sm font-semibold tracking-wide">Preview</h3>
+                        //             <p className="text-xs text-muted-foreground mt-1">Get a quick sense of how the field behaves before inserting it.</p>
+                        //         </div> */}
+                        //     <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center text-center will-change-transform will-change-opacity">
+                        //         {selectedField ? (
+                        //             // <DemoQuestion questionType={selectedField} />
+                        //             <div className="max-w-sm w-full flex flex-col items-center gap-4">
+                        //                 <div className="rounded-xl border bg-muted/30 p-6 w-full relative">
+                        //                     <div className="relative flex flex-col gap-4 items-center">
+                        //                         <div className="size-14 rounded-lg flex items-center justify-center border bg-primary/10 text-primary">
+                        //                             <QuestionIcon questionType={selectedField} size={30} />
+                        //                         </div>
+                        //                         <h4 className="text-base font-semibold tracking-tight">{allVisibleItems.find(i => i.id === selectedField)?.label}</h4>
+                        //                         <p className="text-xs text-muted-foreground leading-relaxed">{fieldDescriptions[selectedField]}</p>
+                        //                     </div>
+                        //                 </div>
+                        //                 <div className="flex gap-2 w-full">
+                        //                     <Button className="flex-1" onClick={save} disabled={!selectedField}>Add Field</Button>
+                        //                     <Button variant="outline" className="flex-1" onClick={() => setSelectedField(null)} disabled={!selectedField}>Clear</Button>
+                        //                 </div>
+                        //             </div>
+                        //         ) : (
+                        //             <div className="flex flex-col items-center gap-4 max-w-xs">
+                        //                 <div className="size-14 rounded-xl border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                        //                     <Search className="size-6" />
+                        //                 </div>
+                        //                 <p className="text-sm font-medium">Select a field type</p>
+                        //                 <p className="text-sm text-muted-foreground leading-relaxed">Browse categories or use search to quickly locate the field you need.</p>
+                        //             </div>
+                        //         )}
+                        //     </div>
+                        // </>
+                    }
                 </div>
                 <DialogFooter className='border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-3 px-4'>
                     <div className="mr-auto hidden md:flex text-xs text-muted-foreground items-center gap-2">

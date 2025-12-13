@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import AddQuestionDialog from "./ui/addIQuestionDialog";
+import AddQuestionDialog from "./ui/addQuestionDialog";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export default function MainContentHeader() {
@@ -61,7 +61,7 @@ export default function MainContentHeader() {
             <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent-bg">
                 <div className="flex items-center gap-2">
                     <AddQuestionDialog />
-                    <Separator orientation="vertical" className="!h-8" />
+                    <Separator orientation="vertical" className="h-8!" />
                     <div className="flex items-center gap-1">
                         <div className="flex items-center outline outline-secondary -outline-offset-1 rounded-md">
                             <Tooltip>
@@ -75,7 +75,7 @@ export default function MainContentHeader() {
                                     Form Editor
                                 </TooltipContent>
                             </Tooltip>
-                            <Separator orientation="vertical" className="!h-[36px] mx-0" />
+                            <Separator orientation="vertical" className="h-[36px]! mx-0" />
                             <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Button className="rounded-none" variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
@@ -86,7 +86,7 @@ export default function MainContentHeader() {
                                     Work Flow
                                 </TooltipContent>
                             </Tooltip>
-                            <Separator orientation="vertical" className="!h-[36px] mx-0" />
+                            <Separator orientation="vertical" className="h-[36px]! mx-0" />
                             <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Button className="rounded-l-none" variant={viewMode == eViewMode.Preview ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Preview)}>
@@ -109,12 +109,12 @@ export default function MainContentHeader() {
                                         key="view-toggle"
                                         layout
                                     >
-                                        <Separator orientation="vertical" className="!h-8 mx-1" />
+                                        <Separator orientation="vertical" className="h-8! mx-1" />
                                         <div className="flex items-center outline outline-secondary -outline-offset-1 rounded-md">
                                             <Button className="rounded-r-none" variant={viewScreenMode == eViewScreenMode.Desktop ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewScreenMode(eViewScreenMode.Desktop)}>
                                                 <Laptop />
                                             </Button>
-                                            <Separator orientation="vertical" className="!h-[36px] mx-0" />
+                                            <Separator orientation="vertical" className="h-[36px]! mx-0" />
                                             <Button className="rounded-l-none" variant={viewScreenMode == eViewScreenMode.Mobile ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewScreenMode(eViewScreenMode.Mobile)}>
                                                 <Smartphone />
                                             </Button>
@@ -159,7 +159,7 @@ export default function MainContentHeader() {
                                 </Button>
                                 : <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button onClick={archiveForm} size={'icon'} className="!p-1" variant={'secondary'}>
+                                        <Button onClick={archiveForm} size={'icon'} className="p-1!" variant={'secondary'}>
                                             <Archive size={14} />
                                         </Button>
                                     </TooltipTrigger>
@@ -206,7 +206,7 @@ export default function MainContentHeader() {
                                         Copy
                                     </TooltipContent>
                                 </Tooltip>
-                                <Separator orientation="vertical" className="!h-[32px] mx-0" />
+                                <Separator orientation="vertical" className="h-[32px]! mx-0" />
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button size={'icon'} variant={'outline'} onClick={openUrl}>

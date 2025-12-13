@@ -7,7 +7,7 @@ function CustomCard({ className, hoverEffect: hover = false, ...props }: React.C
         <div
             data-slot="card"
             className={cn(
-                "bg-accent dark:bg-background text-card-foreground rounded-2xl flex gap-2 flex-col border-muted border p-0",
+                "bg-accent dark:bg-background text-card-foreground rounded-2xl flex gap-2 flex-col border-muted border p-0 active:outline active:outline-offset-2 active:outline-primary",
                 hover ? "hover:border-primary transition-all duration-200 cursor-pointer" : "",
                 className
             )}

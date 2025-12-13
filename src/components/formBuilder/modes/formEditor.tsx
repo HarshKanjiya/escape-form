@@ -11,7 +11,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { Braces, SeparatorHorizontalIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import AddQuestionDialog from "../ui/addIQuestionDialog";
+import AddQuestionDialog from "../ui/addQuestionDialog";
 import QuestionCard from "../ui/questionCard";
 
 export default function FormEditor() {
