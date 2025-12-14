@@ -15,12 +15,12 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
             {
                 isExpanded ?
                     <li
-                        className={cn('flex gap-2 items-center py-1.5 px-1.5 justify-center select-none bg-white shadow-none dark:bg-accent transition-all duration-200 group border-2 border-accent rounded-md',
+                        className={cn('flex gap-2 items-center rounded-2xl corner-squircle py-1.5 px-2 justify-center select-none bg-background shadow-none transition-all duration-200 group border-2 border-accent',
                             selectedQuestionId == question.id ? 'border-primary-300 dark:bg-primary/20' : '')}
                         onClick={() => setSelectedQuestionId(question.id)}
                     >
                         <div className="flex gap-2 items-center flex-1">
-                            <div className={cn('p-2 rounded-sm', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
+                            <div className={cn('p-2 rounded-xl corner-squircle', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
                                 <QuestionIcon questionType={question.type} />
                             </div>
                             <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden')}>

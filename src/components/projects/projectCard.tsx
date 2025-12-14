@@ -21,7 +21,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const { setActiveProject } = useGlobalStore((state) => state);
 
   return (
-    <Link href={ROUTES.project.list(teamId, project.id)} className="block p-0 m-0 outline-none group" onClick={() => setActiveProject(project)}>
+    <Link href={ROUTES.project.list(teamId, project.id)} className="block p-0 m-0 outline-none focus:outline-none focus-visible:outline-none group" onClick={() => setActiveProject(project)}>
       <CustomCard hoverEffect className="group group-focus-visible:outline-none group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2">
         <CustomCardContent className="h-34">
           <div className="flex items-start space-x-4 w-full">
