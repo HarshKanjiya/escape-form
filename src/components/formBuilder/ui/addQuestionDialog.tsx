@@ -96,7 +96,7 @@ const fields: IFieldSet[] = [
             { id: QuestionType.NUMBER, label: 'Number', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['numeric', 'integer'] },
             { id: QuestionType.DATE, label: 'Date', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['calendar', 'time'] },
             { id: QuestionType.FILE_ANY, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
-            { id: QuestionType.USER_DETAIL, label: 'Detail Block', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['content', 'static'] },
+            { id: QuestionType.FILE_IMAGE_OR_VIDEO, label: 'Image or Video', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
         ]
     },
     {
@@ -108,6 +108,7 @@ const fields: IFieldSet[] = [
             { id: QuestionType.CHOICE_DROPDOWN, label: 'Dropdown', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
             { id: QuestionType.CHOICE_BOOL, label: 'Yes/No', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
             { id: QuestionType.CHOICE_CHECKBOX, label: 'Checkbox', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
+            { id: QuestionType.CHOICE_PICTURE, label: 'Picture Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['image', 'option'] },
         ]
     },
     {
@@ -116,8 +117,9 @@ const fields: IFieldSet[] = [
         items: [
             { id: QuestionType.INFO_EMAIL, label: 'Email', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'mail'] },
             { id: QuestionType.INFO_PHONE, label: 'Phone', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'tel'] },
-            { id: QuestionType.USER_ADDRESS, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
             { id: QuestionType.INFO_URL, label: 'Website', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['url'] },
+            { id: QuestionType.USER_ADDRESS, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
+            { id: QuestionType.USER_DETAIL, label: 'Detail Block', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'static'] },
         ]
     },
     {
@@ -129,45 +131,24 @@ const fields: IFieldSet[] = [
             { id: QuestionType.RATING_RANK, label: 'Rank rating', accent: 'bg-indigo-400/60 dark:bg-indigo-400/30', keywords: ['image', 'choice'] },
         ]
     },
+    {
+        title: 'Screens',
+        description: 'Non-question form screens',
+        items: [
+            { id: QuestionType.SCREEN_WELCOME, label: 'Welcome Screen', accent: 'bg-teal-400/50 dark:bg-teal-400/25', keywords: ['intro', 'start'] },
+            { id: QuestionType.SCREEN_END, label: 'End Screen', accent: 'bg-teal-400/50 dark:bg-teal-400/25', keywords: ['thank you', 'finish'] },
+            { id: QuestionType.SCREEN_STATEMENT, label: 'Statement Screen', accent: 'bg-teal-400/50 dark:bg-teal-400/25', keywords: ['content', 'message'] },
+        ]
+    },
+    {
+        title: 'Others',
+        description: 'Specialized question types',
+        items: [
+            { id: QuestionType.LEAGAL, label: 'Legal Consent', accent: 'bg-red-400/50 dark:bg-red-400/25', keywords: ['terms', 'agreement'] },
+            { id: QuestionType.REDIRECT_TO_URL, label: 'Redirect to URL', accent: 'bg-red-400/50 dark:bg-red-400/25', keywords: ['link', 'redirect'] },
+        ]
+    }
 ];
-
-// Extra descriptions for preview panel
-const fieldDescriptions: Record<QuestionType, string> = {
-
-    [QuestionType.USER_DETAIL]: 'A static content block to show instructions or context.',
-    [QuestionType.USER_ADDRESS]: 'Structured address entry (street, city, etc.).',
-
-    [QuestionType.TEXT_SHORT]: 'Single line input suitable for names, short answers, tags.',
-    [QuestionType.TEXT_LONG]: 'Multi-line text area for extended responses and feedback.',
-
-    [QuestionType.NUMBER]: 'Numeric input with optional validation constraints.',
-    [QuestionType.DATE]: 'Date picker for selecting a specific date.',
-
-    [QuestionType.FILE_ANY]: 'Upload field to collect documents or images.',
-
-    [QuestionType.CHOICE_SINGLE]: 'Let respondents choose exactly one option.',
-    [QuestionType.CHOICE_CHECKBOX]: 'Allow multiple selections from a list of options.',
-
-    [QuestionType.INFO_EMAIL]: 'Email address field with validation.',
-    [QuestionType.INFO_PHONE]: 'International phone number input with validation.',
-    [QuestionType.INFO_URL]: 'Website / URL field with protocol validation.',
-
-    [QuestionType.RATING_STAR]: 'Collect a quick 1–5 star satisfaction rating.',
-    // pending
-
-    [QuestionType.CHOICE_BOOL]: 'Pending',
-    [QuestionType.CHOICE_DROPDOWN]: 'Pending',
-    [QuestionType.CHOICE_MULTIPLE]: 'Pending',
-    [QuestionType.CHOICE_PICTURE]: 'Pending',
-    [QuestionType.FILE_IMAGE_OR_VIDEO]: 'Pending',
-    [QuestionType.SCREEN_WELCOME]: 'Pending',
-    [QuestionType.SCREEN_END]: 'Pending',
-    [QuestionType.SCREEN_STATEMENT]: 'Pending',
-    [QuestionType.RATING_RANK]: 'Pending',
-    [QuestionType.RATING_ZERO_TO_TEN]: 'Pending',
-    [QuestionType.LEAGAL]: 'Pending',
-    [QuestionType.REDIRECT_TO_URL]: 'Pending'
-};
 
 
 export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
@@ -340,45 +321,8 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                             )}
                         </div>
                     </div>
-                    {
-                        //         {/* Preview panel */ }
-                        //         < div className="hidden md:flex flex-col flex-1 min-h-0 bg-background transition-opacity duration-150">
-                        //     {/* <div className="p-4 border-b">
-                        //             <h3 className="text-sm font-semibold tracking-wide">Preview</h3>
-                        //             <p className="text-xs text-muted-foreground mt-1">Get a quick sense of how the field behaves before inserting it.</p>
-                        //         </div> */}
-                        //     <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center text-center will-change-transform will-change-opacity">
-                        //         {selectedField ? (
-                        //             // <DemoQuestion questionType={selectedField} />
-                        //             <div className="max-w-sm w-full flex flex-col items-center gap-4">
-                        //                 <div className="rounded-xl border bg-muted/30 p-6 w-full relative">
-                        //                     <div className="relative flex flex-col gap-4 items-center">
-                        //                         <div className="size-14 rounded-lg flex items-center justify-center border bg-primary/10 text-primary">
-                        //                             <QuestionIcon questionType={selectedField} size={30} />
-                        //                         </div>
-                        //                         <h4 className="text-base font-semibold tracking-tight">{allVisibleItems.find(i => i.id === selectedField)?.label}</h4>
-                        //                         <p className="text-xs text-muted-foreground leading-relaxed">{fieldDescriptions[selectedField]}</p>
-                        //                     </div>
-                        //                 </div>
-                        //                 <div className="flex gap-2 w-full">
-                        //                     <Button className="flex-1" onClick={save} disabled={!selectedField}>Add Field</Button>
-                        //                     <Button variant="outline" className="flex-1" onClick={() => setSelectedField(null)} disabled={!selectedField}>Clear</Button>
-                        //                 </div>
-                        //             </div>
-                        //         ) : (
-                        //             <div className="flex flex-col items-center gap-4 max-w-xs">
-                        //                 <div className="size-14 rounded-xl border bg-muted/40 flex items-center justify-center text-muted-foreground">
-                        //                     <Search className="size-6" />
-                        //                 </div>
-                        //                 <p className="text-sm font-medium">Select a field type</p>
-                        //                 <p className="text-sm text-muted-foreground leading-relaxed">Browse categories or use search to quickly locate the field you need.</p>
-                        //             </div>
-                        //         )}
-                        //     </div>
-                        // </>
-                    }
                 </div>
-                <DialogFooter className='border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-3 px-4'>
+                <DialogFooter className='border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/75 p-3 px-4'>
                     <div className="mr-auto hidden md:flex text-xs text-muted-foreground items-center gap-2">
                         <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] border">↵</span> Add selected
                     </div>

@@ -60,6 +60,7 @@ model Form {
   passwordProtected   Boolean?         @default(false)
   analyticsEnabled    Boolean?         @default(true)
   valid               Boolean          @default(true)
+  metadata            Json?            @default("{}")
   createdBy           String
   createdAt           DateTime?        @db.Timestamptz(6)
   updatedAt           DateTime?        @db.Timestamptz(6)
@@ -281,31 +282,37 @@ enum AnalyticsEventType {
 }
 
 enum QuestionType {
-  USER_DETAIL
-  USER_ADDRESS
   TEXT_SHORT
   TEXT_LONG
+  NUMBER
+  DATE
   FILE_ANY
   FILE_IMAGE_OR_VIDEO
+
   CHOICE_SINGLE
   CHOICE_MULTIPLE
+  CHOICE_DROPDOWN
   CHOICE_PICTURE
   CHOICE_CHECKBOX
   CHOICE_BOOL
-  CHOICE_DROPDOWN
+
   INFO_EMAIL
   INFO_PHONE
   INFO_URL
+  USER_DETAIL
+  USER_ADDRESS
+
   SCREEN_WELCOME
   SCREEN_END
   SCREEN_STATEMENT
+
   RATING_ZERO_TO_TEN
   RATING_STAR
   RATING_RANK
+
   LEAGAL
   REDIRECT_TO_URL
-  NUMBER
-  DATE
+  
 }
 
 enum CouponDiscountType {

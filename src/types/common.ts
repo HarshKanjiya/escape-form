@@ -50,3 +50,13 @@ export interface CountryOption {
   name: string;
   flag: string; // Emoji flag
 }
+
+
+export type formMetadata = {
+  primaryColor?: string;
+  secondaryColor?: string;
+  actionBtnSize?: 'sm' | 'md' | 'lg' | 'xl';
+  backBtnLabel?: string;
+  nextBtnLabel?: string;
+  submitBtnLabel?: string;
+}
