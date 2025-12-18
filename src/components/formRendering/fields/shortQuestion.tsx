@@ -54,7 +54,7 @@ export default function RenderShortQuestion({ question, onChange, }: Props) {
                     minLength={question.metadata?.min as number || undefined}
                     maxLength={question.metadata?.max as number || undefined}
                     pattern={question.metadata?.pattern || undefined}
-                    className={cn('border-primary-300 border-2 py-6 px-4 !text-xl', question.metadata?.max ? "pr-10" : "", "w-full")}
+                    className={cn('border-primary-300 border-2 py-6 px-4 text-xl!', question.metadata?.max ? "pr-10" : "", "w-full")}
                 />
 
                 {question.metadata?.max && typeof question.metadata.max === 'number' && (

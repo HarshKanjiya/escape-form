@@ -101,7 +101,7 @@ export function LongTextField({ question, index }: IProps) {
                                     handleQuestionCancel();
                                 }
                             }}
-                            className="!py-6 !px-4 !text-xl border-none"
+                            className="py-6! px-4! text-xl! border-none"
                             placeholder="Enter your question..."
                         />
                     ) : (
@@ -133,7 +133,7 @@ export function LongTextField({ question, index }: IProps) {
                                     handleDescriptionCancel();
                                 }
                             }}
-                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            className="text-muted-foreground border-dashed resize-none px-4! py-3! text-lg!"
                             placeholder="Add description (optional)..."
                             rows={3}
                         />
@@ -163,7 +163,7 @@ export function LongTextField({ question, index }: IProps) {
                                     handlePlaceholderCancel();
                                 }
                             }}
-                            className="border-dashed px-4 !text-xl pb-24 pt-6"
+                            className="border-dashed px-4 text-xl! pb-24 pt-6"
                             placeholder="Your Answer goes here ..."
                         />
                     ) : (

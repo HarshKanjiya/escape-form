@@ -105,7 +105,7 @@ export function ShortTextField({ question, index }: ShortTextProps) {
                                     handleQuestionCancel();
                                 }
                             }}
-                            className="!py-6 !px-4 !text-xl border-none"
+                            className="py-6! px-4! text-xl! border-none"
                             placeholder="Enter your question..."
                         />
                     ) : (
@@ -150,7 +150,7 @@ export function ShortTextField({ question, index }: ShortTextProps) {
                                     handleDescriptionCancel();
                                 }
                             }}
-                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            className="text-muted-foreground border-dashed resize-none px-4! py-3! text-lg!"
                             placeholder="Add description (optional)..."
                             rows={3}
                         />
@@ -180,7 +180,7 @@ export function ShortTextField({ question, index }: ShortTextProps) {
                                     handlePlaceholderCancel();
                                 }
                             }}
-                            className="border-dashed px-4 !py-5 !text-xl"
+                            className="border-dashed px-4 py-5 text-xl!"
                             placeholder="Your Answer goes here ..."
                         />
                     ) : (
