@@ -77,7 +77,7 @@ function CustomDialogBody({ className, wrapperClass, ...props }: React.Component
     <div className={cn("p-[6px] flex-1", wrapperClass)}>
       <div
         data-slot="card-content"
-        className={cn("p-4 border-none dark:border h-full bg-background dark:bg-accent dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-xl flex flex-col gap-3 items-center justify-between", className)}
+        className={cn("p-4 border-none dark:border h-full bg-background dark:bg-accent dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-xl space-y-4", className)}
         {...props}
       />
     </div>
@@ -99,7 +99,7 @@ function CustomDialogFooter({ className, ...props }: React.ComponentProps<"div">
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse p-[6px] gap-2 sm:flex-row sm:justify-end",
+        "flex flex-col-reverse p-[6px] gap-2 pt-[2px] sm:flex-row sm:justify-end",
         className
       )}
       {...props}

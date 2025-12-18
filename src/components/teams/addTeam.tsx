@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { CustomDialog, CustomDialogBody, CustomDialogClose, CustomDialogContent, CustomDialogDescription, CustomDialogFooter, CustomDialogHeader, CustomDialogTitle, CustomDialogTrigger } from "@/components/ui/custom-dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 
@@ -64,8 +64,8 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess, childr
 
     return (
         <div className={buttonWidth}>
-            <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-                <DialogTrigger asChild>
+            <CustomDialog open={dialogOpen} onOpenChange={handleDialogClose}>
+                <CustomDialogTrigger asChild>
                     {
                         children ? (
                             children
@@ -76,51 +76,53 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess, childr
                             </Button>
                         )
                     }
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>New Team</DialogTitle>
-                    </DialogHeader>
+                </CustomDialogTrigger>
+                <CustomDialogContent className="sm:max-w-[425px]">
                     <Form {...teamForm}>
-                        <form onSubmit={teamForm.handleSubmit(onTeamFormSubmit)} className="space-y-4">
-                            <FormField
-                                control={teamForm.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Team Name</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter team name"
-                                                {...field}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        e.preventDefault();
-                                                        teamForm.handleSubmit(onTeamFormSubmit)();
-                                                    }
-                                                }}
-                                                disabled={isSubmitting}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>Team name can be changed afterwards.</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <DialogFooter>
-                                <DialogClose asChild>
+                        <form onSubmit={teamForm.handleSubmit(onTeamFormSubmit)}>
+                            <CustomDialogHeader>
+                                <CustomDialogTitle>New Team</CustomDialogTitle>
+                            </CustomDialogHeader>
+                            <CustomDialogBody>
+                                <FormField
+                                    control={teamForm.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Team Name</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Enter team name"
+                                                    {...field}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            teamForm.handleSubmit(onTeamFormSubmit)();
+                                                        }
+                                                    }}
+                                                    disabled={isSubmitting}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>Team name can be changed afterwards.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </CustomDialogBody>
+                            <CustomDialogFooter>
+                                <CustomDialogClose asChild>
                                     <Button type="button" variant="outline" disabled={isSubmitting}>
                                         Cancel
                                     </Button>
-                                </DialogClose>
+                                </CustomDialogClose>
                                 <Button type="submit" loading={isSubmitting}>
                                     {isSubmitting ? "Creating..." : "Create Team"}
                                 </Button>
-                            </DialogFooter>
+                            </CustomDialogFooter>
                         </form>
                     </Form>
-                </DialogContent>
-            </Dialog>
+                </CustomDialogContent>
+            </CustomDialog>
         </div>
     );
 }
