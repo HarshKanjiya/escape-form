@@ -2,14 +2,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CustomCard, CustomCardContent, CustomCardDescription, CustomCardFooter, CustomCardHeader, CustomCardTitle } from "@/components/ui/custom-card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { apiConstants } from "@/constants/api.constants";
-import { Team } from "@prisma/client";
 import api from "@/lib/axios";
 import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Team } from "@prisma/client";
 import { ArrowLeft, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -79,28 +79,28 @@ export default function CreateTeam() {
             </div>
 
             {/* Main form card */}
-            <Card className="w-full">
-                <CardHeader>
-                    <CardTitle>Team Details</CardTitle>
-                    <CardDescription>
-                        Enter the basic information for your new team. You can always change these settings later.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...teamForm}>
-                        <form onSubmit={teamForm.handleSubmit(onTeamFormSubmit)} className="space-y-6">
+            <Form {...teamForm}>
+                <form onSubmit={teamForm.handleSubmit(onTeamFormSubmit)}>
+                    <CustomCard className="w-full outline-none">
+                        <CustomCardHeader>
+                            {/* <CustomCardTitle className="text-lg text-white">Team Details</CustomCardTitle> */}
+                            <CustomCardDescription>
+                                Enter the name for your new team. You can always change these settings later.
+                            </CustomCardDescription>
+                        </CustomCardHeader>
+                        <CustomCardContent wrapperClass="px-2">
                             <FormField
                                 control={teamForm.control}
                                 name="name"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="w-full">
                                         <FormLabel className="text-base font-medium">
                                             Team Name <span className="text-destructive">*</span>
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter your team name (e.g., Marketing Team, Dev Squad)"
-                                                className="h-11"
+                                                className="h-11 bg-muted! dark:bg-input!"
                                                 {...field}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
@@ -111,43 +111,30 @@ export default function CreateTeam() {
                                                 disabled={isSubmitting}
                                             />
                                         </FormControl>
-                                        <FormDescription>
-                                            Team name must be at least 4 characters long and can contain letters, numbers, spaces, hyphens, and underscores.
-                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-
+                        </CustomCardContent>
+                        <CustomCardFooter className="px-1 pb-1 pt-0">
                             {/* Action buttons */}
-                            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size={'lg'}
-                                    className="flex-1 h-12"
-                                    onClick={() => router.push('/teams')}
-                                    disabled={isSubmitting}
-                                >
-                                    Cancel
-                                </Button>
+                            <div className="flex flex-col sm:flex-row gap-1 w-full p-1 pt-0">
                                 <Button
                                     type="submit"
                                     size={'lg'}
-                                    className="flex-1 h-12 sm:ml-auto"
+                                    className="flex-1 h-12 sm:ml-auto rounded-b-[10px] rounded-t-lg"
                                     loading={isSubmitting}
-                                    disabled={!teamForm.formState.isValid || isSubmitting}
                                 >
                                     {isSubmitting ? "Creating Team..." : "Create Team"}
                                 </Button>
                             </div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
 
-            {/* Helper info */}
-            <div className="mt-6 rounded-lg bg-muted/50 p-4">
+                        </CustomCardFooter>
+                    </CustomCard>
+                </form>
+            </Form>
+            {/* Helper info
+            <div className="mt-6 rounded-lg bg-muted/50 p-4" >
                 <h3 className="text-sm font-medium mb-2">What happens next?</h3>
                 <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Your team will be created and you&apos;ll be added as the owner</li>
@@ -155,7 +142,7 @@ export default function CreateTeam() {
                     <li>• Team members can collaborate on forms and projects</li>
                     <li>• You can manage team settings and permissions</li>
                 </ul>
-            </div>
-        </div>
+            </div > */}
+        </div >
     );
 }

@@ -7,7 +7,7 @@ function CustomCard({ className, hoverEffect: hover = false, ...props }: React.C
         <div
             data-slot="card"
             className={cn(
-                "bg-accent dark:bg-background text-card-foreground rounded-2xl flex gap-2 flex-col border-muted border p-0 active:outline active:outline-offset-2 active:outline-primary",
+                "bg-accent shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)] dark:shadow-none dark:bg-background text-card-foreground rounded-2xl flex gap-2 flex-col border-muted border p-0 active:outline active:outline-offset-2 active:outline-primary",
                 hover ? "hover:border-primary transition-all duration-200 cursor-pointer" : "",
                 className
             )}
@@ -62,12 +62,12 @@ function CustomCardAction({ className, ...props }: React.ComponentProps<"div">) 
     )
 }
 
-function CustomCardContent({ className, ...props }: React.ComponentProps<"div">) {
+function CustomCardContent({ className, wrapperClass, ...props }: React.ComponentProps<"div"> & { wrapperClass?: string }) {
     return (
-        <div className="p-[3px] flex-1">
+        <div className={cn("p-[4px] flex-1", wrapperClass)}>
             <div
                 data-slot="card-content"
-                className={cn("p-4 border h-full bg-background dark:bg-accent dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-xl flex flex-col items-center justify-between", className)}
+                className={cn("p-4 border-none dark:border h-full bg-background dark:bg-accent dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-xl flex flex-col items-center justify-between", className)}
                 {...props}
             />
         </div>

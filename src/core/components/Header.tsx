@@ -80,7 +80,7 @@ export default function Header({ }) {
                 </div>
             </div>
             <div className="flex items-center gap-3">
-                {
+                {/* {
                     true ? (
                         <Link href={`/${activeTeam?.id}/upgrade`} >
                             <Button variant='ghost' className="flex shadow-none items-center justify-center gap-2 rounded-full text-primary-600 border-primary/20 border hover:bg-primary-400 hover:text-primary-500">
@@ -89,7 +89,7 @@ export default function Header({ }) {
                             </Button>
                         </Link>
                     ) : null
-                }
+                } */}
                 {/* {
                     activeTeam ? (
                         <Link href={`/${activeTeam?.id}/wallet`} >

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { CustomDialog, CustomDialogBody, CustomDialogClose, CustomDialogContent, CustomDialogDescription, CustomDialogFooter, CustomDialogHeader, CustomDialogTitle, CustomDialogTrigger } from "@/components/ui/custom-dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -72,76 +72,79 @@ export default function AddProject({ onSuccess }: Props = {}) {
 
     return (
         <div>
-            <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-                <DialogTrigger asChild>
+            <CustomDialog open={dialogOpen} onOpenChange={handleDialogClose}>
+                <CustomDialogTrigger asChild>
                     <Button>
                         <Plus className="h-4 w-4 mr-2" />
                         Create Project
                     </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>New Project</DialogTitle>
-                    </DialogHeader>
+                </CustomDialogTrigger>
+                <CustomDialogContent className="sm:max-w-[425px]">
                     <Form {...projectForm}>
-                        <form onSubmit={projectForm.handleSubmit(onProjectFormSubmit)} className="space-y-4">
-                            <FormField
-                                control={projectForm.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="required">Project Name</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter project name"
-                                                {...field}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        e.preventDefault();
-                                                        projectForm.handleSubmit(onProjectFormSubmit)();
-                                                    }
-                                                }}
-                                                disabled={isSubmitting}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>Project name can be changed afterwards.</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={projectForm.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Project Description</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder="Enter project description"
-                                                className="resize-none"
-                                                rows={5}
-                                                {...field}
-                                                disabled={isSubmitting}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="outline" disabled={isSubmitting}>
+                        <form onSubmit={projectForm.handleSubmit(onProjectFormSubmit)}>
+                            <CustomDialogHeader>
+                                <CustomDialogTitle>New Project</CustomDialogTitle>
+                                <CustomDialogDescription>Fill out the form below to create a new project.</CustomDialogDescription>
+                            </CustomDialogHeader>
+                            <CustomDialogBody>
+                                <FormField
+                                    control={projectForm.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel className="required">Project Name</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Enter project name"
+                                                    className="bg-muted! dark:bg-input!"
+                                                    {...field}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            projectForm.handleSubmit(onProjectFormSubmit)();
+                                                        }
+                                                    }}
+                                                    disabled={isSubmitting}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={projectForm.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel>Project Description</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Enter project description"
+                                                    className="resize-none bg-muted! dark:bg-input!"
+                                                    rows={5}
+                                                    {...field}
+                                                    disabled={isSubmitting}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </CustomDialogBody>
+                            <CustomDialogFooter>
+                                <CustomDialogClose asChild>
+                                    <Button type="button" variant="ghost" disabled={isSubmitting}>
                                         Cancel
                                     </Button>
-                                </DialogClose>
+                                </CustomDialogClose>
                                 <Button type="submit" loading={isSubmitting}>
                                     {isSubmitting ? "Creating..." : "Create Project"}
                                 </Button>
-                            </DialogFooter>
+                            </CustomDialogFooter>
                         </form>
                     </Form>
-                </DialogContent>
-            </Dialog>
+                </CustomDialogContent>
+            </CustomDialog>
         </div>
     );
 }
