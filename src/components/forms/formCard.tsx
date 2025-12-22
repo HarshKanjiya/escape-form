@@ -83,7 +83,7 @@ export function FormCard({ form, projectId, teamId }: FormCardProps) {
                         </div>
                     </div>
                 </CustomCardContent>
-                <CustomCardFooter>
+                <CustomCardFooter className="px-6 pb-3">
                     <div className="flex items-center gap-2">
                         <SaveAllIcon className="w-4 h-4 inline-block" />
                         {/* @ts-expect-error _count not added in generated type*/}

@@ -35,7 +35,7 @@ export default function LeadCards() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             <div className="col-span-3 flex flex-col gap-6">
-                <Card className="col-span-3 px-0! py-4! relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-300 via-primary-400 to-primary-800 text-white shadow-[inset_0_3px_7px_rgba(255,255,255,0.1),inset_0_-3px_6px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.30),inset_0_-8px_12px_rgba(0,0,0,0.12),0_6px_14px_-8px_rgba(0,0,0,0.18)] border border-white/30 dark:border-white/15 backdrop-blur-sm border-none">
+                <Card className="col-span-3 px-0! py-4! relative overflow-hidden rounded-2xl bg-linear-to-br from-primary-300 via-primary-400 to-primary-800 text-white shadow-[inset_0_3px_7px_rgba(255,255,255,0.1),inset_0_-3px_6px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.30),inset_0_-8px_12px_rgba(0,0,0,0.12),0_6px_14px_-8px_rgba(0,0,0,0.18)] border border-white/30 dark:border-white/15 backdrop-blur-sm border-none">
                     <div
                         className="absolute inset-0 mix-blend-hard-light opacity-[0.35]"
                         style={{
@@ -44,7 +44,7 @@ export default function LeadCards() {
                     />
                     <CardContent className="relative z-10 flex flex-col space-y-4 sm:space-y-6">
                         <div className="w-min">
-                            <TablePropertiesIcon className="h-12 w-12 rounded-xl p-2.5 border-2 border-white/20 bg-gradient-to-br from-white/10 via-white/20 to-white/5 text-white/60" />
+                            <TablePropertiesIcon className="h-12 w-12 rounded-xl p-2.5 border-2 border-white/20 bg-linear-to-br from-white/10 via-white/20 to-white/5 text-white/60" />
                         </div>
                         <div>
                             <p className="text-sm mb-3">Today&apos;s Responses</p>

@@ -109,7 +109,7 @@ export default function AddTeam({ buttonWidth, triggerVariant, onSuccess, childr
                                     )}
                                 />
                             </CustomDialogBody>
-                            <CustomDialogFooter>
+                            <CustomDialogFooter className="px-5 pb-4 pt-3">
                                 <CustomDialogClose asChild>
                                     <Button type="button" variant="outline" disabled={isSubmitting}>
                                         Cancel

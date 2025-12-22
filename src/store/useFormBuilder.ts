@@ -59,6 +59,10 @@ interface IFormBuilderStore {
     changePosition: (questionId: string, position: { x: number, y: number }) => Promise<boolean>;
     deleteQuestion: (questionId: string) => Promise<void>;
 
+    getQuestionOptions: (questionId: string) => Promise<QuestionOption[]>;
+    saveQuestionOption: (option: Partial<QuestionOption>) => Promise<boolean>;
+    deleteQuestionOption: (optionId: string) => Promise<boolean>;
+
     // Flow methods
     addEdge: (sourceId: string, targetId: string) => Promise<void>;
     updateEdge: (edgeId: string, edge: Partial<Edge>) => Promise<void>;
@@ -328,6 +332,153 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             console.log('Err While deleting Question :>> ', err);
             showError(createErrorMessage('question(s)'));
             set({ questions: previousQuestions });
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+
+    getQuestionOptions: async (questionId: string) => {
+        const { formId } = get();
+
+        if (!formId) {
+            console.log("getQuestionOptions :: FORM ID NOT FOUND!!")
+            return [];
+        }
+
+        try {
+            console.log('[GET OPTIONS] Fetching options for question:', questionId);
+            const response = await api.get<ActionResponse<QuestionOption[]>>(
+                apiConstants.option.getOptions(formId, questionId)
+            );
+
+            if (!response?.data?.success) {
+                showError(response.data.message || 'Failed to fetch options');
+                return [];
+            }
+
+            const options = response.data.data || [];
+            console.log('[GET OPTIONS] Fetched options:', options);
+
+            // Update local state with fetched options
+            set((state) => ({
+                questions: state.questions.map((q) =>
+                    q.id === questionId ? { ...q, options } as Question : q
+                ),
+            }));
+
+            return options;
+        }
+        catch (err: unknown) {
+            console.log('Err While fetching options :>> ', err);
+            showError('Failed to fetch options');
+            return [];
+        }
+    },
+
+    saveQuestionOption: async (option: Partial<QuestionOption>) => {
+        const { formId, questions } = get();
+
+        if (!formId) {
+            console.log("saveQuestionOption :: FORM ID NOT FOUND!!")
+            return false;
+        }
+
+        if (!option.questionId) {
+            console.log("saveQuestionOption :: QUESTION ID NOT FOUND!!")
+            return false;
+        }
+
+        try {
+            set((state) => ({ savingCount: state.savingCount + 1 }))
+
+            const response = await api.post<ActionResponse<QuestionOption>>(
+                apiConstants.option.saveOption(formId, option.questionId),
+                option
+            );
+
+            if (!response?.data?.success) {
+                showError(response.data.message || (option.id ? 'Failed to update option' : 'Failed to create option'));
+                return false;
+            }
+
+            const savedOption = response.data.data;
+
+            // Update local state with the saved option
+            set((state) => ({
+                questions: state.questions.map((q) => {
+                    if (q.id !== option.questionId) return q;
+
+                    const updatedOptions = option.id
+                        ? (q.options?.map(opt => opt.id === option.id ? savedOption : opt) || [])
+                        : [...(q.options || []), savedOption];
+
+                    return { ...q, options: updatedOptions } as Question;
+                }),
+            }));
+
+            console.log('[API] Option saved successfully:', savedOption);
+            return true;
+        }
+        catch (err: unknown) {
+            console.log('Err While saving option :>> ', err);
+            showError(option.id ? 'Failed to update option' : 'Failed to create option');
+            return false;
+        }
+        finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+
+    deleteQuestionOption: async (optionId: string) => {
+        const { formId, questions } = get();
+
+        if (!formId) {
+            console.log("deleteQuestionOption :: FORM ID NOT FOUND!!")
+            return false;
+        }
+
+        // Find the question that contains this option
+        const question = questions.find(q => q.options?.some(opt => opt.id === optionId));
+        if (!question) {
+            console.log("deleteQuestionOption :: QUESTION NOT FOUND for option ID", optionId)
+            return false;
+        }
+
+        const previousQuestions = [...questions];
+
+        // Optimistically update UI
+        set((state) => ({
+            questions: state.questions.map((q) => {
+                if (q.id !== question.id) return q;
+                return {
+                    ...q,
+                    options: q.options?.filter(opt => opt.id !== optionId) || []
+                };
+            }),
+        }));
+
+        try {
+            set((state) => ({ savingCount: state.savingCount + 1 }))
+
+            const response = await api.delete<ActionResponse<QuestionOption>>(
+                apiConstants.option.deleteOption(formId, question.id, optionId)
+            );
+
+            if (!response?.data?.success) {
+                showError(response.data.message || deleteErrorMessage('option'));
+                set({ questions: previousQuestions });
+                return false;
+            }
+
+            console.log('[API] Option deleted successfully:', optionId);
+            return true;
+        }
+        catch (err: unknown) {
+            console.log('Err While deleting option :>> ', err);
+            showError(deleteErrorMessage('option'));
+            set({ questions: previousQuestions });
+            return false;
         }
         finally {
             set((state) => ({ savingCount: state.savingCount - 1 }))

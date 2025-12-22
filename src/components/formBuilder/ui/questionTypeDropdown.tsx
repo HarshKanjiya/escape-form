@@ -44,7 +44,7 @@ export default function QuestionTypeDropdown() {
     }, [selectedQuestionId, updateQuestion]);
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             <Label>Question Type</Label>
             <Select value={selectedQuestion?.type} onValueChange={onChange}>
                 <SelectTrigger className="w-full">

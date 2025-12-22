@@ -20,7 +20,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                         onClick={() => setSelectedQuestionId(question.id)}
                     >
                         <div className="flex gap-2 items-center flex-1">
-                            <div className={cn('p-2 rounded-xl corner-squircle', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
+                            <div className={cn('p-2 rounded-2xl corner-squircle', selectedQuestionId == question.id ? 'bg-primary/70 text-white' : 'bg-primary/20')}>
                                 <QuestionIcon questionType={question.type} />
                             </div>
                             <div className={cn('text-ellipsis line-clamp-1 flex-1 overflow-hidden')}>
@@ -35,7 +35,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                     className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                     onClick={() => deleteQuestion(question.id)}
                                 >
-                                    <TrashIcon className="!h-4 !w-4" />
+                                    <TrashIcon className="h-4! w-4!" />
                                 </Button>
                             )
                         }
@@ -61,7 +61,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                             className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                             onClick={() => deleteQuestion(question.id)}
                                         >
-                                            <TrashIcon className="!h-4 !w-4" />
+                                            <TrashIcon className="h-4! w-4!" />
                                         </Button>
                                     )
                                 }

@@ -131,7 +131,7 @@ export default function AddProject({ onSuccess }: Props = {}) {
                                     )}
                                 />
                             </CustomDialogBody>
-                            <CustomDialogFooter>
+                            <CustomDialogFooter className="px-5 pb-4 pt-3">
                                 <CustomDialogClose asChild>
                                     <Button type="button" variant="ghost" disabled={isSubmitting}>
                                         Cancel

@@ -1,17 +1,13 @@
 import HydrateTeams from "@/components/teams/HydrateTeams";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/core/theme/theme.provider";
-import { Team } from '@prisma/client';
 import { prisma } from "@/lib/prisma";
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
+import { Team } from '@prisma/client';
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
-import { Metadata } from "next";
-import { SITE_CONFIG } from "@/constants/site.config";
-
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

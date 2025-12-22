@@ -92,7 +92,7 @@ export default function FormEditor() {
             <div className="flex items-center justify-end w-full p-2">
                 <Tooltip >
                     <TooltipTrigger asChild>
-                        <Button variant={'secondary'} size={'icon'} onClick={() => setDirection(direction === eWorkflowDirection.Horizontal ? eWorkflowDirection.Vertical : eWorkflowDirection.Horizontal)}>
+                        <Button className="rounded-3xl corner-squircle" variant={'secondary'} size={'icon'} onClick={() => setDirection(direction === eWorkflowDirection.Horizontal ? eWorkflowDirection.Vertical : eWorkflowDirection.Horizontal)}>
                             <motion.span
                                 animate={{ rotate: direction === eWorkflowDirection.Horizontal ? 90 : 0 }}
                                 transition={{ type: "tween", duration: 0.15 }}

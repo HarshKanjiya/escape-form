@@ -47,7 +47,7 @@ export function TeamCard({ team }: TeamCardProps) {
                         </DropdownMenu >
                     </div>
                 </CustomCardContent>
-                <CustomCardFooter>
+                <CustomCardFooter className="px-6 pb-3">
                     <div className="flex items-center gap-2">
                         <FoldersIcon className="w-4 h-4 inline-block" />
                         {/* @ts-expect-error _count not added in generated type */}

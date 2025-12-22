@@ -30,6 +30,11 @@ export const apiConstants = {
         updateQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
         deleteQuestions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}`,
     },
+    option: {
+        getOptions: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}/option`,
+        saveOption: (formId: string, questionId: string) => `forms/${formId}/questions/${questionId}/option`,
+        deleteOption: (formId: string, questionId: string, optionId: string) => `forms/${formId}/questions/${questionId}/option?optionId=${optionId}`,
+    },
     edge: {
         addEdge: (formId: string) => `forms/${formId}/edges`,
         updateEdge: (formId: string, edgeId: string) => `forms/${formId}/edges/${edgeId}`,
