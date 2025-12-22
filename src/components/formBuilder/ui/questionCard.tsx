@@ -1,19 +1,20 @@
 import { Question } from "@/types/form";
 import { AddressField } from "../formFields/address";
-import { CheckboxField } from "../formFields/checkbox";
 import { DateField } from "../formFields/date";
 // import { DropdownField } from "../formFields/dropdown";
+import { QuestionType } from "@prisma/client";
+import { ChoiceCheckboxField } from "../formFields/choice/ChoiceCheckbox";
+import { ChoiceMultipleField } from "../formFields/choice/ChoiceMultiple";
+import ChoiceSingleField from "../formFields/choice/ChoiceSingle";
+import { DetailField } from "../formFields/detail";
 import { EmailField } from "../formFields/email";
 import { FileUploadField } from "../formFields/file";
 import { LongTextField } from "../formFields/longText";
 import { NumberField } from "../formFields/number";
 import { PhoneField } from "../formFields/phone";
-import { RadioField } from "../formFields/radio";
 import { ShortTextField } from "../formFields/shortText";
 import { StarRatingField } from "../formFields/starRating";
 import { WebsiteField } from "../formFields/website";
-import { DetailField } from "../formFields/detail";
-import { QuestionType } from "@prisma/client";
 
 interface IProps {
     question: Question | null;
@@ -59,12 +60,16 @@ export default function QuestionCard({ question, index }: IProps) {
 
         case QuestionType.CHOICE_SINGLE:
             return (
-                <RadioField question={question} index={index} />
+                <ChoiceSingleField question={question} index={index} />
             );
 
         case QuestionType.CHOICE_CHECKBOX:
             return (
-                <CheckboxField question={question} index={index} />
+                <ChoiceCheckboxField question={question} index={index} />
+            );
+        case QuestionType.CHOICE_MULTIPLE:
+            return (
+                <ChoiceMultipleField question={question} index={index} />
             );
 
         // case QuestionType.dropdown:
