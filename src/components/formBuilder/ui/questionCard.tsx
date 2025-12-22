@@ -1,20 +1,28 @@
 import { Question } from "@/types/form";
 import { AddressField } from "../formFields/address";
-import { DateField } from "../formFields/date";
+import { DateField } from "../formFields/basic/date";
 // import { DropdownField } from "../formFields/dropdown";
 import { QuestionType } from "@prisma/client";
+import { LegalField } from "../formFields/basic/leagal";
+import { LongTextField } from "../formFields/basic/longText";
+import { NumberField } from "../formFields/basic/number";
+import { ShortTextField } from "../formFields/basic/shortText";
+import { ChoiceBoolField } from "../formFields/choice/choiceBool";
 import { ChoiceCheckboxField } from "../formFields/choice/ChoiceCheckbox";
 import { ChoiceMultipleField } from "../formFields/choice/ChoiceMultiple";
 import ChoiceSingleField from "../formFields/choice/ChoiceSingle";
 import { DetailField } from "../formFields/detail";
 import { EmailField } from "../formFields/email";
 import { FileUploadField } from "../formFields/file";
-import { LongTextField } from "../formFields/longText";
-import { NumberField } from "../formFields/number";
 import { PhoneField } from "../formFields/phone";
-import { ShortTextField } from "../formFields/shortText";
-import { StarRatingField } from "../formFields/starRating";
+import { RatingRankField } from "../formFields/rating/RatingRank";
+import { RatingStarField } from "../formFields/rating/RatingStar";
+import { RatingZeroToTenField } from "../formFields/rating/RatingZeroToTen";
+import { ScreenEndField } from "../formFields/screen/ScreenEnd";
+import { ScreenStatementField } from "../formFields/screen/ScreenStatement";
+import { ScreenWelcomeField } from "../formFields/screen/ScreenWelcome";
 import { WebsiteField } from "../formFields/website";
+import { ChoiceDropDownField } from "../formFields/choice/choiceDropDown";
 
 interface IProps {
     question: Question | null;
@@ -43,6 +51,11 @@ export default function QuestionCard({ question, index }: IProps) {
                 <NumberField question={question} index={index} />
             );
 
+        case QuestionType.LEAGAL:
+            return (
+                <LegalField question={question} index={index} />
+            );
+
         case QuestionType.USER_DETAIL:
             return (
                 <DetailField question={question} index={index} />
@@ -58,6 +71,7 @@ export default function QuestionCard({ question, index }: IProps) {
                 <FileUploadField question={question} index={index} />
             );
 
+        // CHOICE TYPES
         case QuestionType.CHOICE_SINGLE:
             return (
                 <ChoiceSingleField question={question} index={index} />
@@ -71,11 +85,15 @@ export default function QuestionCard({ question, index }: IProps) {
             return (
                 <ChoiceMultipleField question={question} index={index} />
             );
+        case QuestionType.CHOICE_BOOL:
+            return (
+                <ChoiceBoolField question={question} index={index} />
+            );
 
-        // case QuestionType.dropdown:
-        //     return (
-        //         <DropdownField question={question} index={index} />
-        //     );
+        case QuestionType.CHOICE_DROPDOWN:
+            return (
+                <ChoiceDropDownField question={question} index={index} />
+            );
 
         case QuestionType.INFO_EMAIL:
             return (
@@ -99,7 +117,16 @@ export default function QuestionCard({ question, index }: IProps) {
 
         case QuestionType.RATING_STAR:
             return (
-                <StarRatingField question={question} index={index} />
+                <RatingStarField question={question} index={index} />
+            );
+
+        case QuestionType.RATING_ZERO_TO_TEN:
+            return (
+                <RatingZeroToTenField question={question} index={index} />
+            );
+        case QuestionType.RATING_RANK:
+            return (
+                <RatingRankField question={question} index={index} />
             );
 
         // case QuestionType.barChoiceRating:
@@ -111,6 +138,21 @@ export default function QuestionCard({ question, index }: IProps) {
         //     return (
         //         <ImageChoiceRatingField question={question} index={index} />
         //     );
+
+        case QuestionType.SCREEN_WELCOME:
+            return (
+                <ScreenWelcomeField question={question} index={index} />
+            );
+
+        case QuestionType.SCREEN_STATEMENT:
+            return (
+                <ScreenStatementField question={question} index={index} />
+            );
+
+        case QuestionType.SCREEN_END:
+            return (
+                <ScreenEndField question={question} index={index} />
+            );
 
         default:
             return (

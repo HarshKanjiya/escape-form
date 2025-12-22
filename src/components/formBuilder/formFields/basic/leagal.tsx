@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "motion/react";
-import { Info, StarIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
@@ -14,32 +13,15 @@ interface IProps {
     index: number
 }
 
-export function StarRatingField({ question, index }: IProps) {
-
+export function LegalField({ question, index }: IProps) {
     const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.title);
     const [tempDescription, setTempDescription] = useState(question.description || '');
-    const [mockCount, setMockCount] = useState<number[]>([]);
 
     const questionInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
-
-    const STAR_ANIMATE = { scale: 1, opacity: 1 };
-    const STAR_EXIT = { scale: 0, opacity: 0 };
-
-    const prevLengthRef = useRef<number>(0);
-    const isAdding = mockCount.length > prevLengthRef.current;
-    useEffect(() => {
-        prevLengthRef.current = mockCount.length;
-    }, [mockCount.length]);
-
-    // Mock star rating
-    useEffect(() => {
-        const count = question.metadata?.starCount || 5;
-        setMockCount(Array.from({ length: count }, (_, i) => i + 1));
-    }, [question.metadata?.starCount]);
 
     // Auto-focus when entering edit mode
     useEffect(() => {
@@ -161,23 +143,21 @@ export function StarRatingField({ question, index }: IProps) {
                         </div>
                     )}
                 </div>
-                <div className="flex items-center gap-2 text-lg text-primary-500/70">
-                    <AnimatePresence initial={false}>
-                        {mockCount.map((value, i) => (
-                            <motion.div
-                                key={value}
-                                initial={isAdding ? { scale: 0, opacity: 0, y: 0 } : false}
-                                animate={STAR_ANIMATE}
-                                exit={STAR_EXIT}
-                                transition={{ duration: 0.25, delay: isAdding ? i * 0.05 : 0 }}
-                                layout
-                            >
-                                <StarIcon />
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+
+                {/* Accept/Reject Options */}
+                <div className="space-y-3 mt-6">
+                    <div className="flex items-center gap-3 py-3 px-8 rounded-sm bg-muted/50 cursor-not-allowed opacity-60">
+                        <div className="flex-1">
+                            <span className="text-base">Accept</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 py-3 px-8 rounded-sm bg-muted/50 cursor-not-allowed opacity-60">
+                        <div className="flex-1">
+                            <span className="text-base">Reject</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

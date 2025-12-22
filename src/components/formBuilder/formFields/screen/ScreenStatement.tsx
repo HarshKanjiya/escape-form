@@ -6,15 +6,14 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "motion/react";
-import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface ShortTextProps {
+interface IProps {
     question: Question,
     index: number
 }
 
-export function ChoiceBoolField({ question, index }: ShortTextProps) {
+export function ScreenStatementField({ question, index }: IProps) {
     const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -64,12 +63,9 @@ export function ChoiceBoolField({ question, index }: ShortTextProps) {
     };
 
     return (
-        <div className="p-6 w-full max-w-3xl mx-auto flex items-baseline gap-3">
-            <div className="p-1 rounded bg-accent flex items-center justify-center h-10 w-10">
-                <span className="italic border-b border-dotted border-accent-foreground">{index + 1}</span>
-            </div>
-            <div className="space-y-4 w-full flex-1">
-                <div className="space-y-2">
+        <div className="p-8 w-full max-w-4xl mx-auto">
+            <div className="space-y-6 w-full bg-card/50 rounded-lg border border-border/50 p-8">
+                <div className="space-y-3">
                     {isEditingQuestion ? (
                         <Input
                             ref={questionInputRef}
@@ -83,34 +79,18 @@ export function ChoiceBoolField({ question, index }: ShortTextProps) {
                                     handleQuestionCancel();
                                 }
                             }}
-                            className="py-6! px-4! text-xl! border-none"
-                            placeholder="Enter your question..."
+                            className="!py-6 !px-4 !text-3xl font-bold border-none text-center"
+                            placeholder="Enter your statement title..."
                         />
                     ) : (
                         <div
                             onClick={() => setIsEditingQuestion(true)}
                             className={cn(
-                                "text-2xl font-medium cursor-text py-2 rounded-md transition-colors",
+                                "text-3xl font-bold cursor-text py-3 rounded-md transition-colors text-center",
                                 !question.title && "text-muted-foreground"
                             )}
                         >
-                            <span className="flex items-center gap-2">
-                                <span>{question.title || "Click to add question..."}</span>
-                                <AnimatePresence mode="wait">
-                                    {question.required && (
-                                        <motion.span
-                                            key="required-star"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.1 }}
-                                            className="text-destructive"
-                                        >
-                                            *
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
-                            </span>
+                            {question.title || "Click to add statement title..."}
                         </div>
                     )}
                 </div>
@@ -128,34 +108,21 @@ export function ChoiceBoolField({ question, index }: ShortTextProps) {
                                     handleDescriptionCancel();
                                 }
                             }}
-                            className="text-muted-foreground border-dashed resize-none px-4! py-3! text-lg!"
+                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg text-center"
                             placeholder="Add description (optional)..."
-                            rows={3}
+                            rows={4}
                         />
                     ) : (
                         <div
                             onClick={() => setIsEditingDescription(true)}
                             className={cn(
-                                "text-base text-muted-foreground cursor-text py-1 rounded-md transition-colors relative",
+                                "text-lg text-muted-foreground cursor-text py-2 rounded-md transition-colors text-center",
                                 !question.description && "italic opacity-70"
                             )}
                         >
                             {question.description || "Description (optional)"}
                         </div>
                     )}
-                </div>
-                
-                <div className="space-y-3 mt-6">
-                    <div className="flex items-center gap-3 py-3 px-8 rounded-sm bg-muted/50 cursor-not-allowed opacity-60">
-                        <div className="flex-1">
-                            <span className="text-base">Yes</span>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 py-3 px-8 rounded-sm bg-muted/50 cursor-not-allowed opacity-60">
-                        <div className="flex-1">
-                            <span className="text-base">No</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
