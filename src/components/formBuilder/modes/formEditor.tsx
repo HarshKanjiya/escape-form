@@ -67,7 +67,7 @@ export default function FormEditor() {
             <div className="h-full w-full flex flex-col items-center p-8 justify-center">
                 <Card className="p-4 border-none dark:bg-accent shadow-none">
                     <CardContent className="p-8 flex flex-col gap-6 items-center justify-center max-w-md text-center ">
-                        <div className="bg-gradient-to-br from-primary/20 to-primary/10 p-4 rounded-full rotate-12 outline-4 outline-offset-4 outline-primary/10">
+                        <div className="bg-linear-to-br from-primary/20 to-primary/10 p-4 rounded-full rotate-12 outline-4 outline-offset-4 outline-primary/10">
                             <Braces size={48} className="text-primary" />
                         </div>
                         <div className="space-y-2">
