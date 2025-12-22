@@ -19,7 +19,8 @@ import { WebsiteFieldConfig } from "../formFields/config/website";
 import { QuestionType } from "@prisma/client";
 
 export default function QuestionConfigCard() {
-    const { selectedQuestion } = useFormBuilder();
+
+    const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
 
     const fadeInVariants = {
         initial: { opacity: 0 },

@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export function DetailField({ question, index }: IProps) {
-    const { updateQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.title);
 

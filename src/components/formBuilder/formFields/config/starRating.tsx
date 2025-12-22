@@ -9,7 +9,8 @@ import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function StarRatingFieldConfig() {
-    const { updateQuestion, selectedQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
+    const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
 
     // toggles
     const [required, setRequired] = useState(selectedQuestion?.required);

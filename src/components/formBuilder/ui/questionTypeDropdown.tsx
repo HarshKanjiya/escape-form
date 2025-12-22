@@ -37,7 +37,10 @@ const questionTypes = [
 ];
 
 export default function QuestionTypeDropdown() {
-    const { selectedQuestion, selectedQuestionId, updateQuestion } = useFormBuilder();
+
+    const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
+    const selectedQuestionId = useFormBuilder((state) => state.selectedQuestionId);
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
 
     const onChange = useCallback((value: QuestionType) => {
         if (selectedQuestionId) updateQuestion(selectedQuestionId, { type: value });

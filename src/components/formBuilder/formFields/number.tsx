@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export function NumberField({ question, index }: IProps) {
-    const { updateQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);

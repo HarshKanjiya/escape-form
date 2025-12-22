@@ -14,7 +14,9 @@ import { TooltipArrow } from '@radix-ui/react-tooltip';
 
 export default function LeftBar() {
 
-    const { questions, dataSource } = useFormBuilder();
+    const questions = useFormBuilder((state) => state.questions);
+    const dataSource = useFormBuilder((state) => state.dataSource);
+
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);

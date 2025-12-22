@@ -9,7 +9,11 @@ import QuestionIcon from "./questionIcon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function LeftBarQuestionItem({ isExpanded, question }: { isExpanded: boolean, question: Question }) {
-    const { selectedQuestionId, setSelectedQuestionId, deleteQuestion } = useFormBuilder();
+
+    const selectedQuestionId = useFormBuilder((state) => state.selectedQuestionId);
+    const setSelectedQuestionId = useFormBuilder((state) => state.setSelectedQuestionId);
+    const deleteQuestion = useFormBuilder((state) => state.deleteQuestion);
+
     return (
         <div className="w-full flex-1">
             {

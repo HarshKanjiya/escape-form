@@ -152,7 +152,8 @@ const fields: IFieldSet[] = [
 
 
 export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
-    const { createQuestions } = useFormBuilder();
+
+    const createQuestions = useFormBuilder((state) => state.createQuestions);
 
     const [selectedField, setSelectedField] = useState<QuestionType | null>(null);
     const [open, setOpen] = useState(false);

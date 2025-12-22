@@ -9,7 +9,9 @@ import QuestionConfigCard from "./ui/questionConfigCard";
 import QuestionTypeDropdown from "./ui/questionTypeDropdown";
 
 export default function RightBar() {
-    const { selectedQuestionId, deleteQuestion } = useFormBuilder();
+
+    const selectedQuestionId = useFormBuilder((state) => state.selectedQuestionId);
+    const deleteQuestion = useFormBuilder((state) => state.deleteQuestion);
 
     return (
         <div className="bg-accent-bg border-l z-30 overflow-visible h-full w-[360px]">

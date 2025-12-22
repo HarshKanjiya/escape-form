@@ -23,7 +23,10 @@ type formWithQuestionsAndEdges = Form & {
 
 export default function FormBuilderWrapper() {
 
-    const { initForm, setIsLoading, isLoading } = useFormBuilder();
+    const initForm = useFormBuilder((state) => state.initForm);
+    const setIsLoading = useFormBuilder((state) => state.setIsLoading);
+    const isLoading = useFormBuilder((state) => state.isLoading);
+
     const params = useParams();
     const formId = params.formId as string;
 

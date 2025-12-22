@@ -16,7 +16,10 @@ import QuestionCard from "../ui/questionCard";
 
 export default function FormEditor() {
 
-    const { selectedQuestion, questions, setSelectedQuestionId } = useFormBuilder();
+    const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
+    const questions = useFormBuilder((state) => state.questions);
+    const setSelectedQuestionId = useFormBuilder((state) => state.setSelectedQuestionId);
+
     const [direction, setDirection] = useState<eWorkflowDirection>(eWorkflowDirection.Horizontal);
 
 

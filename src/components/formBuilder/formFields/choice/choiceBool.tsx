@@ -6,24 +6,26 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { AnimatePresence, motion } from "motion/react";
-import { Upload } from "lucide-react";
+import { Info } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface IProps {
+interface ShortTextProps {
     question: Question,
     index: number
 }
 
-export function FileUploadField({ question, index }: IProps) {
-
+export function ChoiceBoolField({ question, index }: ShortTextProps) {
     const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.title);
     const [tempDescription, setTempDescription] = useState(question.description || '');
+    const [tempPlaceholder, setTempPlaceholder] = useState(question.placeholder || '');
 
     const questionInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
+    const placeholderInputRef = useRef<HTMLInputElement>(null);
 
     // Auto-focus when entering edit mode
     useEffect(() => {
@@ -40,6 +42,13 @@ export function FileUploadField({ question, index }: IProps) {
         }
     }, [isEditingDescription]);
 
+    useEffect(() => {
+        if (isEditingPlaceholder && placeholderInputRef.current) {
+            placeholderInputRef.current.focus();
+            placeholderInputRef.current.select();
+        }
+    }, [isEditingPlaceholder]);
+
     const handleQuestionSave = () => {
         if (tempQuestion.trim() !== question.title) {
             updateQuestion(question.id, { title: tempQuestion.trim() });
@@ -54,6 +63,13 @@ export function FileUploadField({ question, index }: IProps) {
         setIsEditingDescription(false);
     };
 
+    const handlePlaceholderSave = () => {
+        if (tempPlaceholder !== (question.placeholder || '')) {
+            updateQuestion(question.id, { placeholder: tempPlaceholder });
+        }
+        setIsEditingPlaceholder(false);
+    };
+
     const handleQuestionCancel = () => {
         setTempQuestion(question.title);
         setIsEditingQuestion(false);
@@ -62,6 +78,11 @@ export function FileUploadField({ question, index }: IProps) {
     const handleDescriptionCancel = () => {
         setTempDescription(question.description || '');
         setIsEditingDescription(false);
+    };
+
+    const handlePlaceholderCancel = () => {
+        setTempPlaceholder(question.placeholder || '');
+        setIsEditingPlaceholder(false);
     };
 
     return (
@@ -84,7 +105,7 @@ export function FileUploadField({ question, index }: IProps) {
                                     handleQuestionCancel();
                                 }
                             }}
-                            className="!py-6 !px-4 !text-xl border-none"
+                            className="py-6! px-4! text-xl! border-none"
                             placeholder="Enter your question..."
                         />
                     ) : (
@@ -129,7 +150,7 @@ export function FileUploadField({ question, index }: IProps) {
                                     handleDescriptionCancel();
                                 }
                             }}
-                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            className="text-muted-foreground border-dashed resize-none px-4! py-3! text-lg!"
                             placeholder="Add description (optional)..."
                             rows={3}
                         />
@@ -145,23 +166,70 @@ export function FileUploadField({ question, index }: IProps) {
                         </div>
                     )}
                 </div>
-
                 <div className="space-y-2">
-                    <div
-                        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors border-muted-foreground/25 `}
-                    >
-                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground mb-2">
-                            Drop files here or click to browse
-                        </p>
+                    {isEditingPlaceholder ? (
                         <Input
-                            id={`file-${question.id}`}
-                            type="file"
-                            multiple
-                            className="hidden"
-                            required={question.required}
+                            ref={placeholderInputRef}
+                            value={tempPlaceholder}
+                            onChange={(e) => setTempPlaceholder(e.target.value)}
+                            onBlur={handlePlaceholderSave}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handlePlaceholderSave();
+                                } else if (e.key === 'Escape') {
+                                    handlePlaceholderCancel();
+                                }
+                            }}
+                            className="border-dashed px-4 py-5 text-xl!"
+                            placeholder="Your Answer goes here ..."
                         />
-                    </div>
+                    ) : (
+                        <>
+                            <div className="w-full p-3 text-primary-800/40 italic text-xl border-b border-primary-800/40 relative">
+                                {question.placeholder || "Your Answer goes here ..."}
+                                <AnimatePresence mode="wait">
+                                    {
+                                        question.metadata?.max && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: 15 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 15 }}
+                                                transition={{ duration: 0.2 }}
+                                                key="min-char-warning"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-normal not-italic"
+                                            >
+                                                0 / {Number(question.metadata?.max)}
+                                            </motion.span>
+                                        )
+                                    }
+                                </AnimatePresence>
+
+                            </div>
+                            <AnimatePresence mode="wait">
+                                {
+                                    question.metadata?.min && (
+                                        <motion.small
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.15 }}
+                                            key="min-char-warning"
+                                            className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"
+                                        >
+                                            <Info size={14} />
+                                            Minimum {Number(question.metadata?.min)} Characters Required
+                                        </motion.small>
+                                    )
+                                }
+                            </AnimatePresence>
+                            <p
+                                onClick={() => setIsEditingPlaceholder(true)}
+                                className="text-lg italic font-extralight text-muted-foreground/60 cursor-text hover:text-muted-foreground transition-colors px-1"
+                            >
+                                Click to edit placeholder
+                            </p>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@ function calculateOffset(value: number): number {
 
 const FlowEdge = ({ edge, position }: FlowEdgeProps) => {
 
-    const { selectedEdgeId } = useFormBuilder();
+    // const { selectedEdgeId } = useFormBuilder();
 
     const [middlePoint, setMiddlePoint] = useState<{ x: number; y: number }>({
         x: position.x0 + (position.x1 - position.x0) / 2,

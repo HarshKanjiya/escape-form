@@ -28,7 +28,14 @@ const initialEdges = [{ id: 'n1-n2', source: 'n1', target: 'n2' }];
 const proOptions = { hideAttribution: true };
 
 export default function FlowEditor() {
-    const { questions, edges: savedEdges, addEdge: createNewEdge, changePosition, removeEdge } = useFormBuilder();
+
+    const questions = useFormBuilder((state) => state.questions);
+    const savedEdges = useFormBuilder((state) => state.edges);
+    const createNewEdge = useFormBuilder((state) => state.addEdge);
+    const changePosition = useFormBuilder((state) => state.changePosition);
+    const removeEdge = useFormBuilder((state) => state.removeEdge);
+
+
     const [nodes, setNodes, baseOnNodesChange] = useNodesState<any>([]);
     const [edges, setEdges, baseOnEdgesChange] = useEdgesState(initialEdges);
 

@@ -15,7 +15,7 @@ interface ShortTextProps {
 }
 
 export function ShortTextField({ question, index }: ShortTextProps) {
-    const { updateQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [isEditingPlaceholder, setIsEditingPlaceholder] = useState(false);

@@ -12,7 +12,8 @@ import { useEffect, useRef, useState } from "react";
 
 export function FileUploadFieldConfig() {
 
-    const { updateQuestion, selectedQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
+    const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
     const [touched, setTouched] = useState(false);
 
     // toggles

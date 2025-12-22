@@ -19,7 +19,12 @@ interface IProps {
 
 export function RadioField({ question, index }: IProps) {
 
-    const { updateQuestion, saveQuestionOption, deleteQuestionOption, getQuestionOptions } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
+    const saveQuestionOption = useFormBuilder((state) => state.saveQuestionOption);
+    const deleteQuestionOption = useFormBuilder((state) => state.deleteQuestionOption);
+    const getQuestionOptions = useFormBuilder((state) => state.getQuestionOptions);
+
+
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.title);
@@ -35,7 +40,7 @@ export function RadioField({ question, index }: IProps) {
     const optionIdsRef = useRef<string[]>([]);
     const idCounterRef = useRef(0);
 
-// Fetch options when component mounts
+    // Fetch options when component mounts
     useEffect(() => {
         const fetchOptions = async () => {
             console.log('[RADIO FIELD] Fetching options for question:', question.id);
@@ -44,7 +49,7 @@ export function RadioField({ question, index }: IProps) {
                 setOptions(fetchedOptions);
             }
         };
-        
+
         fetchOptions();
     }, [question.id, getQuestionOptions]);
 
@@ -120,7 +125,7 @@ export function RadioField({ question, index }: IProps) {
     const handleOptionBlur = async (idx: number) => {
         const option = options[idx];
         console.log('[SAVE OPTION] Saving option to backend:', option);
-        
+
         // Only save if there's actual content
         if (option.value.trim()) {
             const success = await saveQuestionOption(option);
@@ -177,7 +182,7 @@ export function RadioField({ question, index }: IProps) {
 
         // Update local state
         const newOptions = options.filter((_, i) => i !== idx);
-        
+
         // Update sortOrder for remaining options
         const updatedOptions = newOptions.map((opt, i) => ({
             ...opt,

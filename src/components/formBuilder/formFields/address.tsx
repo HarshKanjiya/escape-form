@@ -16,7 +16,7 @@ interface IProps {
 
 export function AddressField({ question, index }: IProps) {
 
-    const { updateQuestion } = useFormBuilder();
+    const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const [isEditingQuestion, setIsEditingQuestion] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [tempQuestion, setTempQuestion] = useState(question.title);

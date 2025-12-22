@@ -15,7 +15,15 @@ import AddQuestionDialog from "./ui/addQuestionDialog";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export default function MainContentHeader() {
-    const { viewMode, viewScreenMode, savingCount, dataSource, setViewMode, setViewScreenMode, changeStatus } = useFormBuilder();
+
+    const viewMode = useFormBuilder((state) => state.viewMode);
+    const viewScreenMode = useFormBuilder((state) => state.viewScreenMode);
+    const setViewMode = useFormBuilder((state) => state.setViewMode);
+    const setViewScreenMode = useFormBuilder((state) => state.setViewScreenMode);
+    const savingCount = useFormBuilder((state) => state.savingCount);
+    const dataSource = useFormBuilder((state) => state.dataSource);
+    const changeStatus = useFormBuilder((state) => state.changeStatus);
+
     const [published, setPublished] = useState(false);
 
     const publishForm = async () => {
