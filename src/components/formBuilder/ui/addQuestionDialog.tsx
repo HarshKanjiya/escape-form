@@ -1,10 +1,13 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { QuestionType } from "@prisma/client";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, SearchXIcon } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "../../ui/dialog";
@@ -51,14 +54,14 @@ const FieldItem = memo(function FieldItem({ field: { id, label, accent }, select
             onClick={() => setSelectedField(id)}
             onDoubleClick={onAdd}
             className={cn(
-                "group relative flex items-center gap-3 rounded-lg border p-2 text-sm outline-none cursor-pointer select-none transition-all bg-background dark:bg-foreground/5",
+                "group relative flex items-center gap-3 rounded-2xl corner-squircle border border-input p-2 text-sm outline-none cursor-pointer select-none transition-all bg-background dark:bg-foreground/5",
                 "hover:border-primary focus-visible:ring-2 focus-visible:ring-primary/40 outline-none",
                 isSelected && "border-primary/50 bg-primary/10 dark:bg-primary/15"
             )}
         >
             <div
                 className={cn(
-                    "flex size-8 items-center justify-center rounded-md border transition-colors",
+                    "flex size-8 items-center justify-center border transition-colors rounded-xl corner-squircle",
                     accent,
                 )}
             >
@@ -225,9 +228,8 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                 <DialogTitle className="flex items-center justify-between gap-4 p-4 border-b text-base">
                     <span>Add New Field</span>
                 </DialogTitle>
-                <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent-bg transition-opacity duration-150">
+                <div className="flex flex-col md:flex-row flex-1 min-h-0 py-0 bg-accent transition-opacity duration-150">
                     <div className="w-full flex flex-col min-h-0">
-                        {/* Search & filters */}
                         <div className="p-4 flex items-center gap-4 border-b bg-background">
                             <div className="relative flex-1">
                                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -242,58 +244,31 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                                 {['All', ...fields.map(f => f.title)].map(section => {
                                     const active = activeSection === section;
                                     return (
-                                        <button
+                                        <Badge
                                             key={section}
                                             onClick={() => setActiveSection(section)}
-                                            className={cn(
-                                                "px-3 h-7 rounded-full border text-[11px] font-medium tracking-wide transition-all",
-                                                "hover:bg-accent/60 hover:text-accent-foreground",
-                                                active && "bg-primary/15 text-primary border-primary/40 dark:bg-primary/25"
-                                            )}
+                                            variant={active ? 'default' : 'outline'}
+                                            className="cursor-pointer"
                                         >
                                             {section}
-                                        </button>
+                                        </Badge>
                                     );
                                 })}
                             </div>
                         </div>
-                        {/* Scrollable list */}
-                        <div className="flex-1 overflow-auto p-4" role="listbox" aria-label="Question types" style={{ scrollBehavior: 'auto' }}>
-                            {activeSection === 'All'
-                                ? filteredSets.map((set, sIndex) => (
-                                    <div key={sIndex} className="mb-6 last:mb-0">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <h4 className="font-semibold text-sm flex items-center gap-2">
-                                                {set.title}
-                                                <span className="text-[11px] rounded-md bg-muted px-1.5 py-0.5 font-normal text-muted-foreground">
-                                                    {set.items.length}
-                                                </span>
-                                            </h4>
-                                            <p className="text-xs text-muted-foreground hidden md:block max-w-[45%] truncate">{set.description}</p>
-                                        </div>
-                                        {set.items.length ? (
-                                            <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-5">
-                                                {set.items.map(field => (
-                                                    <FieldItem
-                                                        key={field.id}
-                                                        field={field}
-                                                        selectedField={selectedField}
-                                                        setSelectedField={setSelectedField}
-                                                        onAdd={save}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="text-xs text-muted-foreground italic">No matches in this section.</div>
-                                        )}
-                                    </div>
-                                ))
-                                : (
-                                    filteredSets.filter(f => f.title === activeSection).map(set => (
-                                        <div key={set.title} className="space-y-4">
-                                            <div className="flex items-center justify-between">
-                                                <h4 className="font-semibold text-sm">{set.title}</h4>
-                                                <p className="text-xs text-muted-foreground max-w-[50%] truncate">{set.description}</p>
+                        <ScrollArea className="h-[60vh]">
+                            <div className="flex-1 p-4" role="listbox" aria-label="Question types" style={{ scrollBehavior: 'auto' }}>
+                                {activeSection === 'All'
+                                    ? filteredSets.map((set, sIndex) => (
+                                        <div key={sIndex} className="mb-6 last:mb-0">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                                    {set.title}
+                                                    <span className="text-[11px] rounded-md bg-muted px-1.5 py-0.5 font-normal text-muted-foreground">
+                                                        {set.items.length}
+                                                    </span>
+                                                </h4>
+                                                <p className="text-xs text-muted-foreground hidden md:block max-w-[45%] truncate">{set.description}</p>
                                             </div>
                                             {set.items.length ? (
                                                 <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-5">
@@ -308,22 +283,66 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="text-xs text-muted-foreground italic">No matches found.</div>
+                                                <div className="text-xs text-muted-foreground italic">No matches in this section.</div>
                                             )}
                                         </div>
                                     ))
+                                    : (
+                                        filteredSets.filter(f => f.title === activeSection).map(set => (
+                                            <div key={set.title} className="space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <h4 className="font-semibold text-sm">{set.title}</h4>
+                                                    <p className="text-xs text-muted-foreground max-w-[50%] truncate">{set.description}</p>
+                                                </div>
+                                                {set.items.length ? (
+                                                    <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-5">
+                                                        {set.items.map(field => (
+                                                            <FieldItem
+                                                                key={field.id}
+                                                                field={field}
+                                                                selectedField={selectedField}
+                                                                setSelectedField={setSelectedField}
+                                                                onAdd={save}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-xs text-muted-foreground italic">No matches found.</div>
+                                                )}
+                                            </div>
+                                        ))
+                                    )}
+                                {!allVisibleItems.length && (
+                                    <div className="flex flex-col items-center justify-center py-16 text-center gap-3 text-muted-foreground">
+                                        <Empty>
+                                            <EmptyHeader>
+                                                <EmptyMedia variant="icon" className="bg-background dark:bg-muted-foreground/10 border-muted border-2 rounded-2xl corner-squircle">
+                                                    <SearchXIcon />
+                                                </EmptyMedia>
+                                                <EmptyTitle>No Fields Found</EmptyTitle>
+                                                <EmptyDescription>
+                                                    {
+                                                        query?.length ? (
+                                                            <span>
+                                                                No fields match your search criteria.
+                                                            </span>
+                                                        ) :
+                                                            null
+                                                    }
+                                                </EmptyDescription>
+                                            </EmptyHeader>
+                                            <EmptyContent>
+                                                {/* {!query && (
+                                                )} */}
+                                            </EmptyContent>
+                                        </Empty>
+                                    </div>
                                 )}
-                            {!allVisibleItems.length && (
-                                <div className="flex flex-col items-center justify-center py-16 text-center gap-3 text-muted-foreground">
-                                    <Search className="size-8 opacity-40" />
-                                    <p className="text-sm">No field types match &quot;{query}&quot;</p>
-                                    <Button variant="ghost" size="sm" onClick={() => setQuery("")}>Reset search</Button>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        </ScrollArea>
                     </div>
                 </div>
-                <DialogFooter className='border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/75 p-3 px-4'>
+                <DialogFooter className='relative border-t bg-background p-3 px-4'>
                     <div className="mr-auto hidden md:flex text-xs text-muted-foreground items-center gap-2">
                         <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] border">↵</span> Add selected
                     </div>
@@ -331,6 +350,6 @@ export default function AddQuestionDialog({ children }: IAddItemDialogProps) {
                     <Button type='button' onClick={save} disabled={!selectedField}>Add</Button>
                 </DialogFooter>
             </DialogContent>
-        </Dialog >
+        </Dialog>
     )
 }

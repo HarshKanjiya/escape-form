@@ -55,13 +55,15 @@ export const POST = withErrorHandler(async (request: NextRequest, { params }: Ro
         const prevLastQuestion = await prisma.question.findFirst({
             where: { formId: formId, sortOrder: body.data[0].sortOrder - 1 },
         });
-        await prisma.edge.create({
-            data: {
-                formId: formId,
-                sourceNodeId: prevLastQuestion!.id,
-                targetNodeId: questions[0].id,
-            },
-        })
+        if (prevLastQuestion) {
+            await prisma.edge.create({
+                data: {
+                    formId: formId,
+                    sourceNodeId: prevLastQuestion!.id,
+                    targetNodeId: questions[0].id,
+                },
+            })
+        }
     }
     if (questions.length > 1) {
         questions.slice(1).forEach(async (question, index) => {
@@ -76,10 +78,6 @@ export const POST = withErrorHandler(async (request: NextRequest, { params }: Ro
             })
         });
     }
-
-    // const prevQuestions = await prisma.question.findMany({
-    //     where: { formId: formId, sortOrder: question.sortOrder - 1 },
-    // });
 
     return getSuccessResponse(questions, getSuccessMessage('Questions'));
 });

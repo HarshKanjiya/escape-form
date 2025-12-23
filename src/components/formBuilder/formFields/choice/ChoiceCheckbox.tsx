@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { QuestionOption } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
+import { QuestionOption } from "@prisma/client";
+import { CornerDownRight, Plus, Trash } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { CornerDownRight, Trash, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface IProps {
@@ -31,20 +32,23 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
     const questionInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
 
-    // Option state and handlers - moved to top level
-    const [options, setOptions] = useState<QuestionOption[]>(question.options && question.options.length > 0 ? question.options : []);
+    const [options, setOptions] = useState<QuestionOption[]>([]);
+    const [originalOptions, setOriginalOptions] = useState<QuestionOption[]>([]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-    // Stable IDs for smooth Framer Motion enter/exit and layout animations
+
     const optionIdsRef = useRef<string[]>([]);
     const idCounterRef = useRef(0);
 
     // Fetch options when component mounts
     useEffect(() => {
         const fetchOptions = async () => {
-            console.log('[CHECKBOX FIELD] Fetching options for question:', question.id);
             const fetchedOptions = await getQuestionOptions(question.id);
             if (fetchedOptions && fetchedOptions.length > 0) {
                 setOptions(fetchedOptions);
+                setOriginalOptions(fetchedOptions);
+            } else {
+                setOptions([]);
+                setOriginalOptions([]);
             }
         };
 
@@ -65,11 +69,6 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
             descriptionInputRef.current.select();
         }
     }, [isEditingDescription]);
-
-    // Options useEffect hooks
-    useEffect(() => {
-        setOptions(question.options && question.options.length > 0 ? question.options : []);
-    }, [question.options]);
 
     // Ensure IDs array length matches options and keep IDs stable per index
     useEffect(() => {
@@ -109,7 +108,6 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
 
     // Option handlers
     const handleOptionChange = (idx: number, value: string) => {
-        console.log(`[UPDATE OPTION] Index: ${idx}, New Value: "${value}"`);
         const newOptions = [...options];
         newOptions[idx] = {
             ...newOptions[idx],
@@ -117,26 +115,26 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
             label: value, // Keep label and value in sync
         };
         setOptions(newOptions);
-        console.log('[UPDATE OPTION] Updated options:', newOptions);
     };
 
     const handleOptionBlur = async (idx: number) => {
         const option = options[idx];
-        console.log('[SAVE OPTION] Saving option to backend:', option);
+        const originalOption = originalOptions[idx];
 
-        // Only save if there's actual content
-        if (option.value.trim()) {
+        if (originalOption && option.value !== originalOption.value) {
             const success = await saveQuestionOption(option);
             if (success) {
-                console.log('[SAVE OPTION] Option saved successfully');
+                setOriginalOptions(prev => {
+                    const newOrig = [...prev];
+                    newOrig[idx] = option;
+                    return newOrig;
+                });
             }
         }
     };
 
     const handleAddOption = () => {
-        console.log('[ADD OPTION] Adding new option to question:', question.id);
         setOptions(prev => {
-            // Create a stable id for the new option before render
             optionIdsRef.current.push(`${Date.now()}-${idCounterRef.current++}`);
 
             const timestamp = Date.now();
@@ -149,60 +147,56 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
             };
 
             const updated = [...prev, newOption];
-            console.log('[ADD OPTION] New options array:', updated);
 
             // Focus the new input
             setTimeout(() => {
                 inputRefs.current[updated.length - 1]?.focus();
-            }, 0);
+            }, 100);
 
             return updated;
+        });
+
+        setOriginalOptions(prev => {
+            const timestamp = Date.now();
+            const newOption: QuestionOption = {
+                id: '',
+                questionId: question.id,
+                label: '',
+                value: `option_${timestamp}`,
+                sortOrder: prev.length,
+            };
+            return [...prev, newOption];
         });
     };
 
     const handleRemoveOption = async (idx: number) => {
         const optionToDelete = options[idx];
-        console.log(`[DELETE OPTION] Deleting option at index ${idx}:`, optionToDelete);
 
-        // Don't allow deletion if it's the last option
-        if (options.length === 1) {
-            console.log('[DELETE OPTION] Cannot delete last option');
-            return;
-        }
+        if (options.length === 1) return;
 
-        // If the option has an id (exists in backend), delete from backend
         if (optionToDelete.id) {
             const success = await deleteQuestionOption(optionToDelete.id);
-            if (!success) {
-                console.log('[DELETE OPTION] Failed to delete option from backend');
-                return;
-            }
+            if (!success) return;
         }
 
-        // Update local state
         const newOptions = options.filter((_, i) => i !== idx);
+        const newOriginalOptions = originalOptions.filter((_, i) => i !== idx);
 
-        // Update sortOrder for remaining options
         const updatedOptions = newOptions.map((opt, i) => ({
             ...opt,
             sortOrder: i,
         }));
 
-        // Remove corresponding ID to keep others stable
         optionIdsRef.current.splice(idx, 1);
-
-        console.log('[DELETE OPTION] Updated options after deletion:', updatedOptions);
-
         setOptions(updatedOptions);
+        setOriginalOptions(newOriginalOptions);
 
-        // Update sortOrder for all remaining options in backend
         for (const opt of updatedOptions) {
             if (opt.id) {
                 await saveQuestionOption(opt);
             }
         }
 
-        // Manage focus to a sensible input after deletion
         setTimeout(() => {
             const targetIndex = Math.min(idx, updatedOptions.length - 1);
             inputRefs.current[targetIndex]?.focus();
@@ -229,7 +223,7 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
                                     handleQuestionCancel();
                                 }
                             }}
-                            className="!py-6 !px-4 !text-xl border-none"
+                            className="py-6! px-4! text-xl! border-none"
                             placeholder="Enter your question..."
                         />
                     ) : (
@@ -275,7 +269,7 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
                                     handleDescriptionCancel();
                                 }
                             }}
-                            className="text-muted-foreground border-dashed resize-none !px-4 !py-3 !text-lg"
+                            className="text-muted-foreground border-dashed resize-none px-4! py-3! text-lg!"
                             placeholder="Add description (optional)..."
                             rows={3}
                         />
@@ -292,94 +286,72 @@ export function ChoiceCheckboxField({ question, index }: IProps) {
                     )}
                 </div>
 
-                {/* <RadioGroup
-                    required={question.required}
-                    className="space-y-3"
-                >
-                    {question.options?.map((option, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                            <RadioGroupItem value={option} id={`${question.id}-${index}`} />
-                            <Label
-                                htmlFor={`${question.id}-${index}`}
-                                className="text-sm font-normal cursor-pointer flex-1"
-                            >
-                                {option}
-                            </Label>
-                        </div>
-                    ))}
-                </RadioGroup> */}
-
-                {/* {(!question.options || question.options.length === 0) && (
-                    <p className="text-sm text-muted-foreground italic">No options available</p>
-                )} */}
-                {/* Options rendering */}
-                <motion.div layout className="space-y-3">
-                    <AnimatePresence initial={false}>
-                        {options.map((option, i) => (
-                            <motion.div
-                                key={optionIdsRef.current[i] ?? `opt-${i}`}
-                                layout
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.18, ease: "easeOut", layout: { duration: 0.25 } }}
-                                className="flex items-center gap-3"
-                            >
-                                <div className="size-5 border border-border rounded-sm bg-background" />
-                                <div className="relative flex-1 max-w-[250px]">
-                                    <Input
-                                        className="flex-1"
-                                        placeholder={`Option ${i + 1}`}
-                                        value={option.value}
-                                        ref={el => { inputRefs.current[i] = el; }}
-                                        onChange={e => handleOptionChange(i, e.target.value)}
-                                        onBlur={() => handleOptionBlur(i)}
-                                        onKeyDown={e => {
-                                            if (e.key === 'Enter') {
-                                                if (i === options.length - 1) {
-                                                    handleAddOption();
-                                                } else {
-                                                    // Focus next input
-                                                    inputRefs.current[i + 1]?.focus();
+                <ScrollArea className="h-80 relative">
+                    <div className="h-3 w-full z-3 absolute bg-linear-180 from-background to-transparent top-0" />
+                    <div className="h-3 w-full z-3 absolute bg-linear-0 from-background to-transparent bottom-0" />
+                    <motion.div layout className="space-y-3 py-4">
+                        <AnimatePresence initial={false}>
+                            {options.map((option, i) => (
+                                <motion.div
+                                    key={optionIdsRef.current[i] ?? `opt-${i}`}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.18, ease: "easeOut", layout: { duration: 0.25 } }}
+                                    className="flex items-center gap-3"
+                                >
+                                    <div className="size-5 border border-border rounded-sm bg-background" />
+                                    <div className="relative flex-1 max-w-[250px]">
+                                        <Input
+                                            className="flex-1"
+                                            placeholder={`Option ${i + 1}`}
+                                            value={option.label}
+                                            ref={el => { inputRefs.current[i] = el; }}
+                                            onChange={e => handleOptionChange(i, e.target.value)}
+                                            onBlur={() => handleOptionBlur(i)}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') {
+                                                    if (i === options.length - 1) {
+                                                        handleAddOption();
+                                                    } else {
+                                                        // Focus next input
+                                                        inputRefs.current[i + 1]?.focus();
+                                                    }
                                                 }
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                {/* <Button variant={'secondary'} size={'icon'}>
-                                    <GripVertical className="cursor-move text-muted-foreground" size={18} />
-                                </Button> */}
-                                <Button disabled={options.length == 1} variant={'destructive'} size={'icon'} onClick={() => handleRemoveOption(i)} aria-label={`Delete option ${i + 1}`}>
-                                    <Trash size={18} />
-                                </Button>
-                                {i === options.length - 1 && (
-                                    <pre className="text-sm text-muted-foreground italic flex items-center gap-3 ml-2">
-                                        <CornerDownRight size={16} className="-skew-x-16" />
-                                        Enter to add New
-                                    </pre>
-                                )}
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-
-                    {/* Add Option Button */}
-                    <motion.div
-                        layout
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleAddOption}
-                            className="mt-2"
-                        >
-                            <Plus size={16} className="mr-2" />
-                            Add Option
-                        </Button>
+                                            }}
+                                        />
+                                    </div>
+                                    <Button disabled={options.length == 1} variant={'destructive'} size={'icon'} onClick={() => handleRemoveOption(i)} aria-label={`Delete option ${i + 1}`}>
+                                        <Trash size={18} />
+                                    </Button>
+                                    {i === options.length - 1 && (
+                                        <pre className="text-sm text-muted-foreground italic flex items-center gap-3 ml-2">
+                                            <CornerDownRight size={16} className="-skew-x-16" />
+                                            Enter to add New
+                                        </pre>
+                                    )}
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </motion.div>
+                </ScrollArea>
+                <motion.div
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddOption}
+                        className="mt-2"
+                    >
+                        <Plus size={16} className="mr-2" />
+                        Add Option
+                    </Button>
                 </motion.div>
             </div>
         </div >

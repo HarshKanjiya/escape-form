@@ -75,9 +75,9 @@ const NotificationDropdown = () => {
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button variant='ghost'>
+                            {/* <Button variant='ghost'>
                                 <ExternalLinkIcon className="w-4 h-4" />
-                            </Button>
+                            </Button> */}
                         </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />

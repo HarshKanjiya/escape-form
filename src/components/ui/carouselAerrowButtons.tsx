@@ -79,7 +79,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
             <div className='flex justify-between items-center gap-3 w-40'>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-t-xl !w-24'>
+                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='w-24! rounded-t-4xl corner-squircle rounded-b-2xl'>
                             <span>Prev</span>
                             <ChevronUp />
                         </Button>
@@ -96,7 +96,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
         <div className='flex flex-col items-end gap-3'>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-l-xl">
+                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative w-24! rounded-l-4xl corner-squircle rounded-r-2xl">
                         <ChevronLeft />
                         <span>Prev</span>
                     </Button>
@@ -132,7 +132,7 @@ export const NextButton: React.FC<PropType> = (props) => {
             <div className='flex justify-between items-center gap-3 w-40'>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='rounded-b-xl !w-24'>
+                        <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className='w-24! rounded-b-4xl corner-squircle rounded-t-2xl'>
                             <span>Next</span>
                             <ChevronDown />
                         </Button>
@@ -149,7 +149,7 @@ export const NextButton: React.FC<PropType> = (props) => {
         <div className='flex flex-col items-start gap-3'>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-xl">
+                    <Button size={'lg'} variant={'secondary'} onClick={onClick} {...restProps} className="relative rounded-r-4xl corner-squircle rounded-l-2xl">
                         <span>Next</span>
                         <ChevronRight />
                     </Button>

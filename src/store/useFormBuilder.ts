@@ -173,7 +173,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         const queLen = questions?.length || 0;
 
         const _newQues: Partial<Question>[] = [];
-        const largestSortOrder = questions.reduce((max, ques) => ques.sortOrder && ques.sortOrder > max ? ques.sortOrder : max, 0);
+        const largestSortOrder = questions?.length ? questions.reduce((max, ques) => ques.sortOrder && ques.sortOrder > max ? ques.sortOrder : max, 0) : 0;
         newQuestionTypes.forEach((queType, ind) => {
             _newQues.push(prepareNewQuestionObject(formId, queType, queLen, ind, largestSortOrder + 1 + ind));
         })
