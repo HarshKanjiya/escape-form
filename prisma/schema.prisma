@@ -299,6 +299,7 @@ enum QuestionType {
   INFO_EMAIL
   INFO_PHONE
   INFO_URL
+
   USER_DETAIL
   USER_ADDRESS
 
@@ -312,7 +313,6 @@ enum QuestionType {
 
   LEAGAL
   REDIRECT_TO_URL
-  
 }
 
 enum CouponDiscountType {

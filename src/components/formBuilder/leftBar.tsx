@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
+import { ScrollArea } from '../ui/scroll-area';
 
 export default function LeftBar() {
 
@@ -155,25 +156,27 @@ export default function LeftBar() {
                                     </Tooltip>
                                 </div>
                             </div>
-                            <ul className='px-2 flex flex-col gap-2 overflow-auto pb-4 pt-1'>
-                                {questions.length > 0 ? (
-                                    questions.map((question, index) => (
-                                        <LeftBarQuestionItem isExpanded={isExpanded} key={question.id + index} question={question} />
-                                    ))
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                                        <div className="mb-4 p-3 rounded-full bg-background border-accent">
-                                            <FileText />
+                            <ScrollArea className='h-[calc(100vh-190px)] pr-1'>
+                                <ul className='px-2 flex flex-col gap-2 pb-4 pt-1'>
+                                    {questions.length > 0 ? (
+                                        questions.map((question, index) => (
+                                            <LeftBarQuestionItem isExpanded={isExpanded} key={question.id + index} question={question} />
+                                        ))
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+                                            <div className="mb-4 p-3 rounded-full bg-background border-accent">
+                                                <FileText />
+                                            </div>
+                                            <h3 className="text-sm font-medium text-foreground mb-1">
+                                                No questions yet
+                                            </h3>
+                                            <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+                                                Start building your form by adding your first question
+                                            </p>
                                         </div>
-                                        <h3 className="text-sm font-medium text-foreground mb-1">
-                                            No questions yet
-                                        </h3>
-                                        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                                            Start building your form by adding your first question
-                                        </p>
-                                    </div>
-                                )}
-                            </ul>
+                                    )}
+                                </ul>
+                            </ScrollArea>
                         </div>
                     </div>
 

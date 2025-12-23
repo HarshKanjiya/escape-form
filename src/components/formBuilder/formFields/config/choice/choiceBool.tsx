@@ -7,7 +7,7 @@ import { useFormBuilder } from "@/store/useFormBuilder";
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function RadioFieldConfig() {
+export default function ChoiceBoolFieldConfig() {
 
     const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);
@@ -23,7 +23,7 @@ export function RadioFieldConfig() {
 
     useEffect(() => {
         if (!touched) return;
-        updateQuestion(selectedQuestion?.id || '', { metadata: { randomize } });
+        updateQuestion(selectedQuestion?.id || '', { metadata: { ...selectedQuestion?.metadata, randomize } });
     }, [randomize]);
 
     const onRequireChange = (value: boolean) => {

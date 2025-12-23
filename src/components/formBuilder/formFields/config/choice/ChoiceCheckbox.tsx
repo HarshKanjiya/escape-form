@@ -7,7 +7,7 @@ import { useFormBuilder } from "@/store/useFormBuilder";
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function CheckboxFieldFieldConfig() {
+export default function ChoiceCheckboxFieldConfig() {
 
     const updateQuestion = useFormBuilder((state) => state.updateQuestion);
     const selectedQuestion = useFormBuilder((state) => state.selectedQuestion);

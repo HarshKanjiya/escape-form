@@ -121,8 +121,8 @@ const fields: IFieldSet[] = [
             { id: QuestionType.INFO_EMAIL, label: 'Email', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'mail'] },
             { id: QuestionType.INFO_PHONE, label: 'Phone', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'tel'] },
             { id: QuestionType.INFO_URL, label: 'Website', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['url'] },
-            { id: QuestionType.USER_ADDRESS, label: 'Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
-            { id: QuestionType.USER_DETAIL, label: 'Detail Block', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'static'] },
+            // { id: QuestionType.USER_ADDRESS, label: 'User Address', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['location'] },
+            // { id: QuestionType.USER_DETAIL, label: 'User Detail', accent: 'bg-amber-400/60 dark:bg-amber-400/30', keywords: ['contact', 'static'] },
         ]
     },
     {

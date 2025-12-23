@@ -2,21 +2,22 @@
 
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { AnimatePresence, motion } from "motion/react";
-import { AddressFieldConfig } from "../formFields/config/address";
-import { CheckboxFieldFieldConfig } from "../formFields/config/checkbox";
 import { DateFieldConfig } from "../formFields/config/date";
 // import { DropdownFieldConfig } from "../formFields/config/dropdown";
-import { DetailConfig } from "../formFields/config/detail";
+import { QuestionType } from "@prisma/client";
+import ChoiceCheckboxFieldConfig from "../formFields/config/choice/ChoiceCheckbox";
+import ChoiceDropDownFieldConfig from "../formFields/config/choice/choiceDropDown";
+import ChoiceMultipleFieldConfig from "../formFields/config/choice/ChoiceMultiple";
+import ChoicePictureFieldConfig from "../formFields/config/choice/ChoicePicture";
+import ChoiceSingleFieldConfig from "../formFields/config/choice/ChoiceSingle";
 import { EmailFieldConfig } from "../formFields/config/email";
 import { FileUploadFieldConfig } from "../formFields/config/file";
 import { LongTextFieldConfig } from "../formFields/config/longText";
 import { NumberFieldConfig } from "../formFields/config/number";
 import { PhoneFieldConfig } from "../formFields/config/phone";
-import { RadioFieldConfig } from "../formFields/config/radio";
 import { ShortTextFieldConfig } from "../formFields/config/shortText";
 import { StarRatingFieldConfig } from "../formFields/config/starRating";
 import { WebsiteFieldConfig } from "../formFields/config/website";
-import { QuestionType } from "@prisma/client";
 
 export default function QuestionConfigCard() {
 
@@ -50,7 +51,6 @@ export default function QuestionConfigCard() {
                         <ShortTextFieldConfig />
                     </motion.div>
                 );
-
             case QuestionType.TEXT_LONG:
                 return (
                     <motion.div
@@ -64,7 +64,6 @@ export default function QuestionConfigCard() {
                         <LongTextFieldConfig />
                     </motion.div>
                 );
-
             case QuestionType.NUMBER:
                 return (
                     <motion.div
@@ -78,7 +77,6 @@ export default function QuestionConfigCard() {
                         <NumberFieldConfig />
                     </motion.div>
                 );
-
             case QuestionType.DATE:
                 return (
                     <motion.div
@@ -92,21 +90,6 @@ export default function QuestionConfigCard() {
                         <DateFieldConfig />
                     </motion.div>
                 );
-
-            case QuestionType.USER_DETAIL:
-                return (
-                    <motion.div
-                        key={uniqueKey}
-                        variants={fadeInVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                    >
-                        <DetailConfig />
-                    </motion.div>
-                );
-
             case QuestionType.FILE_ANY:
                 return (
                     <motion.div
@@ -120,6 +103,34 @@ export default function QuestionConfigCard() {
                         <FileUploadFieldConfig />
                     </motion.div>
                 );
+            case QuestionType.FILE_IMAGE_OR_VIDEO:
+                return (
+                    <motion.div
+                        key={uniqueKey}
+                        variants={fadeInVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <FileUploadFieldConfig />
+                    </motion.div>
+                );
+
+            // case QuestionType.USER_DETAIL:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <DetailConfig />
+            //         </motion.div>
+            //     );
+
 
             case QuestionType.CHOICE_SINGLE:
                 return (
@@ -131,10 +142,48 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        <RadioFieldConfig />
+                        <ChoiceSingleFieldConfig />
                     </motion.div>
                 );
-
+            case QuestionType.CHOICE_MULTIPLE:
+                return (
+                    <motion.div
+                        key={uniqueKey}
+                        variants={fadeInVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <ChoiceMultipleFieldConfig />
+                    </motion.div>
+                );
+            case QuestionType.CHOICE_DROPDOWN:
+                return (
+                    <motion.div
+                        key={uniqueKey}
+                        variants={fadeInVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <ChoiceDropDownFieldConfig />
+                    </motion.div>
+                );
+            case QuestionType.CHOICE_PICTURE:
+                return (
+                    <motion.div
+                        key={uniqueKey}
+                        variants={fadeInVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <ChoicePictureFieldConfig />
+                    </motion.div>
+                );
             case QuestionType.CHOICE_CHECKBOX:
                 return (
                     <motion.div
@@ -145,23 +194,9 @@ export default function QuestionConfigCard() {
                         exit="exit"
                         transition={transition}
                     >
-                        <CheckboxFieldFieldConfig />
+                        <ChoiceCheckboxFieldConfig />
                     </motion.div>
                 );
-
-            // case QuestionType.dropdown:
-            //     return (
-            //         <motion.div
-            //             key={uniqueKey}
-            //             variants={fadeInVariants}
-            //             initial="initial"
-            //             animate="animate"
-            //             exit="exit"
-            //             transition={transition}
-            //         >
-            //             <DropdownFieldConfig />
-            //         </motion.div>
-            //     );
 
             case QuestionType.INFO_EMAIL:
                 return (
@@ -176,7 +211,6 @@ export default function QuestionConfigCard() {
                         <EmailFieldConfig />
                     </motion.div>
                 );
-
             case QuestionType.INFO_PHONE:
                 return (
                     <motion.div
@@ -190,21 +224,6 @@ export default function QuestionConfigCard() {
                         <PhoneFieldConfig />
                     </motion.div>
                 );
-
-            case QuestionType.USER_ADDRESS:
-                return (
-                    <motion.div
-                        key={uniqueKey}
-                        variants={fadeInVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                    >
-                        <AddressFieldConfig />
-                    </motion.div>
-                );
-
             case QuestionType.INFO_URL:
                 return (
                     <motion.div
@@ -218,6 +237,34 @@ export default function QuestionConfigCard() {
                         <WebsiteFieldConfig />
                     </motion.div>
                 );
+
+            // case QuestionType.USER_DETAIL:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <AddressFieldConfig />
+            //         </motion.div>
+            //     );
+
+            // case QuestionType.USER_ADDRESS:
+            //     return (
+            //         <motion.div
+            //             key={uniqueKey}
+            //             variants={fadeInVariants}
+            //             initial="initial"
+            //             animate="animate"
+            //             exit="exit"
+            //             transition={transition}
+            //         >
+            //             <AddressFieldConfig />
+            //         </motion.div>
+            //     );
 
             case QuestionType.RATING_STAR:
                 return (
@@ -233,33 +280,10 @@ export default function QuestionConfigCard() {
                     </motion.div>
                 );
 
-            // case QuestionType.barChoiceRating:
-            //     return (
-            //         <motion.div
-            //             key={uniqueKey}
-            //             variants={fadeInVariants}
-            //             initial="initial"
-            //             animate="animate"
-            //             exit="exit"
-            //             transition={transition}
-            //         >
-            //             <BarChoiceRatingFieldConfig />
-            //         </motion.div>
-            // );
-
-            // case QuestionType.imageChoiceRating:
-            //     return (
-            //         <motion.div
-            //             key={uniqueKey}
-            //             variants={fadeInVariants}
-            //             initial="initial"
-            //             animate="animate"
-            //             exit="exit"
-            //             transition={transition}
-            //         >
-            //             <ImageChoiceRatingFieldConfig />
-            //         </motion.div>
-            //     );
+            case QuestionType.SCREEN_END:
+            case QuestionType.SCREEN_WELCOME:
+            case QuestionType.SCREEN_STATEMENT:
+                return null;
 
             default:
                 return (
