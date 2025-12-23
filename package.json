@@ -56,6 +56,7 @@
     "react-day-picker": "^9.8.1",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.61.1",
+    "react-sortable-hoc": "^2.0.0",
     "recharts": "^2.15.4",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
