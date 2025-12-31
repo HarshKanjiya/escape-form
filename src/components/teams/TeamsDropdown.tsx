@@ -118,7 +118,7 @@ export default function TeamsDropdown() {
                         </DropdownMenuLabel>
                     )
                 }
-                <DropdownMenuSeparator className="dark:bg-zinc-700" />
+                {/* <DropdownMenuSeparator className="dark:bg-zinc-700" />
                 <div className="-m-1 bg-muted">
                     <AddTeam>
                         <Button variant="ghost" className="w-full justify-start">
@@ -126,7 +126,7 @@ export default function TeamsDropdown() {
                             <span>Create New Team</span>
                         </Button>
                     </AddTeam>
-                </div>
+                </div> */}
             </DropdownMenuContent>
         </DropdownMenu>
     )

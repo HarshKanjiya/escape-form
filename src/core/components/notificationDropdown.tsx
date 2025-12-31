@@ -38,9 +38,9 @@ const NotificationDropdown = () => {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className="relative">
-                    <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
+                    {/* <Badge className="shadow-none rounded-full aspect-square absolute -top-2 -right-2 p-1.5 text-xs flex items-center justify-center text-white">
                         1
-                    </Badge>
+                    </Badge> */}
                     <Button variant='outline' size='icon' className="shadow-none">
                         <BellIcon className="w-4 h-4" />
                     </Button>

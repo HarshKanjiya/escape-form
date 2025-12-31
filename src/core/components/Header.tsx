@@ -103,9 +103,9 @@ export default function Header({ }) {
 
                 {/* <AssistantTrigger /> */}
                 <NotificationDropdown />
-                <Button variant='outline' size='icon' className="shadow-none">
+                {/* <Button variant='outline' size='icon' className="shadow-none">
                     <SparklesIcon className="w-4 h-4" />
-                </Button>
+                </Button> */}
                 <Separator orientation="vertical" className="h-7!" />
                 <FeedbackModel />
                 <ProfileDropdown />

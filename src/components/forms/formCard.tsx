@@ -20,7 +20,10 @@ interface FormCardProps {
 export function FormCard({ form, projectId, teamId }: FormCardProps) {
 
     return (
-        <Link href={ROUTES.form.analytics(teamId, projectId, form.id as string)} className="block p-0 m-0 outline-none group">
+        // href={ROUTES.form.analytics(teamId, projectId, form.id as string)}
+        <Link
+            href={ROUTES.form.edit(teamId, projectId, form.id as string)}
+            className="block p-0 m-0 outline-none group">
             <CustomCard hoverEffect className="group group-focus-visible:outline-none group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2">
                 <CustomCardContent className="h-34">
                     <div className="flex items-start space-x-4 w-full">
