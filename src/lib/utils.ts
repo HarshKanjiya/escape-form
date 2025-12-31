@@ -24,7 +24,6 @@ export const showToast = (message: string, description?: string, type: 'success'
     action: true,
     cancel: true,
     position: 'bottom-right',
-    invert: true,
     richColors: true,
   });
 }
