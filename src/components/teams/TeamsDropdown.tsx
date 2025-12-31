@@ -75,7 +75,7 @@ export default function TeamsDropdown() {
                         type="text"
                         autoFocus
                         placeholder="Search teams..."
-                        className="pl-10 pr-10 shadow-none !border-none !outline-none focus-within:!ring-0"
+                        className="pl-10 pr-10 shadow-none border-none! outline-none! focus-within:ring-0!"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
