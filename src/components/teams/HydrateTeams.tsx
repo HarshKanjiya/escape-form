@@ -33,7 +33,7 @@ export default function HydrateTeams({ children, teams }: Props) {
     useEffect(() => {
         if (!teams?.length) {
             setTeams([]);
-            router.replace(ROUTES.team.create());
+            // router.replace(ROUTES.team.create());
         }
         setTeams(teams ?? []);
     }, []);

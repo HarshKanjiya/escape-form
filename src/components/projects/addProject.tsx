@@ -17,6 +17,7 @@ import { Button } from "../ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { showSuccess } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3, 'Project name must be at least 3 characters').max(30, 'Project name must be less than 30 characters'),
@@ -54,6 +55,7 @@ export default function AddProject({ onSuccess }: Props = {}) {
             }
             projectForm.reset();
             setDialogOpen(false);
+            showSuccess("Project created successfully");
             onSuccess?.();
         } catch (error) {
             console.error('Error creating project:', error);

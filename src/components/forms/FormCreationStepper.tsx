@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { apiConstants } from "@/constants/api.constants";
 import { FormType, Form as IForm } from "@prisma/client";
 import api from "@/lib/axios";
-import { cn } from "@/lib/utils";
+import { cn, showSuccess } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from 'framer-motion';
@@ -304,7 +304,7 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                 </CustomCardHeader>
                 <CustomCardContent>
                     {/* Search and Filter Controls */}
-                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between w-full mb-6">
+                    {/* <div className="flex flex-col sm:flex-row gap-4 items-center justify-between w-full mb-6">
                         <div className="relative flex-1 max-w-md">
                             <Input
                                 placeholder="Search templates..."
@@ -332,15 +332,15 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                                 </Button>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="grid lg:grid-cols-4 gap-8">
+                    <div className="grid w-full gap-8">
                         {/* Start from Scratch Card - Enhanced */}
                         <div className="lg:col-span-1">
                             <div className={cn(
                                 "h-full transition-all duration-300 cursor-pointer group border-2 hover:shadow-xl rounded-xl",
                                 selectedTemplate === 'scratch'
-                                    ? "border-primary shadow-lg scale-[1.02]"
+                                    ? "border-primary"
                                     : "border-border hover:border-primary/50"
                             )}
                                 onClick={onFromScratch}>
@@ -364,116 +364,14 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                                             Blank Canvas
                                         </Badge>
                                     </div>
-                                    {selectedTemplate === 'scratch' && (
-                                        <div className="absolute top-3 right-3">
-                                            <CheckCircle className="w-5 h-5 text-primary" />
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
 
                         {/* Templates Grid */}
-                        <div className="lg:col-span-3">
+                        {/* <div className="lg:col-span-3">
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-2">
                                 {filteredTemplates.map((template) => (
-                                    // <div
-                                    //     key={template.id}
-                                    //     className={cn(
-                                    //         "group cursor-pointer transition-all duration-300 hover:shadow-lg border-2 relative overflow-hidden py-0 rounded-xl",
-                                    //         selectedTemplate === template.id
-                                    //             ? "border-primary shadow-md"
-                                    //             : "border-border hover:border-primary/50"
-                                    //     )}
-                                    //     onClick={() => onTemplateSelect(template.id)}
-                                    // >
-                                    //     <div className="absolute top-0 left-0 z-20 bg-accent p-1 rounded-br-lg flex gap-2">
-                                    //         {template.isPro && (
-                                    //             <Badge variant="default" className="text-xs bg-gradient-to-r from-orange-500 to-pink-500">
-                                    //                 Pro
-                                    //             </Badge>
-                                    //         )}
-                                    //         <Badge variant="outline" className="text-xs">
-                                    //             {template.category}
-                                    //         </Badge>
-                                    //     </div>
-
-                                    //     {/* Selected Indicator */}
-                                    //     {selectedTemplate === template.id && (
-                                    //         <div className="absolute top-2 right-2 z-20">
-                                    //             <div className="bg-primary text-primary-foreground rounded-full p-1">
-                                    //                 <CheckCircle className="w-4 h-4" />
-                                    //             </div>
-                                    //         </div>
-                                    //     )}
-
-                                    //     {/* Template Preview */}
-                                    //     <div className="relative h-32 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
-                                    //         {/* Template-specific background patterns */}
-                                    //         <div className="absolute inset-0 opacity-10">
-                                    //             {template.category === 'Business' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Research' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Events' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Marketing' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600"></div>
-                                    //             )}
-                                    //             {template.category === 'HR' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Support' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Sales' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500 to-pink-600"></div>
-                                    //             )}
-                                    //             {template.category === 'Education' && (
-                                    //                 <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"></div>
-                                    //             )}
-                                    //         </div>
-
-                                    //         {/* Decorative form elements */}
-                                    //         <div className="absolute top-3 left-3 w-16 h-1 bg-white/40 dark:bg-gray-400/40 rounded transition-all duration-300 group-hover:w-20"></div>
-                                    //         <div className="absolute top-6 left-3 w-12 h-1 bg-white/30 dark:bg-gray-400/30 rounded transition-all duration-300 group-hover:w-16"></div>
-                                    //         <div className="absolute bottom-3 left-3 right-3 h-6 bg-white/20 dark:bg-gray-400/20 rounded transition-all duration-300 group-hover:bg-white/30 dark:group-hover:bg-gray-400/30"></div>
-                                    //         <div className="absolute bottom-11 left-3 right-8 h-3 bg-white/15 dark:bg-gray-400/15 rounded transition-all duration-300"></div>
-                                    //     </div>
-
-                                    //     <div className="p-4 flex items-center justify-between gap-3 pt-4">
-                                    //         <div className="space-y-2">
-                                    //             <div className="flex items-center justify-between">
-                                    //                 <h3 className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors">
-                                    //                     {template.name}
-                                    //                 </h3>
-                                    //             </div>
-                                    //             <p className="text-xs text-muted-foreground line-clamp-1">
-                                    //                 {template.description}
-                                    //             </p>
-                                    //         </div>
-                                    //         <a
-                                    //             onClick={(event) => event.stopPropagation()}
-                                    //             href="https://www.youtube.com"
-                                    //             target="_blank"
-                                    //             rel="noopener noreferrer"
-                                    //         >
-                                    //             <Tooltip >
-                                    //                 <TooltipTrigger>
-                                    //                     <div className="p-2 rounded-md bg-primary text-sm">
-                                    //                         <ExternalLink size={20} />
-                                    //                     </div>
-                                    //                 </TooltipTrigger>
-                                    //                 <TooltipContent>
-                                    //                     Preview
-                                    //                 </TooltipContent>
-                                    //             </Tooltip>
-                                    //         </a>
-                                    //     </div>
-                                    // </div>
                                     <CustomCard
                                         key={template.id}
                                         className={cn(
@@ -488,7 +386,6 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                                         </CustomCardHeader>
                                         <CustomCardContent>
                                             <div className="relative h-32 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
-                                                {/* Template-specific background patterns */}
                                                 <div className="absolute inset-0 opacity-10">
                                                     {template.category === 'Business' && (
                                                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
@@ -515,7 +412,6 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                                                         <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"></div>
                                                     )}
                                                 </div>
-                                                {/* Decorative form elements */}
                                                 <div className="absolute top-3 left-3 w-16 h-1 bg-white/40 dark:bg-gray-400/40 rounded transition-all duration-300 group-hover:w-20"></div>
                                                 <div className="absolute top-6 left-3 w-12 h-1 bg-white/30 dark:bg-gray-400/30 rounded transition-all duration-300 group-hover:w-16"></div>
                                                 <div className="absolute bottom-3 left-3 right-3 h-6 bg-white/20 dark:bg-gray-400/20 rounded transition-all duration-300 group-hover:bg-white/30 dark:group-hover:bg-gray-400/30"></div>
@@ -540,18 +436,19 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
                                     </p>
                                 </div>
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 </CustomCardContent>
                 <CustomCardFooter>
 
                     <div className="text-center text-sm text-muted-foreground w-full">
-                        {filteredTemplates.length > 0 && (
+                        Tempaltes coming soon!
+                        {/* {filteredTemplates.length > 0 && (
                             <p>
                                 Showing {filteredTemplates.length} of {templates.length} templates
                                 {selectedCategory !== "All" && ` in ${selectedCategory}`}
                             </p>
-                        )}
+                        )} */}
                     </div>
                 </CustomCardFooter>
             </CustomCard>
@@ -647,6 +544,7 @@ export function FormCreationStepper() {
                 toast.error(response.data?.message || "Failed to create form");
                 return;
             }
+            showSuccess("Form created successfully!");
             router.push(ROUTES.form.edit(form.teamId, form.projectId, form.id))
 
         }

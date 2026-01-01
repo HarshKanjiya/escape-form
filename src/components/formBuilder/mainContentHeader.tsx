@@ -56,12 +56,12 @@ export default function MainContentHeader() {
     }
 
     const copyUrl = () => {
-        navigator.clipboard.writeText(`https://${dataSource.uniqueSubdomain}.escform.com`);
+        navigator.clipboard.writeText(`https://form.escform.com/f/${dataSource.uniqueSubdomain}`);
         showSuccess("URL Copied");
     }
 
     const openUrl = () => {
-        window.open(`https://${dataSource.uniqueSubdomain}.escform.com`, '_blank');
+        window.open(`https://form.escform.com/f/${dataSource.uniqueSubdomain}`, '_blank');
     }
 
     return (
@@ -201,7 +201,7 @@ export default function MainContentHeader() {
                         <div className="w-full text-center">
                             <div className="flex items-center justify-center gap-2">
                                 <p className="text-sm flex items-center justify-center px-8 h-9 rounded-md border border-input">
-                                    {dataSource.uniqueSubdomain}.escform.com
+                                    form.escform.com/f/{dataSource.uniqueSubdomain}.
                                 </p>
                                 <Tooltip>
                                     <TooltipTrigger asChild>

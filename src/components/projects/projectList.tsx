@@ -151,7 +151,7 @@ export function ProjectList({ teamId }: ProjectListProps) {
                 {projects.length} project{projects.length !== 1 ? 's' : ''} total
             </div>
 
-            {(!projects?.length && !loading) ? <ProjectEmptyState searchQuery={searchQuery} /> :
+            {(!projects?.length && !loading) ? <ProjectEmptyState searchQuery={searchQuery} getProjects={() => getProjects()} /> :
                 viewMode === LIST_VIEW_TYPE.GRID ?
                     <ProjectGridView projects={projects} loading={loading} /> : <ProjectTableView projects={projects} teamId={teamId} loading={loading} />
             }

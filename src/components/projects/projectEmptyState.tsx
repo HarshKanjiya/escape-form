@@ -2,7 +2,7 @@ import { Folder } from "lucide-react";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import AddProject from "./addProject";
 
-function ProjectEmptyState({ searchQuery }: { searchQuery: string }) {
+function ProjectEmptyState({ searchQuery, getProjects }: { searchQuery: string, getProjects: () => void }) {
     return (
         <Empty>
             <EmptyHeader>
@@ -25,7 +25,7 @@ function ProjectEmptyState({ searchQuery }: { searchQuery: string }) {
             </EmptyHeader>
             <EmptyContent>
                 {!searchQuery && (
-                    <AddProject />
+                    <AddProject onSuccess={() => getProjects()} />
                 )}
             </EmptyContent>
         </Empty>

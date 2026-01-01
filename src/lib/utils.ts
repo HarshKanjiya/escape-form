@@ -23,8 +23,7 @@ export const showToast = (message: string, description?: string, type: 'success'
     duration: 3000,
     action: true,
     cancel: true,
-    position: 'bottom-right',
-    richColors: true,
+    position: 'top-center',
   });
 }
 

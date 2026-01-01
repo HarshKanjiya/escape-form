@@ -33,6 +33,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         where: { ownerId: userId },
         orderBy: { createdAt: 'desc' },
       });
+      if (teams.length === 0) {
+        const newTeam = await prisma.team.create({
+          data: {
+            name: "Personal Team",
+            ownerId: userId,
+          },
+        });
+        teams = [newTeam];
+      }
     } catch (error) {
       console.error('Error fetching teams:', error);
       teams = [];
