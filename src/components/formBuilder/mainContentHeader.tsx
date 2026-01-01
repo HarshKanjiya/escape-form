@@ -201,7 +201,7 @@ export default function MainContentHeader() {
                         <div className="w-full text-center">
                             <div className="flex items-center justify-center gap-2">
                                 <p className="text-sm flex items-center justify-center px-8 h-9 rounded-md border border-input">
-                                    form.escform.com/f/{dataSource.uniqueSubdomain}.
+                                    form.escform.com/f/{dataSource.uniqueSubdomain}
                                 </p>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
