@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <SignedOut>
               {children}
             </SignedOut>
-            <Toaster position="bottom-right" duration={3000} />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

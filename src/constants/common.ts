@@ -1,4 +1,6 @@
 import { CountryOption } from "@/types/common";
+import { QuestionType } from "@prisma/client";
+import { BookIcon, CalendarIcon, CaseSensitiveIcon, CheckIcon, ChevronsUpDownIcon, CircleDotIcon, FileStackIcon, HashIcon, Link2Icon, ListOrderedIcon, MailIcon, MapPinIcon, PhoneIcon, ScaleIcon, Star, StarIcon, ToggleRightIcon } from "lucide-react";
 
 export const COUNTRIES: CountryOption[] = [
     { code: "US", dialCode: "+1", name: "United States", flag: "🇺🇸" },
@@ -33,3 +35,42 @@ export const THEMES = {
     dark: 'dark',
     system: 'system'
 }
+
+export const QUESTION_TYPES = [
+    // COMMON 
+    { value: QuestionType.TEXT_SHORT, label: "Short Text", icon: CaseSensitiveIcon },
+    { value: QuestionType.TEXT_LONG, label: "Long Text", icon: CaseSensitiveIcon },
+    { value: QuestionType.NUMBER, label: "Number", icon: HashIcon },
+    { value: QuestionType.DATE, label: "Date", icon: CalendarIcon },
+    // { value: QuestionType.FILE_IMAGE_OR_VIDEO, label: "pending", icon: StarIcon },               // FUTURE
+    // { value: QuestionType.FILE_ANY, label: "File Upload", icon: FileTextIcon },                  // FUTURE
+    { value: QuestionType.LEAGAL, label: "Leagal", icon: ScaleIcon },
+    // { value: QuestionType.REDIRECT_TO_URL, label: "pending", icon: Star },
+
+    // CHOICE
+    { value: QuestionType.CHOICE_SINGLE, label: "Single Choice", icon: CircleDotIcon },
+    { value: QuestionType.CHOICE_CHECKBOX, label: "Checkbox", icon: CheckIcon },
+    { value: QuestionType.CHOICE_BOOL, label: "Yes/No", icon: ToggleRightIcon },
+    { value: QuestionType.CHOICE_DROPDOWN, label: "Dropdown", icon: ChevronsUpDownIcon },
+    { value: QuestionType.CHOICE_MULTIPLE, label: "Multiple Choice", icon: FileStackIcon },
+    // { value: QuestionType.CHOICE_PICTURE, label: "pending", icon: Star },                        // FUTURE
+
+    // INFO
+    { value: QuestionType.INFO_EMAIL, label: "Email", icon: MailIcon },
+    { value: QuestionType.INFO_PHONE, label: "Phone", icon: PhoneIcon },
+    { value: QuestionType.INFO_URL, label: "Website", icon: Link2Icon },
+
+    // USER
+    { value: QuestionType.USER_DETAIL, label: "Details", icon: BookIcon },
+    { value: QuestionType.USER_ADDRESS, label: "Address", icon: MapPinIcon },
+
+    // RATING
+    { value: QuestionType.RATING_RANK, label: "Rank rating", icon: HashIcon },
+    { value: QuestionType.RATING_ZERO_TO_TEN, label: "Rating board", icon: ListOrderedIcon },
+    { value: QuestionType.RATING_STAR, label: "Star Rating", icon: StarIcon },
+
+    // SCREENS
+    { value: QuestionType.SCREEN_WELCOME, label: "Welcome Screen", icon: Star },
+    { value: QuestionType.SCREEN_END, label: "End Screen", icon: Star },
+    { value: QuestionType.SCREEN_STATEMENT, label: "Statement Screen", icon: Star },
+]

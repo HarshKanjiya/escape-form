@@ -98,8 +98,8 @@ const fields: IFieldSet[] = [
             { id: QuestionType.TEXT_LONG, label: 'Long Text', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['text', 'paragraph'] },
             { id: QuestionType.NUMBER, label: 'Number', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['numeric', 'integer'] },
             { id: QuestionType.DATE, label: 'Date', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['calendar', 'time'] },
-            { id: QuestionType.FILE_ANY, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
-            { id: QuestionType.FILE_IMAGE_OR_VIDEO, label: 'Image or Video', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
+            // { id: QuestionType.FILE_ANY, label: 'File Upload', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
+            // { id: QuestionType.FILE_IMAGE_OR_VIDEO, label: 'Image or Video', accent: 'bg-fuchsia-400/50 dark:bg-fuchsia-400/30', keywords: ['attachment', 'upload'] },
         ]
     },
     {
@@ -111,7 +111,7 @@ const fields: IFieldSet[] = [
             { id: QuestionType.CHOICE_DROPDOWN, label: 'Dropdown', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
             { id: QuestionType.CHOICE_BOOL, label: 'Yes/No', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
             { id: QuestionType.CHOICE_CHECKBOX, label: 'Checkbox', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25' },
-            { id: QuestionType.CHOICE_PICTURE, label: 'Picture Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['image', 'option'] },
+            // { id: QuestionType.CHOICE_PICTURE, label: 'Picture Choice', accent: 'bg-emerald-400/40 dark:bg-emerald-400/25', keywords: ['image', 'option'] },
         ]
     },
     {
@@ -148,7 +148,7 @@ const fields: IFieldSet[] = [
         description: 'Specialized question types',
         items: [
             { id: QuestionType.LEAGAL, label: 'Legal Consent', accent: 'bg-red-400/50 dark:bg-red-400/25', keywords: ['terms', 'agreement'] },
-            { id: QuestionType.REDIRECT_TO_URL, label: 'Redirect to URL', accent: 'bg-red-400/50 dark:bg-red-400/25', keywords: ['link', 'redirect'] },
+            // { id: QuestionType.REDIRECT_TO_URL, label: 'Redirect to URL', accent: 'bg-red-400/50 dark:bg-red-400/25', keywords: ['link', 'redirect'] },
         ]
     }
 ];
