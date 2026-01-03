@@ -4,8 +4,8 @@ import { DatePicker } from "@/components/ui/datePicker";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { AnimatePresence, motion } from "motion/react";
 import { Info } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 export function DateFieldConfig() {
@@ -67,6 +67,34 @@ export function DateFieldConfig() {
         setMaxDateValidation(value);
     }
 
+    const onMinDateChange = (date: Date | undefined) => {
+        setTouched(true);
+        const newDate = date || null;
+        setMinDate(newDate);
+        if (selectedQuestion?.id && newDate) {
+            updateQuestion(selectedQuestion.id, {
+                metadata: {
+                    ...selectedQuestion?.metadata,
+                    min: minDateValidation ? newDate : undefined
+                }
+            });
+        }
+    }
+
+    const onMaxDateChange = (date: Date | undefined) => {
+        setTouched(true);
+        const newDate = date || null;
+        setMaxDate(newDate);
+        if (selectedQuestion?.id && newDate) {
+            updateQuestion(selectedQuestion.id, {
+                metadata: {
+                    ...selectedQuestion?.metadata,
+                    max: maxDateValidation ? newDate : undefined
+                }
+            });
+        }
+    }
+
 
     return (
         <div className="flex flex-col overflow-y-clip pb-1">
@@ -88,18 +116,8 @@ export function DateFieldConfig() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                     >
-                        <DatePicker className="mb-3 " ref={minDateRef} maxDate={maxDate || undefined} value={minDate || undefined} onChange={(date) => setMinDate(date || null)} />
+                        <DatePicker className="mb-3 " ref={minDateRef} maxDate={maxDate || undefined} value={minDate || undefined} onChange={onMinDateChange} />
                     </motion.div>
-                }
-            </AnimatePresence>
-            <AnimatePresence mode="wait" initial={false}>
-                {
-                    (minDateValidation && selectedQuestion?.metadata?.max) &&
-                    <motion.small
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        layout key='min-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of 0 - {Number(selectedQuestion?.metadata?.max)}</motion.small>
                 }
             </AnimatePresence>
             <div className="flex items-center justify-between pt-3">
@@ -116,21 +134,10 @@ export function DateFieldConfig() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                     >
-                        <DatePicker className="mt-3" ref={maxDateRef} minDate={minDate || undefined} value={maxDate || undefined} onChange={(date) => setMaxDate(date || null)} />
+                        <DatePicker className="mt-3" ref={maxDateRef} minDate={minDate || undefined} value={maxDate || undefined} onChange={onMaxDateChange} />
                     </motion.div>
                 }
             </AnimatePresence>
-            <AnimatePresence mode="wait" initial={false}>
-                {
-                    (minDateValidation && selectedQuestion?.metadata?.min) &&
-                    <motion.small
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        layout key='max-warning' className="text-sm text-yellow-400/60 font-normal not-italic flex items-center gap-2 mt-2"><Info size={14} /> Must be in the range of {Number(selectedQuestion?.metadata?.min)} - 999999</motion.small>
-                }
-            </AnimatePresence>
-
         </div>
     );
 }

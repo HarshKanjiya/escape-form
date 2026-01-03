@@ -1,5 +1,5 @@
 import { QuestionType } from "@prisma/client";
-import { Book, Calendar, CaseSensitive, ChevronDownIcon, CircleDot, FileStackIcon, FileText, GalleryHorizontalEndIcon, GalleryHorizontalIcon, Hash, HashIcon, ImageIcon, ImagesIcon, Link2, Link2Icon, ListOrderedIcon, LucideIcon, Mail, MapPin, Phone, ScaleIcon, SquareCheckBig, Star, StarIcon, ToggleRightIcon, Trash2 } from "lucide-react";
+import { Book, Calendar, CaseSensitive, ChevronDownIcon, CircleDot, FileStackIcon, FileText, GalleryHorizontalEndIcon, GalleryHorizontalIcon, Hash, HashIcon, ImageIcon, ImagesIcon, Link2, Link2Icon, ListOrderedIcon, LucideIcon, Mail, MapPin, Phone, ScaleIcon, SquareCheckIcon, StarIcon, ToggleRightIcon } from "lucide-react";
 
 const iconMapping: Record<QuestionType, LucideIcon> = {
     [QuestionType.USER_DETAIL]: Book,
@@ -16,7 +16,7 @@ const iconMapping: Record<QuestionType, LucideIcon> = {
     [QuestionType.CHOICE_SINGLE]: CircleDot,
     [QuestionType.CHOICE_MULTIPLE]: FileStackIcon,
     [QuestionType.CHOICE_PICTURE]: ImageIcon,
-    [QuestionType.CHOICE_CHECKBOX]: SquareCheckBig,
+    [QuestionType.CHOICE_CHECKBOX]: SquareCheckIcon,
     [QuestionType.CHOICE_BOOL]: ToggleRightIcon,
     [QuestionType.CHOICE_DROPDOWN]: ChevronDownIcon,
 
