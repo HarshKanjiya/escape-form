@@ -15,9 +15,9 @@ interface CustomPaginationProps {
 
 const CustomPagination = ({ page, limit, totalItems, loading, onChange }: CustomPaginationProps) => {
 
-    if (loading || totalItems === 0 || limit <= Number(process.env.DEFAULT_PAGINATION_LIMIT || 10)) {
-        return null
-    }
+    // if (loading || totalItems === 0 || totalItems <= Number(process.env.DEFAULT_PAGINATION_LIMIT || 10)) {
+    //     return null
+    // }
 
     const totalPages = Math.ceil(totalItems / limit);
 

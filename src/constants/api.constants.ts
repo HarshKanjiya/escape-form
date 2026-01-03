@@ -43,6 +43,9 @@ export const apiConstants = {
     dashboard: {
         getAnalytics: (formId: string) => `dashboard/${formId}/analytics`,
         getResponses: (formId: string, data: Record<string, string | number> = {}) => getUrlWithParams(`dashboard/${formId}/responses`, data),
+        getQuestions: (formId: string) => `dashboard/${formId}/questions`,
+        settings: (formId: string) => `dashboard/${formId}/settings`,
+
     },
 
 };

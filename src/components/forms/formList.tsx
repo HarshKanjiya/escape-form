@@ -39,7 +39,7 @@ export function FormList() {
     if (!isValidUUID(teamId) || !isValidUUID(projectId)) {
         redirect(ERROR_ROUTES.NOT_FOUND);
     }
-    const { page, limit, totalItems, onPaginationChange } = usePagination();
+    const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
     useEffect(() => {
         getForms();
@@ -70,6 +70,7 @@ export function FormList() {
                 return;
             }
             setForms(res.data.data || []);
+            setTotalItems(res.data.totalItems || 0);
         }
         catch (error) {
             console.error("Error fetching forms:", error);

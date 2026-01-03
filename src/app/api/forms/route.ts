@@ -15,21 +15,30 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const projectId = request.nextUrl.searchParams.get('projectId') || '';
     if (!projectId) return getErrorResponse('projectId is required')
 
-    const forms = await prisma.form.findMany({
-        where: { projectId: projectId },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        skip: offset,
-        include: {
-            _count: {
-                select: {
-                    responses: true
+    const [forms, total] = await Promise.all([
+        prisma.form.findMany({
+            where: { projectId: projectId },
+            orderBy: { createdAt: 'desc' },
+            take: limit,
+            skip: offset,
+            include: {
+                _count: {
+                    select: {
+                        responses: true
+                    }
                 }
             }
-        }
-    })
+        }),
+        prisma.form.count({
+            where: {
+                projectId: projectId,
+                valid: true
+            }
+        })
+    ]);
 
-    return getSuccessResponse(forms, getSuccessMessage('Forms'));
+
+    return getSuccessResponse(forms, getSuccessMessage('Forms'), total);
 
 })
 

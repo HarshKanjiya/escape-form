@@ -23,14 +23,19 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         };
     }
 
-    const teams = await prisma.team.findMany({
-        where,
-        orderBy: { [orderBy]: orderDirection },
-        take: limit,
-        skip: offset,
-    })
+    const [teams, total] = await Promise.all([
+        prisma.team.findMany({
+            where,
+            orderBy: { [orderBy]: orderDirection },
+            take: limit,
+            skip: offset,
+        }),
+        prisma.team.count({
+            where,
+        })
+    ]);
 
-    return getSuccessResponse(teams, getSuccessMessage('Teams'));
+    return getSuccessResponse(teams, getSuccessMessage('Teams'), total);
 });
 
 export const POST = withErrorHandler(async (request: NextRequest) => {

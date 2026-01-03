@@ -395,10 +395,34 @@ table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 12px !important;
 }
 
+.not-rounded-table tbody tr:first-child td:first-child {
+  border-top-left-radius: 0 !important;
+}
+.not-rounded-table tbody tr:first-child td:last-child {
+  border-top-right-radius: 0 !important;
+}
+.not-rounded-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 0 !important;
+}
+.not-rounded-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 0 !important;
+}
+
+
 table thead tr {
   border: none !important;
 }
 
 .table-header tr:hover {
   background: transparent !important;
+}
+
+/* Hide scrollbar while keeping functionality */
+.scrollbar-invisible {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-invisible::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

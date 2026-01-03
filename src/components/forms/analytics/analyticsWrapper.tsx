@@ -99,41 +99,40 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                         </TabsTrigger>
                     </TabsList>
                 </div>
-                <ScrollArea className="h-[calc(100vh-300px)] pr-4">
-                    <TabsContent value="overview" className="px-0 py-4">
-                        <motion.div
-                            key="overview-tab"
-                            initial={{ opacity: 0, }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <FormOverview form={formDetails} />
-                        </motion.div>
-                    </TabsContent>
-                    <TabsContent value="submissions" className="px-0 py-4">
-                        <motion.div
-                            key="submissions-tab"
-                            initial={{ opacity: 0, }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <FormResponses form={formDetails} />
-                        </motion.div>
-                    </TabsContent>
-                    <TabsContent value="security" className="px-0 py-4">
-                        <motion.div
-                            key="security-tab"
-                            initial={{ opacity: 0, }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <FormSecurity />
-                        </motion.div>
-                    </TabsContent>
-                    {/* <TabsContent value="connect" className="px-0 py-4">
+                <TabsContent value="overview" className="px-0 py-4">
+                    <motion.div
+                        key="overview-tab"
+                        initial={{ opacity: 0, }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <FormOverview form={formDetails} />
+                    </motion.div>
+                </TabsContent>
+                <TabsContent value="submissions" className="px-0 py-4">
+                    <motion.div
+                        key="submissions-tab"
+                        initial={{ opacity: 0, }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <FormResponses form={formDetails} />
+                    </motion.div>
+                </TabsContent>
+                <TabsContent value="security" className="px-0 py-4">
+                    <motion.div
+                        key="security-tab"
+                        initial={{ opacity: 0, }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <FormSecurity />
+                    </motion.div>
+                </TabsContent>
+                {/* <TabsContent value="connect" className="px-0 py-4">
                         <motion.div
                             key="connect-tab"
                             initial={{ opacity: 0, }}
@@ -144,18 +143,17 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                             <FormConnect />
                         </motion.div>
                     </TabsContent> */}
-                    <TabsContent value="settings" className="px-0 py-4">
-                        <motion.div
-                            key="settings-tab"
-                            initial={{ opacity: 0, }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <FormSettings />
-                        </motion.div>
-                    </TabsContent>
-                </ScrollArea>
+                <TabsContent value="settings" className="px-0 py-4">
+                    <motion.div
+                        key="settings-tab"
+                        initial={{ opacity: 0, }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <FormSettings />
+                    </motion.div>
+                </TabsContent>
             </Tabs>
         </div >
     );
