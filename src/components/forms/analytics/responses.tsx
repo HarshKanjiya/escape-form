@@ -146,81 +146,9 @@ export default function FormResponses({ form }: FormResponsesProps) {
                     </div>
                 </div>
             )}
+            <div className="flex w-full justify-between">
 
-            {/* Responses Table */}
-
-            {/* <Table>
-                <TableHeader>
-                    <TableRow className="relative">
-                        <TableHead className="sticky left-1 z-10 bg-background w-12 border-r shadow-sm flex items-center justify-center rounded-none p-0">
-                            <Checkbox
-                                checked={selectedRows.size === data.length && data.length > 0}
-                                onCheckedChange={toggleAllRows}
-                                aria-label="Select all responses"
-                            />
-                        </TableHead>
-                        <TableHead className="w-32">Duration</TableHead>
-                        <TableHead className="w-32">Status</TableHead>
-                        <TableHead className="w-44">Submitted At</TableHead>
-                        {questions.map((question) => (
-                            <TableHead key={question.id} className="min-w-[200px]">
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="font-medium">{question.title}</span>
-                                    <span className="text-xs text-muted-foreground font-normal">
-                                        {question.type.replace(/_/g, " ").toLowerCase()}
-                                    </span>
-                                </div>
-                            </TableHead>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody className="relative">
-                    {data.map((resp, ind) => (
-                        <TableRow
-                            key={resp.id}
-                            className={cn(
-                                "transition-colors relative",
-                                selectedRows.has(resp.id) && "bg-muted/50"
-                            )}
-                        >
-                            <TableCell className="sticky left-1 z-10 bg-background flex items-center justify-center rounded-none!">
-                                <Checkbox
-                                    checked={selectedRows.has(resp.id)}
-                                    onCheckedChange={() => toggleRowSelection(resp.id)}
-                                    aria-label={`Select response ${ind + 1}`}
-                                />
-                            </TableCell>
-                            <TableCell className="font-mono text-sm">
-                                {formatDuration(resp.startedAt, resp.submittedAt)}
-                            </TableCell>
-                            <TableCell>
-                                <Badge
-                                    variant="outline"
-                                    className={cn(
-                                        "capitalize font-medium",
-                                        getStatusColor(resp.status)
-                                    )}
-                                >
-                                    {resp.status || "Unknown"}
-                                </Badge>
-                            </TableCell>
-                            <TableCell className="text-sm text-muted-foreground">
-                                {resp.submittedAt
-                                    ? format(new Date(resp.submittedAt), "MMM dd, yyyy HH:mm")
-                                    : "Not submitted"}
-                            </TableCell>
-                            {questions.map((question) => {
-                                const ans = responses[ind]?.[question.id];
-                                return (
-                                    <TableCell key={question.id} className="align-top">
-                                        {renderAnswer(question, ans)}
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table> */}
+            </div>
 
             <Table parentClassName="p-0! overflow-auto scrollbar-invisible" className="not-rounded-table">
                 <TableHeader>
@@ -233,8 +161,7 @@ export default function FormResponses({ form }: FormResponsesProps) {
                             />
                         </TableHead>
                         <TableHead className="sticky w-36 left-[50px] bg-background py-4">Duration</TableHead>
-                        <TableHead className="bg-background py-4">Duration</TableHead>
-                        <TableHead className="bg-background py-4">Duration</TableHead>
+                        <TableHead className="bg-background h-full py-6 flex items-center justify-center">Status</TableHead>
                         {questions.map((question) => (
                             <TableHead key={question.id} className="min-w-[200px] py-4">
                                 <div className="flex flex-col gap-0.5">
@@ -302,13 +229,13 @@ export default function FormResponses({ form }: FormResponsesProps) {
 const getStatusColor = (status?: string | null) => {
     switch (status?.toLowerCase()) {
         case "completed":
-            return "bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800";
+            return "text-green-700 border-green-200  dark:text-primary-600 dark:border-primary-400/40 font-mono";
         case "partial":
-            return "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950 dark:text-yellow-300 dark:border-yellow-800";
+            return "text-yellow-700 border-yellow-200 dark:border-yellow-800";
         case "abandoned":
-            return "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-950 dark:text-gray-300 dark:border-gray-800";
+            return "text-gray-700 border-gray-200 dark:border-gray-800";
         case "started":
-            return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800";
+            return "text-blue-700 border-blue-200 dark:border-blue-800";
         default:
             return "";
     }
@@ -316,7 +243,7 @@ const getStatusColor = (status?: string | null) => {
 
 const renderAnswer = (question: Question, answer: any) => {
     if (answer === undefined || answer === null || answer === "") {
-        return <span className="text-muted-foreground italic text-sm">No response</span>;
+        return <span className="text-muted-foreground italic text-sm">-</span>;
     }
 
     const answerValue = answer;
