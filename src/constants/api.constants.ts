@@ -39,7 +39,11 @@ export const apiConstants = {
         addEdge: (formId: string) => `forms/${formId}/edges`,
         updateEdge: (formId: string, edgeId: string) => `forms/${formId}/edges/${edgeId}`,
         deleteEdge: (formId: string, edgeId: string) => `forms/${formId}/edges/${edgeId}`,
-    }
+    },
+    dashboard: {
+        getAnalytics: (formId: string) => `dashboard/${formId}/analytics`,
+        getResponses: (formId: string, data: Record<string, string | number> = {}) => getUrlWithParams(`dashboard/${formId}/responses`, data),
+    },
 
 };
 

@@ -108,7 +108,7 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <FormOverview />
+                            <FormOverview form={formDetails} />
                         </motion.div>
                     </TabsContent>
                     <TabsContent value="submissions" className="px-0 py-4">
@@ -119,7 +119,7 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <FormResponses />
+                            <FormResponses form={formDetails} />
                         </motion.div>
                     </TabsContent>
                     <TabsContent value="security" className="px-0 py-4">

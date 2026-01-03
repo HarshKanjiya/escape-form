@@ -25,7 +25,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("text-accent-foreground/70", className)}
+      className={cn("text-accent-foreground/70 table-header", className)}
       {...props}
     />
   )

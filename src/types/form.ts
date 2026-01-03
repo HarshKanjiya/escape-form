@@ -70,6 +70,24 @@ export interface IThankYouScreen {
     description?: string;
 }
 
+export interface IAnalyticsDataPoint {
+    month: string;
+    Unfinished: number;
+    Completed: number;
+}
+
+export interface IFormAnalytics {
+    responseCount: number;
+    avgCompletionTime: number; // in seconds
+    minCompletionTime: number; // in seconds
+    maxCompletionTime: number; // in seconds
+    opened: number;
+    submitted: number;
+    completionRate: number; // in percentage
+    todayResponseCount: number;
+    submitDataPoints: IAnalyticsDataPoint[];
+}
+
 export const fileTypes = [
     { label: 'Image (JPEG)', value: 'image/jpeg' },
     { label: 'Image (PNG)', value: 'image/png' },
