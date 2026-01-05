@@ -45,6 +45,7 @@ type SecuritySettingsValues = z.infer<typeof securitySettingsSchema>;
 
 interface FormSecurityProps {
     form: FormType;
+    refetchForm?: () => void;
 }
 
 function PasswordModal({
@@ -194,7 +195,7 @@ function PasswordModal({
     );
 }
 
-export default function FormSecurity({ form }: FormSecurityProps) {
+export default function FormSecurity({ form, refetchForm }: FormSecurityProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [activePasswords, setActivePasswords] = useState<PasswordEntry[]>([]);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -251,6 +252,7 @@ export default function FormSecurity({ form }: FormSecurityProps) {
             }
             showSuccess('Security settings saved successfully');
             securityForm.reset(data);
+            refetchForm?.();
         } catch (err: any) {
             console.error("Error saving security settings:", err);
             showError(err.response?.data?.message || 'Failed to save security settings');

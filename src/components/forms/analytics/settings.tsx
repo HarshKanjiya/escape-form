@@ -39,6 +39,7 @@ type FormSettingsValues = z.infer<typeof formSettingsSchema>;
 
 interface FormSettingsProps {
     form: FormT;
+    refetchForm?: () => void;
 }
 
 const defaultTheme = {
@@ -49,7 +50,7 @@ const defaultTheme = {
     buttonRadius: "md" as const,
 };
 
-export default function FormSettings({ form }: FormSettingsProps) {
+export default function FormSettings({ form, refetchForm }: FormSettingsProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     const settingsForm = useForm<FormSettingsValues>({
@@ -77,6 +78,7 @@ export default function FormSettings({ form }: FormSettingsProps) {
             }
             showSuccess('Settings saved successfully');
             settingsForm.reset(data);
+            refetchForm?.();
         } catch (err: any) {
             console.error("Error saving form settings:", err);
             throw new Error(err.response?.data?.message || 'Failed to save settings');
