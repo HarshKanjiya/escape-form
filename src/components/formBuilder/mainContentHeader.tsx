@@ -13,6 +13,7 @@ import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddQuestionDialog from "./ui/addQuestionDialog";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import SignInRequired from "./signInRequired";
 
 export default function MainContentHeader() {
 
@@ -145,31 +146,39 @@ export default function MainContentHeader() {
                     <div className="flex items-center gap-2">
                         {
                             dataSource.status == FormStatus.PUBLISHED ?
-                                <Button onClick={unpublishForm} variant={'secondary'}>
-                                    <UndoDotIcon className="mr-1" size={14} />
-                                    Unpublish
-                                </Button> :
+                                <SignInRequired>
+                                    <Button onClick={unpublishForm} variant={'secondary'}>
+                                        <UndoDotIcon className="mr-1" size={14} />
+                                        Unpublish
+                                    </Button>
+                                </SignInRequired> :
                                 null
                         }
                         {
                             dataSource.status == FormStatus.DRAFT ?
-                                <Button onClick={publishForm}>
-                                    <Rocket className="mr-1" size={14} />
-                                    Publish
-                                </Button> :
+                                <SignInRequired>
+                                    <Button onClick={publishForm}>
+                                        <Rocket className="mr-1" size={14} />
+                                        Publish
+                                    </Button>
+                                </SignInRequired> :
                                 null
                         }
                         {
                             dataSource.status == FormStatus.ARCHIVED ?
-                                <Button onClick={restoreForm}>
-                                    <ArchiveRestore className="mr-1" size={14} />
-                                    Restore
-                                </Button>
+                                <SignInRequired>
+                                    <Button onClick={restoreForm}>
+                                        <ArchiveRestore className="mr-1" size={14} />
+                                        Restore
+                                    </Button>
+                                </SignInRequired>
                                 : <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button onClick={archiveForm} size={'icon'} className="p-1!" variant={'secondary'}>
-                                            <Archive size={14} />
-                                        </Button>
+                                        <SignInRequired>
+                                            <Button onClick={archiveForm} size={'icon'} className="p-1!" variant={'secondary'}>
+                                                <Archive size={14} />
+                                            </Button>
+                                        </SignInRequired>
                                     </TooltipTrigger>
                                     <TooltipContent>
                                         <TooltipArrow />

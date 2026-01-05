@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 import { ScrollArea } from '../ui/scroll-area';
+import SignInRequired from './signInRequired';
 
 export default function LeftBar() {
 
@@ -143,11 +144,13 @@ export default function LeftBar() {
                                 <div className='flex items-center gap-2'>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Link href={`analytics?tab=settings`}>
-                                                <Button size={'icon'} variant={'ghost'}>
-                                                    <BoltIcon className="w-4 h-4" />
-                                                </Button>
-                                            </Link>
+                                            <SignInRequired>
+                                                <Link href={`analytics?tab=settings`}>
+                                                    <Button size={'icon'} variant={'ghost'}>
+                                                        <BoltIcon className="w-4 h-4" />
+                                                    </Button>
+                                                </Link>
+                                            </SignInRequired>
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <TooltipArrow />
