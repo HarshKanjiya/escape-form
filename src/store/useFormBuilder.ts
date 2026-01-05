@@ -5,10 +5,13 @@ import { createErrorMessage, deleteErrorMessage, updateErrorMessage } from '@/co
 import { eViewMode, eViewScreenMode } from '@/enums/form';
 import { Edge, Form, FormStatus, QuestionOption, QuestionType } from '@prisma/client';
 import api from '@/lib/axios';
-import { showError } from '@/lib/utils';
+import { showError, generateUUID } from '@/lib/utils';
 import { ActionResponse } from '@/types/common';
 import { IQuestionMetadata, Question } from '@/types/form';
 import { create } from 'zustand';
+
+// Local storage key for tryout mode
+const TRYOUT_STORAGE_KEY = 'formBuilder_tryout';
 
 const defaultFormSettings: Partial<Form> = {
     name: 'Untitled Form',
@@ -35,6 +38,7 @@ interface IFormBuilderStore {
     dataSource: Partial<Form>;
     questions: Question[];
     edges: Edge[];
+    shouldSave: boolean;
 
     // STATE
     selectedQuestionId: string | null;
@@ -49,6 +53,8 @@ interface IFormBuilderStore {
 
     // Core methods
     initForm: (form: Form, questions: Question[], edges: Edge[]) => void;
+    initTryoutMode: () => void;
+    setShouldSave: (shouldSave: boolean) => void;
     changeStatus: (status: FormStatus) => Promise<boolean>;
     // updateForm: (form: Partial<Form>) => Promise<void>;
 
@@ -82,6 +88,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     dataSouce: {},
     questions: [],
     edges: [],
+    shouldSave: true,
 
     savingCount: 0,
     isLoading: false,
@@ -126,12 +133,64 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         set({ ...formData });
     },
 
+    initTryoutMode: () => {
+        const tryoutFormId = generateUUID();
+        const tryoutForm: Partial<Form> = {
+            ...defaultFormSettings,
+            id: tryoutFormId,
+            name: 'Tryout Form',
+            description: 'This is a tryout form - data will not be saved',
+            projectId: generateUUID(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        set({
+            formId: tryoutFormId,
+            dataSource: tryoutForm,
+            questions: [],
+            edges: [],
+            selectedQuestionId: null,
+            selectedQuestion: null,
+            selectedEdgeId: null,
+            selectedEdge: null,
+            shouldSave: false,
+        });
+
+        // Save to local storage
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                form: tryoutForm,
+                questions: [],
+                edges: []
+            }));
+        }
+    },
+
+    setShouldSave: (shouldSave: boolean) => {
+        set({ shouldSave });
+    },
+
     changeStatus: async (status: FormStatus) => {
-        const { formId } = get();
+        const { formId, shouldSave, dataSource, questions, edges } = get();
 
         if (!formId) {
             console.log("changeArchiveStatus :: FORM ID NOT FOUND!!")
             return false
+        }
+
+        // If not saving (tryout mode), just update local state
+        if (!shouldSave) {
+            const updatedForm = { ...dataSource, status };
+            set({ dataSource: updatedForm });
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: updatedForm,
+                    questions,
+                    edges
+                }));
+            }
+            return true;
         }
 
         try {
@@ -162,7 +221,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
     // #region Question methods
     createQuestions: async (newQuestionTypes: QuestionType[]) => {
-        const { questions, formId } = get();
+        const { questions, formId, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("createQuestions :: FORM ID NOT FOUND!!")
@@ -176,6 +235,33 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         newQuestionTypes.forEach((queType, ind) => {
             _newQues.push(prepareNewQuestionObject(formId, queType, queLen, ind, largestSortOrder + 1 + ind));
         })
+
+        // If not saving (tryout mode), create local questions with generated IDs
+        if (!shouldSave) {
+            const localQues: Question[] = _newQues.map((q) => ({
+                ...q,
+                id: generateUUID(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            } as Question));
+
+            const updatedQuestions = [...questions, ...localQues];
+            set({
+                questions: updatedQuestions,
+                selectedQuestion: localQues[localQues.length - 1],
+                selectedQuestionId: localQues[localQues.length - 1].id,
+            });
+
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return true;
+        }
+
         try {
             set((state) => ({ savingCount: state.savingCount + 1 }))
             const response = await api.post<ActionResponse<Question[]>>(apiConstants.quesiton.createQuestions(formId), { data: _newQues });
@@ -204,30 +290,44 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     updateQuestion: async (questionId: string, question: Partial<Question>) => {
-        const { questions: previousQuestions, formId } = get();
+        const { questions: previousQuestions, formId, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("updateQuestion :: FORM ID NOT FOUND!!")
             return false;
         }
 
-        set((state) => ({
-            questions: state.questions.map((q) => {
-                if (q?.id !== questionId) return q;
+        const updatedQuestions = previousQuestions.map((q) => {
+            if (q?.id !== questionId) return q;
 
-                if (question.metadata) {
-                    return {
-                        ...q, ...question,
-                        metadata: {
-                            ...(q.metadata),
-                            ...(question.metadata)
-                        }
+            if (question.metadata) {
+                return {
+                    ...q, ...question,
+                    metadata: {
+                        ...(q.metadata),
+                        ...(question.metadata)
                     }
                 }
-                return { ...q, ...question }
-            }),
-            savingCount: state.savingCount + 1,
-        }));
+            }
+            return { ...q, ...question }
+        });
+
+        set({
+            questions: updatedQuestions,
+            savingCount: shouldSave ? 1 : 0,
+        });
+
+        // If not saving (tryout mode), just update local storage
+        if (!shouldSave) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return true;
+        }
 
         try {
             const response = await api.patch<ActionResponse<Question[]>>(apiConstants.quesiton.updateQuestions(formId, questionId), question);
@@ -249,7 +349,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         }
     },
     changePosition: async (questionId: string, position: { x: number, y: number }) => {
-        const { questions: previousQuestions, formId } = get();
+        const { questions: previousQuestions, formId, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("updateQuestion :: FORM ID NOT FOUND!!")
@@ -271,14 +371,27 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             return true;
         }
 
-        set((state) => ({
-            questions: state.questions.map((q) => {
-                if (q?.id !== questionId) return q;
+        const updatedQuestions = previousQuestions.map((q) => {
+            if (q?.id !== questionId) return q;
+            return { ...q, posX: position.x, posY: position.y }
+        });
 
-                return { ...q, posX: position.x, posY: position.y }
-            }),
-            savingCount: state.savingCount + 1,
-        }));
+        set({
+            questions: updatedQuestions,
+            savingCount: shouldSave ? 1 : 0,
+        });
+
+        // If not saving (tryout mode), just update local storage
+        if (!shouldSave) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return true;
+        }
 
         try {
             const response = await api.patch<ActionResponse<Question[]>>(apiConstants.quesiton.updateQuestions(formId, questionId), { posX: position.x, posY: position.y });
@@ -301,17 +414,37 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     deleteQuestion: async (questionId: string) => {
-        const { questions: previousQuestions, formId, selectedQuestionId } = get();
+        const { questions: previousQuestions, formId, selectedQuestionId, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("updateQuestion :: FORM ID NOT FOUND!!")
             return;
         }
 
-        set((state) => ({
-            questions: state.questions.filter((q) => q?.id !== questionId),
-            savingCount: state.savingCount + 1,
-        }));
+        const updatedQuestions = previousQuestions.filter((q) => q?.id !== questionId);
+
+        set({
+            questions: updatedQuestions,
+            savingCount: shouldSave ? 1 : 0,
+        });
+
+        // If not saving (tryout mode), just update local storage
+        if (!shouldSave) {
+            if (questionId == selectedQuestionId) {
+                set({
+                    selectedQuestionId: null,
+                    selectedQuestion: null
+                })
+            }
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return;
+        }
 
         try {
             const response = await api.delete<ActionResponse<Question[]>>(apiConstants.quesiton.deleteQuestions(formId, questionId));
@@ -338,11 +471,17 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     getQuestionOptions: async (questionId: string) => {
-        const { formId } = get();
+        const { formId, shouldSave, questions } = get();
 
         if (!formId) {
             console.log("getQuestionOptions :: FORM ID NOT FOUND!!")
             return [];
+        }
+
+        // If not saving (tryout mode), return options from local state
+        if (!shouldSave) {
+            const question = questions.find(q => q.id === questionId);
+            return question?.options || [];
         }
 
         try {
@@ -376,7 +515,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     saveQuestionOption: async (option: Partial<QuestionOption>) => {
-        const { formId, questions } = get();
+        const { formId, questions, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("saveQuestionOption :: FORM ID NOT FOUND!!")
@@ -386,6 +525,37 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         if (!option.questionId) {
             console.log("saveQuestionOption :: QUESTION ID NOT FOUND!!")
             return false;
+        }
+
+        // If not saving (tryout mode), just update local state
+        if (!shouldSave) {
+            const savedOption: QuestionOption = {
+                ...option,
+                id: option.id || generateUUID(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            } as QuestionOption;
+
+            const updatedQuestions = questions.map((q) => {
+                if (q.id !== option.questionId) return q;
+
+                const updatedOptions = option.id
+                    ? (q.options?.map(opt => opt.id === option.id ? savedOption : opt) || [])
+                    : [...(q.options || []), savedOption];
+
+                return { ...q, options: updatedOptions } as Question;
+            });
+
+            set({ questions: updatedQuestions });
+
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return true;
         }
 
         try {
@@ -430,7 +600,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
     },
 
     deleteQuestionOption: async (optionId: string) => {
-        const { formId, questions } = get();
+        const { formId, questions, shouldSave, dataSource, edges } = get();
 
         if (!formId) {
             console.log("deleteQuestionOption :: FORM ID NOT FOUND!!")
@@ -447,15 +617,27 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         const previousQuestions = [...questions];
 
         // Optimistically update UI
-        set((state) => ({
-            questions: state.questions.map((q) => {
-                if (q.id !== question.id) return q;
-                return {
-                    ...q,
-                    options: q.options?.filter(opt => opt.id !== optionId) || []
-                };
-            }),
-        }));
+        const updatedQuestions = questions.map((q) => {
+            if (q.id !== question.id) return q;
+            return {
+                ...q,
+                options: q.options?.filter(opt => opt.id !== optionId) || []
+            };
+        });
+
+        set({ questions: updatedQuestions });
+
+        // If not saving (tryout mode), just update local storage
+        if (!shouldSave) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions: updatedQuestions,
+                    edges
+                }));
+            }
+            return true;
+        }
 
         try {
             set((state) => ({ savingCount: state.savingCount + 1 }))
@@ -487,11 +669,38 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
 
     // #region Flow methods
     addEdge: async (sourceId: string, targetId: string) => {
-        const { edges: previousEdges, formId } = get();
+        const { edges: previousEdges, formId, shouldSave, dataSource, questions } = get();
 
         if (!formId) {
             console.log("createQuestions :: FORM ID NOT FOUND!!")
             return
+        }
+
+        // If not saving (tryout mode), create local edge with generated ID
+        if (!shouldSave) {
+            const localEdge: Edge = {
+                id: generateUUID(),
+                formId,
+                sourceNodeId: sourceId,
+                targetNodeId: targetId,
+                condition: {},
+            };
+
+            const updatedEdges = [...previousEdges, localEdge];
+            set({
+                edges: updatedEdges,
+                selectedEdge: localEdge,
+                selectedEdgeId: localEdge.id,
+            });
+
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions,
+                    edges: updatedEdges
+                }));
+            }
+            return;
         }
 
         try {
@@ -552,17 +761,32 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         // }
     },
     removeEdge: async (connectionId: string) => {
-        const { edges: previousEdges, formId, selectedEdgeId } = get();
+        const { edges: previousEdges, formId, selectedEdgeId, shouldSave, dataSource, questions } = get();
 
         if (!formId) {
             console.log("removeEdge :: FORM ID NOT FOUND!!")
             return
         }
 
-        set((state) => ({
-            edges: state.edges.filter((e) => e?.id !== connectionId),
-            savingCount: state.savingCount + 1,
-        }));
+        const updatedEdges = previousEdges.filter((e) => e?.id !== connectionId);
+
+        set({
+            edges: updatedEdges,
+            savingCount: shouldSave ? 1 : 0,
+        });
+
+        // If not saving (tryout mode), just update local storage
+        if (!shouldSave) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(TRYOUT_STORAGE_KEY, JSON.stringify({
+                    form: dataSource,
+                    questions,
+                    edges: updatedEdges
+                }));
+            }
+            return;
+        }
+
         try {
             const response = await api.delete<ActionResponse<Edge>>(apiConstants.edge.deleteEdge(formId, connectionId));
             if (!response?.data?.success) {

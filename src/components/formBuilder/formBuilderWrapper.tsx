@@ -21,19 +21,36 @@ type formWithQuestionsAndEdges = Form & {
     edges?: any[]
 }
 
-export default function FormBuilderWrapper() {
+interface FormBuilderWrapperProps {
+    shouldSave?: boolean;
+}
+
+export default function FormBuilderWrapper({ shouldSave = true }: FormBuilderWrapperProps) {
 
     const initForm = useFormBuilder((state) => state.initForm);
+    const initTryoutMode = useFormBuilder((state) => state.initTryoutMode);
+    const setShouldSave = useFormBuilder((state) => state.setShouldSave);
     const setIsLoading = useFormBuilder((state) => state.setIsLoading);
     const isLoading = useFormBuilder((state) => state.isLoading);
 
     const params = useParams();
-    const formId = params.formId as string;
+    const formId = params?.formId as string | undefined;
 
     useEffect(() => {
+        // Set shouldSave in store
+        setShouldSave(shouldSave);
+
+        // Tryout mode - no API calls, use local state
+        if (!shouldSave) {
+            initTryoutMode();
+            return;
+        }
+
+        // Normal mode - validate formId and fetch from API
         if (!formId || !isValidUUID(formId)) {
             redirect(ERROR_ROUTES.NOT_FOUND)
         }
+
         const getForm = async () => {
             try {
                 setIsLoading(true);
@@ -60,7 +77,7 @@ export default function FormBuilderWrapper() {
             }
         }
         getForm();
-    }, []);
+    }, [shouldSave]);
 
     if (isLoading) {
         return <FormBuilderSkeleton />;

@@ -110,7 +110,6 @@ export default function Header({ }) {
                 <FeedbackModel />
                 <ProfileDropdown />
             </div>
-        </div >
-
+        </div>
     )
 }
