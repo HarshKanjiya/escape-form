@@ -33,13 +33,9 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
         redirect(ERROR_ROUTES.NOT_FOUND);
     }
 
-    // useEffect(() => {
-    //     if (tab)     
-
-    // }, [tab])
 
     return (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 h-full">
             <div className="space-y-6 py-4 sm:py-6">
                 <div className="flex gap-4 items-center justify-between">
                     <div className="flex gap-4 items-center">
@@ -129,20 +125,9 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <FormSecurity />
+                        <FormSecurity form={formDetails} />
                     </motion.div>
                 </TabsContent>
-                {/* <TabsContent value="connect" className="px-0 py-4">
-                        <motion.div
-                            key="connect-tab"
-                            initial={{ opacity: 0, }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <FormConnect />
-                        </motion.div>
-                    </TabsContent> */}
                 <TabsContent value="settings" className="px-0 py-4">
                     <motion.div
                         key="settings-tab"
@@ -151,7 +136,7 @@ export default function AnalyticsWrapper({ formDetails, tab }: AnalyticsWrapperP
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <FormSettings />
+                        <FormSettings form={formDetails} />
                     </motion.div>
                 </TabsContent>
             </Tabs>

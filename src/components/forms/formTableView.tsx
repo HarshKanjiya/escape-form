@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ROUTES } from "@/constants/routes.constants";
-import { Form, FormStatus, FormType } from "@prisma/client";
+import { Form, FormStatus } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { EyeIcon, PencilRulerIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +20,6 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                     <TableHead className="!max-w-18 !w-16">&nbsp;</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Description</TableHead>
-                    <TableHead>Type</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Responses</TableHead>
                     <TableHead className="w-[120px] text-center">Last Updated</TableHead>
@@ -73,11 +72,6 @@ function FormTableView({ forms, teamId, loading, projectId }: { forms: Partial<F
                                     <div className="max-w-[300px] truncate">
                                         {form.description || "No description"}
                                     </div>
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant='outline'>
-                                        {form.type == FormType.REACH_OUT ? 'Reach Out' : 'Embedded'}
-                                    </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant='outline'>

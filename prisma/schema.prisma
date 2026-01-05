@@ -50,7 +50,6 @@ model Form {
   maxResponses        Int?
   openAt              DateTime?        @db.Timestamptz(6)
   closeAt             DateTime?        @db.Timestamptz(6)
-  type                FormType         @default(REACH_OUT)
   status              FormStatus?
   uniqueSubdomain     String?
   customDomain        String?
@@ -66,7 +65,6 @@ model Form {
   updatedAt           DateTime?        @db.Timestamptz(6)
   formPageType        FormPageType     @default(STEPPER)
   activePasswords     ActivePassword[]
-  analyticsEvents     AnalyticsEvent[]
   edges               Edge[]
   project             Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
   team                Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -81,10 +79,12 @@ model Form {
 model ActivePassword {
   id         String   @id @default(uuid()) @db.Uuid
   formId     String   @db.Uuid
+  name       String   @db.VarChar
+  password   String   @db.VarChar
   isValid    Boolean  @default(true)
   expireAt   DateTime @db.Timestamptz(6)
   createdAt  DateTime @default(now()) @db.Timestamptz(6)
-  questionId String?  @db.Uuid
+  usableUpto Int      @default(1)
   form       Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@index([formId])
@@ -155,18 +155,6 @@ model Response {
 
   @@index([formId])
   @@map("responses")
-}
-
-model AnalyticsEvent {
-  id          String              @id @default(uuid()) @db.Uuid
-  formId      String              @db.Uuid
-  eventType   AnalyticsEventType?
-  createdAt   DateTime            @default(now()) @db.Timestamptz(6)
-  submittedAt DateTime?
-  form        Form                @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  @@index([formId])
-  @@map("analytics_events")
 }
 
 model Transaction {
@@ -246,11 +234,6 @@ enum FormStatus {
   PUBLISHED
   CLOSED
   ARCHIVED
-}
-
-enum FormType {
-  REACH_OUT
-  EMBEDDED
 }
 
 enum FormPageType {

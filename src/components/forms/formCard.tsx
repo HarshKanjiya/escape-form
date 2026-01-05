@@ -28,7 +28,7 @@ export function FormCard({ form, projectId, teamId }: FormCardProps) {
                     <div className="flex items-start space-x-4 w-full">
                         <div className="flex items-center justify-start w-full gap-4">
                             <div className="rounded-4xl corner-squircle overflow-hidden border-2 border-muted">
-                                <Image src={form.logoUrl || "/logo-light.svg"} alt="Form Logo" width={48} height={48} />
+                                <Image src={form.logoUrl || "/logo-light.svg"} alt="Form Logo" width={48} height={48} loading="lazy" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-foreground line-clamp-1 mb-1">

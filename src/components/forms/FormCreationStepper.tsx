@@ -7,7 +7,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiConstants } from "@/constants/api.constants";
-import { FormType, Form as IForm } from "@prisma/client";
+import { Form as IForm } from "@prisma/client";
 import api from "@/lib/axios";
 import { cn, showSuccess } from "@/lib/utils";
 import { ActionResponse } from "@/types/common";
@@ -137,7 +137,6 @@ const templates: FormTemplate[] = [
 const formSchema = z.object({
     name: z.string().min(1, "Form name is required").min(3, "Form name must be at least 3 characters"),
     description: z.string().optional(),
-    type: z.enum(FormType).nullable(),
     template: z.string().nullable(),
 })
 
@@ -463,7 +462,6 @@ function TemplateStep({ selectedTemplate, onTemplateSelect, onFromScratch }: Tem
 export function FormCreationStepper() {
     const [currentStep, setCurrentStep] = useState(1);
     const [prevStep, setPrevStep] = useState(1);
-    const [selectedType, setSelectedType] = useState<FormType | null>(FormType.REACH_OUT);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const { projectId } = useParams<{ projectId: string }>();
     const router = useRouter();
@@ -475,7 +473,6 @@ export function FormCreationStepper() {
         defaultValues: {
             name: "",
             description: "",
-            type: FormType.REACH_OUT,
             template: null,
         },
     });
@@ -502,14 +499,11 @@ export function FormCreationStepper() {
         }
     };
 
-    const handleTypeSelect = (type: FormType) => {
-        setSelectedType(type);
-        form.setValue('type', type);
-    };
+
 
     const handleTemplateSelect = (template: string) => {
-        setSelectedTemplate(template);
-        form.setValue('template', template);
+        // setSelectedTemplate(template);
+        // form.setValue('template', template);
     };
 
     const handleFromScratch = () => {
@@ -522,7 +516,7 @@ export function FormCreationStepper() {
             case 1:
                 return form.watch("name")?.trim()?.length > 3;
             case 2:
-                return selectedType !== null;
+                return true;
             case 3:
                 return selectedTemplate !== null;
             default:
@@ -535,7 +529,6 @@ export function FormCreationStepper() {
             projectId: projectId,
             name: data.name || "",
             description: data.description || "",
-            type: selectedType || FormType.REACH_OUT,
         };
         try {
             const response = await api.post<ActionResponse<IForm>>(apiConstants.form.createForm(), finalData);
@@ -557,7 +550,6 @@ export function FormCreationStepper() {
         const formData = form.getValues();
         handleSubmit({
             ...formData,
-            type: selectedType,
             template: selectedTemplate,
         });
     };
@@ -658,9 +650,9 @@ export function FormCreationStepper() {
                                             className="flex-1 px-7 py-8"
                                             onClick={onFormSubmit}
                                             disabled={!canProceed()}
+                                            loading={form.formState.isSubmitting}
                                         >
                                             Create Form
-                                            <CheckCircle className="w-4 h-4 ml-2" />
                                         </Button>
                                     </motion.div>
                                 </motion.div>

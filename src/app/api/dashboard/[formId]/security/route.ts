@@ -11,20 +11,15 @@ type RouteParams = {
     }>
 };
 
-// Validation schema for form settings
-const themeConfigSchema = z.object({
-    primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
-    backgroundColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
-    textColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
-    buttonSize: z.enum(["sm", "md", "lg"]),
-    buttonRadius: z.enum(["none", "sm", "md", "lg", "full"]),
-});
-
-const formSettingsSchema = z.object({
-    name: z.string().min(3, "Form name must be at least 3 characters"),
-    description: z.string().optional(),
-    formPageType: z.enum(["SINGLE", "STEPPER"]),
-    theme: themeConfigSchema,
+// Validation schema for security settings
+const securitySchema = z.object({
+    maxResponses: z.number().min(1).optional(),
+    openAt: z.string().optional(),
+    closeAt: z.string().optional(),
+    requireConsent: z.boolean(),
+    allowAnonymous: z.boolean(),
+    multipleSubmissions: z.boolean(),
+    passwordProtected: z.boolean(),
 });
 
 export const PUT = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
@@ -35,7 +30,7 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: Rou
 
     const body = await parseRequestBody(request);
 
-    const validationResult = formSettingsSchema.safeParse(body);
+    const validationResult = securitySchema.safeParse(body);
     if (!validationResult.success) {
         const errors: Record<string, string[]> = {};
         for (const issue of validationResult.error.issues) {
@@ -43,7 +38,7 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: Rou
             if (!errors[key]) errors[key] = [];
             errors[key].push(issue.message);
         }
-        return getErrorResponse('Invalid form settings data', { errors });
+        return getErrorResponse('Invalid security settings data', { errors });
     }
 
     const settingsData = validationResult.data;
@@ -62,24 +57,30 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: Rou
         const updatedForm = await prisma.form.update({
             where: { id: formId },
             data: {
-                name: settingsData.name,
-                description: settingsData.description,
-                formPageType: settingsData.formPageType,
-                metadata: settingsData.theme, // Store theme in metadata
+                maxResponses: settingsData.maxResponses,
+                openAt: settingsData.openAt ? new Date(settingsData.openAt) : null,
+                closeAt: settingsData.closeAt ? new Date(settingsData.closeAt) : null,
+                requireConsent: settingsData.requireConsent,
+                allowAnonymous: settingsData.allowAnonymous,
+                multipleSubmissions: settingsData.multipleSubmissions,
+                passwordProtected: settingsData.passwordProtected,
             },
             select: {
                 id: true,
-                name: true,
-                description: true,
-                formPageType: true,
-                metadata: true,
+                maxResponses: true,
+                openAt: true,
+                closeAt: true,
+                requireConsent: true,
+                allowAnonymous: true,
+                multipleSubmissions: true,
+                passwordProtected: true,
                 updatedAt: true
             }
         });
 
-        return getSuccessResponse(updatedForm, getSuccessMessage('Form settings updated successfully'));
+        return getSuccessResponse(updatedForm, getSuccessMessage('Security settings updated successfully'));
     } catch (error) {
-        console.error('Error updating form settings:', error);
-        return getErrorResponse('Failed to update form settings', { status: 500 });
+        console.error('Error updating security settings:', error);
+        return getErrorResponse('Failed to update security settings', { status: 500 });
     }
 });

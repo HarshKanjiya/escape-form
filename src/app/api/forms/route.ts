@@ -1,5 +1,5 @@
 import { getSuccessMessage, MESSAGE } from "@/constants/messages";
-import { Form, FormStatus, FormType } from "@prisma/client";
+import { Form, FormStatus } from "@prisma/client";
 import { getErrorResponse, getSuccessResponse, createValidationErrorResponse, validateRequiredFields, withErrorHandler } from "@/lib/api-response";
 import { getPaginationParams, parseRequestBody, validateAuth } from "@/lib/helper";
 import prisma from "@/lib/prisma";
@@ -74,7 +74,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
             requireConsent: body.requireConsent || false,
             status: FormStatus.DRAFT,
             maxResponses: body.maxResponses || null,
-            type: FormType.REACH_OUT,
             multipleSubmissions: body.multipleSubmissions || false,
 
             customDomain: null,

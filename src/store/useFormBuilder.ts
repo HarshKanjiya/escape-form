@@ -3,7 +3,7 @@
 import { apiConstants } from '@/constants/api.constants';
 import { createErrorMessage, deleteErrorMessage, updateErrorMessage } from '@/constants/messages';
 import { eViewMode, eViewScreenMode } from '@/enums/form';
-import { Edge, Form, FormStatus, FormType, QuestionOption, QuestionType } from '@prisma/client';
+import { Edge, Form, FormStatus, QuestionOption, QuestionType } from '@prisma/client';
 import api from '@/lib/axios';
 import { showError } from '@/lib/utils';
 import { ActionResponse } from '@/types/common';
@@ -20,7 +20,6 @@ const defaultFormSettings: Partial<Form> = {
     uniqueSubdomain: null,
     customDomain: null,
     analyticsEnabled: true,
-    type: FormType.REACH_OUT,
     closeAt: null,
     openAt: null,
     allowAnonymous: true,
