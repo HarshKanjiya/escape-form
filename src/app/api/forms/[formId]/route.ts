@@ -53,7 +53,6 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: { p
             logoUrl: body.logoUrl?.trim() ?? existingForm.logoUrl,
             requireConsent: body.requireConsent ?? existingForm.requireConsent,
             maxResponses: body.maxResponses ?? existingForm.maxResponses,
-            type: body.type ?? existingForm.type,
             formPageType: body.formPageType ?? existingForm.formPageType,
             multipleSubmissions: body.multipleSubmissions ?? existingForm.multipleSubmissions,
             customDomain: body.customDomain ?? existingForm.customDomain,
