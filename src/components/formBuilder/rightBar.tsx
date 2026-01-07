@@ -88,7 +88,7 @@ export default function RightBar() {
 
                                     <CustomCard className="outline-none" hoverEffect={false}>
                                         <CustomCardHeader>
-                                            <span>Question Settings</span>
+                                            <span>Edge Settings</span>
                                         </CustomCardHeader>
                                         <CustomCardContent>
                                             <div className="w-full">

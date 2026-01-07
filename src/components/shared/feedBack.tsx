@@ -1,22 +1,9 @@
 
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
-import { MessageSquare, Paperclip, X as XIcon } from "lucide-react";
+import { Loader2Icon, MessageSquare } from "lucide-react";
 import * as React from "react";
+import { CustomDialog, CustomDialogBody, CustomDialogContent, CustomDialogHeader, CustomDialogTitle, CustomDialogTrigger } from "../ui/custom-dialog";
 
 interface FeedbackModelProps {
     dialogTitle?: React.ReactNode;
@@ -26,15 +13,10 @@ interface FeedbackModelProps {
     children?: React.ReactNode;
 }
 
-export function FeedbackModel({
-    dialogTitle = "Feedback",
-    dialogDescription = "",
-    dialogContent,
-    dialogFooter,
-    children,
-}: FeedbackModelProps) {
+export function FeedbackModel({ children }: FeedbackModelProps) {
     const [subject, setSubject] = React.useState("");
     const [details, setDetails] = React.useState("");
+    const [Loading, setLoading] = React.useState(true);
     const [files, setFiles] = React.useState<File[]>([]);
     const [fileError, setFileError] = React.useState<string | "">("");
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -73,25 +55,40 @@ export function FeedbackModel({
                 : `${files[0].name} (+${files.length - 1})`;
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
+        <CustomDialog>
+            <CustomDialogTrigger asChild>
                 {children ? (
                     children
                 ) : (
-                    <Button variant={'outline'}  className='shadow-none'>
+                    <Button variant={'outline'} className='shadow-none'>
                         <MessageSquare className="w-5 h-5" />
                         Feedback
                     </Button>
                 )}
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
-                <DialogHeader>
-                    <DialogTitle>{dialogTitle}</DialogTitle>
-                </DialogHeader>
-                {dialogContent ? (
-                    dialogContent
-                ) : (
-                    <div className="grid gap-6 py-2">
+            </CustomDialogTrigger>
+            <CustomDialogContent className="sm:max-w-xl">
+                <CustomDialogHeader>
+                    <CustomDialogTitle>Feedback</CustomDialogTitle>
+                </CustomDialogHeader>
+                <CustomDialogBody className="p-0">
+                    <div className="w-full h-full flex items-center justify-center relative min-h-[70vh]">
+                        {Loading && (
+                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-md">
+                                <div className="flex flex-col items-center gap-2">
+                                    <Loader2Icon className="animate-spin h-8 w-8 text-muted-foreground" />
+                                    <p className="text-sm text-muted-foreground">Loading feedback form...</p>
+                                </div>
+                            </div>
+                        )}
+                        <iframe
+                            src="https://form.escform.com/f/xikagoxp"
+                            className="w-full h-full min-h-[70vh] overflow-hidden rounded-md"
+                            onLoad={() => setLoading(false)}
+                            onError={() => setLoading(false)}
+                        />
+                    </div>
+
+                    {/* <div className="grid gap-6 py-2">
                         <div className="grid gap-1.5">
                             <Label htmlFor="feedback-subject">Subject</Label>
                             <Input
@@ -172,23 +169,18 @@ export function FeedbackModel({
                                 Include steps, expected vs actual behavior, links, and screenshots if helpful.
                             </p>
                         </div>
-                    </div>
-                )}
-                <DialogFooter>
-                    {dialogFooter ? (
-                        dialogFooter
-                    ) : (
-                        <>
-                            <DialogClose asChild>
-                                <Button type="button" variant="ghost">Cancel</Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-                                <Button type="submit" disabled={isSubmitDisabled}>Submit</Button>
-                            </DialogClose>
-                        </>
-                    )}
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    </div> */}
+                </CustomDialogBody>
+
+                {/* <CustomDialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="ghost">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                        <Button type="submit" disabled={isSubmitDisabled}>Submit</Button>
+                    </DialogClose>
+                </CustomDialogFooter> */}
+            </CustomDialogContent>
+        </CustomDialog>
     );
 }
