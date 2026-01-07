@@ -164,10 +164,12 @@ export function FormList() {
             </div>
 
             {
-                (!forms?.length && !loading) ? <FormEmptyState searchQuery={searchQuery} projectId={projectId} /> :
-                    viewMode === "grid" ?
-                        <FormGridView forms={forms} loading={loading} projectId={projectId} teamId={teamId} /> :
-                        <FormTableView forms={forms} loading={loading} projectId={projectId} teamId={teamId} />
+                (!forms?.length && !loading) ? <FormEmptyState searchQuery={searchQuery} projectId={projectId} /> : null
+            }
+            {
+                viewMode === LIST_VIEW_TYPE.GRID ?
+                    <FormGridView forms={forms} loading={loading} projectId={projectId} teamId={teamId} /> :
+                    <FormTableView forms={forms} loading={loading} projectId={projectId} teamId={teamId} />
             }
             {forms.length > 0 && <Separator />}
             <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />

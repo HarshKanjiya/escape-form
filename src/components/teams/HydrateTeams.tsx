@@ -4,7 +4,7 @@ import { apiConstants } from '@/constants/api.constants';
 import { ROUTES } from '@/constants/routes.constants';
 import { Form, Project, Team } from '@prisma/client';
 import api, { registerTokenProvider } from '@/lib/axios';
-import { isValidUUID } from '@/lib/utils';
+import { isValidUUID, getLocalStorageItem, setLocalStorageItem } from '@/lib/utils';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { ActionResponse } from '@/types/common';
 import { useAuth } from '@clerk/nextjs';
@@ -53,20 +53,41 @@ export default function HydrateTeams({ children, teams }: Props) {
     }, [params]);
 
     useEffect(() => {
-        if (!teamId) {
-            setActiveTeam(null);
-            return;
-        }
-        if (activeTeam) return;
-        const team = teams?.find(team => team.id === teamId);
-        if (team) {
-            setActiveTeam(team);
-        } else if (teams?.length) {
-            router.replace(teams[0].id);
-        } else {
-            router.replace(ROUTES.team.create());
-        }
-    }, [teamId]);
+        const loadTeam = async () => {
+            if (!teamId) {
+                // Check local storage for saved team
+                const savedTeamId = await getLocalStorageItem('activeTeam');
+                if (savedTeamId && isValidUUID(savedTeamId)) {
+                    const savedTeam = teams?.find(team => team.id === savedTeamId);
+                    if (savedTeam) {
+                        setActiveTeam(savedTeam);
+                        await setLocalStorageItem('activeTeam', savedTeam.id);
+                        return;
+                    }
+                }
+                // If no saved team or invalid, use first team
+                if (teams?.length) {
+                    setActiveTeam(teams[0]);
+                    await setLocalStorageItem('activeTeam', teams[0].id);
+                    router.replace(teams[0].id);
+                } else {
+                    router.replace(ROUTES.team.create());
+                }
+                return;
+            }
+            if (activeTeam) return;
+            const team = teams?.find(team => team.id === teamId);
+            if (team) {
+                setActiveTeam(team);
+                await setLocalStorageItem('activeTeam', team.id);
+            } else if (teams?.length) {
+                router.replace(teams[0].id);
+            } else {
+                router.replace(ROUTES.team.create());
+            }
+        };
+        loadTeam();
+    }, [teamId, teams, activeTeam, router]);
 
     useEffect(() => {
         if (!projectId) {

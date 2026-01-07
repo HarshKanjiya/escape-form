@@ -31,7 +31,7 @@ export function ProjectList({ teamId }: ProjectListProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [projects, setProjects] = useState<Project[]>([]);
     const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const { page, limit, totalItems, onPaginationChange, setTotalItems } = usePagination();
 
@@ -151,9 +151,14 @@ export function ProjectList({ teamId }: ProjectListProps) {
                 {projects.length} project{projects.length !== 1 ? 's' : ''} total
             </div>
 
-            {(!projects?.length && !loading) ? <ProjectEmptyState searchQuery={searchQuery} getProjects={() => getProjects()} /> :
+            {
                 viewMode === LIST_VIEW_TYPE.GRID ?
-                    <ProjectGridView projects={projects} loading={loading} /> : <ProjectTableView projects={projects} teamId={teamId} loading={loading} />
+                    <ProjectGridView projects={projects} loading={loading} /> :
+                    <ProjectTableView projects={projects} teamId={teamId} loading={loading} />
+            }
+
+            {
+                (!projects?.length && !loading) ? <ProjectEmptyState searchQuery={searchQuery} getProjects={() => getProjects()} /> : null
             }
             {projects.length > 0 && <Separator />}
             <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />

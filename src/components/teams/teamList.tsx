@@ -30,7 +30,7 @@ export function TeamList() {
     const [searchQuery, setSearchQuery] = useState("");
     const { teams, setTeams } = useGlobalStore((state) => state);
     const [viewMode, setViewMode] = useState<string>(LIST_VIEW_TYPE.GRID);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const params = useParams();
     const teamId = params.teamId as string;
@@ -154,10 +154,12 @@ export function TeamList() {
                 {teams.length} team{teams.length !== 1 ? 's' : ''} total
             </div>
 
-            {!teams?.length ? <EmptyState searchQuery={searchQuery} /> :
-                viewMode === "grid" ?
-                    <TeamGridView teams={teams} loading={loading} /> : <TeamTableView teams={teams} teamId={teamId} loading={loading} />
+            {
+                viewMode === LIST_VIEW_TYPE.GRID ?
+                    <TeamGridView teams={teams} loading={loading} /> :
+                    <TeamTableView teams={teams} teamId={teamId} loading={loading} />
             }
+            {!teams?.length && !loading ? <EmptyState searchQuery={searchQuery} /> : null}
             {teams.length > 0 && <Separator />}
             <CustomPagination loading={loading} limit={limit} page={page} totalItems={totalItems} onChange={onPaginationChange} />
         </div>
