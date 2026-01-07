@@ -7,10 +7,13 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import QuestionConfigCard from "./ui/questionConfigCard";
 import QuestionTypeDropdown from "./ui/questionTypeDropdown";
+import { eViewMode } from "@/enums/form";
+import { CustomCard, CustomCardContent, CustomCardHeader } from "../ui/custom-card";
 
 export default function RightBar() {
 
     const selectedQuestionId = useFormBuilder((state) => state.selectedQuestionId);
+    const editorMode = useFormBuilder((state) => state.viewMode);
     const deleteQuestion = useFormBuilder((state) => state.deleteQuestion);
 
     return (
@@ -29,43 +32,76 @@ export default function RightBar() {
                                 </motion.div>
                             </AnimatePresence>
                         </div>
-                        <div className="p-3 space-y-3">
+                        <div className="p-3 flex flex-col">
+
+
                             {
-                                selectedQuestionId ?
-                                    <>
-                                        <Card className="p-4 shadow-none border-accent bg-background corner-squircle rounded-4xl">
-                                            <CardContent className="p-0">
-                                                <QuestionTypeDropdown />
-                                            </CardContent>
-                                        </Card>
-                                        <Card className="p-4 shadow-none border-accent bg-background corner-squircle rounded-4xl">
-                                            <CardContent className="p-0">
-                                                <QuestionConfigCard />
-                                            </CardContent>
-                                        </Card>
-                                    </>
-                                    :
-                                    <>
-                                        <Card className="p-6 shadow-none border-accent bg-accent-bg border-dashed">
-                                            <CardContent className="p-0 flex flex-col items-center justify-center h-52 text-center">
-                                                <div className="mb-4 p-3 rounded-full bg-background">
+                                !selectedQuestionId ?
+                                    <CustomCard className="outline-none" hoverEffect={false}>
+                                        <CustomCardContent>
+                                            <div className="w-full flex flex-col items-center text-center">
+                                                <div className="mb-4 p-3 w-min rounded-full bg-background">
                                                     <MessageCircleQuestionMark className="w-6 h-6 text-muted-foreground" />
                                                 </div>
                                                 <h3 className="text-sm font-medium text-foreground mb-2">
                                                     Select a Question
                                                 </h3>
                                                 <p className="text-xs text-muted-foreground leading-relaxed max-w-48">
-                                                    Click on any question from the left panel to configure its settings and properties
+                                                    Click on any question or Add new
                                                 </p>
-                                            </CardContent>
-                                        </Card>
-                                    </>
+                                            </div>
+                                        </CustomCardContent>
+                                    </CustomCard>
+                                    : null
                             }
+                            {
+                                editorMode == eViewMode.Builder ?
+                                    <div className="space-y-3">
+                                        {
+                                            selectedQuestionId ?
+                                                <>
+                                                    <CustomCard className="outline-none" hoverEffect={false}>
+                                                        <CustomCardContent>
+                                                            <div className="w-full">
+                                                                <QuestionTypeDropdown />
+                                                            </div>
+                                                        </CustomCardContent>
+                                                    </CustomCard>
+                                                    <CustomCard className="outline-none" hoverEffect={false}>
+                                                        <CustomCardHeader>
+                                                            <span>Question Settings</span>
+                                                        </CustomCardHeader>
+                                                        <CustomCardContent>
+                                                            <div className="w-full">
+                                                                <QuestionConfigCard />
+                                                            </div>
+                                                        </CustomCardContent>
+                                                    </CustomCard>
+                                                </>
+                                                : null
+                                        }
+                                    </div>
+                                    : null
+                            }
+                            {
+                                editorMode == eViewMode.Workflow ?
 
+                                    <CustomCard className="outline-none" hoverEffect={false}>
+                                        <CustomCardHeader>
+                                            <span>Question Settings</span>
+                                        </CustomCardHeader>
+                                        <CustomCardContent>
+                                            <div className="w-full">
+                                                edge settings
+                                            </div>
+                                        </CustomCardContent>
+                                    </CustomCard>
+                                    : null
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

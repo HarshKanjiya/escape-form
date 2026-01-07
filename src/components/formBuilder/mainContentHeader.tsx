@@ -4,7 +4,7 @@ import { eViewMode, eViewScreenMode } from "@/enums/form";
 import { FormStatus } from "@prisma/client";
 import { showSuccess } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { Archive, ArchiveRestore, CopyIcon, ExternalLinkIcon, Laptop, PencilRuler, Play, RefreshCcw, Rocket, RocketIcon, Smartphone, TrendingUpDown, UndoDotIcon } from "lucide-react";
+import { Archive, ArchiveRestore, CopyIcon, ExternalLinkIcon, Laptop, PencilRuler, Play, RefreshCcw, Rocket, RocketIcon, Smartphone, SquareArrowOutUpRightIcon, TrendingUpDown, UndoDotIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -85,7 +85,7 @@ export default function MainContentHeader() {
                                 </TooltipContent>
                             </Tooltip>
                             <Separator orientation="vertical" className="h-[36px]! mx-0" />
-                            {/* <Tooltip >
+                            <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Button className="rounded-none" variant={viewMode == eViewMode.Workflow ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Workflow)}>
                                         <TrendingUpDown />
@@ -95,7 +95,7 @@ export default function MainContentHeader() {
                                     Work Flow
                                 </TooltipContent>
                             </Tooltip>
-                            <Separator orientation="vertical" className="h-[36px]! mx-0" /> */}
+                            <Separator orientation="vertical" className="h-[36px]! mx-0" />
                             <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Button className="rounded-l-none" variant={viewMode == eViewMode.Preview ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Preview)}>
@@ -164,7 +164,7 @@ export default function MainContentHeader() {
                                 </SignInRequired> :
                                 null
                         }
-                        {
+                        {/* {
                             dataSource.status == FormStatus.ARCHIVED ?
                                 <SignInRequired>
                                     <Button onClick={restoreForm}>
@@ -185,6 +185,22 @@ export default function MainContentHeader() {
                                         Archive
                                     </TooltipContent>
                                 </Tooltip>
+                        } */}
+                        {
+                            dataSource.status == FormStatus.PUBLISHED ?
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <a href={`https://form.escform.com/f/${dataSource.uniqueSubdomain}`} target="_blank" rel="noopener noreferrer">
+                                            <Button size={'icon'} variant={'secondary'}>
+                                                <SquareArrowOutUpRightIcon size={14} />
+                                            </Button>
+                                        </a>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <TooltipArrow />
+                                        Visit Form
+                                    </TooltipContent>
+                                </Tooltip> : null
                         }
                     </div>
                 </div>
