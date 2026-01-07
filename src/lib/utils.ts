@@ -134,3 +134,26 @@ export const generateUUID = (): string => {
     return v.toString(16);
   });
 }
+
+/** Encrypt a string using base64 encoding */
+export async function encrypt(str: string): Promise<string> {
+  return btoa(str);
+}
+
+/** Decrypt a base64 encoded string */
+export async function decrypt(str: string): Promise<string> {
+  return atob(str);
+}
+
+/** Get an item from localStorage and decrypt it */
+export async function getLocalStorageItem(key: string): Promise<string | null> {
+  const encryptedValue = localStorage.getItem(key);
+  if (!encryptedValue) return null;
+  return await decrypt(encryptedValue);
+}
+
+/** Encrypt a value and set it in localStorage */
+export async function setLocalStorageItem(key: string, value: string): Promise<void> {
+  const encryptedValue = await encrypt(value);
+  localStorage.setItem(key, encryptedValue);
+}

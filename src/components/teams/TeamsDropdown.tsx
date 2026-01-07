@@ -1,15 +1,15 @@
 "use client";
 
+import { setLocalStorageItem } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { Team } from "@prisma/client";
-import { Check, ChevronsUpDown, CopySlash, Plus, Search, X } from "lucide-react";
+import { Check, ChevronsUpDown, CopySlash, Search, X } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
-import AddTeam from "./addTeam";
 
 
 export default function TeamsDropdown() {
@@ -49,8 +49,9 @@ export default function TeamsDropdown() {
         }
     }, [searchTerm, teams]);
 
-    const switchTeam = (team: Team) => {
+    const switchTeam = async (team: Team) => {
         setActiveTeam(team);
+        await setLocalStorageItem('activeTeam', team.id);
         redirect(`/${team.id}`);
     };
 
