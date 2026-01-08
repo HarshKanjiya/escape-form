@@ -25,6 +25,7 @@ export default function LeftBar() {
 
     const questions = useFormBuilder((state) => state.questions);
     const dataSource = useFormBuilder((state) => state.dataSource);
+    const changeSequence = useFormBuilder((state) => state.changeSequence);
 
     const isMobile = useIsMobile();
     const [isExpanded, setIsExpanded] = useState(true);
@@ -69,33 +70,16 @@ export default function LeftBar() {
         }
     };
 
-    const updateSequence = async (sequence: Array<{ id: string; newOrder: number }>) => {
-        if (!dataSource.id) return;
-
-        try {
-            const response = await api.post<ActionResponse<null>>(
-                apiConstants.form.changeSequence(dataSource.id, sequence),
-                { sequence }
-            );
-
-            if (!response?.data?.success) {
-                console.error('Failed to update sequence:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error updating sequence:', error);
-        }
-    };
-
     const onReorder = (newOrder: Question[]) => {
         setLocalQuestions(newOrder);
         if (reorderTimeoutRef.current) {
             clearTimeout(reorderTimeoutRef.current);
         }
         reorderTimeoutRef.current = setTimeout(() => {
-            const sequence = newOrder
+            const sequenceForUI = newOrder
                 .map((q, index) => ({ id: q.id, newOrder: index + 1 }))
-                .filter((item, index) => questions[index]?.id !== item.id);
-            if (sequence.length > 0) updateSequence(sequence);
+            const sequence = sequenceForUI.filter((item, index) => questions[index]?.id !== item.id);
+            if (sequence.length > 0) changeSequence(sequenceForUI.map(i => i.id), sequence);
         }, 800);
     }
 

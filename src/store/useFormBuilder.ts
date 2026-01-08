@@ -63,7 +63,7 @@ interface IFormBuilderStore {
     updateQuestion: (questionId: string, question: Partial<Question>) => Promise<boolean>;
     changePosition: (questionId: string, position: { x: number, y: number }) => Promise<boolean>;
     deleteQuestion: (questionId: string) => Promise<void>;
-    changeSequence: (arr: Record<string, any>[]) => Promise<boolean>;
+    changeSequence: (sequenceForUI: any[], arr: Record<string, any>[]) => Promise<boolean>;
 
     getQuestionOptions: (questionId: string) => Promise<QuestionOption[]>;
     saveQuestionOption: (option: Partial<QuestionOption>) => Promise<boolean>;
@@ -471,28 +471,40 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         }
     },
 
-    changeSequence: async (arr: Record<string, any>[]) => {
+    changeSequence: async (sequenceForUI: string[], arr: Record<string, any>[]) => {
         const { formId, shouldSave, questions, savingCount } = get();
+
+        const sortedQuestions = sequenceForUI.map(id => questions.find(q => q.id === id)).filter(Boolean) as Question[];
+
+        set({ questions: sortedQuestions });
+
         if (!shouldSave) {
             return true;
         }
 
         if (!formId) {
-            console.log("getQuestionOptions :: FORM ID NOT FOUND!!")
+            console.log("changeSequence :: FORM ID NOT FOUND!!")
             return false;
         }
 
         try {
             set({ savingCount: savingCount + 1 });
-            const response = await api.post<ActionResponse<QuestionOption[]>>(apiConstants.form.changeSequence(formId, arr));
+            const response = await api.post<ActionResponse<null>>(
+                apiConstants.form.changeSequence(formId, arr),
+                { sequence: arr }
+            );
             if (!response?.data?.success) {
                 showError(response.data.message || 'Failed to reorder questions');
+                // Revert on failure
+                set({ questions });
                 return false;
             }
             return true;
         } catch (err: unknown) {
-            console.log('Err While fetching options :>> ', err);
+            console.log('Err While reordering questions :>> ', err);
             showError('Failed to reorder questions');
+            // Revert on error
+            set({ questions });
             return false;
         } finally {
             set((state) => ({ savingCount: state.savingCount - 1 }))
