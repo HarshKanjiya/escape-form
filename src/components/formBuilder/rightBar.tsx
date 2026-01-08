@@ -36,7 +36,7 @@ export default function RightBar() {
 
 
                             {
-                                !selectedQuestionId ?
+                                !selectedQuestionId?.length ?
                                     <CustomCard className="outline-none" hoverEffect={false}>
                                         <CustomCardContent>
                                             <div className="w-full flex flex-col items-center text-center">
@@ -55,7 +55,7 @@ export default function RightBar() {
                                     : null
                             }
                             {
-                                editorMode == eViewMode.Builder ?
+                                (selectedQuestionId && editorMode == eViewMode.Builder) ?
                                     <div className="space-y-3">
                                         {
                                             selectedQuestionId ?
@@ -84,8 +84,7 @@ export default function RightBar() {
                                     : null
                             }
                             {
-                                editorMode == eViewMode.Workflow ?
-
+                                (selectedQuestionId && editorMode == eViewMode.Workflow) ?
                                     <CustomCard className="outline-none" hoverEffect={false}>
                                         <CustomCardHeader>
                                             <span>Edge Settings</span>

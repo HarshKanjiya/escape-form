@@ -7,18 +7,16 @@ import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
 import { Question } from '@/types/form';
 import { TooltipArrow } from '@radix-ui/react-tooltip';
-import { BoltIcon, FileText, Menu, SidebarIcon, X } from 'lucide-react';
+import { ALargeSmallIcon, BoltIcon, FileTextIcon, Menu, SidebarIcon, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import LeftBarQuestionItem from './ui/leftBarQuestionItem';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from '../ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import SignInRequired from './signInRequired';
-import api from '@/lib/axios';
-import { apiConstants } from '@/constants/api.constants';
-import { ActionResponse } from '@/types/common';
+import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 
-import { Reorder, AnimatePresence } from "framer-motion";
+import { AnimatePresence, Reorder } from "framer-motion";
+import { CustomCard, CustomCardContent } from '../ui/custom-card';
 
 
 export default function LeftBar() {
@@ -166,40 +164,89 @@ export default function LeftBar() {
                 <div className="flex flex-col h-full bg-accent-bg">
                     <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden">
                         <div className='w-full h-full flex flex-col gap-2'>
-                            <div className='pl-3 pr-2 flex items-center justify-between py-2 border-b h-[53px]'>
-                                <span className='text-md overflow-ellipsis line-clamp-1'>{dataSource.name}</span>
-                                <div className='flex items-center gap-2'>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <SignInRequired>
-                                                <Link href={`analytics?tab=settings`}>
-                                                    <Button size={'icon'} variant={'ghost'}>
-                                                        <BoltIcon className="w-4 h-4" />
-                                                    </Button>
-                                                </Link>
-                                            </SignInRequired>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <TooltipArrow />
-                                            Settings
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </div>
+                            <div className={cn(
+                                'flex items-center border-b h-[53px] transition-all',
+                                isExpanded ? 'pl-3 pr-2 justify-between' : 'px-2 justify-center'
+                            )}>
+                                {isExpanded ? (
+                                    <div className='h-[53px] flex items-center justify-between w-full'>
+                                        <span className='text-md overflow-ellipsis line-clamp-1'>{dataSource.name}</span>
+                                        <div className='flex items-center gap-2'>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SignInRequired>
+                                                        <Link href={`analytics?tab=settings`}>
+                                                            <Button size={'icon'} variant={'secondary'}>
+                                                                <BoltIcon className="w-4 h-4" />
+                                                            </Button>
+                                                        </Link>
+                                                    </SignInRequired>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <TooltipArrow />
+                                                    Settings
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className='relative group w-full h-[53px]'>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div className='flex items-center justify-center w-full'>
+                                                    <div className='p-2 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors'>
+                                                        <ALargeSmallIcon className="w-4 h-4 text-primary" />
+                                                    </div>
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="right">
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium">{dataSource.name}</span>
+                                                </div>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                        {/* Settings button on hover */}
+                                        <div className="absolute left-1/2 opacity-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 transition-opacity duration-200">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SignInRequired>
+                                                        <Link href={`analytics?tab=settings`}>
+                                                            <Button size={'icon'} variant={'ghost'}>
+                                                                <BoltIcon className="w-4 h-4" />
+                                                            </Button>
+                                                        </Link>
+                                                    </SignInRequired>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="right">
+                                                    Settings
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             <ScrollArea className='h-[calc(100vh-190px)] pr-1'>
                                 {
                                     !questions.length ?
-                                        <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                                            <div className="mb-4 p-3 rounded-full bg-background border-accent">
-                                                <FileText />
+                                        isExpanded ? (
+                                            <div className='w-full px-2 pt-1'>
+                                                <CustomCard className="outline-none" hoverEffect={false}>
+                                                    <CustomCardContent>
+                                                        <div className="w-full flex flex-col items-center text-center">
+                                                            <div className="mb-4 p-3 w-min rounded-full bg-background">
+                                                                <FileTextIcon className="w-6 h-6 text-muted-foreground" />
+                                                            </div>
+                                                            <h3 className="text-sm font-medium text-foreground mb-2">
+                                                                No questions yet
+                                                            </h3>
+                                                            <p className="text-xs text-muted-foreground leading-relaxed max-w-48">
+                                                                Start building your form by adding your first question
+                                                            </p>
+                                                        </div>
+                                                    </CustomCardContent>
+                                                </CustomCard>
                                             </div>
-                                            <h3 className="text-sm font-medium text-foreground mb-1">
-                                                No questions yet
-                                            </h3>
-                                            <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                                                Start building your form by adding your first question
-                                            </p>
-                                        </div>
+                                        ) : null
                                         :
                                         <div className='px-2 flex flex-col gap-2 pb-4 pt-1'>
                                             <Reorder.Group
@@ -226,46 +273,58 @@ export default function LeftBar() {
                     </div>
 
                     {/* Sidebar control */}
-                    <div className="border-t p-3">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant={'secondary'} size={'icon'} >
-                                    <SidebarIcon className="w-4 h-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent side="top" align="start" className="w-48">
-                                <DropdownMenuItem
-                                    onClick={() => handleModeChange('expanded')}
-                                    className={cn(
-                                        "flex items-center gap-3",
-                                        mode === 'expanded' ? "text-foreground bg-accent" : "text-muted-foreground"
-                                    )}
-                                >
-                                    {mode === 'expanded' && <div className="w-2 h-2 bg-primary rounded-full" />}
-                                    <span className={cn(mode !== 'expanded' && "ml-5")}>Expanded</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => handleModeChange('collapsed')}
-                                    className={cn(
-                                        "flex items-center gap-3",
-                                        mode === 'collapsed' ? "text-foreground bg-accent" : "text-muted-foreground"
-                                    )}
-                                >
-                                    {mode === 'collapsed' && <div className="w-2 h-2 bg-primary rounded-full" />}
-                                    <span className={cn(mode !== 'collapsed' && "ml-5")}>Collapsed</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => handleModeChange('hover')}
-                                    className={cn(
-                                        "flex items-center gap-3",
-                                        mode === 'hover' ? "text-foreground bg-accent" : "text-muted-foreground"
-                                    )}
-                                >
-                                    {mode === 'hover' && <div className="w-2 h-2 bg-primary rounded-full" />}
-                                    <span className={cn(mode !== 'hover' && "ml-5")}>Expand on hover</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                    <div className={cn(
+                        "border-t p-3 transition-all",
+                        isExpanded ? "" : "flex justify-center"
+                    )}>
+                        <Tooltip>
+                            <DropdownMenu>
+                                <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant={'secondary'} size={'icon'} className="hover:bg-accent transition-colors">
+                                            <SidebarIcon className="w-4 h-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                </TooltipTrigger>
+                                {!isExpanded && (
+                                    <TooltipContent side="right">
+                                        Sidebar options
+                                    </TooltipContent>
+                                )}
+                                <DropdownMenuContent side="top" align="start" className="w-48">
+                                    <DropdownMenuItem
+                                        onClick={() => handleModeChange('expanded')}
+                                        className={cn(
+                                            "flex items-center gap-3 cursor-pointer",
+                                            mode === 'expanded' ? "text-foreground bg-accent" : "text-muted-foreground"
+                                        )}
+                                    >
+                                        {mode === 'expanded' && <div className="w-2 h-2 bg-primary rounded-full" />}
+                                        <span className={cn(mode !== 'expanded' && "ml-5")}>Expanded</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => handleModeChange('collapsed')}
+                                        className={cn(
+                                            "flex items-center gap-3 cursor-pointer",
+                                            mode === 'collapsed' ? "text-foreground bg-accent" : "text-muted-foreground"
+                                        )}
+                                    >
+                                        {mode === 'collapsed' && <div className="w-2 h-2 bg-primary rounded-full" />}
+                                        <span className={cn(mode !== 'collapsed' && "ml-5")}>Collapsed</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => handleModeChange('hover')}
+                                        className={cn(
+                                            "flex items-center gap-3 cursor-pointer",
+                                            mode === 'hover' ? "text-foreground bg-accent" : "text-muted-foreground"
+                                        )}
+                                    >
+                                        {mode === 'hover' && <div className="w-2 h-2 bg-primary rounded-full" />}
+                                        <span className={cn(mode !== 'hover' && "ml-5")}>Expand on hover</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </Tooltip>
                     </div>
                 </div>
             </aside >
