@@ -63,6 +63,7 @@ interface IFormBuilderStore {
     updateQuestion: (questionId: string, question: Partial<Question>) => Promise<boolean>;
     changePosition: (questionId: string, position: { x: number, y: number }) => Promise<boolean>;
     deleteQuestion: (questionId: string) => Promise<void>;
+    changeSequence: (arr: Record<string, any>[]) => Promise<boolean>;
 
     getQuestionOptions: (questionId: string) => Promise<QuestionOption[]>;
     saveQuestionOption: (option: Partial<QuestionOption>) => Promise<boolean>;
@@ -470,6 +471,34 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         }
     },
 
+    changeSequence: async (arr: Record<string, any>[]) => {
+        const { formId, shouldSave, questions, savingCount } = get();
+        if (!shouldSave) {
+            return true;
+        }
+
+        if (!formId) {
+            console.log("getQuestionOptions :: FORM ID NOT FOUND!!")
+            return false;
+        }
+
+        try {
+            set({ savingCount: savingCount + 1 });
+            const response = await api.post<ActionResponse<QuestionOption[]>>(apiConstants.form.changeSequence(formId, arr));
+            if (!response?.data?.success) {
+                showError(response.data.message || 'Failed to reorder questions');
+                return false;
+            }
+            return true;
+        } catch (err: unknown) {
+            console.log('Err While fetching options :>> ', err);
+            showError('Failed to reorder questions');
+            return false;
+        } finally {
+            set((state) => ({ savingCount: state.savingCount - 1 }))
+        }
+    },
+
     getQuestionOptions: async (questionId: string) => {
         const { formId, shouldSave, questions } = get();
 
@@ -485,7 +514,6 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         }
 
         try {
-            console.log('[GET OPTIONS] Fetching options for question:', questionId);
             const response = await api.get<ActionResponse<QuestionOption[]>>(
                 apiConstants.option.getOptions(formId, questionId)
             );
@@ -496,7 +524,6 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             }
 
             const options = response.data.data || [];
-            console.log('[GET OPTIONS] Fetched options:', options);
 
             // Update local state with fetched options
             set((state) => ({

@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
 import { Question } from "@/types/form";
 import { GripVerticalIcon, TrashIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import QuestionIcon from "./questionIcon";
+import { Reorder, useDragControls, AnimatePresence, motion } from "framer-motion"
+
 
 export default function LeftBarQuestionItem({ isExpanded, question }: { isExpanded: boolean, question: Question }) {
 
@@ -16,14 +17,41 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
     const setSelectedQuestionId = useFormBuilder((state) => state.setSelectedQuestionId);
     const deleteQuestion = useFormBuilder((state) => state.deleteQuestion);
     const [isHovered, setIsHovered] = useState(false);
+    const controls = useDragControls()
+
 
     return (
-        <div className="w-full flex-1">
+        <Reorder.Item
+            className="w-full flex-1 relative"
+            value={question}
+            dragControls={controls}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{
+                opacity: 1,
+                scale: 1,
+                transition: { duration: 0.2 }
+            }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            whileDrag={{
+                scale: 1.03,
+                boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                zIndex: 50,
+                cursor: "grabbing"
+            }}
+            layout
+            transition={{
+                layout: {
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 30
+                }
+            }}
+        >
             {
                 isExpanded ?
-                    <li
+                    <div
                         className={cn('flex gap-2 items-center rounded-2xl corner-squircle py-2 px-2 pl-3 justify-center select-none bg-background shadow-none transition-all duration-200 group border-2 border-accent',
-                            selectedQuestionId == question.id ? 'border-primary-200/70 dark:bg-primary/10' : '')}
+                            selectedQuestionId == question.id ? 'border-primary-100 dark:bg-primary-50' : '')}
                         onClick={() => setSelectedQuestionId(question.id)}
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
@@ -72,7 +100,7 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                                 </Button>
                             )
                         }
-                    </li>
+                    </div>
                     :
                     <Tooltip >
                         <TooltipTrigger>
@@ -105,6 +133,6 @@ export default function LeftBarQuestionItem({ isExpanded, question }: { isExpand
                         </TooltipContent>
                     </Tooltip>
             }
-        </div>
+        </Reorder.Item>
     );
 }

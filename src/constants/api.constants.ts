@@ -25,6 +25,7 @@ export const apiConstants = {
         changeStatus: (id: string) => `forms/${id}/status`,
         archiveForm: (id: string) => `forms/${id}/status`,
         softDeleteForm: (id: string) => `forms/${id}/status`,
+        changeSequence: (id: string, arr: Record<string, any>[]) => `forms/${id}/sequence`,
     },
     quesiton: {
         getQuestions: (formId: string) => `forms/${formId}/questions`,

@@ -5,14 +5,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { useFormBuilder } from '@/store/useFormBuilder';
+import { Question } from '@/types/form';
 import { TooltipArrow } from '@radix-ui/react-tooltip';
 import { BoltIcon, FileText, Menu, SidebarIcon, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import LeftBarQuestionItem from './ui/leftBarQuestionItem';
 import { ScrollArea } from '../ui/scroll-area';
 import SignInRequired from './signInRequired';
+import api from '@/lib/axios';
+import { apiConstants } from '@/constants/api.constants';
+import { ActionResponse } from '@/types/common';
+
+import { Reorder, AnimatePresence } from "framer-motion";
+
 
 export default function LeftBar() {
 
@@ -23,6 +30,15 @@ export default function LeftBar() {
     const [isExpanded, setIsExpanded] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [mode, setMode] = useState<'expanded' | 'collapsed' | 'hover'>('expanded');
+
+    // Local state for reordering - doesn't propagate to store until saved
+    const [localQuestions, setLocalQuestions] = useState<Question[]>(questions);
+    const reorderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Sync local questions with store when store questions change
+    useEffect(() => {
+        setLocalQuestions(questions);
+    }, [questions]);
 
     // Load saved preferences
     useEffect(() => {
@@ -52,6 +68,37 @@ export default function LeftBar() {
             setIsExpanded(false);
         }
     };
+
+    const updateSequence = async (sequence: Array<{ id: string; newOrder: number }>) => {
+        if (!dataSource.id) return;
+
+        try {
+            const response = await api.post<ActionResponse<null>>(
+                apiConstants.form.changeSequence(dataSource.id, sequence),
+                { sequence }
+            );
+
+            if (!response?.data?.success) {
+                console.error('Failed to update sequence:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error updating sequence:', error);
+        }
+    };
+
+    const onReorder = (newOrder: Question[]) => {
+        setLocalQuestions(newOrder);
+        if (reorderTimeoutRef.current) {
+            clearTimeout(reorderTimeoutRef.current);
+        }
+        reorderTimeoutRef.current = setTimeout(() => {
+            const sequence = newOrder
+                .map((q, index) => ({ id: q.id, newOrder: index + 1 }))
+                .filter((item, index) => questions[index]?.id !== item.id);
+            if (sequence.length > 0) updateSequence(sequence);
+        }, 800);
+    }
+
 
     if (isMobile) {
         return (
@@ -115,10 +162,6 @@ export default function LeftBar() {
             </>
         );
     }
-
-    // Date + Time picker field component (calendar popover + time input)
-
-
     return (
         <div className={cn("transition-all duration-300 ease-in-out",
             mode === 'hover' ? "w-16" : (isExpanded ? "w-64" : "w-16")
@@ -160,12 +203,8 @@ export default function LeftBar() {
                                 </div>
                             </div>
                             <ScrollArea className='h-[calc(100vh-190px)] pr-1'>
-                                <ul className='px-2 flex flex-col gap-2 pb-4 pt-1'>
-                                    {questions.length > 0 ? (
-                                        questions.map((question, index) => (
-                                            <LeftBarQuestionItem isExpanded={isExpanded} key={question.id + index} question={question} />
-                                        ))
-                                    ) : (
+                                {
+                                    !questions.length ?
                                         <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
                                             <div className="mb-4 p-3 rounded-full bg-background border-accent">
                                                 <FileText />
@@ -177,8 +216,27 @@ export default function LeftBar() {
                                                 Start building your form by adding your first question
                                             </p>
                                         </div>
-                                    )}
-                                </ul>
+                                        :
+                                        <div className='px-2 flex flex-col gap-2 pb-4 pt-1'>
+                                            <Reorder.Group
+                                                className='flex flex-col gap-2'
+                                                axis='y'
+                                                onReorder={onReorder}
+                                                values={localQuestions}
+                                                layoutScroll
+                                            >
+                                                <AnimatePresence mode="popLayout" initial={false}>
+                                                    {localQuestions.map((question) => (
+                                                        <LeftBarQuestionItem
+                                                            isExpanded={isExpanded}
+                                                            key={question.id}
+                                                            question={question}
+                                                        />
+                                                    ))}
+                                                </AnimatePresence>
+                                            </Reorder.Group>
+                                        </div>
+                                }
                             </ScrollArea>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ import { Team } from '@prisma/client';
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
+import { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +21,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   adjustFontFallback: false
 });
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Esc Form',
+    template: '%s • Esc Form',
+  },
+}
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
