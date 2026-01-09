@@ -74,3 +74,20 @@ export const QUESTION_TYPES = [
     { value: QuestionType.SCREEN_END, label: "End Screen", icon: Star },
     { value: QuestionType.SCREEN_STATEMENT, label: "Statement Screen", icon: Star },
 ]
+
+
+export const OPERATORS = [
+    { value: "eq", label: "=" },
+    { value: "neq", label: "≠" },
+    { value: "gt", label: ">" },
+    { value: "gte", label: "≥" },
+    { value: "lt", label: "<" },
+    { value: "lte", label: "≤" },
+    { value: "hasValue", label: "Has Value" },
+    { value: "doesNotHaveValue", label: "Empty" },
+]
+
+export const LOGIC_OPERATORS = [
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" },
+]

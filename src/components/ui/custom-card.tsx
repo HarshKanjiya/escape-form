@@ -21,7 +21,7 @@ function CustomCardHeader({ className, ...props }: React.ComponentProps<"div">) 
         <div
             data-slot="card-header"
             className={cn(
-                "@container/card-header text-accent-foreground/70 text-sm pt-3 items-center gap-1.5 px-4 has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+                "@container/card-header flex justify-between text-accent-foreground/70 text-sm pt-3 items-center gap-1.5 px-4 has-data-[slot=card-action]:grid-cols-[1fr_auto]",
                 className
             )}
             {...props}
