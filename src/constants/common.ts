@@ -77,14 +77,14 @@ export const QUESTION_TYPES = [
 
 
 export const OPERATORS = [
-    { value: "eq", label: "=" },
-    { value: "neq", label: "≠" },
-    { value: "gt", label: ">" },
-    { value: "gte", label: "≥" },
-    { value: "lt", label: "<" },
-    { value: "lte", label: "≤" },
-    { value: "hasValue", label: "Has Value" },
-    { value: "doesNotHaveValue", label: "Empty" },
+    { value: "eq", label: "=", detail: "equals" },
+    { value: "neq", label: "≠", detail: "not equals" },
+    { value: "gt", label: ">", detail: "greater than" },
+    { value: "gte", label: "≥", detail: "greater than or equal to" },
+    { value: "lt", label: "<", detail: "less than" },
+    { value: "lte", label: "≤", detail: "less than or equal to" },
+    { value: "hasValue", label: "✓", detail: "has value" },
+    { value: "doesNotHaveValue", label: "∅", detail: "does not have value" },
 ]
 
 export const LOGIC_OPERATORS = [

@@ -10,9 +10,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ChevronRight, PlusIcon, Trash2, X } from "lucide-react";
-import { LOGIC_OPERATORS, OPERATORS } from "@/constants/common";
+import { CustomCard, CustomCardContent, CustomCardHeader, CustomCardTitle } from "@/components/ui/custom-card";
+import { ChevronRightIcon, CornerDownRightIcon, PlusIcon, Trash2, Trash2Icon, XIcon } from "lucide-react";
+import { OPERATORS } from "@/constants/common";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
 type Condition = {
     id: string;
@@ -183,141 +186,134 @@ export default function EdgeRulesConfig() {
     return (
         <div className="space-y-2">
             {edgeData.rules.map((rule, ruleIndex) => (
-                <div
-                    key={rule.id}
-                    className="rounded-lg border bg-card overflow-hidden"
-                >
+                <CustomCard key={rule.id} className="outline-none gap-0" hoverEffect={false}>
                     {/* Rule Header */}
-                    <div className="flex items-center justify-between px-3 py-2 bg-muted/30 border-b">
-                        <span className="text-xs font-medium text-muted-foreground">
-                            Rule {ruleIndex + 1}
-                        </span>
+                    <CustomCardHeader className="flex items-center pb-2">
+                        <CustomCardTitle className="text-xs">
+                            Rule <span className="text-sm font-mono">#{ruleIndex + 1}</span>
+                        </CustomCardTitle>
                         <Button
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6 text-muted-foreground hover:text-destructive"
                             onClick={() => removeRule(rule.id)}
                         >
-                            <Trash2 size={14} />
+                            <Trash2Icon size={14} />
                         </Button>
-                    </div>
-
-                    {/* Conditions */}
-                    <div className="p-2 space-y-1">
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground px-1 mb-1.5">
-                            If
-                        </div>
-
+                    </CustomCardHeader>
+                    <CustomCardContent className="p-2 space-y-3">
                         {rule.conditions.map((condition, conditionIndex) => (
-                            <div key={condition.id}>
+                            <div key={condition.id} className="w-full flex items-start gap-2">
                                 {/* Condition Row */}
-                                <div className="group flex items-center gap-1.5 p-1.5 rounded-md bg-muted/40 hover:bg-muted/60 transition-colors">
-                                    {/* Question Select */}
-                                    <Select
-                                        value={condition.questionId}
-                                        onValueChange={(value) =>
-                                            updateCondition(rule.id, condition.id, "questionId", value)
-                                        }
-                                    >
-                                        <SelectTrigger className="h-7 text-xs flex-1 min-w-0 bg-background border-0 shadow-sm">
-                                            <SelectValue placeholder="Question" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {/* Empty shell */}
-                                        </SelectContent>
-                                    </Select>
+                                <div className="flex items-center justify-center mt-2">
+                                    <Badge className="h-4 w-4 rounded-full aspect-square text-[10px] text-muted-foreground" variant={"secondary"}>{conditionIndex + 1}</Badge>
+                                </div>
+                                <div className="space-y-2 w-full">
+                                    <div className="w-full group flex items-center gap-1.5 rounded-md bg-muted/40 hover:bg-muted/60 transition-colors">
+                                        {/* Question Select */}
+                                        <Select
+                                            value={condition.questionId}
+                                            onValueChange={(value) =>
+                                                updateCondition(rule.id, condition.id, "questionId", value)
+                                            }
+                                        >
+                                            <SelectTrigger size="sm" className="dark:bg-input! text-xs flex-1 shadow-none">
+                                                <SelectValue placeholder="Question" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {/* Empty shell */}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="w-full flex items-center gap-2">
+                                        <div className="w-8 h-8 flex items-center justify-center pl-2">
+                                            <CornerDownRightIcon size={18} className="text-muted-foreground" />
+                                        </div>
+                                        <Select
+                                            value={condition.operator}
+                                            onValueChange={(value) =>
+                                                updateCondition(rule.id, condition.id, "operator", value)
+                                            }
+                                        >
+                                            <SelectTrigger size="sm" className="dark:bg-input! text-xs w-8 shadow-none" showIcon={false}>
+                                                <SelectValue placeholder="Op" className="text-center" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {OPERATORS.map((op) => (
+                                                    <SelectItem key={op.value} value={op.value}>
+                                                        <span className="font-mono">{op.label}</span> <span className="text-muted-foreground text-xs ml-2">{op.detail}</span>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
 
-                                    {/* Operator Select */}
-                                    <Select
-                                        value={condition.operator}
-                                        onValueChange={(value) =>
-                                            updateCondition(rule.id, condition.id, "operator", value)
-                                        }
-                                    >
-                                        <SelectTrigger className="h-7 text-xs w-14 bg-background border-0 shadow-sm">
-                                            <SelectValue placeholder="Op" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {OPERATORS.map((op) => (
-                                                <SelectItem key={op.value} value={op.value}>
-                                                    {op.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                        <Input
+                                            placeholder="Value"
+                                            value={condition.value}
+                                            onChange={(e) =>
+                                                updateCondition(rule.id, condition.id, "value", e.target.value)
+                                            }
+                                            className="h-8 text-xs shadow-none flex-1 bg-input"
+                                        />
 
-                                    {/* Value Input */}
-                                    <Input
-                                        placeholder="Value"
-                                        value={condition.value}
-                                        onChange={(e) =>
-                                            updateCondition(rule.id, condition.id, "value", e.target.value)
-                                        }
-                                        className="h-7 text-xs w-20 bg-background border-0 shadow-sm"
-                                    />
-
-                                    {/* Remove Button */}
+                                        {conditionIndex < rule.conditions.length - 1 && (
+                                            <div className="flex items-center justify-center py-0.5 w-12">
+                                                <button
+                                                    onClick={() => toggleLogicOperator(rule.id, condition.id)}
+                                                    className={cn(
+                                                        "text-[10px] font-semibold px-2 py-0.5 rounded-full transition-colors cursor-pointer",
+                                                        condition.logicOperator === "AND"
+                                                            ? "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
+                                                            : "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20"
+                                                    )}
+                                                >
+                                                    {condition.logicOperator || "AND"}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="h-full flex items-start pt-0.5">
                                     <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-6 w-6 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive shrink-0 transition-opacity"
+                                        variant="outline"
+                                        size="sm-icon"
+                                        className="rounded-full shadow-none"
                                         onClick={() => removeCondition(rule.id, condition.id)}
                                         disabled={rule.conditions.length === 1}
                                     >
-                                        <X size={12} />
+                                        <XIcon size={12} />
                                     </Button>
                                 </div>
-
-                                {/* Logic Operator Connector */}
-                                {conditionIndex < rule.conditions.length - 1 && (
-                                    <div className="flex items-center justify-center py-0.5">
-                                        <button
-                                            onClick={() => toggleLogicOperator(rule.id, condition.id)}
-                                            className={cn(
-                                                "text-[10px] font-semibold px-2 py-0.5 rounded-full transition-colors cursor-pointer",
-                                                condition.logicOperator === "AND"
-                                                    ? "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
-                                                    : "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20"
-                                            )}
-                                        >
-                                            {condition.logicOperator || "AND"}
-                                        </button>
-                                    </div>
-                                )}
                             </div>
                         ))}
 
                         {/* Add Condition */}
-                        <button
+                        <Button
+                            variant={'outline'}
                             onClick={() => addCondition(rule.id)}
-                            className="w-full flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-md transition-colors"
+                            className="w-full shadow-none border-dashed flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-md transition-colors"
                         >
                             <PlusIcon size={12} />
                             <span>Add condition</span>
-                        </button>
-                    </div>
-
-                    {/* Action */}
-                    <div className="px-2 pb-2">
-                        <div className="flex items-center gap-2 p-2 rounded-md bg-primary/5 border border-primary/10">
-                            <ChevronRight size={14} className="text-primary shrink-0" />
-                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground shrink-0">
-                                Then
-                            </span>
-                            <Select
-                                value={rule.action.targetQuestionId}
-                                onValueChange={(value) => updateRuleAction(rule.id, value)}
-                            >
-                                <SelectTrigger className="h-7 text-xs flex-1 bg-background border-0 shadow-sm">
-                                    <SelectValue placeholder="Go to question..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {/* Empty shell */}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </div>
+                        </Button>
+                    </CustomCardContent>
+                    <CustomCardContent>
+                        <Label htmlFor="gotoQue" className="text-xs text-muted-foreground w-full mb-2">
+                            Then Go To This Question
+                        </Label>
+                        <Select
+                            value={rule.action.targetQuestionId}
+                            onValueChange={(value) => updateRuleAction(rule.id, value)}
+                        >
+                            <SelectTrigger id="gotoQue" size="sm" className="text-xs flex-1 bg-background w-full shadow-none dark:bg-input!">
+                                <SelectValue placeholder="Go to question..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {/* Empty shell */}
+                            </SelectContent>
+                        </Select>
+                    </CustomCardContent>
+                </CustomCard>
             ))}
 
             {/* Add Rule Button */}
@@ -335,31 +331,32 @@ export default function EdgeRulesConfig() {
 
             {/* Default Action */}
             {edgeData.rules.length > 0 && (
-                <div className="pt-2 border-t">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <span className="text-[10px] uppercase tracking-wider">Default</span>
-                        <span className="text-muted-foreground/60">— if no rules match</span>
-                    </div>
-                    <Select
-                        value={edgeData.defaultAction.targetQuestionId}
-                        onValueChange={(value) =>
-                            setEdgeData((prev) => ({
-                                ...prev,
-                                defaultAction: {
-                                    ...prev.defaultAction,
-                                    targetQuestionId: value,
-                                },
-                            }))
-                        }
-                    >
-                        <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder="Continue to next question" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {/* Empty shell */}
-                        </SelectContent>
-                    </Select>
-                </div>
+                <CustomCard className="outline-none" hoverEffect={false}>
+                    <CustomCardHeader>
+                        <CustomCardTitle className="text-muted-foreground text-sm">Default (If no rules match)</CustomCardTitle>
+                    </CustomCardHeader>
+                    <CustomCardContent>
+                        <Select
+                            value={edgeData.defaultAction.targetQuestionId}
+                            onValueChange={(value) =>
+                                setEdgeData((prev) => ({
+                                    ...prev,
+                                    defaultAction: {
+                                        ...prev.defaultAction,
+                                        targetQuestionId: value,
+                                    },
+                                }))
+                            }
+                        >
+                            <SelectTrigger id="defaultAction" className="h-8 text-xs w-full shadow-none dark:bg-input!">
+                                <SelectValue placeholder="Continue to next question" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {/* Empty shell */}
+                            </SelectContent>
+                        </Select>
+                    </CustomCardContent>
+                </CustomCard>
             )}
         </div>
     );
