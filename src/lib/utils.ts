@@ -157,3 +157,13 @@ export async function setLocalStorageItem(key: string, value: string): Promise<v
   const encryptedValue = await encrypt(value);
   localStorage.setItem(key, encryptedValue);
 }
+
+export function getFormUrl(slug: string): string {
+  const baseUrl = process.env.NEXT_FORM_BASE_URL || 'http://localhost:3001';
+  return `${baseUrl}/f/${slug}`;
+}
+
+export function getFormPreviewUrl(slug: string): string {
+  const baseUrl = process.env.NEXT_FORM_BASE_URL || 'http://localhost:3001';
+  return `${baseUrl}/preview/${slug}`;
+}

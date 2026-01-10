@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "motion/react";
 import MainContentHeader from "./mainContentHeader";
 import FlowEditor from "./modes/flowEditor";
 import FormEditor from "./modes/formEditor";
-import FormPreview from "./modes/formPreview";
 import { ReactFlowProvider } from "@xyflow/react";
 
 export default function MainContent() {
@@ -44,19 +43,6 @@ export default function MainContent() {
                                     <ReactFlowProvider>
                                         <FlowEditor />
                                     </ReactFlowProvider>
-                                </motion.div>
-                            ) : null}
-                            {viewMode === eViewMode.Preview ? (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ type: 'tween' }}
-                                    key="form-editor"
-                                    layout
-                                    className="w-full h-full"
-                                >
-                                    <FormPreview />
                                 </motion.div>
                             ) : null}
                         </AnimatePresence>

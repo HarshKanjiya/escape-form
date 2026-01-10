@@ -1,19 +1,19 @@
 "use client";
 
-import { eViewMode, eViewScreenMode } from "@/enums/form";
-import { FormStatus } from "@prisma/client";
-import { showSuccess } from "@/lib/utils";
+import { eViewMode } from "@/enums/form";
+import { getFormPreviewUrl, getFormUrl, showSuccess } from "@/lib/utils";
 import { useFormBuilder } from "@/store/useFormBuilder";
-import { Archive, ArchiveRestore, CopyIcon, ExternalLinkIcon, Laptop, PencilRuler, Play, RefreshCcw, Rocket, RocketIcon, Smartphone, SquareArrowOutUpRightIcon, TrendingUpDown, UndoDotIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { FormStatus } from "@prisma/client";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { CopyIcon, ExternalLinkIcon, PencilRuler, Play, RefreshCcw, Rocket, RocketIcon, SquareArrowOutUpRightIcon, TrendingUpDown, UndoDotIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import AddQuestionDialog from "./ui/addQuestionDialog";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
 import SignInRequired from "./signInRequired";
+import AddQuestionDialog from "./ui/addQuestionDialog";
 
 export default function MainContentHeader() {
 
@@ -62,8 +62,15 @@ export default function MainContentHeader() {
     }
 
     const openUrl = () => {
-        window.open(`https://form.escform.com/f/${dataSource.uniqueSubdomain}`, '_blank');
+        const url = getFormUrl(dataSource.uniqueSubdomain!);
+        window.open(url, '_blank');
     }
+
+    const openPreview = () => {
+        const url = getFormPreviewUrl(dataSource.uniqueSubdomain!);
+        window.open(url, '_blank');
+    }
+
 
     return (
         <>
@@ -98,7 +105,7 @@ export default function MainContentHeader() {
                             <Separator orientation="vertical" className="h-[36px]! mx-0" />
                             <Tooltip >
                                 <TooltipTrigger asChild>
-                                    <Button className="rounded-l-none" variant={viewMode == eViewMode.Preview ? 'secondary' : 'ghost'} size={'icon'} onClick={() => setViewMode(eViewMode.Preview)}>
+                                    <Button variant={'ghost'} className="rounded-l-none" size={'icon'} onClick={openPreview}>
                                         <Play />
                                     </Button>
                                 </TooltipTrigger>
@@ -107,7 +114,7 @@ export default function MainContentHeader() {
                                 </TooltipContent>
                             </Tooltip>
                         </div>
-                        <AnimatePresence mode="sync" initial={false}>
+                        {/* <AnimatePresence mode="sync" initial={false}>
                             {
                                 viewMode === eViewMode.Preview ? (
                                     <motion.div className="flex items-center gap-1"
@@ -131,7 +138,7 @@ export default function MainContentHeader() {
                                     </motion.div>
                                 ) : null
                             }
-                        </AnimatePresence>
+                        </AnimatePresence> */}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
