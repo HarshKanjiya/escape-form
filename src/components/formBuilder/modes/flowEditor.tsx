@@ -9,8 +9,10 @@ import { useFormBuilder } from '@/store/useFormBuilder';
 import '@xyflow/react/dist/style.css';
 import { ClockPlus, MinusIcon, PlusIcon, RotateCcwIcon } from 'lucide-react';
 import { FlowNode } from './flowNode';
+import { FlowEdge } from './flowEdge';
 
 const nodeTypes = { card: FlowNode };
+const edgeTypes = { custom: FlowEdge };
 
 // Configuration
 const FLOW_CONFIG = {
@@ -31,10 +33,11 @@ export default function FlowEditor() {
 
     const questions = useFormBuilder((state) => state.questions);
     const savedEdges = useFormBuilder((state) => state.edges);
+    const selectedEdge = useFormBuilder((state) => state.selectedEdge);
     const createNewEdge = useFormBuilder((state) => state.addEdge);
     const changePosition = useFormBuilder((state) => state.changePosition);
     const removeEdge = useFormBuilder((state) => state.removeEdge);
-
+    const setSelectedEdge = useFormBuilder((state) => state.setSelectedEdge);
 
     const [nodes, setNodes, baseOnNodesChange] = useNodesState<any>([]);
     const [edges, setEdges, baseOnEdgesChange] = useEdgesState(initialEdges);
@@ -72,12 +75,19 @@ export default function FlowEditor() {
     useEffect(() => {
         const edges = savedEdges.map((q) => ({
             id: String(q.id),
+            type: 'custom',
             source: String(q.sourceNodeId),
             target: String(q.targetNodeId),
-            data: q,
+            data: {
+                ...q,
+                onDelete: (edgeId: string) => {
+                    removeEdge(edgeId);
+                    setSelectedEdge(null);
+                }
+            },
         }));
         setEdges(edges);
-    }, [savedEdges])
+    }, [savedEdges, removeEdge])
 
     const handleZoomChange = (num: number) => {
         const z = Math.min(FLOW_CONFIG.maxZoom, Math.max(FLOW_CONFIG.minZoom, num));
@@ -92,6 +102,7 @@ export default function FlowEditor() {
         },
         []
     );
+
     const handleEdgesChange = useCallback(
         (changes: any) => {
             logGraphEvent('edge:change', changes);
@@ -107,6 +118,17 @@ export default function FlowEditor() {
         },
         [logGraphEvent]
     );
+
+    const onEdgeClick = useCallback(
+        (_: any, edge: any) => {
+            setSelectedEdge(edge);
+        },
+        [setSelectedEdge]
+    );
+
+    const onPaneClick = useCallback(() => {
+        setSelectedEdge(null);
+    }, [setSelectedEdge]);
 
     const onMove = useCallback(
         (params: any) => {
@@ -124,11 +146,14 @@ export default function FlowEditor() {
                 minZoom={FLOW_CONFIG.minZoom}
                 maxZoom={FLOW_CONFIG.maxZoom}
                 nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
                 nodes={nodes}
                 edges={edges}
                 onNodesChange={(changes) => { baseOnNodesChange(changes); handleNodesChange(changes); }}
                 onEdgesChange={(changes) => { baseOnEdgesChange(changes); handleEdgesChange(changes); }}
                 onConnect={onConnect}
+                onEdgeClick={onEdgeClick}
+                onPaneClick={onPaneClick}
                 onNodeDragStop={(_, node) => {
                     logGraphEvent('node:change', {
                         type: 'position:end',

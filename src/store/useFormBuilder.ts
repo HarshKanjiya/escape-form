@@ -82,6 +82,7 @@ interface IFormBuilderStore {
     setViewScreenMode: (mode: eViewScreenMode) => void;
     setSelectedQuestionId: (id: string | null) => void;
     setSelectedEdgeId: (id: string | null) => void;
+    setSelectedEdge: (edge: Edge | null) => void;
 }
 
 export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
@@ -349,6 +350,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             set((state) => ({ savingCount: state.savingCount - 1 }))
         }
     },
+
     changePosition: async (questionId: string, position: { x: number, y: number }) => {
         const { questions: previousQuestions, formId, shouldSave, dataSource, edges } = get();
 
@@ -767,6 +769,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
             set((state) => ({ savingCount: state.savingCount - 1 }))
         }
     },
+
     updateEdge: async (edgeId: string, edge: Partial<Edge>) => {
         const { edges: previousEdges, formId } = get();
 
@@ -799,6 +802,7 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         //     set((state) => ({ savingCount: state.savingCount - 1 }))
         // }
     },
+
     removeEdge: async (connectionId: string) => {
         const { edges: previousEdges, formId, selectedEdgeId, shouldSave, dataSource, questions } = get();
 
@@ -841,6 +845,13 @@ export const useFormBuilder = create<IFormBuilderStore>((set, get) => ({
         finally {
             set((state) => ({ savingCount: state.savingCount - 1 }))
         }
+    },
+
+    setSelectedEdge: (edge: Edge | null) => {
+        set({
+            selectedEdgeId: edge ? edge.id : null,
+            selectedEdge: edge
+        });
     },
 
     setSelectedEdgeId: (id: string | null) => {

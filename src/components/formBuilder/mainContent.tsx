@@ -15,7 +15,7 @@ export default function MainContent() {
             <MainContentHeader />
             <div className="h-full w-full flex-1 overflow-hidden">
                 <div className="bg-accent-bg p-3 h-full w-full overflow-hidden">
-                    <div className="bg-background rounded-xl h-full w-full overflow-hidden">
+                    <div className="bg-background rounded-xl h-full w-full overflow-hidden border border-background">
                         <AnimatePresence initial={false} mode="wait">
                             {viewMode === eViewMode.Builder ? (
                                 <motion.div
