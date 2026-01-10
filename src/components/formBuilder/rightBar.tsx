@@ -9,6 +9,7 @@ import { CustomCard, CustomCardContent, CustomCardHeader } from "../ui/custom-ca
 import EdgeRulesConfig from "./ui/edgeRulesConfig";
 import QuestionConfigCard from "./ui/questionConfigCard";
 import QuestionTypeDropdown from "./ui/questionTypeDropdown";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default function RightBar() {
 
@@ -17,9 +18,9 @@ export default function RightBar() {
     const deleteQuestion = useFormBuilder((state) => state.deleteQuestion);
 
     return (
-        <div className="bg-accent-bg border-l z-30 overflow-visible h-full w-[360px]">
+        <div className="bg-accent-bg border-l z-30 h-full w-[360px]">
             <div className="flex flex-col h-full">
-                <div className="flex-1 overflow-y-auto pb-4 overflow-x-hidden w-full h-full flex flex-col">
+                <div className="flex-1 overflow-x-hidden w-full h-full flex flex-col">
                     {
                         editorMode == eViewMode.Builder ?
                             <>
@@ -82,35 +83,37 @@ export default function RightBar() {
                                 </div>
                             </>
                             :
-                            <>
+                            <div className="w-full">
                                 <div className='h-[53px] flex items-center justify-between py-2 px-4 border-b min-h-13'>
                                     <span className='text-md overflow-ellipsis line-clamp-1'>Branching Rules</span>
                                 </div>
-                                <div className="p-3 flex flex-col">
-                                    {
-                                        !selectedQuestionId?.length ?
-                                            <CustomCard className="outline-none" hoverEffect={false}>
-                                                <CustomCardContent>
-                                                    <div className="w-full flex flex-col items-center text-center">
-                                                        <div className="mb-4 p-3 w-min rounded-full bg-background">
-                                                            <MessageCircleQuestionMark className="w-6 h-6 text-muted-foreground" />
+                                <ScrollArea className="h-[calc(100dvh-117px)]">
+                                    <div className="p-3 flex flex-col">
+                                        {
+                                            !selectedQuestionId?.length ?
+                                                <CustomCard className="outline-none" hoverEffect={false}>
+                                                    <CustomCardContent>
+                                                        <div className="w-full flex flex-col items-center text-center">
+                                                            <div className="mb-4 p-3 w-min rounded-full bg-background">
+                                                                <MessageCircleQuestionMark className="w-6 h-6 text-muted-foreground" />
+                                                            </div>
+                                                            <h3 className="text-sm font-medium text-foreground mb-2">
+                                                                Select a Question
+                                                            </h3>
+                                                            <p className="text-xs text-muted-foreground leading-relaxed max-w-48">
+                                                                Click on any question or Add new
+                                                            </p>
                                                         </div>
-                                                        <h3 className="text-sm font-medium text-foreground mb-2">
-                                                            Select a Question
-                                                        </h3>
-                                                        <p className="text-xs text-muted-foreground leading-relaxed max-w-48">
-                                                            Click on any question or Add new
-                                                        </p>
-                                                    </div>
-                                                </CustomCardContent>
-                                            </CustomCard>
-                                            :
-                                            <div className="space-y-3">
-                                                <EdgeRulesConfig />
-                                            </div>
-                                    }
-                                </div>
-                            </>
+                                                    </CustomCardContent>
+                                                </CustomCard>
+                                                :
+                                                <div className="space-y-3">
+                                                    <EdgeRulesConfig />
+                                                </div>
+                                        }
+                                    </div>
+                                </ScrollArea>
+                            </div>
                     }
                 </div>
             </div>

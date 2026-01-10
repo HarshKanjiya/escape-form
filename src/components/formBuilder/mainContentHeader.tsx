@@ -74,7 +74,7 @@ export default function MainContentHeader() {
 
     return (
         <>
-            <div className="px-2 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent-bg h-[53px]">
+            <div className="px-3 flex items-center justify-between py-2 w-full gap-3 border-b bg-accent-bg h-[53px]">
                 <div className="flex items-center gap-2">
                     <AddQuestionDialog />
                     <Separator orientation="vertical" className="h-8!" />

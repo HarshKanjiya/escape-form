@@ -166,7 +166,7 @@ export default function LeftBar() {
                         <div className='w-full h-full flex flex-col gap-2'>
                             <div className={cn(
                                 'flex items-center border-b h-[53px] transition-all',
-                                isExpanded ? 'pl-3 pr-2 justify-between' : 'px-2 justify-center'
+                                isExpanded ? 'px-3 justify-between' : 'px-2 justify-center'
                             )}>
                                 {isExpanded ? (
                                     <div className='h-[53px] flex items-center justify-between w-full'>
