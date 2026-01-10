@@ -186,7 +186,7 @@ export default function EdgeRulesConfig() {
     return (
         <div className="space-y-2">
             {edgeData.rules.map((rule, ruleIndex) => (
-                <CustomCard key={rule.id} className="outline-none gap-0" hoverEffect={false}>
+                <CustomCard key={rule.id} className="outline-none gap-0!" hoverEffect={false}>
                     {/* Rule Header */}
                     <CustomCardHeader className="flex items-center pb-2">
                         <CustomCardTitle className="text-xs">
@@ -201,12 +201,12 @@ export default function EdgeRulesConfig() {
                             <Trash2Icon size={14} />
                         </Button>
                     </CustomCardHeader>
-                    <CustomCardContent className="p-2 space-y-3">
+                    <CustomCardContent className="p-2 space-y-2">
                         {rule.conditions.map((condition, conditionIndex) => (
                             <div key={condition.id} className="w-full flex items-start gap-2">
                                 {/* Condition Row */}
-                                <div className="flex items-center justify-center mt-2">
-                                    <Badge className="h-4 w-4 rounded-full aspect-square text-[10px] text-muted-foreground" variant={"secondary"}>{conditionIndex + 1}</Badge>
+                                <div className="flex items-center justify-center mt-1">
+                                    <Badge className="h-6 w-6 rounded-full aspect-square text-xs text-muted-foreground" variant={"secondary"}>{conditionIndex + 1}</Badge>
                                 </div>
                                 <div className="space-y-2 w-full">
                                     <div className="w-full group flex items-center gap-1.5 rounded-md bg-muted/40 hover:bg-muted/60 transition-colors">
@@ -226,16 +226,16 @@ export default function EdgeRulesConfig() {
                                         </Select>
                                     </div>
                                     <div className="w-full flex items-center gap-2">
-                                        <div className="w-8 h-8 flex items-center justify-center pl-2">
+                                        {/* <div className="w-8 h-8 flex items-center justify-center pl-2">
                                             <CornerDownRightIcon size={18} className="text-muted-foreground" />
-                                        </div>
+                                        </div> */}
                                         <Select
                                             value={condition.operator}
                                             onValueChange={(value) =>
                                                 updateCondition(rule.id, condition.id, "operator", value)
                                             }
                                         >
-                                            <SelectTrigger size="sm" className="dark:bg-input! text-xs w-8 shadow-none" showIcon={false}>
+                                            <SelectTrigger size="sm" className="dark:bg-input! text-xs w-18 shadow-none">
                                                 <SelectValue placeholder="Op" className="text-center" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -255,7 +255,8 @@ export default function EdgeRulesConfig() {
                                             }
                                             className="h-8 text-xs shadow-none flex-1 bg-input"
                                         />
-
+                                    </div>
+                                    <div className="w-full flex items-center justify-center gap-2">
                                         {conditionIndex < rule.conditions.length - 1 && (
                                             <div className="flex items-center justify-center py-0.5 w-12">
                                                 <button
@@ -297,7 +298,7 @@ export default function EdgeRulesConfig() {
                             <span>Add condition</span>
                         </Button>
                     </CustomCardContent>
-                    <CustomCardContent>
+                    <CustomCardContent wrapperClass="pt-0">
                         <Label htmlFor="gotoQue" className="text-xs text-muted-foreground w-full mb-2">
                             Then Go To This Question
                         </Label>
@@ -317,7 +318,8 @@ export default function EdgeRulesConfig() {
             ))}
 
             {/* Add Rule Button */}
-            <button
+            <Button
+                variant='outline'
                 onClick={addRule}
                 className={cn(
                     "w-full flex items-center justify-center gap-2 py-3 rounded-lg border-2 border-dashed",
@@ -327,7 +329,7 @@ export default function EdgeRulesConfig() {
             >
                 <PlusIcon size={16} />
                 <span>{edgeData.rules.length === 0 ? "Add branching rule" : "Add another rule"}</span>
-            </button>
+            </Button>
 
             {/* Default Action */}
             {edgeData.rules.length > 0 && (
